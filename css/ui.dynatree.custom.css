@@ -1,0 +1,21 @@
+.dynatree-ico-cf span.dynatree-icon  /* Collapsed Folder */
+{
+    display: none;
+}
+
+.dynatree-ico-ef span.dynatree-icon  /* Expanded Folder */
+{
+	display: none;
+}
+
+span.dynatree-icon /* Default icon */
+{
+
+	display: none;
+}
+
+ul.dynatree-container {
+    background-color: #e9e9e9;
+	border: none;
+}
+
