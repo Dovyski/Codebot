@@ -25,46 +25,74 @@ body {
     margin: 0;
 }
 
-#menu {
-	width: 100%;
-	height: 40px;
-	clear: both;
-	background: #DE3A3A;
-}
-
-#panels {
+#wrapper {
 	position: relative;
+	min-height: 100%;
 	width: 100%;
-	height: 500px;
-	overflow: auto;
 }
 
-#panel-left {
-	float: left;
-	width: 22.5%;
-	background: #e9e9e9;
-	overflow: hidden;
+/*
+-----------------------------------------------------
+Config panel
+-----------------------------------------------------
+*/
+
+#config-panel {
+	float: right;
+	width: 30px;
+	background: #3f3f3f;
+	height: 750px; /* TODO: fix it! */
+	color: #fff;
+	padding: 10px 0 0 0;
 }
 
-#panel-right {
+#config-panel a {
+	color: #fff;
 	float: left;
-	width: 77%;
-	overflow: auto;
-	background: #e9e9e9;
+	clear: both;
+	margin: 0 0 10px 10px;
+}
+
+/*
+-----------------------------------------------------
+Files panel
+-----------------------------------------------------
+*/
+
+#files-panel {
+	float: right;
+	width: 300px;
+	background: #1f1f1f;
+	height: 800px; /* TODO: fix it! */
 }
 
 #folders {
 	width: 100%;
 	overflow: hidden;
 	padding: 2px;
-	height: 480px;
+	height: 800px; /* TODO: fix it! */
 	background: #e9e9e9;
 }
 
-#main {
-	width: 95%;
-	height: 725px;
-	background: #fff;
-	padding: 10px 20px 20px 20px;
-	overflow: auto;
+/*
+-----------------------------------------------------
+Content area (where code is edited)
+-----------------------------------------------------
+*/
+
+#content-panel {
+	float: left;
+}
+
+#tabs {
+	float: left;
+	width: 100%;
+	height: 30px;
+	background: #efefef;
+	clear: both;
+}
+
+#content {
+	width: 100%;
+	float: left;
 }
