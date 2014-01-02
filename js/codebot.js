@@ -22,9 +22,28 @@
 */
 
 var CODEBOT = new function() {
+	var mPlugins = {};
+	
+	var invoke = function(theObj, theMethod, theParam) {
+		if(theObj && theObj[theMethod]) {
+			return theObj[theMethod](theParam);
+		}
+	};
+	
+	this.handlePluginClick = function(thePluginId) {
+		invoke(mPlugins[thePluginId], 'clicked');
+		
+		var aPluginContent = invoke(mPlugins[thePluginId], 'content');
+		CODEBOT.ui.showConfigDialog(true, aPluginContent);
+	};
+	
 	this.addPlugin = function(theId, theObj) {
 		console.log('CODEBOT [plugin added] ' + theId + ' - ' + theObj);
+		
+		mPlugins[theId] = theObj;
+		
 		CODEBOT.ui.addPlugin(theId, theObj);
+		invoke(mPlugins[theId], 'added');
 	};
 	
 	this.init = function() {

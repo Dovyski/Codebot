@@ -24,8 +24,6 @@
 var CODEBOT = CODEBOT || {};
 
 CODEBOT.ui = new function() {
-	var mPlugins = {};
-	
 	var filePanelClick = function(theNode) {
 		console.log('File panel click: ' + (theNode.data.id || 'folder'), theNode.data);
 	};
@@ -33,24 +31,11 @@ CODEBOT.ui = new function() {
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
 	};
-	
-	var invoke = function(theObj, theMethod, theParam) {
-		if(theObj && theObj[theMethod]) {
-			return theObj[theMethod](theParam);
-		}
-	};
-	
-	var handlePluginClick = function() {
-		var id = $(this).data('plugin');
-			
-		invoke(mPlugins[id], 'clicked');
-		$('#config-dialog').html(invoke(mPlugins[id], 'content'));
 		
-		CODEBOT.ui.showConfigDialog(true);
-	};
-		
-	this.showConfigDialog = function(theStatus) {
+	this.showConfigDialog = function(theStatus, theContent) {
 		if(theStatus) {
+			$('#config-dialog').html(theContent);
+			
 			// TODO: remove the hardcoded value
 			transform3d('content', '-600px', '0', '0');
 			transform3d('config-dialog', '-600px', '0', '0');
@@ -76,12 +61,14 @@ CODEBOT.ui = new function() {
 	};
 
 	this.addPlugin = function(theId, theObj) {
-		mPlugins[theId] = theObj;
+		$('#config-bar').html(
+			$('#config-bar').html() +
+			'<a href="#" data-plugin="'+theId+'"><i class="fa fa-'+theObj.icon+'"></i></a>'
+		);
 		
-		$('#config-bar').html($('#config-bar').html() + '<a href="#" data-plugin="'+theId+'"><i class="fa fa-'+theObj.icon+'"></i></a>');
-		$('#config-bar a').click(handlePluginClick);
-
-		invoke(mPlugins[theId], 'added');
+		$('#config-bar a').click(function() {
+			CODEBOT.handlePluginClick($(this).data('plugin'));
+		});
 	};
 	
 	this.init = function() {
