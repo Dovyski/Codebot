@@ -21,17 +21,20 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var CODEBOT = new function() {
-	this.addPlugin = function(theId, theObj) {
-		console.log('CODEBOT [plugin added] ' + theId + ' - ' + theObj);
-		CODEBOT.ui.addPlugin(theId, theObj);
+var plugin = new function() {
+	this.icon = 'cog'; // code, puzzle-piece
+	
+	this.clicked = function() {
+		console.log('cc.codebot.config.clicked()');
 	};
 	
-	this.init = function() {
-		CODEBOT.ui.init();
+	this.content = function() {
+		return 'cc.codebot.config.content(). <a href="#" onclick="CODEBOT.ui.showConfigDialog(false);">[CLOSE]</a>';
+	};
+	
+	this.added = function() {
+		console.log('cc.codebot.config.added()');
 	};
 };
 
-$(function(){
-	CODEBOT.init();
-});
+CODEBOT.addPlugin('cc.codebot.config', plugin);

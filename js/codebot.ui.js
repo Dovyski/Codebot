@@ -24,6 +24,8 @@
 var CODEBOT = CODEBOT || {};
 
 CODEBOT.ui = new function() {
+	var mPlugins = {};
+	
 	var filePanelClick = function(theNode) {
 		console.log('File panel click: ' + (theNode.data.id || 'folder'), theNode.data);
 	};
@@ -32,18 +34,22 @@ CODEBOT.ui = new function() {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
 	};
 	
-	// TODO: refactor this!
-	var buildConfiPanel = function() {
-		$('#config-bar a').click(function() {
-			showConfigDialog(true);
-		});
-		
-		$('#config-dialog a').click(function() {
-			showConfigDialog(false);
-		});
+	var invoke = function(theObj, theMethod, theParam) {
+		if(theObj && theObj[theMethod]) {
+			return theObj[theMethod](theParam);
+		}
 	};
 	
-	var showConfigDialog = function(theStatus) {
+	var handlePluginClick = function() {
+		var id = $(this).data('plugin');
+			
+		invoke(mPlugins[id], 'clicked');
+		$('#config-dialog').html(invoke(mPlugins[id], 'content'));
+		
+		CODEBOT.ui.showConfigDialog(true);
+	};
+		
+	this.showConfigDialog = function(theStatus) {
 		if(theStatus) {
 			// TODO: remove the hardcoded value
 			transform3d('content', '-600px', '0', '0');
@@ -68,7 +74,16 @@ CODEBOT.ui = new function() {
 			$("#folders").html('<div class="">no</div>');
 		}
 	};
-        
+
+	this.addPlugin = function(theId, theObj) {
+		mPlugins[theId] = theObj;
+		
+		$('#config-bar').html($('#config-bar').html() + '<a href="#" data-plugin="'+theId+'"><i class="fa fa-'+theObj.icon+'"></i></a>');
+		$('#config-bar a').click(handlePluginClick);
+
+		invoke(mPlugins[theId], 'added');
+	};
+	
 	this.init = function() {
 		// TODO: read data from disk
 		CODEBOT.ui.refreshFilesPanel([
@@ -81,7 +96,5 @@ CODEBOT.ui = new function() {
 			},
 			{title: "Item 3"}
 		]);
-		
-		buildConfiPanel();
 	};
 };
