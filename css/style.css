@@ -43,22 +43,35 @@ Config panel
 	top: 0;
 	width: 30px;
 	height: 100%;
-	padding: 10px 0 0 0;
 	background: #3f3f3f;
 }
 
-#config-panel {
-	float: right;
-	width: 30px;
-	background: #3f3f3f;
+#config-dialog {
+	position: absolute;
+	z-index: 1;
+	width: 600px;
+	height: 670px; /* TODO: fix it!*/
+	background: #9f9f9f;
 	color: #fff;
+	overflow: auto;
+	
+	-webkit-transition: -webkit-transform 0.5s;
+	transition: -webkit-transform 0.5s;
 }
 
-#config a {
+#config-bar {
+	position: absolute;
+	z-index: 10;
+	width: 30px;
+	height: 100%;
+	background: #3f3f3f;
+}
+
+#config-bar a {
 	color: #fff;
 	float: left;
 	clear: both;
-	margin: 0 0 10px 8px;
+	margin: 5px 0 10px 8px;
 }
 
 /*
@@ -92,6 +105,9 @@ Content area (where code is edited)
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
+	
+	-webkit-transition: -webkit-transform 0.5s;
+	transition: -webkit-transform 0.5s;
 }
 
 #tabs {

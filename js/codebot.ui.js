@@ -28,6 +28,32 @@ CODEBOT.ui = new function() {
 		console.log('File panel click: ' + (theNode.data.id || 'folder'), theNode.data);
 	};
 	
+	var transform3d = function(theElementId, theX, theY, theZ) {
+		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
+	};
+	
+	// TODO: refactor this!
+	var buildConfiPanel = function() {
+		$('#config-bar a').click(function() {
+			showConfigDialog(true);
+		});
+		
+		$('#config-dialog a').click(function() {
+			showConfigDialog(false);
+		});
+	};
+	
+	var showConfigDialog = function(theStatus) {
+		if(theStatus) {
+			// TODO: remove the hardcoded value
+			transform3d('content', '-600px', '0', '0');
+			transform3d('config-dialog', '-600px', '0', '0');
+		} else {
+			transform3d('content', '0', '0', '0');
+			transform3d('config-dialog', '0', '0', '0');
+		}
+	};
+	
 	this.refreshFilesPanel = function(theData) {
 		if(theData && theData.length > 0) {
 			$("#folders").dynatree({
@@ -44,6 +70,7 @@ CODEBOT.ui = new function() {
 	};
         
 	this.init = function() {
+		// TODO: read data from disk
 		CODEBOT.ui.refreshFilesPanel([
 			{title: "Item 1" + Math.random()},
 			{title: "Folder 2" + Math.random(), isFolder: true, key: "folder2",
@@ -54,5 +81,7 @@ CODEBOT.ui = new function() {
 			},
 			{title: "Item 3"}
 		]);
+		
+		buildConfiPanel();
 	};
 };
