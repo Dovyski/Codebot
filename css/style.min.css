@@ -8,6 +8,7 @@ body{margin:0;}
 #files-panel header{text-align:center;background:#f1f1f1;}
 #folders{width:100%;height:100%;overflow:hidden;padding:2px;background:#e9e9e9;}
 #content{width:100%;height:100%;overflow:hidden;-webkit-transition:-webkit-transform 0.5s;transition:-webkit-transform 0.5s;}
-#tabs{position:fixed;height:30px;background:#efefef;}
-#working-area{float:left;margin-top:30px;width:80%;background:#ff0000;overflow:scroll;height:780px;}
+#tabs{position:fixed;height:25px;background:#efefef;}
+#tabs li{float:left;background:#cfcfcf;border:1px solid #000;margin-right:5px;}
+#working-area{float:left;margin-top:25px;width:80%;background:#ff0000;overflow:scroll;height:780px;}
 

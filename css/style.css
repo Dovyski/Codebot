@@ -118,13 +118,20 @@ Content area (where code is edited)
 
 #tabs {
 	position: fixed;
-	height: 30px;
+	height: 25px;
 	background: #efefef;
+}
+
+#tabs li {
+	float: left;
+	background: #cfcfcf;
+	border: 1px solid #000;
+	margin-right: 5px;
 }
 
 #working-area {
 	float: left;
-	margin-top: 30px;
+	margin-top: 25px;
 	width: 80%;
 	background: #ff0000;
 	overflow: scroll;

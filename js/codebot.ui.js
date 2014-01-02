@@ -26,13 +26,29 @@ var CODEBOT = CODEBOT || {};
 CODEBOT.ui = new function() {
 	var mTabs = {};
 	
-	var filePanelClick = function(theEvent, theData) {
-		console.log('File panel click: ' + theEvent + ' : ' + theData.node);
-		console.log(theData);
+	var filePanelClick = function(theEvent, theItem) {
+		var aData = theItem.node.data;
+		
+		console.log('File panel click: ' + theEvent + ' : ' + theItem.node.folder);
+		
+		if(!theItem.node.folder) {
+			addTab(aData);
+		}
 	};
 	
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
+	};
+	
+	var addTab = function(theNodeData) {
+		if(mTabs[theNodeData.path] == null) {
+			mTabs[theNodeData.path] = theNodeData;
+			
+			$('#tabs').html(
+				$('#tabs').html() +
+				'<li>'+theNodeData.path+'</li>'
+			);
+		}
 	};
 		
 	this.showConfigDialog = function(theStatus, theContent) {
@@ -51,7 +67,7 @@ CODEBOT.ui = new function() {
 	this.refreshFilesPanel = function(theData) {
 		if(theData && theData.length > 0) {
 			$("#folders").fancytree({
-				activate: filePanelClick,
+				click: filePanelClick,
 				source: theData,
 				checkbox: false,
 				selectMode: 3
@@ -79,14 +95,14 @@ CODEBOT.ui = new function() {
 	this.init = function() {
 		// TODO: read data from disk
 		CODEBOT.ui.refreshFilesPanel([
-			{title: "Item 1" + Math.random()},
-			{title: "Folder 2" + Math.random(), folder: true, key: "folder2",
+			{title: "Test.as", path: "/proj/folder/Test.as"},
+			{title: "Folder 2", folder: true, key: "folder2",
 			  children: [
-				{title: "Sub-item 2.1" + Math.random()},
-				{title: "Sub-item 2.2" + Math.random()}
+				{title: "Test2.as", path: "/proj/folder/Test2.as"},
+				{title: "Test3.as", path: "/proj/folder/Test3.as"}
 			  ]
 			},
-			{title: "Item 3"}
+			{title: "Test4.as", path: "/proj/folder/Test4.as"}
 		]);
 	};
 };
