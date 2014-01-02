@@ -27,7 +27,7 @@ body {
 
 #wrapper {
 	position: relative;
-	min-height: 100%;
+	height: 670px; /* TODO: fix it! */
 	width: 100%;
 }
 
@@ -37,20 +37,28 @@ Config panel
 -----------------------------------------------------
 */
 
+#config {
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: 30px;
+	height: 100%;
+	padding: 10px 0 0 0;
+	background: #3f3f3f;
+}
+
 #config-panel {
 	float: right;
 	width: 30px;
 	background: #3f3f3f;
-	height: 750px; /* TODO: fix it! */
 	color: #fff;
-	padding: 10px 0 0 0;
 }
 
-#config-panel a {
+#config a {
 	color: #fff;
 	float: left;
 	clear: both;
-	margin: 0 0 10px 10px;
+	margin: 0 0 10px 8px;
 }
 
 /*
@@ -61,16 +69,16 @@ Files panel
 
 #files-panel {
 	float: right;
-	width: 300px;
+	width: 20%;
 	background: #1f1f1f;
-	height: 800px; /* TODO: fix it! */
+	height: 670px; /* TODO: fix it! */
 }
 
 #folders {
 	width: 100%;
+	height: 100%;
 	overflow: hidden;
 	padding: 2px;
-	height: 800px; /* TODO: fix it! */
 	background: #e9e9e9;
 }
 
@@ -80,19 +88,23 @@ Content area (where code is edited)
 -----------------------------------------------------
 */
 
-#content-panel {
-	float: left;
+#content {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
 }
 
 #tabs {
-	float: left;
-	width: 100%;
+	position: fixed;
 	height: 30px;
 	background: #efefef;
-	clear: both;
 }
 
-#content {
-	width: 100%;
+#working-area {
 	float: left;
+	margin-top: 30px;
+	width: 80%;
+	background: #ff0000;
+	overflow: scroll;
+	height: 780px; /* TODO: fix it! */
 }
