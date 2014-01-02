@@ -85,6 +85,12 @@ Files panel
 	width: 20%;
 	background: #1f1f1f;
 	height: 670px; /* TODO: fix it! */
+	color: #000;
+}
+
+#files-panel header {
+	text-align: center;
+	background: #f1f1f1;
 }
 
 #folders {

@@ -4,7 +4,8 @@ body{margin:0;}
 #config-dialog{position:absolute;z-index:1;width:600px;height:670px;background:#9f9f9f;color:#fff;overflow:auto;-webkit-transition:-webkit-transform 0.5s;transition:-webkit-transform 0.5s;}
 #config-bar{position:absolute;z-index:10;width:30px;height:100%;background:#3f3f3f;}
 #config-bar a{color:#fff;float:left;clear:both;margin:5px 0 10px 8px;}
-#files-panel{float:right;width:20%;background:#1f1f1f;height:670px;}
+#files-panel{float:right;width:20%;background:#1f1f1f;height:670px;color:#000;}
+#files-panel header{text-align:center;background:#f1f1f1;}
 #folders{width:100%;height:100%;overflow:hidden;padding:2px;background:#e9e9e9;}
 #content{width:100%;height:100%;overflow:hidden;-webkit-transition:-webkit-transform 0.5s;transition:-webkit-transform 0.5s;}
 #tabs{position:fixed;height:30px;background:#efefef;}
