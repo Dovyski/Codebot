@@ -24,30 +24,27 @@
 var CODEBOT = CODEBOT || {};
 
 CODEBOT.ui = new function() {
-	var itemPastaClicado = function(theNode) {
-		console.log('Item clicked: ' + (theNode.data.id || 'folder'), theNode.data);
+	var filePanelClick = function(theNode) {
+		console.log('File panel click: ' + (theNode.data.id || 'folder'), theNode.data);
 	};
 	
-	this.atualizaListaPastas = function(theDados) {
-		if(theDados && theDados.length > 0) {
+	this.refreshFilesPanel = function(theData) {
+		if(theData && theData.length > 0) {
 			$("#folders").dynatree({
-				onActivate: itemPastaClicado,
-				children: theDados
+				onActivate: filePanelClick,
+				children: theData
 			});
 			
 			var aDirs = $("#folders").dynatree("getTree");
 			aDirs.reload();
 			
 		} else {
-            var aSaida = '';
-            aSaida += '<div class="">no</div>';
-            
-			$("#folders").html(aSaida);
+			$("#folders").html('<div class="">no</div>');
 		}
 	};
         
 	this.init = function() {
-		CODEBOT.ui.atualizaListaPastas([
+		CODEBOT.ui.refreshFilesPanel([
 			{title: "Item 1" + Math.random()},
 			{title: "Folder 2" + Math.random(), isFolder: true, key: "folder2",
 			  children: [
