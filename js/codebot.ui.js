@@ -24,7 +24,9 @@
 var CODEBOT = CODEBOT || {};
 
 CODEBOT.ui = new function() {
-	var mTabs = null;
+	var mTabs 				= null;
+	var mCurrentTab 		= null;
+	var mTextArea 			= null;
 	
 	var filePanelClick = function(theEvent, theItem) {
 		var aData = theItem.node.data;
@@ -32,18 +34,58 @@ CODEBOT.ui = new function() {
 		console.log('File panel click: ' + theEvent + ' : ' + theItem.node.folder);
 		
 		if(!theItem.node.folder) {
-			CODEBOT.ui.tabs.addNewTab(mTabs, {
-				favicon: 'http://g.etfv.co/https://www.hubspot.com',
-				title: aData.path,
-				data: {
-					timeAdded: +new Date()
-				}
-			});
+			openTab(aData);
 		}
 	};
 	
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
+	};
+	
+	var tabRendered = function() {
+		var aCurrentTab = mTabs.find('.chrome-tab-current');
+		
+		if (aCurrentTab.length) {
+			var aOldTab = mCurrentTab;
+			mCurrentTab = aCurrentTab;
+			
+			newTabActivated(mCurrentTab, aOldTab);
+		}
+	}
+	
+	var newTabActivated = function(theNewActiveTab, theOldActiveTab) {
+		var aTabEditor = null;
+		
+		// If there was an active tab already running
+		// hide its content
+		if(theOldActiveTab) {
+			aTabEditor = theOldActiveTab.data('tabData').data.editor;
+			aTabEditor.getWrapperElement().style.display = 'none';
+		}
+			
+		// Show the content of the newly active tab.
+		aTabEditor = mCurrentTab.data('tabData').data.editor;
+		aTabEditor.getWrapperElement().style.display = 'block';
+		
+		// Index: mCurrentTab.index()
+		// Title: $.trim(mCurrentTab.text())
+		// Data: mCurrentTab.data('tabData').data
+		console.log('Current tab index', mCurrentTab.index(), 'title', $.trim(mCurrentTab.text()), 'data', mCurrentTab.data('tabData').data);
+	}
+	
+	var openTab = function(theNodeData) {
+		// TODO: remove the tab editor from DOM when the tab is closed.
+		
+		CODEBOT.ui.tabs.addNewTab(mTabs, {
+			favicon: 'http://g.etfv.co/https://www.hubspot.com',
+			title: theNodeData.path,
+			data: {
+				editor: CodeMirror(document.getElementById('working-area'), {
+					mode: 'javascript', // TODO: dynamic mode?
+					value: theNodeData.path
+				})
+			}
+		});
 	};
 		
 	this.showConfigDialog = function(theStatus, theContent) {
@@ -108,11 +150,6 @@ CODEBOT.ui = new function() {
 			maxWidth: 100
 		});
 		
-		mTabs.bind('chromeTabRender', function(){
-			var $currentTab = mTabs.find('.chrome-tab-current');
-			if ($currentTab.length && window['console'] && console.log) {
-				console.log('Current tab index', $currentTab.index(), 'title', $.trim($currentTab.text()), 'data', $currentTab.data('tabData').data);
-			}
-		});
+		mTabs.bind('chromeTabRender', tabRendered);
 	};
 };

@@ -131,6 +131,10 @@ Content area (where code is edited)
 	height: 780px; /* TODO: fix it! */
 }
 
+#working-area .CodeMirror {
+	width: 100%;
+	height: 100%; /* TODO: fix it! */
+}
 
 /*
 -----------------------------------------------------

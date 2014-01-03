@@ -20,3 +20,8 @@ jQuery and jQuery UI
 
 
 ------------------------------------------------------------------------------------------
+
+
+ModeMirror
+Author: Marijn Haverbeke <marijnh@gmail.com> and others - https://github.com/marijnh/CodeMirro
+License: MIT
