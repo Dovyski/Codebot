@@ -24,7 +24,7 @@
 var CODEBOT = CODEBOT || {};
 
 CODEBOT.ui = new function() {
-	var mTabs = {};
+	var mTabs = null;
 	
 	var filePanelClick = function(theEvent, theItem) {
 		var aData = theItem.node.data;
@@ -32,23 +32,18 @@ CODEBOT.ui = new function() {
 		console.log('File panel click: ' + theEvent + ' : ' + theItem.node.folder);
 		
 		if(!theItem.node.folder) {
-			addTab(aData);
+			CODEBOT.ui.tabs.addNewTab(mTabs, {
+				favicon: 'http://g.etfv.co/https://www.hubspot.com',
+				title: aData.path,
+				data: {
+					timeAdded: +new Date()
+				}
+			});
 		}
 	};
 	
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
-	};
-	
-	var addTab = function(theNodeData) {
-		if(mTabs[theNodeData.path] == null) {
-			mTabs[theNodeData.path] = theNodeData;
-			
-			$('#tabs').html(
-				$('#tabs').html() +
-				'<li>'+theNodeData.path+'</li>'
-			);
-		}
 	};
 		
 	this.showConfigDialog = function(theStatus, theContent) {
@@ -104,5 +99,20 @@ CODEBOT.ui = new function() {
 			},
 			{title: "Test4.as", path: "/proj/folder/Test4.as"}
 		]);
+		
+		mTabs = $('.chrome-tabs-shell');
+		
+		CODEBOT.ui.tabs.init({
+			$shell: mTabs,
+			minWidth: 20,
+			maxWidth: 100
+		});
+		
+		mTabs.bind('chromeTabRender', function(){
+			var $currentTab = mTabs.find('.chrome-tab-current');
+			if ($currentTab.length && window['console'] && console.log) {
+				console.log('Current tab index', $currentTab.index(), 'title', $.trim($currentTab.text()), 'data', $currentTab.data('tabData').data);
+			}
+		});
 	};
 };
