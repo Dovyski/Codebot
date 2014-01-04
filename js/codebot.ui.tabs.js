@@ -20,10 +20,12 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var CODEBOT = CODEBOT || {}; // by Fernando: integrate this plugin within CODEBOT structure.
+
+// NOTE: original code has been modified by Fernando Bevilacqua <dovyski@gmail.com>
+
 
 (function() {
-  var $, chromeTabs, defaultNewTabData, tabTemplate;
+  var $, chromeTabs, defaultNewTabData, tabTemplate, $shell, opts;
   $ = jQuery;
   if (document.body.style['-webkit-mask-repeat'] !== void 0) {
     $('html').addClass('cssmasks');
@@ -39,26 +41,30 @@ var CODEBOT = CODEBOT || {}; // by Fernando: integrate this plugin within CODEBO
   chromeTabs = {
     init: function(options) {
       var render;
-      $.extend(options.$shell.data(), options);
-      options.$shell.find('.chrome-tab').each(function() {
+	  
+	  opts = options;
+	  $shell = $(options.container);
+	  
+      $.extend($shell.data(), options);
+      $shell.find('.chrome-tab').each(function() {
         return $(this).data().tabData = {
           data: {}
         };
       });
       render = function() {
-        return chromeTabs.render(options.$shell);
+        return chromeTabs.render($shell);
       };
       $(window).resize(render);
       return render();
     },
-    render: function($shell) {
+    render: function() {
       chromeTabs.fixTabSizes($shell);
       chromeTabs.fixZIndexes($shell);
       chromeTabs.setupEvents($shell);
       chromeTabs.setupSortable($shell);
       return $shell.trigger('chromeTabRender');
     },
-    setupSortable: function($shell) {
+    setupSortable: function() {
       var $tabs;
       $tabs = $shell.find('.chrome-tabs');
       return $tabs.sortable({
@@ -73,11 +79,11 @@ var CODEBOT = CODEBOT || {}; // by Fernando: integrate this plugin within CODEBO
           }
         },
         stop: function(e, ui) {
-          return chromeTabs.setCurrentTab($shell, $(ui.item));
+          return chromeTabs.setCurrent($(ui.item));
         }
       });
     },
-    fixTabSizes: function($shell) {
+    fixTabSizes: function() {
       var $tabs, margin, width;
       $tabs = $shell.find('.chrome-tab');
       margin = (parseInt($tabs.first().css('marginLeft'), 10) + parseInt($tabs.first().css('marginRight'), 10)) || 0;
@@ -88,7 +94,7 @@ var CODEBOT = CODEBOT || {}; // by Fernando: integrate this plugin within CODEBO
         width: width
       });
     },
-    fixZIndexes: function($shell) {
+    fixZIndexes: function() {
       var $tabs;
       $tabs = $shell.find('.chrome-tab');
       return $tabs.each(function(i) {
@@ -106,39 +112,47 @@ var CODEBOT = CODEBOT || {}; // by Fernando: integrate this plugin within CODEBO
         });
       });
     },
-    setupEvents: function($shell) {
+    setupEvents: function() {
       $shell.unbind('dblclick').bind('dblclick', function() {
-        return chromeTabs.addNewTab($shell);
+        return chromeTabs.add();
       });
       return $shell.find('.chrome-tab').each(function() {
         var $tab;
         $tab = $(this);
         $tab.unbind('click').click(function() {
-          return chromeTabs.setCurrentTab($shell, $tab);
+          return chromeTabs.setCurrent($tab);
         });
         return $tab.find('.chrome-tab-close').unbind('click').click(function() {
           return chromeTabs.closeTab($shell, $tab);
         });
       });
     },
-    addNewTab: function($shell, newTabData) {
+    add: function(newTabData) {
       var $newTab, tabData;
       $newTab = $(tabTemplate);
       $shell.find('.chrome-tabs').append($newTab);
       tabData = $.extend(true, {}, defaultNewTabData, newTabData);
       chromeTabs.updateTab($shell, $newTab, tabData);
-      return chromeTabs.setCurrentTab($shell, $newTab);
+      return chromeTabs.setCurrent($newTab);
     },
-    setCurrentTab: function($shell, $tab) {
-      $shell.find('.chrome-tab-current').removeClass('chrome-tab-current');
+    setCurrent: function($tab) {
+	  var $old = $shell.find('.chrome-tab-current');
+      
+	  $old.removeClass('chrome-tab-current');
+	  if($old.length && opts.deactivated) { opts.deactivated($old); }
+	  
       $tab.addClass('chrome-tab-current');
+	  if(opts.activated) { opts.activated($tab); }
+	  
       return chromeTabs.render($shell);
     },
     closeTab: function($shell, $tab) {
       if ($tab.hasClass('chrome-tab-current') && $tab.prev().length) {
-        chromeTabs.setCurrentTab($shell, $tab.prev());
+        chromeTabs.setCurrent($tab.prev());
       }
+	  if(opts.closed) { opts.closed($tab); }
       $tab.remove();
+	  
       return chromeTabs.render($shell);
     },
     updateTab: function($shell, $tab, tabData) {
@@ -149,6 +163,6 @@ var CODEBOT = CODEBOT || {}; // by Fernando: integrate this plugin within CODEBO
       return $tab.data().tabData = tabData;
     }
   };
-  window.chromeTabs = chromeTabs;
-  CODEBOT.ui.tabs = chromeTabs; // by Fernando: expose chromeTab API through CODEBOT.ui.tabs.
+  
+  window.chromeTabs = chromeTabs; 
 }).call(this);

@@ -45,27 +45,24 @@ CODEBOT.ui = new function() {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
 	};
 	
-	var tabRendered = function() {
-		var aCurrentTab = mTabs.find('.chrome-tab-current');
-		
-		if (aCurrentTab.length) {
-			var aOldTab = mCurrentTab;
-			mCurrentTab = aCurrentTab;
-			
-			newTabActivated(mCurrentTab, aOldTab);
-		}
-	}
+	var tabClosed = function(theTab) {
+		console.log('Tab closed', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', theTab.data('tabData').data);
+	};
 	
-	var newTabActivated = function(theNewActiveTab, theOldActiveTab) {
+	var tabDeactivated = function(theTab) {
 		var aTabEditor = null;
 		
-		// If there was an active tab already running
-		// hide its content
-		if(theOldActiveTab) {
-			aTabEditor = theOldActiveTab.data('tabData').data.editor;
-			aTabEditor.getWrapperElement().style.display = 'none';
-		}
-			
+		aTabEditor = theTab.data('tabData').data.editor;
+		aTabEditor.getWrapperElement().style.display = 'none';
+		
+		console.log('Tab deactivated', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', theTab.data('tabData').data);
+	};
+	
+	var tabActivated = function(theTab) {
+		var aTabEditor = null;
+		
+		mCurrentTab = theTab;
+		
 		// Show the content of the newly active tab.
 		aTabEditor = mCurrentTab.data('tabData').data.editor;
 		aTabEditor.getWrapperElement().style.display = 'block';
@@ -73,13 +70,13 @@ CODEBOT.ui = new function() {
 		// Index: mCurrentTab.index()
 		// Title: $.trim(mCurrentTab.text())
 		// Data: mCurrentTab.data('tabData').data
-		console.log('Current tab index', mCurrentTab.index(), 'title', $.trim(mCurrentTab.text()), 'data', mCurrentTab.data('tabData').data);
-	}
+		console.log('Tab activated', mCurrentTab.index(), ', title:', $.trim(mCurrentTab.text()), ', data:', mCurrentTab.data('tabData').data);
+	};
 	
 	var openTab = function(theNodeData) {
 		// TODO: remove the tab editor from DOM when the tab is closed.
 		
-		CODEBOT.ui.tabs.addNewTab(mTabs, {
+		mTabs.add({
 			favicon: 'http://g.etfv.co/https://www.hubspot.com',
 			title: theNodeData.name,
 			data: {
@@ -146,14 +143,17 @@ CODEBOT.ui = new function() {
 			{title: "Test4.as", path: "/proj/folder/Test4.as", name: "Test4.as"}
 		]);
 		
-		mTabs = $('.chrome-tabs-shell');
+		// get tab context from codebot.ui.tabs.js
+		mTabs = window.chromeTabs;
 		
-		CODEBOT.ui.tabs.init({
-			$shell: mTabs,
+		mTabs.init({
+			container: '.chrome-tabs-shell',
 			minWidth: 20,
-			maxWidth: 100
+			maxWidth: 100,
+			
+			deactivated: tabDeactivated,
+			activated: tabActivated,
+			closed: tabClosed
 		});
-		
-		mTabs.bind('chromeTabRender', tabRendered);
 	};
 };
