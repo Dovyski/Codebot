@@ -46,6 +46,14 @@ CODEBOT.ui = new function() {
 	};
 	
 	var tabClosed = function(theTab) {
+		var aEditor = theTab.data('tabData').data.editor;
+		var aEditorNode = aEditor.getWrapperElement();
+		
+		// TODO: save tab content before destroying everything...
+
+		aEditorNode.parentNode.removeChild(aEditorNode);
+		theTab.data('tabData').data.editor = null;
+		
 		console.log('Tab closed', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', theTab.data('tabData').data);
 	};
 	
