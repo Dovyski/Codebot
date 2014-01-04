@@ -29,9 +29,12 @@ CODEBOT.ui = new function() {
 	var mTextArea 			= null;
 	
 	var filePanelClick = function(theEvent, theItem) {
+	};
+	
+	var filePanelDoubleClick = function(theEvent, theItem) {
 		var aData = theItem.node.data;
 		
-		console.log('File panel click: ' + theEvent + ' : ' + theItem.node.folder);
+		console.log('File panel double click: ' + theEvent + ' : ' + theItem.node.folder);
 		
 		if(!theItem.node.folder) {
 			openTab(aData);
@@ -78,7 +81,7 @@ CODEBOT.ui = new function() {
 		
 		CODEBOT.ui.tabs.addNewTab(mTabs, {
 			favicon: 'http://g.etfv.co/https://www.hubspot.com',
-			title: theNodeData.path,
+			title: theNodeData.name,
 			data: {
 				editor: CodeMirror(document.getElementById('working-area'), {
 					mode: 'javascript', // TODO: dynamic mode?
@@ -105,6 +108,7 @@ CODEBOT.ui = new function() {
 		if(theData && theData.length > 0) {
 			$("#folders").fancytree({
 				click: filePanelClick,
+				dblclick: filePanelDoubleClick,
 				source: theData,
 				checkbox: false,
 				selectMode: 3
@@ -132,14 +136,14 @@ CODEBOT.ui = new function() {
 	this.init = function() {
 		// TODO: read data from disk
 		CODEBOT.ui.refreshFilesPanel([
-			{title: "Test.as", path: "/proj/folder/Test.as"},
+			{title: "Test.as", path: "/proj/folder/Test.as", name: "Test.as"},
 			{title: "Folder 2", folder: true, key: "folder2",
 			  children: [
-				{title: "Test2.as", path: "/proj/folder/Test2.as"},
-				{title: "Test3.as", path: "/proj/folder/Test3.as"}
+				{title: "Test2.as", path: "/proj/folder/Test2.as", name: "Test2.as"},
+				{title: "Test3.as", path: "/proj/folder/Test3.as", name: "Test3.as"}
 			  ]
 			},
-			{title: "Test4.as", path: "/proj/folder/Test4.as"}
+			{title: "Test4.as", path: "/proj/folder/Test4.as", name: "Test4.as"}
 		]);
 		
 		mTabs = $('.chrome-tabs-shell');

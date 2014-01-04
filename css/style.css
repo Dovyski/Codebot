@@ -126,7 +126,7 @@ Content area (where code is edited)
 	float: left;
 	margin-top: 25px;
 	width: 80%;
-	background: #ff0000;
+	background: #fff;
 	overflow: scroll;
 	height: 780px; /* TODO: fix it! */
 }
