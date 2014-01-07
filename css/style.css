@@ -216,9 +216,9 @@ Tabs
         height: 24px;
         -webkit-mask-size: 100%; }
       .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-left, .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-left-shadow1, .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-left-shadow2 {
-        -webkit-mask-image: url("../svg/tab-left.svg"); }
+        -webkit-mask-image: url("../img/tabs/tab-left.svg"); }
       .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-right, .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-right-shadow1, .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-right-shadow2 {
-        -webkit-mask-image: url("../svg/tab-right.svg"); }
+        -webkit-mask-image: url("../img/tabs/tab-right.svg"); }
       .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-left, .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-right {
         top: 1px;
         z-index: 1;
