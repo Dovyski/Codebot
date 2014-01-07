@@ -21,38 +21,45 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var CODEBOT = new function() {
-	var mPlugins = {};
+var CodebotFS = new function() {
+	this.driver = 'cc.codebot.io.FileSystem';
 	
-	var invoke = function(theObj, theMethod, theParam) {
-		if(theObj && theObj[theMethod]) {
-			return theObj[theMethod](theParam);
+	this.init = function() {
+	};
+	
+	this.openDirectory = function(thePath, theCallback) {
+		if(theCallback) {
+			console.log('CodebotFS.openDirectory(' + thePath + ')');
+			
+			var aStructure = [
+				{title: "Test.as", path: "/proj/folder/Test.as", name: "Test.as"},
+				{title: "Folder 2", folder: true, key: "folder2",
+				  children: [
+					{title: "Test2.as", path: "/proj/folder/Test2.as", name: "Test2.as"},
+					{title: "Test3.as", path: "/proj/folder/Test3.as", name: "Test3.as"}
+				  ]
+				},
+				{title: "Test4.as", path: "/proj/folder/Test4.as", name: "Test4.as"}
+			];
+			
+			theCallback(aStructure);
 		}
 	};
 	
-	this.handlePluginClick = function(thePluginId) {
-		invoke(mPlugins[thePluginId], 'clicked');
-		
-		var aPluginContent = invoke(mPlugins[thePluginId], 'content');
-		CODEBOT.ui.showConfigDialog(true, aPluginContent);
+	this.openFile = function(thePath, theCallback) {
+		if(theCallback) {
+			console.log('CodebotFS.openFile(' + thePath + ')');
+			theCallback('data found in ' + thePath);
+		}
 	};
 	
-	this.addPlugin = function(theId, theObj) {
-		console.log('CODEBOT [plugin added] ' + theId + ' - ' + theObj);
-		
-		mPlugins[theId] = theObj;
-		
-		CODEBOT.ui.addPlugin(theId, theObj);
-		invoke(mPlugins[theId], 'added');
+	this.writeFile = function(thePath, theData, theCallback) {
+		console.log('CodebotFS.writeFile(' + thePath + ')');
 	};
 	
-	this.init = function() {
-		CODEBOT.io.init();
-		console.log('CODEBOT [IO driver] ' + CODEBOT.io.driver);
-		CODEBOT.ui.init();
+	this.createDirectory = function(thePath, theCallback) {
+		console.log('CodebotFS.createDirectory(' + thePath + ')');
 	};
 };
 
-$(function(){
-	CODEBOT.init();
-});
+CODEBOT.io = CodebotFS;

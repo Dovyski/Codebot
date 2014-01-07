@@ -34,7 +34,7 @@ CODEBOT.ui = new function() {
 	var filePanelDoubleClick = function(theEvent, theItem) {
 		var aData = theItem.node.data;
 		
-		console.log('File panel double click: ' + theEvent + ' : ' + theItem.node.folder);
+		console.debug('File panel double click: ' + theEvent + ' , folder: ' + theItem.node.folder);
 		
 		if(!theItem.node.folder) {
 			openTab(aData);
@@ -46,15 +46,20 @@ CODEBOT.ui = new function() {
 	};
 	
 	var tabClosed = function(theTab) {
-		var aEditor = theTab.data('tabData').data.editor;
+		var aData = theTab.data('tabData').data;
+		var aEditor = aData.editor;
 		var aEditorNode = aEditor.getWrapperElement();
 		
-		// TODO: save tab content before destroying everything...
+		// TODO: make a pretty confirm dialog.
+		// TODO: only confirm if content has changed.
+		if(confirm("Save content before closing?")) {
+			CODEBOT.io.writeFile(aData.path, aEditor.getDoc().getValue());
+		}
 
 		aEditorNode.parentNode.removeChild(aEditorNode);
-		theTab.data('tabData').data.editor = null;
+		aData.editor = null;
 		
-		console.log('Tab closed', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', theTab.data('tabData').data);
+		console.debug('Tab closed', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', aData);
 	};
 	
 	var tabDeactivated = function(theTab) {
@@ -63,7 +68,7 @@ CODEBOT.ui = new function() {
 		aTabEditor = theTab.data('tabData').data.editor;
 		aTabEditor.getWrapperElement().style.display = 'none';
 		
-		console.log('Tab deactivated', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', theTab.data('tabData').data);
+		console.debug('Tab deactivated', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', theTab.data('tabData').data);
 	};
 	
 	var tabActivated = function(theTab) {
@@ -78,21 +83,23 @@ CODEBOT.ui = new function() {
 		// Index: mCurrentTab.index()
 		// Title: $.trim(mCurrentTab.text())
 		// Data: mCurrentTab.data('tabData').data
-		console.log('Tab activated', mCurrentTab.index(), ', title:', $.trim(mCurrentTab.text()), ', data:', mCurrentTab.data('tabData').data);
+		console.debug('Tab activated', mCurrentTab.index(), ', title:', $.trim(mCurrentTab.text()), ', data:', mCurrentTab.data('tabData').data);
 	};
 	
 	var openTab = function(theNodeData) {
-		// TODO: remove the tab editor from DOM when the tab is closed.
-		
-		mTabs.add({
-			favicon: 'http://g.etfv.co/https://www.hubspot.com',
-			title: theNodeData.name,
-			data: {
-				editor: CodeMirror(document.getElementById('working-area'), {
-					mode: 'javascript', // TODO: dynamic mode?
-					value: theNodeData.path
-				})
-			}
+		CODEBOT.io.openFile(theNodeData.path, function(theData) {
+			mTabs.add({
+				favicon: 'http://g.etfv.co/https://www.hubspot.com',
+				title: theNodeData.name,
+				data: {
+					editor: CodeMirror(document.getElementById('working-area'), {
+						mode: 'javascript', // TODO: dynamic mode?
+						value: theData
+					}),
+					file: theNodeData.name,
+					path: theNodeData.path
+				}
+			});
 		});
 	};
 		
@@ -139,17 +146,8 @@ CODEBOT.ui = new function() {
 	};
 	
 	this.init = function() {
-		// TODO: read data from disk
-		CODEBOT.ui.refreshFilesPanel([
-			{title: "Test.as", path: "/proj/folder/Test.as", name: "Test.as"},
-			{title: "Folder 2", folder: true, key: "folder2",
-			  children: [
-				{title: "Test2.as", path: "/proj/folder/Test2.as", name: "Test2.as"},
-				{title: "Test3.as", path: "/proj/folder/Test3.as", name: "Test3.as"}
-			  ]
-			},
-			{title: "Test4.as", path: "/proj/folder/Test4.as", name: "Test4.as"}
-		]);
+		// TODO: read data from disk, using last open directory.
+		CODEBOT.io.openDirectory('/my/dummy/path/', CODEBOT.ui.refreshFilesPanel);
 		
 		// get tab context from codebot.ui.tabs.js
 		mTabs = window.chromeTabs;
