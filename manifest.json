@@ -1,0 +1,23 @@
+{
+  "name": "Codebot",
+  "version": "2",
+  "manifest_version": 2,
+  "minimum_chrome_version": "31",
+  "app": {
+    "background": {
+      "scripts": ["js/chrome/background.js"]
+    }
+  },
+  "permissions": [
+    {"fileSystem": ["write", "retainEntries", "directory"]},
+    "storage"
+  ],
+  "file_handlers": {
+    "text": {
+      "types": [
+          "text/*"
+      ],
+      "title": "Code editor"
+    }
+  }
+}
