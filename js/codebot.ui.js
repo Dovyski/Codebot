@@ -87,7 +87,7 @@ CODEBOT.ui = new function() {
 	};
 	
 	var openTab = function(theNodeData) {
-		CODEBOT.io.openFile(theNodeData.path, function(theData) {
+		CODEBOT.io.openFile(theNodeData, function(theData) {
 			mTabs.add({
 				favicon: 'http://g.etfv.co/https://www.hubspot.com',
 				title: theNodeData.name,

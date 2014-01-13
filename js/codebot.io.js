@@ -30,6 +30,8 @@ CODEBOT.io = new function() {
 		console.error("No IO controller has been loaded!");
 	};
 	
+    // TODO: make all IO methods receive "nodes" (directly from fancyfree). It's easier
+    // to abstract and implement new IO drivers.
     
     /**
 	 *
@@ -78,12 +80,12 @@ CODEBOT.io = new function() {
 	 *
 	 * theCallback: function(data)
 	 */
-	this.openFile = function(thePath, theCallback) {
+	this.openFile = function(theNode, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
 	
 	// Write content to file. Create file if not exist.
-	this.writeFile = function(thePath, theData, theCallback) {
+	this.writeFile = function(theNode, theData, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
 	

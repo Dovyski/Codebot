@@ -66,6 +66,7 @@ var CodebotFS = new function() {
                                     folder: true,
                                     key: item.name,
                                     children: [],
+                                    entry: item,
                                     path: item.fullPath,
                                     name: item.name
                                 };
@@ -73,6 +74,7 @@ var CodebotFS = new function() {
                                 loadDirEntry(item, aNode, theCallback);
                             } else {
                                 aNode = {
+                                    entry: item,
                                     title: item.name,
                                     path: item.fullPath,
                                     name: item.name
@@ -88,6 +90,19 @@ var CodebotFS = new function() {
     
             readEntries(); // Start reading dirs and files
         }
+    }
+    
+    var readAsText = function(fileEntry, callback) {
+        fileEntry.file(function(file) {
+            var reader = new FileReader();
+        
+            reader.onerror = errorHandler;
+            reader.onload = function(e) {
+                callback(e.target.result);
+            };
+        
+            reader.readAsText(file);
+        });
     }
     
 	this.init = function() {
@@ -119,19 +134,24 @@ var CodebotFS = new function() {
         });
 	};
 	
-	this.openFile = function(thePath, theCallback) {
-		if(theCallback) {
-			console.log('CodebotFS.openFile(' + thePath + ')');
-			theCallback('data found in ' + thePath);
-		}
+	this.openFile = function(theNode, theCallback) {
+        var aEntry = theNode.entry;
+
+        aEntry.file(function(file) {
+            readAsText(aEntry, function(result) {
+                if(theCallback) {
+                    theCallback(result);
+                }
+            });
+        });
 	};
 	
-	this.writeFile = function(thePath, theData, theCallback) {
-		console.log('CodebotFS.writeFile(' + thePath + ')');
+	this.writeFile = function(theNode, theData, theCallback) {
+		console.log('CodebotFS.writeFile(' + theNode + ')');
 	};
 	
-	this.createDirectory = function(thePath, theCallback) {
-		console.log('CodebotFS.createDirectory(' + thePath + ')');
+	this.createDirectory = function(theNode, theCallback) {
+		console.log('CodebotFS.createDirectory(' + theNode + ')');
 	};
 };
 
