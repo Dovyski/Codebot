@@ -38,7 +38,7 @@ var CodebotFS = new function() {
         }
     };
 	
-    var loadDirEntry = function(theEntry, theParent, theCalls, theCallback) {
+    var loadDirEntry = function(theEntry, theParent, theCallback) {
         var chosenEntry = theEntry;
         
         if (chosenEntry.isDirectory && chosenEntry.name.charAt(0) != '.') {
@@ -48,23 +48,17 @@ var CodebotFS = new function() {
             // Call the reader.readEntries() until no more results are returned.
             var readEntries = function() {
                 dirReader.readEntries (function(results) {
-                    CODEBOT.ui.log('dirReader');
                     if (!results.length) {
-                        //CODEBOT.ui.log(entries.join('<br />'));
-                        //saveFileButton.disabled = true; // don't allow saving of the list
-                        displayEntryData(chosenEntry);
-                        //CODEBOT.ui.log('Done reading!');
                         if(theParent) {
                             theParent.children = entries;
                         }
-                        //console.log('folder ('+theCalls+'):' + theParent.name, entries);
                         // TODO: improve this! Call only once, at the end of the loading process.
                         theCallback(entries);
                     } else {
-                        results.forEach(function(item) { 
-                            CODEBOT.ui.log('Item: ' + item.name + ' | ' + item.fullPath);
-                            
+                        results.forEach(function(item) {                             
                             var aNode = null;
+                            
+                            if(item.name.charAt(0) == '.') return;
                             
                             if(item.isDirectory) {
                                 aNode = {
@@ -76,7 +70,7 @@ var CodebotFS = new function() {
                                     name: item.name
                                 };
                                 
-                                loadDirEntry(item, aNode, theCalls + 1, theCallback);
+                                loadDirEntry(item, aNode, theCallback);
                             } else {
                                 aNode = {
                                     title: item.name,
@@ -92,14 +86,18 @@ var CodebotFS = new function() {
                 }, errorHandler);
             };
     
-            readEntries(); // Start reading dirs.
+            readEntries(); // Start reading dirs and files
         }
     }
     
 	this.init = function() {
 	};
 	
-	this.openDirectory = function(thePath, theCallback) {
+    this.openDirectory = function(thePath, theCallback) {
+        console.log('CodebotFS.openDirectory(' + thePath + ')');
+    };
+    
+	this.chooseDirectory = function(theCallback) {
         chrome.fileSystem.chooseEntry({type: 'openDirectory'}, function(thePath) {
             if (!thePath) {
                 console.error('No Directory selected.');
@@ -107,7 +105,6 @@ var CodebotFS = new function() {
             }
             // use local storage to retain access to this file
             chrome.storage.local.set({'chosenFile': chrome.fileSystem.retainEntry(thePath)});
-            CODEBOT.ui.log('path = ' + thePath.fullPath);
             
             var aNode = {
                 title: '/root',
@@ -118,27 +115,8 @@ var CodebotFS = new function() {
                 name: '/root'
             };
             
-            loadDirEntry(thePath, aNode, 0, theCallback);
+            loadDirEntry(thePath, aNode, theCallback);
         });
-        
-        return;
-        
-		if(theCallback) {
-			console.log('CodebotFS.openDirectory(' + thePath + ')');
-			
-			var aStructure = [
-				{title: "Test.as", path: "/proj/folder/Test.as", name: "Test.as"},
-				{title: "Folder 2", folder: true, key: "folder2",
-				  children: [
-					{title: "Test2.as", path: "/proj/folder/Test2.as", name: "Test2.as"},
-					{title: "Test3.as", path: "/proj/folder/Test3.as", name: "Test3.as"}
-				  ]
-				},
-				{title: "Test4.as", path: "/proj/folder/Test4.as", name: "Test4.as"}
-			];
-			
-			theCallback(aStructure);
-		}
 	};
 	
 	this.openFile = function(thePath, theCallback) {
