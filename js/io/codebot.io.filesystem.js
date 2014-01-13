@@ -38,30 +38,60 @@ var CodebotFS = new function() {
         }
     };
 	
-    var loadDirEntry = function(theEntry) {
+    var loadDirEntry = function(theEntry, theParent, theCalls, theCallback) {
         var chosenEntry = theEntry;
-        if (chosenEntry.isDirectory) {
+        
+        if (chosenEntry.isDirectory && chosenEntry.name.charAt(0) != '.') {
             var dirReader = chosenEntry.createReader();
             var entries = [];
     
             // Call the reader.readEntries() until no more results are returned.
             var readEntries = function() {
                 dirReader.readEntries (function(results) {
+                    CODEBOT.ui.log('dirReader');
                     if (!results.length) {
                         //CODEBOT.ui.log(entries.join('<br />'));
                         //saveFileButton.disabled = true; // don't allow saving of the list
                         displayEntryData(chosenEntry);
+                        //CODEBOT.ui.log('Done reading!');
+                        if(theParent) {
+                            theParent.children = entries;
+                        }
+                        console.log('folder ('+theCalls+'):' + theParent.name, entries);
+                        //theCallback(entries);
                     } else {
                         results.forEach(function(item) { 
-                            CODEBOT.ui.log('Item: ' + item.isDirectory + ' | ' + item.fullPath);
-                            entries = entries.concat(item.fullPath);
+                            CODEBOT.ui.log('Item: ' + item.name + ' | ' + item.fullPath);
+                            
+                            var aNode = null;
+                            
+                            if(item.isDirectory) {
+                                aNode = {
+                                    title: item.name,
+                                    folder: true,
+                                    key: item.name,
+                                    children: [],
+                                    path: item.fullPath,
+                                    name: item.name
+                                };
+                                
+                                loadDirEntry(item, aNode, theCalls + 1, theCallback);
+                            } else {
+                                aNode = {
+                                    title: item.name,
+                                    path: item.fullPath,
+                                    name: item.name
+                                };
+                            }
+                            
+                            entries = entries.concat(aNode);
                         });
                         readEntries();
                     }
                 }, errorHandler);
             };
     
-            readEntries(); // Start reading dirs.    
+            readEntries(); // Start reading dirs.
         }
     }
     
@@ -77,11 +107,23 @@ var CodebotFS = new function() {
             // use local storage to retain access to this file
             chrome.storage.local.set({'chosenFile': chrome.fileSystem.retainEntry(thePath)});
             CODEBOT.ui.log('path = ' + thePath.fullPath);
-            loadDirEntry(thePath);
+            
+            var aNode = {
+                title: '/root',
+                folder: true,
+                key: '/root',
+                children: [],
+                path: '/root',
+                name: '/root'
+            };
+            
+            loadDirEntry(thePath, aNode, 0, theCallback);
         });
         
+        return;
+        
 		if(theCallback) {
-			log('CodebotFS.openDirectory(' + thePath + ')');
+			console.log('CodebotFS.openDirectory(' + thePath + ')');
 			
 			var aStructure = [
 				{title: "Test.as", path: "/proj/folder/Test.as", name: "Test.as"},
