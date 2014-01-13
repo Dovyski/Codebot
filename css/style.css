@@ -138,6 +138,26 @@ Content area (where code is edited)
 
 /*
 -----------------------------------------------------
+Console
+-----------------------------------------------------
+*/
+
+#console {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 30;
+    width: 800px;
+    height: 80px;
+    color: #fff;
+    font-family:monospace;
+    font-size: 10px;
+    background: #000;
+    overflow: scroll;
+}
+
+/*
+-----------------------------------------------------
 Tabs
 -----------------------------------------------------
 */

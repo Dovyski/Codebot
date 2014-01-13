@@ -102,6 +102,10 @@ CODEBOT.ui = new function() {
 			});
 		});
 	};
+    
+    this.log = function(theText) {
+        $('#console').append(theText + '<br />');
+    };
 		
 	this.showConfigDialog = function(theStatus, theContent) {
 		if(theStatus) {
@@ -147,7 +151,7 @@ CODEBOT.ui = new function() {
 	
 	this.init = function() {
 		// TODO: read data from disk, using last open directory.
-		CODEBOT.io.openDirectory('/my/dummy/path/', CODEBOT.ui.refreshFilesPanel);
+		CODEBOT.io.openDirectory('/Users/fernando/Documents', CODEBOT.ui.refreshFilesPanel);
 		
 		// get tab context from codebot.ui.tabs.js
 		mTabs = window.chromeTabs;
