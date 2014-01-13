@@ -90,7 +90,7 @@ var CodebotFS = new function() {
     
             readEntries(); // Start reading dirs and files
         }
-    }
+    };
     
     var readAsText = function(fileEntry, callback) {
         fileEntry.file(function(file) {
@@ -103,7 +103,58 @@ var CodebotFS = new function() {
         
             reader.readAsText(file);
         });
-    }
+    };
+    
+    var writeFileEntry = function(writableEntry, opt_blob, callback) {
+        if (!writableEntry) {
+            console.error('No file has been selected!');
+            return;
+        }
+    
+        writableEntry.createWriter(function(writer) {
+            writer.onerror = errorHandler;
+            writer.onwriteend = callback;
+    
+            // If we have data, write it to the file. Otherwise, just use the file we
+            // loaded.
+            if (opt_blob) {
+                writer.truncate(opt_blob.size);
+                waitForIO(writer, function() {
+                    writer.seek(0);
+                    writer.write(opt_blob);
+                });
+            } else {
+                // TODO: remove this else block?
+                chosenEntry.file(function(file) {
+                    writer.truncate(file.fileSize);
+                    waitForIO(writer, function() {
+                        writer.seek(0);
+                        writer.write(file);
+                    });
+                });
+            }
+        }, errorHandler);
+    };
+    
+    var waitForIO = function(writer, callback) {
+        // set a watchdog to avoid eventual locking:
+        var start = Date.now();
+        // wait for a few seconds
+        var reentrant = function() {
+            if (writer.readyState===writer.WRITING && Date.now()-start<4000) {
+                setTimeout(reentrant, 100);
+                return;
+            }
+            if (writer.readyState===writer.WRITING) {
+                console.error("Write operation taking too long, aborting!"+
+                              " (current writer readyState is "+writer.readyState+")");
+                writer.abort();
+            } else {
+                callback();
+            }
+        };
+        setTimeout(reentrant, 100);
+    };
     
 	this.init = function() {
 	};
@@ -147,7 +198,11 @@ var CodebotFS = new function() {
 	};
 	
 	this.writeFile = function(theNode, theData, theCallback) {
-		console.log('CodebotFS.writeFile(' + theNode + ')');
+        var aBlob = new Blob([theData], {type: 'text/plain'});
+
+        writeFileEntry(theNode.entry, aBlob, function(e) {
+            console.log('CodebotFS.writeFile(' + theNode.path + ')');
+        });
 	};
 	
 	this.createDirectory = function(theNode, theCallback) {

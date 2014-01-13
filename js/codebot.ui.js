@@ -52,8 +52,8 @@ CODEBOT.ui = new function() {
 		
 		// TODO: make a pretty confirm dialog.
 		// TODO: only confirm if content has changed.
-		if(confirm("Save content before closing?")) {
-			CODEBOT.io.writeFile(aData.path, aEditor.getDoc().getValue());
+		if(CODEBOT.ui.confirm("Save content before closing?")) {
+			CODEBOT.io.writeFile(aData, aEditor.getDoc().getValue(), function() { console.log('Data written!');} );
 		}
 
 		aEditorNode.parentNode.removeChild(aEditorNode);
@@ -97,11 +97,18 @@ CODEBOT.ui = new function() {
 						value: theData
 					}),
 					file: theNodeData.name,
-					path: theNodeData.path
+					path: theNodeData.path,
+                    entry: theNodeData.entry
 				}
 			});
 		});
 	};
+    
+    // TODO: implement a pretty confirm dialog/panel
+    this.confirm = function(theMessage) {
+        CODEBOT.ui.log('Confirm? ' + theMessage);
+        return true;
+    };
     
     this.log = function(theText) {
         $('#console').append(theText + '<br />');
