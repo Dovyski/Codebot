@@ -122,6 +122,7 @@ CODEBOT.ui = new function() {
 	
 	this.refreshFilesPanel = function(theData) {
 		if(theData && theData.length > 0) {
+            // TODO: improve this! fancytree should init just once
 			$("#folders").fancytree({
 				click: filePanelClick,
 				dblclick: filePanelDoubleClick,

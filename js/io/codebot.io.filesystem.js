@@ -57,8 +57,9 @@ var CodebotFS = new function() {
                         if(theParent) {
                             theParent.children = entries;
                         }
-                        console.log('folder ('+theCalls+'):' + theParent.name, entries);
-                        //theCallback(entries);
+                        //console.log('folder ('+theCalls+'):' + theParent.name, entries);
+                        // TODO: improve this! Call only once, at the end of the loading process.
+                        theCallback(entries);
                     } else {
                         results.forEach(function(item) { 
                             CODEBOT.ui.log('Item: ' + item.name + ' | ' + item.fullPath);
