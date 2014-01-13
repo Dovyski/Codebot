@@ -50,7 +50,7 @@ CODEBOT.io = new function() {
 	 *		{title: "Test4.as", path: "/proj/folder/Test4.as", name: "Test4.as"}
 	 *	]
 	 */
-    this.openDirectory = function(thePath, theCallback) {
+    this.readDirectory = function(thePath, theCallback) {
         console.error("No IO controller has been loaded!");
     };
     
@@ -80,7 +80,7 @@ CODEBOT.io = new function() {
 	 *
 	 * theCallback: function(data)
 	 */
-	this.openFile = function(theNode, theCallback) {
+	this.readFile = function(theNode, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
 	
@@ -90,7 +90,7 @@ CODEBOT.io = new function() {
 	};
 	
 	// Creates a new directory.
-	this.createDirectory = function(thePath, theCallback) {
+	this.createDirectory = function(theNode, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
 };

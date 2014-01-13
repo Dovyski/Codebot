@@ -87,7 +87,7 @@ CODEBOT.ui = new function() {
 	};
 	
 	var openTab = function(theNodeData) {
-		CODEBOT.io.openFile(theNodeData, function(theData) {
+		CODEBOT.io.readFile(theNodeData, function(theData) {
 			mTabs.add({
 				favicon: 'http://g.etfv.co/https://www.hubspot.com',
 				title: theNodeData.name,
@@ -152,7 +152,7 @@ CODEBOT.ui = new function() {
 	
 	this.init = function() {
 		// TODO: read data from disk, using last open directory.
-		CODEBOT.io.chooseDirectory(CODEBOT.ui.refreshFilesPanel);
+		//CODEBOT.io.chooseDirectory(CODEBOT.ui.refreshFilesPanel);
 		
 		// get tab context from codebot.ui.tabs.js
 		mTabs = window.chromeTabs;
@@ -166,5 +166,10 @@ CODEBOT.ui = new function() {
 			activated: tabActivated,
 			closed: tabClosed
 		});
+        
+        // Init core UI
+        $('#files-panel header a').on('click', function() {
+            CODEBOT.io.chooseDirectory(CODEBOT.ui.refreshFilesPanel);
+        });
 	};
 };

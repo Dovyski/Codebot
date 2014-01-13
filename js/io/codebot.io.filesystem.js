@@ -108,7 +108,7 @@ var CodebotFS = new function() {
 	this.init = function() {
 	};
 	
-    this.openDirectory = function(thePath, theCallback) {
+    this.readDirectory = function(thePath, theCallback) {
         console.log('CodebotFS.openDirectory(' + thePath + ')');
     };
     
@@ -134,7 +134,7 @@ var CodebotFS = new function() {
         });
 	};
 	
-	this.openFile = function(theNode, theCallback) {
+	this.readFile = function(theNode, theCallback) {
         var aEntry = theNode.entry;
 
         aEntry.file(function(file) {
