@@ -48,15 +48,17 @@ CODEBOT.ui = new function() {
 	var tabClosed = function(theTab) {
 		var aData = theTab.data('tabData').data;
 		var aEditor = aData.editor;
-		var aEditorNode = aEditor.getWrapperElement();
+		var aEditorNode = aEditor ? aEditor.getWrapperElement() : null;
 		
 		// TODO: make a pretty confirm dialog.
 		// TODO: only confirm if content has changed.
-		if(CODEBOT.ui.confirm("Save content before closing?")) {
+		if(aEditor && CODEBOT.ui.confirm("Save content before closing?")) {
 			CODEBOT.io.writeFile(aData, aEditor.getDoc().getValue(), function() { console.log('Data written!');} );
 		}
 
-		aEditorNode.parentNode.removeChild(aEditorNode);
+		if(aEditorNode) {
+            aEditorNode.parentNode.removeChild(aEditorNode);
+        }
 		aData.editor = null;
 		
 		console.debug('Tab closed', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', aData);
@@ -66,7 +68,10 @@ CODEBOT.ui = new function() {
 		var aTabEditor = null;
 		
 		aTabEditor = theTab.data('tabData').data.editor;
-		aTabEditor.getWrapperElement().style.display = 'none';
+        
+        if(aTabEditor) {
+		  aTabEditor.getWrapperElement().style.display = 'none';
+        }
 		
 		console.debug('Tab deactivated', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', theTab.data('tabData').data);
 	};
@@ -78,7 +83,10 @@ CODEBOT.ui = new function() {
 		
 		// Show the content of the newly active tab.
 		aTabEditor = mCurrentTab.data('tabData').data.editor;
-		aTabEditor.getWrapperElement().style.display = 'block';
+        
+		if(aTabEditor) {
+            aTabEditor.getWrapperElement().style.display = 'block';
+        }
 		
 		// Index: mCurrentTab.index()
 		// Title: $.trim(mCurrentTab.text())
@@ -89,7 +97,7 @@ CODEBOT.ui = new function() {
 	var openTab = function(theNodeData) {
 		CODEBOT.io.readFile(theNodeData, function(theData) {
 			mTabs.add({
-				favicon: 'http://g.etfv.co/https://www.hubspot.com',
+				favicon: 'file-text-o', // TODO: dynamic icon?
 				title: theNodeData.name,
 				data: {
 					editor: CodeMirror(document.getElementById('working-area'), {

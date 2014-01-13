@@ -157,9 +157,7 @@
     },
     updateTab: function($shell, $tab, tabData) {
       $tab.find('.chrome-tab-title').html(tabData.title);
-      $tab.find('.chrome-tab-favicon').css({
-        backgroundImage: "url('" + tabData.favicon + "')"
-      });
+      $tab.find('.chrome-tab-favicon').html('<i class="fa fa-'+tabData.favicon+'"></i>');
       return $tab.data().tabData = tabData;
     }
   };
