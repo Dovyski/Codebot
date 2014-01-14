@@ -23,6 +23,7 @@
 
 body {
     margin: 0;
+    font-size: 13px; /* TODO: check this? */
 }
 
 #wrapper {
@@ -154,6 +155,7 @@ Console
     font-size: 10px;
     background: #000;
     overflow: scroll;
+    display: none;
 }
 
 /*
