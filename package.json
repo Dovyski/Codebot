@@ -1,0 +1,12 @@
+{
+  "name": "Codebot",
+  "version": "0.1",
+  "description": "An IDE focused on gamedev",
+  "main": "index.html",
+  "window": {
+    "width": 1200,
+    "height": 800,
+    "title": "Codebot",
+    "toolbar": false
+  }
+}
