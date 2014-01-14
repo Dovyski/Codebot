@@ -27,6 +27,8 @@ var CodebotFS = new function() {
 	this.driver = 'cc.codebot.io.nw.FileSystem';
         
 	this.init = function() {
+        // Allow native dialogs to read directories. Needed by chooseDirectory().
+        $('body').append('<input style="display:none;" id="codebotNWFileDialog" type="file" nwdirectory />');
 	};
 	
     // Reference: http://stackoverflow.com/a/6358661/29827
@@ -69,7 +71,14 @@ var CodebotFS = new function() {
     };
     
 	this.chooseDirectory = function(theCallback) {
-        console.log('CodebotFS.chooseDirectory()');
+        var aChooser = $('#codebotNWFileDialog');
+        
+        aChooser.unbind();
+        aChooser.change(function(e) {
+            theCallback($(this).val());
+        });
+    
+        aChooser.trigger('click');
 	};
 	
 	this.readFile = function(theNode, theCallback) {

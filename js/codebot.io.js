@@ -59,17 +59,7 @@ CODEBOT.io = new function() {
 	 *
 	 * theCallback: function(data)
 	 *
-	 * "data" structure:
-	 *	 [
-	 *		{title: "Test.as", path: "/proj/folder/Test.as", name: "Test.as"},
-	 *		{title: "Folder 2", folder: true, key: "folder2",
-	 *		  children: [
-	 *			{title: "Test2.as", path: "/proj/folder/Test2.as", name: "Test2.as"},
-	 *			{title: "Test3.as", path: "/proj/folder/Test3.as", name: "Test3.as"}
-	 *		  ]
-	 *		},
-	 *		{title: "Test4.as", path: "/proj/folder/Test4.as", name: "Test4.as"}
-	 *	]
+	 * "data" is the path to the directory.
 	 */
 	this.chooseDirectory = function(theCallback) {
 		console.error("No IO controller has been loaded!");
