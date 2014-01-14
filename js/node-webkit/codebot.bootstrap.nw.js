@@ -31,7 +31,7 @@
 
 var fs = require('fs');
 
-fs.readFile('./js/io/nw.filesystem.js', function (theErr, theData) {
+fs.readFile('./js/node-webkit/codebot.nw.filesystem.js', function (theErr, theData) {
     if (theErr) throw theErr;
     
     console.log('Bootstrapping using node-webkit FileSystem');
