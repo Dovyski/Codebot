@@ -48,15 +48,14 @@
 	
 	<script type="text/javascript" src="./js/codebot.js"></script>
     <script type="text/javascript" src="./js/codebot.io.js"></script>
-    
-	<!-- TODO: load IO programmatically -->
-	<script type="text/javascript" src="./js/io/codebot.io.nw.filesystem.js"></script>
-	
 	<script type="text/javascript" src="./js/codebot.ui.js"></script>
 	<script type="text/javascript" src="./js/codebot.ui.tabs.js"></script>
 	
-	<!-- TODO: load plugins programmatically -->
-	<script type="text/javascript" src="./js/plugins/cc.codebot.config.js"></script>
-	<script type="text/javascript" src="./js/plugins/cc.codebot.ane.js"></script>
+    <!--
+        The bootstrap file will load all core modules and kick off the application.
+        Each platform must provide its own bootstrap lib, otherwise Codebot won't
+        be able to load core modules and plugins.
+    -->
+    <script type="text/javascript" src="./codebot.bootstrap.nw.js"></script>
 </body>
 </html>

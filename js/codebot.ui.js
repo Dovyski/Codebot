@@ -166,6 +166,8 @@ CODEBOT.ui = new function() {
 	};
 	
 	this.init = function() {
+        console.log('CODEBOT [ui] Building UI');
+        
 		// TODO: read data from disk, using last open directory.
 		//CODEBOT.io.chooseDirectory(CODEBOT.ui.refreshFilesPanel);
 		

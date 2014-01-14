@@ -21,44 +21,19 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var CODEBOT = new function() {
-	var mPlugins = {};
-	
-	var invoke = function(theObj, theMethod, theParam) {
-		if(theObj && theObj[theMethod]) {
-			return theObj[theMethod](theParam);
-		}
-	};
+/**
+ *  Bootstrap file for Node-webkit
+ *    
+ *  The bootstrap file will load the IO driver and kick off the application.
+ *  Each platform must provide its own bootstrap file, otherwise Codebot won't
+ *  be able to perform IO opperations.
+ */
+
+var fs = require('fs');
+
+fs.readFile('./js/io/nw.filesystem.js', function (theErr, theData) {
+    if (theErr) throw theErr;
     
-    var loadPlugins = function(thePath, theCallback) {
-        
-    };
-	
-	this.handlePluginClick = function(thePluginId) {
-		invoke(mPlugins[thePluginId], 'clicked');
-		
-		var aPluginContent = invoke(mPlugins[thePluginId], 'content');
-		CODEBOT.ui.showConfigDialog(true, aPluginContent);
-	};
-	
-	this.addPlugin = function(theId, theObj) {
-		console.log('CODEBOT [plugin added] ' + theId + ' - ' + theObj);
-		
-		mPlugins[theId] = theObj;
-		
-		CODEBOT.ui.addPlugin(theId, theObj);
-		invoke(mPlugins[theId], 'added');
-	};
-	
-	this.init = function(theIODriver) {
-        console.log('CODEBOT [core] Initializing...');
-		
-        CODEBOT.io = theIODriver;
-        console.log('CODEBOT [IO driver] ' + CODEBOT.io.driver);
-        
-        CODEBOT.io.init();
-		CODEBOT.ui.init();
-        
-        console.log('CODEBOT [core] Done, ready to rock!');
-	};
-};
+    console.log('Bootstrapping using node-webkit FileSystem');
+    eval(String(theData));
+});

@@ -21,8 +21,6 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var CODEBOT = CODEBOT || {};
-
 CODEBOT.io = new function() {
 	this.driver = 'none';
 	

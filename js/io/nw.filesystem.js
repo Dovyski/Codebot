@@ -23,8 +23,8 @@
 
 var fs = require('fs');
 
-var CodebotFS = new function() {
-	this.driver = 'cc.codebot.io.nw.FileSystem';
+var NodeWebkitFileSystem = new function() {
+	this.driver = 'Node-webkit FileSystem';
         
 	this.init = function() {
         // Allow native dialogs to read directories. Needed by chooseDirectory().
@@ -105,4 +105,4 @@ var CodebotFS = new function() {
 	};
 };
 
-CODEBOT.io = CodebotFS;
+CODEBOT.init(NodeWebkitFileSystem);
