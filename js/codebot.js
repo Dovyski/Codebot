@@ -30,8 +30,20 @@ var CODEBOT = new function() {
 		}
 	};
     
-    var loadPlugins = function(thePath, theCallback) {
+    var loadPlugins = function() {
+        console.log('CODEBOT [plugins] Loading plugins...');
         
+        CODEBOT.io.readDirectory('./plugins', function(theData) {
+            for(var i in theData) {
+                var aItem = theData[i];
+                
+                if(aItem.title.lastIndexOf('.js') != -1) {
+                    $('body').append('<script type="text/javascript" src="'+aItem.path+'"></script>');
+                }
+            }
+        });
+        
+        console.log('CODEBOT [plugins] Plugins loaded.');
     };
 	
 	this.handlePluginClick = function(thePluginId) {
@@ -58,6 +70,8 @@ var CODEBOT = new function() {
         
         CODEBOT.io.init();
 		CODEBOT.ui.init();
+        
+        loadPlugins();
         
         console.log('CODEBOT [core] Done, ready to rock!');
 	};
