@@ -184,7 +184,7 @@ CODEBOT.ui = new function() {
         
         // Init core UI
         $('#files-panel header a').on('click', function() {
-            CODEBOT.io.chooseDirectory(CODEBOT.ui.refreshFilesPanel);
+            CODEBOT.io.readDirectory('/Users/fernando/Downloads/codebot_test/', CODEBOT.ui.refreshFilesPanel);
         });
 	};
 };
