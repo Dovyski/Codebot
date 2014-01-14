@@ -73,9 +73,22 @@ var CodebotFS = new function() {
 	};
 	
 	this.readFile = function(theNode, theCallback) {
+        fs.readFile(theNode.path, function (theError, theData) {
+            if (theError) throw theError;
+            theCallback(String(theData));
+        });
 	};
 	
 	this.writeFile = function(theNode, theData, theCallback) {
+        fs.writeFile(theNode.path, theData, function (theError) {
+            if (theError) {
+              console.error("Write failed: " + theError);
+              return;
+            }
+        
+            console.log("Write completed.");
+            theCallback();
+        });
 	};
 	
 	this.createDirectory = function(theNode, theCallback) {
