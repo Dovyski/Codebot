@@ -41,14 +41,14 @@ CODEBOT.ui = new function() {
 		}
 	};
     
-    var filePanelDragStart = function(theNode, theData) {
+    var filePanelDragStart = function(theNode, theDragData) {
         /** This function MUST be defined to enable dragging for the tree.
          *  Return false to cancel dragging of node.
          */
         return true;
     };
     
-    var filePanelDragEnter = function(theNode, theData) {
+    var filePanelDragEnter = function(theDestinationNode, theDragData) {
         /** data.otherNode may be null for non-fancytree droppables.
          *  Return false to disallow dropping on node. In this case
          *  dragOver and dragLeave are not called.
@@ -64,15 +64,32 @@ CODEBOT.ui = new function() {
         // Don't allow dropping *over* a node (would create a child)
         //return ["before", "after"];
 
-       return true;
+        if(!theDestinationNode.folder) {
+            return ['after', 'before'];
+            
+        } else {
+            return true;
+        }
     };
     
-    var filePanelDragDrop = function(theNode, theData) {
-        /** This function MUST be defined to enable dropping of items on
-         *  the tree.
-         */
-        console.log(theNode, theData);
-        theData.otherNode.moveTo(theNode, theData.hitMode);
+    /**
+     * Called when a node is dropped in the files panel.
+     *
+     * @theDestinationNode the node used to guide the dragging process.
+     * @theDragData An object containing information regarding the dragging process, e.g. node being dragged, destination, hit strategy.
+     */
+    var filePanelDragDrop = function(theDestinationNode, theDragData) {
+        var aNodeBeingDragged = theDragData.otherNode;
+        
+        console.debug('Drag and drop event', theDragData);
+        
+        aNodeBeingDragged.moveTo(theDestinationNode, theDragData.hitMode);
+        
+        var aOldPath = aNodeBeingDragged.data.path;
+        var aNewPath = theDragData.hitMode == "over" ? theDestinationNode.data.path : CODEBOT.utils.basedir(theDestinationNode.data.path);
+        
+        // TODO: only move the UI item when the IO opperation informs everything went ok.
+        CODEBOT.io.move(aOldPath, aNewPath, function(theError) { console.debug(theError ? 'Problem with move!' : 'Move OK!'); });
     };
 	
 	var transform3d = function(theElementId, theX, theY, theZ) {

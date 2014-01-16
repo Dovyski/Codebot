@@ -31,6 +31,11 @@ CODEBOT.io = new function() {
     // TODO: make all IO methods receive "nodes" (directly from fancyfree). It's easier
     // to abstract and implement new IO drivers.
     
+    // theCallback(theError) - of theError == null, Ok, else it contains the error info.
+    this.move = function(theOldPath, theNewPath, theCallback) {
+        console.error("No IO controller has been loaded!");
+    };
+    
     /**
 	 *
 	 *

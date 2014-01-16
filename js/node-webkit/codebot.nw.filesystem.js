@@ -30,6 +30,10 @@ var NodeWebkitFileSystem = new function() {
         // Allow native dialogs to read directories. Needed by chooseDirectory().
         $('body').append('<input style="display:none;" id="codebotNWFileDialog" type="file" nwdirectory />');
 	};
+    
+    this.move = function(theOldPath, theNewPath, theCallback) {
+        console.error("No IO controller has been loaded!");
+    };
 	
     // Reference: http://stackoverflow.com/a/6358661/29827
     this.readDirectory = function(thePath, theCallback) {

@@ -26,6 +26,11 @@ var CodebotWebFilesystem = new function() {
         
 	this.init = function() {
 	};
+    
+    this.move = function(theOldPath, theNewPath, theCallback) {
+        console.log('Move \''+theOldPath+'\' to \''+theNewPath+'\'');
+        theCallback();
+    };
 	
     // Reference: http://stackoverflow.com/a/6358661/29827
     this.readDirectory = function(thePath, theCallback) {
