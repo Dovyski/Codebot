@@ -213,7 +213,7 @@ CODEBOT.ui = new function() {
         console.log('CODEBOT [ui] Building UI');
         
 		// TODO: read data from disk, using last open directory.
-		//CODEBOT.io.readDirectory('/Users/fernando/Downloads/codebot_test', CODEBOT.ui.refreshFilesPanel);
+		CODEBOT.io.readDirectory('/Users/fernando/Downloads/codebot_test', CODEBOT.ui.refreshFilesPanel);
 		
 		// get tab context from codebot.ui.tabs.js
 		mTabs = window.chromeTabs;
