@@ -29,6 +29,7 @@ body {
 	position: relative;
 	height: 670px; /* TODO: fix it! */
 	width: 100%;
+    overflow: none;
 }
 
 /*
