@@ -36,13 +36,13 @@ var CodebotWebFilesystem = new function() {
     this.readDirectory = function(thePath, theCallback) {
         theCallback([
 	 		{title: "Test.as", path: "/proj/Test.as", name: "Test.as"},
-	 		{title: "Folder 2", folder: true, key: "folder2", path: "/proj/Folder 2",
+	 		{title: "Folder 2", folder: true, key: "folder2", path: "/proj/Folder 2/", name: "Folder 2",
 	 		  children: [
 	 			{title: "Test2.as", path: "/proj/Folder 2/Test2.as", name: "Test2.as"},
 	 			{title: "Test3.as", path: "/proj/Folder 2/Test3.as", name: "Test3.as"}
 	 		  ]
 	 		},
-            {title: "Folder 3", folder: true, key: "folder3", path: "/proj/Folder 3",
+            {title: "Folder 3", folder: true, key: "folder3", path: "/proj/Folder 3/", name: "Folder 3",
 	 		  children: [
 	 			{title: "Test33.as", path: "/proj/Folder 3/Test33.as", name: "Test33.as"},
 	 			{title: "Test34.as", path: "/proj/Folder 3/Test34.as", name: "Test34.as"}

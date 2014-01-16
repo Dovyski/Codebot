@@ -26,11 +26,13 @@ var CODEBOT = CODEBOT || {};
 CODEBOT.utils = new function() {
     
     /**
-     * TODO: implement method
-     *
-     *
+     * Returns the "directory part" of a string representing a path. Ex.: /my/path/file returns /my/path/
      */
-    this.basedir = function(thePath) {
-        return thePath;
+    this.dirName = function(thePath) {
+        // From: http://stackoverflow.com/a/1051303/29827
+        var aParts = thePath.split(/(\\|\/|\:)/);
+        aParts.pop();
+
+        return aParts.join('');
     };
 };

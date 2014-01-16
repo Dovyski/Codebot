@@ -32,7 +32,10 @@ var NodeWebkitFileSystem = new function() {
 	};
     
     this.move = function(theOldPath, theNewPath, theCallback) {
-        console.error("No IO controller has been loaded!");
+        fs.rename(theOldPath, theNewPath, function (theError) {
+            console.log('Rename "'+theOldPath+'" to "'+theNewPath+'"');
+            theCallback(theError);
+        });
     };
 	
     // Reference: http://stackoverflow.com/a/6358661/29827
@@ -55,7 +58,7 @@ var NodeWebkitFileSystem = new function() {
                         folder: true,
                         key: aName,
                         children: walk(theFile),
-                        path: theFile,
+                        path: theFile + '/',
                         name: aName
                     };
                 } else {

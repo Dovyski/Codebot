@@ -86,10 +86,28 @@ CODEBOT.ui = new function() {
         aNodeBeingDragged.moveTo(theDestinationNode, theDragData.hitMode);
         
         var aOldPath = aNodeBeingDragged.data.path;
-        var aNewPath = theDragData.hitMode == "over" ? theDestinationNode.data.path : CODEBOT.utils.basedir(theDestinationNode.data.path);
+        var aNewPath = null;
+        
+        if(theDragData.hitMode == "over") {
+            // Dragging node into a folder. In that case, the destination node (the folder)
+            // already has a nice path to be used. e.g. /proj/test/folder/
+            aNewPath = theDestinationNode.data.path;
+            
+        } else {
+            // Dragging node after or before another node. In that case, we need to get the
+            // path to this neighbour file, removing the file name.
+            aNewPath = CODEBOT.utils.dirName(theDestinationNode.data.path);
+        }
+        
+        aNewPath += aNodeBeingDragged.data.name;
         
         // TODO: only move the UI item when the IO opperation informs everything went ok.
-        CODEBOT.io.move(aOldPath, aNewPath, function(theError) { console.debug(theError ? 'Problem with move!' : 'Move OK!'); });
+        CODEBOT.io.move(aOldPath, aNewPath, function(theError) {
+            if(theError) {
+                console.log('Problem with move!');
+                // TODO: warn about error and reload tree.
+            }
+        });
     };
 	
 	var transform3d = function(theElementId, theX, theY, theZ) {
