@@ -109,6 +109,14 @@ CODEBOT.ui = new function() {
             }
         });
     };
+    
+    var filePanelRename = function(theEvent, theData) {
+        console.log('filePanelRename', theEvent, theData);
+    };
+    
+    var filePanelBeforeRename = function(theEvent, theData) {
+        console.log('filePanelBeforeRename', theEvent, theData);
+    };
 	
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
@@ -208,7 +216,7 @@ CODEBOT.ui = new function() {
 		if(theData && theData.length > 0) {
             // TODO: improve this! fancytree should init just once
 			$("#folders").fancytree({
-                extensions: ["dnd"],
+                extensions: ['dnd', 'edit'],
 				click: filePanelClick,
 				dblclick: filePanelDoubleClick,
 				source: theData,
@@ -222,6 +230,10 @@ CODEBOT.ui = new function() {
                     dragStart: filePanelDragStart,
                     dragEnter: filePanelDragEnter,
                     dragDrop: filePanelDragDrop
+                },
+                edit: {
+                    beforeEdit: filePanelBeforeRename,
+                    edit: filePanelRename
                 },
 			});
 			
