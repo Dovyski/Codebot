@@ -111,13 +111,23 @@ CODEBOT.ui = new function() {
     };
     
     var filePanelRename = function(theEvent, theData) {
-        console.log('filePanelRename', theEvent, theData);
+        var aNode    = theData.node;
+        var aNewName = theData.value;
+
+        if(aNewName != aNode.data.name) {
+            var aNewPath = CODEBOT.utils.dirName(aNode.data.path) + aNewName;
+            
+            CODEBOT.io.move(aNode.data.path, aNewPath, function(theError) {
+                if(theError) {
+                    console.log('Problem with rename/move!');
+                    // TODO: warn about error and reload tree.
+                }
+            });
+            
+            // TODO: update open tab containing the renamed node.
+        }
     };
     
-    var filePanelBeforeRename = function(theEvent, theData) {
-        console.log('filePanelBeforeRename', theEvent, theData);
-    };
-	
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
 	};
@@ -222,6 +232,7 @@ CODEBOT.ui = new function() {
 				source: theData,
 				checkbox: false,
 				selectMode: 3,
+                debugLevel: 0,
                 
                 dnd: {
                     preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
@@ -232,8 +243,7 @@ CODEBOT.ui = new function() {
                     dragDrop: filePanelDragDrop
                 },
                 edit: {
-                    beforeEdit: filePanelBeforeRename,
-                    edit: filePanelRename
+                    save: filePanelRename
                 },
 			});
 			
