@@ -239,7 +239,7 @@ CODEBOT.ui = new function() {
 		if(theData && theData.length > 0) {
             // TODO: improve this! fancytree should init just once
 			$("#folders").fancytree({
-                extensions: ['dnd', 'edit'],
+                extensions: ['dnd', 'edit', 'awesome'],
 				click: filePanelClick,
 				dblclick: filePanelDoubleClick,
 				source: theData,
