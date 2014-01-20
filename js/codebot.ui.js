@@ -182,22 +182,13 @@ CODEBOT.ui = new function() {
 	};
 	
 	var openTab = function(theNodeData) {
-        // TODO: read this from disk
-        var aEditorPrefs = {
-            indentUnit: 4, 
-            smartIndent: true,
-            tabSize: 4,
-            indentWithTabs: false,
-            lineWrapping: false,
-            lineNumbers: true,
-            undoDepth: 40
-        };
+        var aEditorPrefs = {};
+        $.extend(aEditorPrefs, CODEBOT.getPrefs().editor);
         
 		CODEBOT.io.readFile(theNodeData, function(theData) {
             aEditorPrefs['mode']        = 'javascript', // TODO: dynamic mode?
             aEditorPrefs['value']       = theData;
             aEditorPrefs['autofocus']   = true;
-            aEditorPrefs['theme']       = 'mbo';
                 
 			mTabs.add({
 				favicon: 'file-text-o', // TODO: dynamic icon?

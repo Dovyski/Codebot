@@ -23,12 +23,24 @@
 
 var CODEBOT = new function() {
 	var mPlugins = {};
+    var mPreferences = {}; // TODO: default prefs here?
 	
 	var invoke = function(theObj, theMethod, theParam) {
 		if(theObj && theObj[theMethod]) {
 			return theObj[theMethod](theParam);
 		}
 	};
+    
+    var loadPreferences = function(theCallback) {
+        console.log('CODEBOT [prefs] Loading preferences...');
+        
+        // TODO: read another preference file?
+        CODEBOT.io.readFile({path: './data/prefs.default.json'}, function(theData) {
+            eval(theData);
+            console.log('CODEBOT [prefs] Preferences loaded!', CODEBOT.getPrefs());
+            theCallback();
+        });
+    };
     
     var loadPlugins = function() {
         console.log('CODEBOT [plugins] Loading plugins...');
@@ -61,18 +73,27 @@ var CODEBOT = new function() {
 		CODEBOT.ui.addPlugin(theId, theObj);
 		invoke(mPlugins[theId], 'added');
 	};
+    
+    this.getPrefs = function() {
+        return mPreferences;
+    };
+    
+    this.setPrefs = function(theObj) {
+        mPreferences = theObj;
+    };
 	
 	this.init = function(theIODriver) {
         console.log('CODEBOT [core] Initializing...');
 		
         CODEBOT.io = theIODriver;
         console.log('CODEBOT [IO driver] ' + CODEBOT.io.driver);
-        
         CODEBOT.io.init();
-		CODEBOT.ui.init();
         
-        loadPlugins();
-        
-        console.log('CODEBOT [core] Done, ready to rock!');
+        loadPreferences(function() {
+            CODEBOT.ui.init();
+            loadPlugins();
+            
+            console.log('CODEBOT [core] Done, ready to rock!');
+        });
 	};
 };
