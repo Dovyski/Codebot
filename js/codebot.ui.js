@@ -182,15 +182,28 @@ CODEBOT.ui = new function() {
 	};
 	
 	var openTab = function(theNodeData) {
+        // TODO: read this from disk
+        var aEditorPrefs = {
+            indentUnit: 4, 
+            smartIndent: true,
+            tabSize: 4,
+            indentWithTabs: false,
+            lineWrapping: false,
+            lineNumbers: true,
+            undoDepth: 40
+        };
+        
 		CODEBOT.io.readFile(theNodeData, function(theData) {
+            aEditorPrefs['mode']        = 'javascript', // TODO: dynamic mode?
+            aEditorPrefs['value']       = theData;
+            aEditorPrefs['autofocus']   = true;
+            aEditorPrefs['theme']       = 'mbo';
+                
 			mTabs.add({
 				favicon: 'file-text-o', // TODO: dynamic icon?
 				title: theNodeData.name,
 				data: {
-					editor: CodeMirror(document.getElementById('working-area'), {
-						mode: 'javascript', // TODO: dynamic mode?
-						value: theData
-					}),
+					editor: CodeMirror(document.getElementById('working-area'), aEditorPrefs),
 					file: theNodeData.name,
 					path: theNodeData.path,
                     entry: theNodeData.entry
@@ -243,7 +256,8 @@ CODEBOT.ui = new function() {
                     dragDrop: filePanelDragDrop
                 },
                 edit: {
-                    save: filePanelRename
+                    save: filePanelRename,
+                    triggerStart: ['f2', 'shift+click'],
                 },
 			});
 			
