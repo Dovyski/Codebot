@@ -43,3 +43,9 @@ License: MIT
 Fancytree contextMenu extension
 Author: Tomas Norkūnas - https://github.com/mar10/fancytree/pull/3
 License: MIT
+
+------------------------------------------------------------------------------------------
+
+mousetrap
+Author: Craig Campbell - http://craig.is/killing/mice
+License: Apache 2.0

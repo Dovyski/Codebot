@@ -93,6 +93,9 @@ var CODEBOT = new function() {
             CODEBOT.ui.init();
             loadPlugins();
             
+            // TODO: bind all key shortcuts according to preferences
+            Mousetrap.bind("command+k", function() { console.log('show shortcuts!'); return false; });
+            
             console.log('CODEBOT [core] Done, ready to rock!');
         });
 	};
