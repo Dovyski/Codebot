@@ -31,3 +31,15 @@ License: MIT
 Node-webkit
 Author: Roger Wang and others - https://github.com/rogerwang/node-webkit
 License: MIT
+
+------------------------------------------------------------------------------------------
+
+jQuery contextMenu
+Author: several - http://medialize.github.io/jQuery-contextMenu/
+License: MIT
+
+------------------------------------------------------------------------------------------
+
+Fancytree contextMenu extension
+Author: Tomas Norkūnas - https://github.com/mar10/fancytree/pull/3
+License: MIT

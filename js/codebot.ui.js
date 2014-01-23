@@ -230,7 +230,7 @@ CODEBOT.ui = new function() {
 		if(theData && theData.length > 0) {
             // TODO: improve this! fancytree should init just once
 			$("#folders").fancytree({
-                extensions: ['dnd', 'edit', 'awesome'],
+                extensions: ['dnd', 'edit', 'awesome', 'contextMenu'],
 				click: filePanelClick,
 				dblclick: filePanelDoubleClick,
 				source: theData,
@@ -249,6 +249,44 @@ CODEBOT.ui = new function() {
                 edit: {
                     save: filePanelRename,
                     triggerStart: ['f2', 'shift+click'],
+                },
+                contextMenu: {
+                    menu: {
+                        'edit': { 'name': 'Edit', 'icon': 'edit' },
+                        'cut': { 'name': 'Cut', 'icon': 'cut' },
+                        'copy': { 'name': 'Copy', 'icon': 'copy' },
+                        'paste': { 'name': 'Paste', 'icon': 'paste' },
+                        'delete': { 'name': 'Delete', 'icon': 'delete', 'disabled': true },
+                        'sep1': '---------',
+                        'quit': { 'name': 'Quit', 'icon': 'quit' },
+                        'sep2': '---------',
+                        'fold1': {
+                            'name': 'Sub group',
+                            'items': {
+                                'fold1-key1': { 'name': 'Foo bar' },
+                                'fold2': {
+                                    'name': 'Sub group 2',
+                                    'items': {
+                                        'fold2-key1': { 'name': 'alpha' },
+                                        'fold2-key2': { 'name': 'bravo' },
+                                        'fold2-key3': { 'name': 'charlie' }
+                                    }
+                                },
+                                'fold1-key3': { 'name': 'delta' }
+                            }
+                        },
+                        'fold1a': {
+                            'name': 'Other group',
+                            'items': {
+                                'fold1a-key1': { 'name': 'echo' },
+                                'fold1a-key2': { 'name': 'foxtrot' },
+                                'fold1a-key3': { 'name': 'golf' }
+                            }
+                        }
+                    },
+                    actions: function(node, action, options) {
+                        console.debug('Selected action "' + action + '" on node ' + node);
+                    }
                 },
 			});
 			
