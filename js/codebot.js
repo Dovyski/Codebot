@@ -57,7 +57,50 @@ var CODEBOT = new function() {
         
         console.log('CODEBOT [plugins] Plugins loaded.');
     };
+    
+    var shortcutSaveCurrentTab = function() {
+        console.debug('Save current file');
+    };
+    
+    var shortcutNewFile = function() {
+        console.debug('Open new tab with empty file');
+    };
+    
+    var shortcutChooseFile = function() {
+        console.debug('Show dialog to open file');
+    };
+    
+    var shortcutExit = function() {
+        console.debug('Exit application!');
+        return false;
+    };
+    
+    var shortcutCloseTab = function() {
+        console.debug('Close current tab!');
+        return false;
+    };
 	
+    var bindKeyShortcuts = function() {
+        var aShortcuts = CODEBOT.getPrefs().shortcuts;
+        var aCommand = null;
+        var aKey = null;
+        var aShortcutsMethods = {
+            'saveCurrentTab':   shortcutSaveCurrentTab,
+            'newFile':          shortcutNewFile,
+            'chooseFile':       shortcutChooseFile,
+            'closeTab':         shortcutCloseTab,
+            'exit':             shortcutExit
+        };
+
+        for(aCommand in aShortcuts) {
+            aKey = aShortcuts[aCommand];
+            // TODO: better error handling when no method is available (key binding error)
+            Mousetrap.bind(aKey, aShortcutsMethods[aCommand]);
+            
+            console.debug('CODEBOT [keybind] ' + aKey + ' = ' + aCommand);
+        }
+    };
+    
 	this.handlePluginClick = function(thePluginId) {
 		invoke(mPlugins[thePluginId], 'clicked');
 		
@@ -92,9 +135,7 @@ var CODEBOT = new function() {
         loadPreferences(function() {
             CODEBOT.ui.init();
             loadPlugins();
-            
-            // TODO: bind all key shortcuts according to preferences
-            Mousetrap.bind("command+k", function() { console.log('show shortcuts!'); return false; });
+            bindKeyShortcuts();
             
             console.log('CODEBOT [core] Done, ready to rock!');
         });

@@ -34,6 +34,10 @@ CODEBOT.setPrefs({
     },
     
     shortcuts: {
-        
+        saveCurrentTab: 'mod+s',
+        newFile: 'mod+n',
+        chooseFile: 'mod+o',
+        closeTab: 'mod+w',
+        exit: 'mod+q'
     }
 });
