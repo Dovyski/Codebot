@@ -2,7 +2,7 @@ Codebot
 =======
 
 Codebot is a free and open source (MIT license) IDE focused on game development. Below is a screenshot of the current development state (something like pre-alpha):
-![codebot_dev_pre_alpha](https://f.cloud.github.com/assets/512405/1944397/91f68d62-7fb9-11e3-8bfd-e9fff00583bb.png)
+![codebot_dev_pre_alpha_002](https://f.cloud.github.com/assets/512405/2018937/ed068ae2-8818-11e3-998c-7633a0933945.png)
 
 Idea and Goals
 =======
