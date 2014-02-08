@@ -21,7 +21,7 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-CODEBOT.setPrefs({
+{
     editor: {
         indentUnit: 4, 
         smartIndent: true,
@@ -40,4 +40,4 @@ CODEBOT.setPrefs({
         closeTab: 'mod+w',
         exit: 'mod+q'
     }
-});
+}

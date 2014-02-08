@@ -36,7 +36,7 @@ var CODEBOT = new function() {
         
         // TODO: read another preference file?
         CODEBOT.io.readFile({path: './data/prefs.default.json'}, function(theData) {
-            eval(theData);
+            eval('CODEBOT.setPrefs('+theData+')');
             console.log('CODEBOT [prefs] Preferences loaded!', CODEBOT.getPrefs());
             theCallback();
         });

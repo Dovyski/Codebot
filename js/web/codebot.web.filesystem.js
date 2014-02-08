@@ -57,7 +57,7 @@ var CodebotWebFilesystem = new function() {
 	};
 	
 	this.readFile = function(theNode, theCallback) {
-        theCallback('Content of ' + theNode);
+        theCallback('{ content:\'' + theNode.path + '\'}');
 	};
 	
 	this.writeFile = function(theNode, theData, theCallback) {
