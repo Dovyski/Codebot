@@ -128,6 +128,24 @@ CODEBOT.ui = new function() {
         }
     };
     
+    var filePanelAction = function(theNode, theAction, theOptions) {
+        console.debug('Selected action "' + theAction + '" on node ', theNode, theNode.data);
+        
+        switch(theAction) {
+            case 'new-folder':
+                var aName = prompt('Directory name');
+                CODEBOT.io.createDirectory(aName, theNode, function(theError) {
+                    if(theError) {
+                        console.error('Problem with createDirectory!');
+                    } else {
+                        // TODO: refreash filesPanel
+                        CODEBOT.io.readDirectory('/Users/fernando/Downloads/codebot_test', CODEBOT.ui.refreshFilesPanel);
+                    }
+                });
+                break;
+        }
+    };
+    
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
 	};
@@ -253,40 +271,18 @@ CODEBOT.ui = new function() {
                 contextMenu: {
                     menu: {
                         'edit': { 'name': 'Edit', 'icon': 'edit' },
-                        'cut': { 'name': 'Cut', 'icon': 'cut' },
-                        'copy': { 'name': 'Copy', 'icon': 'copy' },
-                        'paste': { 'name': 'Paste', 'icon': 'paste' },
+                        'rename': { 'name': 'Rename', 'icon': 'rename' },
                         'delete': { 'name': 'Delete', 'icon': 'delete', 'disabled': true },
                         'sep1': '---------',
-                        'quit': { 'name': 'Quit', 'icon': 'quit' },
-                        'sep2': '---------',
-                        'fold1': {
-                            'name': 'Sub group',
+                        'new': {
+                            'name': 'New',
                             'items': {
-                                'fold1-key1': { 'name': 'Foo bar' },
-                                'fold2': {
-                                    'name': 'Sub group 2',
-                                    'items': {
-                                        'fold2-key1': { 'name': 'alpha' },
-                                        'fold2-key2': { 'name': 'bravo' },
-                                        'fold2-key3': { 'name': 'charlie' }
-                                    }
-                                },
-                                'fold1-key3': { 'name': 'delta' }
-                            }
-                        },
-                        'fold1a': {
-                            'name': 'Other group',
-                            'items': {
-                                'fold1a-key1': { 'name': 'echo' },
-                                'fold1a-key2': { 'name': 'foxtrot' },
-                                'fold1a-key3': { 'name': 'golf' }
+                                'new-folder': { 'name': 'Folder' },
+                                'new-file': { 'name': 'File' }
                             }
                         }
                     },
-                    actions: function(node, action, options) {
-                        console.debug('Selected action "' + action + '" on node ' + node);
-                    }
+                    actions: filePanelAction
                 },
 			});
 			

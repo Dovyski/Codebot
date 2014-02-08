@@ -83,7 +83,7 @@ CODEBOT.io = new function() {
 	};
 	
 	// Creates a new directory.
-	this.createDirectory = function(theNode, theCallback) {
+	this.createDirectory = function(theName, theNode, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
 };

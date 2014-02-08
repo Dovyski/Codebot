@@ -64,8 +64,9 @@ var CodebotWebFilesystem = new function() {
         theCallback();
 	};
 	
-	this.createDirectory = function(theNode, theCallback) {
-		console.log('CodebotFS.createDirectory(' + theNode + ')');
+	this.createDirectory = function(theName, theNode, theCallback) {
+		console.log('CodebotFS.createDirectory(' + theNode + '/'+theName+')');
+        theCallback();
 	};
 };
 

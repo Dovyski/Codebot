@@ -107,8 +107,16 @@ var NodeWebkitFileSystem = new function() {
         });
 	};
 	
-	this.createDirectory = function(theNode, theCallback) {
-		console.log('CodebotFS.createDirectory(' + theNode + ')');
+	this.createDirectory = function(theName, theNode, theCallback) {
+        var aPath = theNode.folder ? theNode.data.path : CODEBOT.utils.dirName(theNode.data.path);
+        
+        aPath += theName;
+        
+        console.log('Create directory "'+aPath+'"');
+        
+		fs.mkdir(aPath, 0777, function (theError) {
+            theCallback(theError);
+        });
 	};
 };
 
