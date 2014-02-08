@@ -26,125 +26,7 @@ var CODEBOT = CODEBOT || {};
 CODEBOT.ui = new function() {
 	var mTabs 				= null;
 	var mCurrentTab 		= null;
-	var mTextArea 			= null;
-	
-	var filePanelClick = function(theEvent, theItem) {
-	};
-	
-	var filePanelDoubleClick = function(theEvent, theItem) {
-		var aData = theItem.node.data;
-		
-		console.debug('File panel double click: ' + theEvent + ' , folder: ' + theItem.node.folder);
-		
-		if(!theItem.node.folder) {
-			openTab(aData);
-		}
-	};
-    
-    var filePanelDragStart = function(theNode, theDragData) {
-        /** This function MUST be defined to enable dragging for the tree.
-         *  Return false to cancel dragging of node.
-         */
-        return true;
-    };
-    
-    var filePanelDragEnter = function(theDestinationNode, theDragData) {
-        /** data.otherNode may be null for non-fancytree droppables.
-         *  Return false to disallow dropping on node. In this case
-         *  dragOver and dragLeave are not called.
-         *  Return 'over', 'before, or 'after' to force a hitMode.
-         *  Return ['before', 'after'] to restrict available hitModes.
-         *  Any other return value will calc the hitMode from the cursor position.
-         */
-        // Prevent dropping a parent below another parent (only sort
-        // nodes under the same parent)
-        //if(node.parent !== data.otherNode.parent){
-        //    return false;
-        //}
-        // Don't allow dropping *over* a node (would create a child)
-        //return ["before", "after"];
-
-        if(!theDestinationNode.folder) {
-            return ['after', 'before'];
-            
-        } else {
-            return true;
-        }
-    };
-    
-    /**
-     * Called when a node is dropped in the files panel.
-     *
-     * @theDestinationNode the node used to guide the dragging process.
-     * @theDragData An object containing information regarding the dragging process, e.g. node being dragged, destination, hit strategy.
-     */
-    var filePanelDragDrop = function(theDestinationNode, theDragData) {
-        var aNodeBeingDragged = theDragData.otherNode;
-        
-        console.debug('Drag and drop event', theDragData);
-        
-        aNodeBeingDragged.moveTo(theDestinationNode, theDragData.hitMode);
-        
-        var aOldPath = aNodeBeingDragged.data.path;
-        var aNewPath = null;
-        
-        if(theDragData.hitMode == "over") {
-            // Dragging node into a folder. In that case, the destination node (the folder)
-            // already has a nice path to be used. e.g. /proj/test/folder/
-            aNewPath = theDestinationNode.data.path;
-            
-        } else {
-            // Dragging node after or before another node. In that case, we need to get the
-            // path to this neighbour file, removing the file name.
-            aNewPath = CODEBOT.utils.dirName(theDestinationNode.data.path);
-        }
-        
-        aNewPath += aNodeBeingDragged.data.name;
-        
-        // TODO: only move the UI item when the IO opperation informs everything went ok.
-        CODEBOT.io.move(aOldPath, aNewPath, function(theError) {
-            if(theError) {
-                console.log('Problem with move!');
-                // TODO: warn about error and reload tree.
-            }
-        });
-    };
-    
-    var filePanelRename = function(theEvent, theData) {
-        var aNode    = theData.node;
-        var aNewName = theData.value;
-
-        if(aNewName != aNode.data.name) {
-            var aNewPath = CODEBOT.utils.dirName(aNode.data.path) + aNewName;
-            
-            CODEBOT.io.move(aNode.data.path, aNewPath, function(theError) {
-                if(theError) {
-                    console.log('Problem with rename/move!');
-                    // TODO: warn about error and reload tree.
-                }
-            });
-            
-            // TODO: update open tab containing the renamed node.
-        }
-    };
-    
-    var filePanelAction = function(theNode, theAction, theOptions) {
-        console.debug('Selected action "' + theAction + '" on node ', theNode, theNode.data);
-        
-        switch(theAction) {
-            case 'new-folder':
-                var aName = prompt('Directory name');
-                CODEBOT.io.createDirectory(aName, theNode, function(theError) {
-                    if(theError) {
-                        console.error('Problem with createDirectory!');
-                    } else {
-                        // TODO: refreash filesPanel
-                        CODEBOT.io.readDirectory('/Users/fernando/Downloads/codebot_test', CODEBOT.ui.refreshFilesPanel);
-                    }
-                });
-                break;
-        }
-    };
+	var mFilesPanel         = null;
     
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
@@ -199,7 +81,8 @@ CODEBOT.ui = new function() {
 		console.debug('Tab activated', mCurrentTab.index(), ', title:', $.trim(mCurrentTab.text()), ', data:', mCurrentTab.data('tabData').data);
 	};
 	
-	var openTab = function(theNodeData) {
+	// TODO: should receive node instead of data.
+    this.openTab = function(theNodeData) {
         var aEditorPrefs = {};
         $.extend(aEditorPrefs, CODEBOT.getPrefs().editor);
         
@@ -243,56 +126,6 @@ CODEBOT.ui = new function() {
 			transform3d('config-dialog', '0', '0', '0');
 		}
 	};
-	
-	this.refreshFilesPanel = function(theData) {
-		if(theData && theData.length > 0) {
-            // TODO: improve this! fancytree should init just once
-			$("#folders").fancytree({
-                extensions: ['dnd', 'edit', 'awesome', 'contextMenu'],
-				click: filePanelClick,
-				dblclick: filePanelDoubleClick,
-				source: theData,
-				checkbox: false,
-				selectMode: 3,
-                debugLevel: 0,
-                
-                dnd: {
-                    preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-                    preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-                    autoExpandMS: 400,
-                    dragStart: filePanelDragStart,
-                    dragEnter: filePanelDragEnter,
-                    dragDrop: filePanelDragDrop
-                },
-                edit: {
-                    save: filePanelRename,
-                    triggerStart: ['f2', 'shift+click'],
-                },
-                contextMenu: {
-                    menu: {
-                        'edit': { 'name': 'Edit', 'icon': 'edit' },
-                        'rename': { 'name': 'Rename', 'icon': 'rename' },
-                        'delete': { 'name': 'Delete', 'icon': 'delete', 'disabled': true },
-                        'sep1': '---------',
-                        'new': {
-                            'name': 'New',
-                            'items': {
-                                'new-folder': { 'name': 'Folder' },
-                                'new-file': { 'name': 'File' }
-                            }
-                        }
-                    },
-                    actions: filePanelAction
-                },
-			});
-			
-			var aDirs = $("#folders").fancytree("getTree");
-			aDirs.reload();
-			
-		} else {
-			$("#folders").html('<div class="">no</div>');
-		}
-	};
 
 	this.addPlugin = function(theId, theObj) {
 		$('#config-bar').html(
@@ -307,9 +140,6 @@ CODEBOT.ui = new function() {
 	
 	this.init = function() {
         console.log('CODEBOT [ui] Building UI');
-        
-		// TODO: read data from disk, using last open directory.
-		CODEBOT.io.readDirectory('/Users/fernando/Downloads/codebot_test', CODEBOT.ui.refreshFilesPanel);
 		
 		// get tab context from codebot.ui.tabs.js
 		mTabs = window.chromeTabs;
@@ -324,11 +154,10 @@ CODEBOT.ui = new function() {
 			closed: tabClosed
 		});
         
-        // Init core UI
-        $('#files-panel header a').on('click', function() {
-            CODEBOT.io.chooseDirectory(function(thePath) {
-                CODEBOT.io.readDirectory(thePath, CODEBOT.ui.refreshFilesPanel);
-            });
-        });
+        mFilesPanel = new CodebotFilesPanel();
+        mFilesPanel.init(this, CODEBOT.io);
+        
+        // TODO: read data from disk, using last open directory.
+		CODEBOT.io.readDirectory('/Users/fernando/Downloads/codebot_test', mFilesPanel.load);
 	};
 };
