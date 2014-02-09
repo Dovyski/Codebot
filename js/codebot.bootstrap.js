@@ -23,11 +23,26 @@
 */
 
 /**
- *  Bootstrap file for web
+ * Generic bootstrapper
  *    
- *  The bootstrap file will load the IO driver and kick off the application.
- *  Each platform must provide its own bootstrap file, otherwise Codebot won't
- *  be able to perform IO opperations.
+ * This file will detect the platform where Codebot is running (e.g. web, desktop with
+ * node-web kit, etc) and load the corresponding bootstrapper.
  */
 
-$('body').append('<script type="text/javascript" src="./js/web/codebot.web.filesystem.js"></script>');
+var aIsNodeWebkit   = 'require' in window;
+var aIsChromeApp    = false; // TODO: check it correctly.
+
+$(function() {
+    if(aIsNodeWebkit) {
+        console.log('CODEBOT [bootstrap] Node-webkit app.');
+        $('body').append('<script type="text/javascript" src="./js/node-webkit/codebot.bootstrap.nw.js"></script>');
+        
+    } else if(aIsChromeApp) {
+        console.log('CODEBOT [bootstrap] Chrome Packaged App.');
+
+    } else {
+        // It's running in the browser.
+        console.log('CODEBOT [bootstrap] Browser app');
+        $('body').append('<script type="text/javascript" src="./js/web/codebot.bootstrap.web.js"></script>');
+    }
+});
