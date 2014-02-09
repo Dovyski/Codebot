@@ -21,12 +21,12 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var CODEBOT = CODEBOT || {};
-
-CODEBOT.ui = new function() {
+var CodebotUI = function() {
 	var mTabs 				= null;
 	var mCurrentTab 		= null;
 	var mFilesPanel         = null;
+    var mIO                  = null;
+    var mSelf               = null;
     
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
@@ -39,8 +39,8 @@ CODEBOT.ui = new function() {
 		
 		// TODO: make a pretty confirm dialog.
 		// TODO: only confirm if content has changed.
-		if(aEditor && CODEBOT.ui.confirm("Save content before closing?")) {
-			CODEBOT.io.writeFile(aData, aEditor.getDoc().getValue(), function() { console.log('Data written!');} );
+		if(aEditor && confirm("Save content before closing?")) {
+			mIO.writeFile(aData, aEditor.getDoc().getValue(), function() { console.log('Data written!');} );
 		}
 
 		if(aEditorNode) {
@@ -86,7 +86,7 @@ CODEBOT.ui = new function() {
         var aEditorPrefs = {};
         $.extend(aEditorPrefs, CODEBOT.getPrefs().editor);
         
-		CODEBOT.io.readFile(theNodeData, function(theData) {
+		mIO.readFile(theNodeData, function(theData) {
             aEditorPrefs['mode']        = 'javascript', // TODO: dynamic mode?
             aEditorPrefs['value']       = theData;
             aEditorPrefs['autofocus']   = true;
@@ -106,7 +106,7 @@ CODEBOT.ui = new function() {
     
     // TODO: implement a pretty confirm dialog/panel
     this.confirm = function(theMessage) {
-        CODEBOT.ui.log('Confirm? ' + theMessage);
+        mSelf.log('Confirm? ' + theMessage);
         return true;
     };
     
@@ -138,9 +138,13 @@ CODEBOT.ui = new function() {
 		});
 	};
 	
-	this.init = function() {
+	this.init = function(theIO) {
         console.log('CODEBOT [ui] Building UI');
-		
+        
+        mSelf       = this;
+        mIO         = theIO;
+		mFilesPanel = new CodebotFilesPanel();
+        
 		// get tab context from codebot.ui.tabs.js
 		mTabs = window.chromeTabs;
 		
@@ -154,10 +158,9 @@ CODEBOT.ui = new function() {
 			closed: tabClosed
 		});
         
-        mFilesPanel = new CodebotFilesPanel();
-        mFilesPanel.init(this, CODEBOT.io);
+        mFilesPanel.init(this, mIO);
         
         // TODO: read data from disk, using last open directory.
-		CODEBOT.io.readDirectory('/Users/fernando/Downloads/codebot_test', mFilesPanel.load);
+		mIO.readDirectory('/Users/fernando/Downloads/codebot_test', mFilesPanel.load);
 	};
 };

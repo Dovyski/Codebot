@@ -23,8 +23,11 @@
 
 var CODEBOT = new function() {
 	var mShortcuts = null;
+	var mUI = null;
+	var mIO = null;
     var mPlugins = {};
     var mPreferences = {}; // TODO: default prefs here?
+    var mSelf;
 	
 	var invoke = function(theObj, theMethod, theParam) {
 		if(theObj && theObj[theMethod]) {
@@ -36,7 +39,7 @@ var CODEBOT = new function() {
         console.log('CODEBOT [prefs] Loading preferences...');
         
         // TODO: read another preference file?
-        CODEBOT.io.readFile({path: './data/prefs.default.json'}, function(theData) {
+        mIO.readFile({path: './data/prefs.default.json'}, function(theData) {
             eval('CODEBOT.setPrefs('+theData+')');
             console.log('CODEBOT [prefs] Preferences loaded!', CODEBOT.getPrefs());
             theCallback();
@@ -46,7 +49,7 @@ var CODEBOT = new function() {
     var loadPlugins = function() {
         console.log('CODEBOT [plugins] Loading plugins...');
         
-        CODEBOT.io.readDirectory('./plugins', function(theData) {
+        mIO.readDirectory('./plugins', function(theData) {
             for(var i in theData) {
                 var aItem = theData[i];
                 
@@ -63,7 +66,7 @@ var CODEBOT = new function() {
 		invoke(mPlugins[thePluginId], 'clicked');
 		
 		var aPluginContent = invoke(mPlugins[thePluginId], 'content');
-		CODEBOT.ui.showConfigDialog(true, aPluginContent);
+		mUI.showConfigDialog(true, aPluginContent);
 	};
 	
 	this.addPlugin = function(theId, theObj) {
@@ -71,7 +74,7 @@ var CODEBOT = new function() {
 		
 		mPlugins[theId] = theObj;
 		
-		CODEBOT.ui.addPlugin(theId, theObj);
+		mUI.addPlugin(theId, theObj);
 		invoke(mPlugins[theId], 'added');
 	};
     
@@ -84,18 +87,21 @@ var CODEBOT = new function() {
     };
 	
 	this.init = function(theIODriver) {
-        console.log('CODEBOT [core] Initializing...');
-		
-        mShortcuts = new CodebotShortcuts();
+        console.log('CODEBOT [core] Initializing...');		
         
-        CODEBOT.io = theIODriver;
-        console.log('CODEBOT [IO driver] ' + CODEBOT.io.driver);
-        CODEBOT.io.init();
+        mSelf = this;
+        
+        mIO = theIODriver || new CodebotIO();
+        console.log('CODEBOT [IO driver] ' + mIO.driver);
+        mIO.init();
+        
+        mShortcuts = new CodebotShortcuts();
+        mUI = new CodebotUI();
         
         loadPreferences(function() {
-            CODEBOT.ui.init();
+            mUI.init(mIO);
             loadPlugins();
-            mShortcuts.init(CODEBOT.ui, CODEBOT.io, CODEBOT.getPrefs());
+            mShortcuts.init(mUI, mIO, CODEBOT.getPrefs());
             
             console.log('CODEBOT [core] Done, ready to rock!');
         });
