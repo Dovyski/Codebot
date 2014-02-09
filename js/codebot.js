@@ -22,7 +22,8 @@
 */
 
 var CODEBOT = new function() {
-	var mPlugins = {};
+	var mShortcuts = null;
+    var mPlugins = {};
     var mPreferences = {}; // TODO: default prefs here?
 	
 	var invoke = function(theObj, theMethod, theParam) {
@@ -58,49 +59,6 @@ var CODEBOT = new function() {
         console.log('CODEBOT [plugins] Plugins loaded.');
     };
     
-    var shortcutSaveCurrentTab = function() {
-        console.debug('Save current file');
-    };
-    
-    var shortcutNewFile = function() {
-        console.debug('Open new tab with empty file');
-    };
-    
-    var shortcutChooseFile = function() {
-        console.debug('Show dialog to open file');
-    };
-    
-    var shortcutExit = function() {
-        console.debug('Exit application!');
-        return false;
-    };
-    
-    var shortcutCloseTab = function() {
-        console.debug('Close current tab!');
-        return false;
-    };
-	
-    var bindKeyShortcuts = function() {
-        var aShortcuts = CODEBOT.getPrefs().shortcuts;
-        var aCommand = null;
-        var aKey = null;
-        var aShortcutsMethods = {
-            'saveCurrentTab':   shortcutSaveCurrentTab,
-            'newFile':          shortcutNewFile,
-            'chooseFile':       shortcutChooseFile,
-            'closeTab':         shortcutCloseTab,
-            'exit':             shortcutExit
-        };
-
-        for(aCommand in aShortcuts) {
-            aKey = aShortcuts[aCommand];
-            // TODO: better error handling when no method is available (key binding error)
-            Mousetrap.bind(aKey, aShortcutsMethods[aCommand]);
-            
-            console.debug('CODEBOT [keybind] ' + aKey + ' = ' + aCommand);
-        }
-    };
-    
 	this.handlePluginClick = function(thePluginId) {
 		invoke(mPlugins[thePluginId], 'clicked');
 		
@@ -128,6 +86,8 @@ var CODEBOT = new function() {
 	this.init = function(theIODriver) {
         console.log('CODEBOT [core] Initializing...');
 		
+        mShortcuts = new CodebotShortcuts();
+        
         CODEBOT.io = theIODriver;
         console.log('CODEBOT [IO driver] ' + CODEBOT.io.driver);
         CODEBOT.io.init();
@@ -135,7 +95,7 @@ var CODEBOT = new function() {
         loadPreferences(function() {
             CODEBOT.ui.init();
             loadPlugins();
-            bindKeyShortcuts();
+            mShortcuts.init(CODEBOT.ui, CODEBOT.io, CODEBOT.getPrefs());
             
             console.log('CODEBOT [core] Done, ready to rock!');
         });
