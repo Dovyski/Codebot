@@ -23,62 +23,55 @@
 
 var CodebotUI = function() {
 	var mTabs 				= null;
-	var mCurrentTab 		= null;
 	var mFilesPanel         = null;
-    var mIO                  = null;
+    var mIO                 = null;
     var mSelf               = null;
     
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
 	};
 	
-	var tabClosed = function(theTab) {
-		var aData = theTab.data('tabData').data;
-		var aEditor = aData.editor;
+	var onTabClose = function(theTab) {
+		var aEditor = theTab.editor;
 		var aEditorNode = aEditor ? aEditor.getWrapperElement() : null;
 		
 		// TODO: make a pretty confirm dialog.
 		// TODO: only confirm if content has changed.
 		if(aEditor && confirm("Save content before closing?")) {
-			mIO.writeFile(aData, aEditor.getDoc().getValue(), function() { console.log('Data written!');} );
+			mIO.writeFile(theTab, aEditor.getDoc().getValue(), function() { console.log('Data written!');} );
 		}
 
 		if(aEditorNode) {
             aEditorNode.parentNode.removeChild(aEditorNode);
         }
-		aData.editor = null;
+		theTab.editor = null;
 		
-		console.debug('Tab closed', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', aData);
+		console.debug('onTabClose', theTab);
 	};
 	
-	var tabDeactivated = function(theTab) {
+	var onTabBlur = function(theTab) {
 		var aTabEditor = null;
 		
-		aTabEditor = theTab.data('tabData').data.editor;
+		aTabEditor = theTab.editor;
         
         if(aTabEditor) {
 		  aTabEditor.getWrapperElement().style.display = 'none';
         }
 		
-		console.debug('Tab deactivated', theTab.index(), ', title:', $.trim(theTab.text()), ', data:', theTab.data('tabData').data);
+        console.debug('onTabBlur', theTab);
 	};
 	
-	var tabActivated = function(theTab) {
+	var onTabFocus = function(theTab) {
 		var aTabEditor = null;
 		
-		mCurrentTab = theTab;
-		
 		// Show the content of the newly active tab.
-		aTabEditor = mCurrentTab.data('tabData').data.editor;
+		aTabEditor = theTab.editor;
         
 		if(aTabEditor) {
             aTabEditor.getWrapperElement().style.display = 'block';
         }
 		
-		// Index: mCurrentTab.index()
-		// Title: $.trim(mCurrentTab.text())
-		// Data: mCurrentTab.data('tabData').data
-		console.debug('Tab activated', mCurrentTab.index(), ', title:', $.trim(mCurrentTab.text()), ', data:', mCurrentTab.data('tabData').data);
+        console.debug('onTabFocus', theTab);
 	};
 	
 	// TODO: should receive node instead of data.
@@ -94,12 +87,10 @@ var CodebotUI = function() {
 			mTabs.add({
 				favicon: 'file-text-o', // TODO: dynamic icon?
 				title: theNodeData.name,
-				data: {
-					editor: CodeMirror(document.getElementById('working-area'), aEditorPrefs),
-					file: theNodeData.name,
-					path: theNodeData.path,
-                    entry: theNodeData.entry
-				}
+				editor: CodeMirror(document.getElementById('working-area'), aEditorPrefs),
+				file: theNodeData.name,
+				path: theNodeData.path,
+                //TODO: add "entry: theNodeData.entry" for Chrome Packaged Apps
 			});
 		});
 	};
@@ -144,21 +135,14 @@ var CodebotUI = function() {
         mSelf       = this;
         mIO         = theIO;
 		mFilesPanel = new CodebotFilesPanel();
-        
-		// get tab context from codebot.ui.tabs.js
-		mTabs = window.chromeTabs;
+        mTabs       = new CodebotTabs();
 		
-		mTabs.init({
-			container: '.chrome-tabs-shell',
-			minWidth: 20,
-			maxWidth: 100,
-			
-			deactivated: tabDeactivated,
-			activated: tabActivated,
-			closed: tabClosed
-		});
-        
         mFilesPanel.init(this, mIO);
+        mTabs.init({
+            onFocus: onTabFocus,
+            onBlur:  onTabBlur,
+            onClose: onTabClose
+        });
         
         // TODO: read data from disk, using last open directory.
 		mIO.readDirectory('/Users/fernando/Downloads/codebot_test', mFilesPanel.load);

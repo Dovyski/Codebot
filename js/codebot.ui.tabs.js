@@ -1,6 +1,7 @@
 /*
 	The MIT License (MIT)
-	Copyright (c) 2013 Adam Schwartz
+
+	Copyright (c) 2013 Fernando Bevilacqua
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy of
 	this software and associated documentation files (the "Software"), to deal in
@@ -20,9 +21,110 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+var CodebotTabs = function() {
+    var mTabController  = null;
+    var mCurrentTab     = null;
+    var mListeners      = {};
+    
+    var updateTabStatus = function(theTab, theEvent) {
+        var aData = theTab.data('tabData').data;
+		
+        aData.index = theTab.index();
+        
+        if(mListeners[theEvent]) {
+            mListeners[theEvent](aData);
+        }
+        
+        //console.debug('Tab ' + theEvent, theTab.index(), ', title:', $.trim(theTab.text()), ', data:', aData);
+    };
+    
+	var onTabClosed = function(theTab) {
+		updateTabStatus(theTab, 'onClose');
+	};
+	
+	var onTabDeactivated = function(theTab) {
+        updateTabStatus(theTab, 'onBlur');
+	};
+	
+	var onTabActivated = function(theTab) {
+		mCurrentTab = theTab;
+        updateTabStatus(theTab, 'onFocus');
+	};
+        
+    /**
+     * Adds a new tab.
+     *
+     * @param Object theConfig configuration used to create the new tab. Structure:
+     *
+     * {
+     *    favicon: String,      // FontAwesome class, e.g. <code>file-text-o</code>
+     *    title: String,        // Tab title.
+     *    editor: Object,       // Instance of an editor able to manipulate the content, e.g. CodeMirror.
+     *    file: String,         // File name. E.g. <code>codebot.js</code>
+     *    path: String,         // File path. E.g. <code>/home/user/project/codebot.js</code>
+     *    data: Object,         // (Optional) Any special data you want connected to that tab (read it later at <code>tab.data</code>).
+     * }
+     */
+    this.add = function(theConfig) {
+        var aTab = {};
+        $.extend(aTab, theConfig);
+        
+        aTab.index = -1; // TODO: fix index mess!
+        
+        mTabController.add({
+            favicon: theConfig.favicon || 'file-text-o',
+            title: theConfig.title,
+            data: aTab
+        });
+	};
+    
+    
+    this.remove = function(theIndex) {
+        // TODO: remove tab
+    };
+    
+    this.init = function(theEvents) {
+        mListeners = theEvents;
+        
+        // get tab context from codebot.ui.tabs.js
+		mTabController = window.chromeTabs;
+		
+		mTabController.init({
+			container: '.chrome-tabs-shell',
+			minWidth: 20,
+			maxWidth: 100,
+			
+			deactivated: onTabDeactivated,
+			activated: onTabActivated,
+			closed: onTabClosed
+		});
+    };
+};
 
-// NOTE: original code has been modified by Fernando Bevilacqua <dovyski@gmail.com>
 
+/*
+	The MIT License (MIT)
+	Copyright (c) 2013 Adam Schwartz
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy of
+	this software and associated documentation files (the "Software"), to deal in
+	the Software without restriction, including without limitation the rights to
+	use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+	the Software, and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+	FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+	COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    
+    NOTE: original code has been modified by Fernando Bevilacqua <dovyski@gmail.com>
+*/
 
 (function() {
   var $, chromeTabs, defaultNewTabData, tabTemplate, $shell, opts;
