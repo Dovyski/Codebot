@@ -64,7 +64,7 @@ var CodebotShortcuts = function() {
         for(aCommand in aShortcuts) {
             aKey = aShortcuts[aCommand];
             // TODO: better error handling when no method is available (key binding error)
-            Mousetrap.bind(aKey, aShortcutsMethods[aCommand]);
+            Mousetrap.bindGlobal(aKey, aShortcutsMethods[aCommand]);
             
             console.debug('CODEBOT [keybind] ' + aKey + ' = ' + aCommand);
         }
