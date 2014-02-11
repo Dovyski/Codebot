@@ -22,77 +22,17 @@
 */
 
 var CodebotUI = function() {
+    // Private properties
 	var mTabs 				= null;
 	var mFilesPanel         = null;
     var mIO                 = null;
     var mSelf               = null;
     
+    // Public properties. TODO: make something better than this...
+    this.tabs               = null;
+    
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
-	};
-	
-	var onTabClose = function(theTab) {
-		var aEditor = theTab.editor;
-		var aEditorNode = aEditor ? aEditor.getWrapperElement() : null;
-		
-		// TODO: make a pretty confirm dialog.
-		// TODO: only confirm if content has changed.
-		if(aEditor && confirm("Save content before closing?")) {
-			mIO.writeFile(theTab, aEditor.getDoc().getValue(), function() { console.log('Data written!');} );
-		}
-
-		if(aEditorNode) {
-            aEditorNode.parentNode.removeChild(aEditorNode);
-        }
-		theTab.editor = null;
-		
-		console.debug('onTabClose', theTab);
-	};
-	
-	var onTabBlur = function(theTab) {
-		var aTabEditor = null;
-		
-		aTabEditor = theTab.editor;
-        
-        if(aTabEditor) {
-		  aTabEditor.getWrapperElement().style.display = 'none';
-        }
-		
-        console.debug('onTabBlur', theTab);
-	};
-	
-	var onTabFocus = function(theTab) {
-		var aTabEditor = null;
-		
-		// Show the content of the newly active tab.
-		aTabEditor = theTab.editor;
-        
-		if(aTabEditor) {
-            aTabEditor.getWrapperElement().style.display = 'block';
-        }
-		
-        console.debug('onTabFocus', theTab);
-	};
-	
-	// TODO: should receive node instead of data.
-    this.openTab = function(theNodeData) {
-        var aEditorPrefs = {};
-        $.extend(aEditorPrefs, CODEBOT.getPrefs().editor);
-        
-		mIO.readFile(theNodeData, function(theData) {
-            aEditorPrefs['mode']        = 'javascript', // TODO: dynamic mode?
-            aEditorPrefs['value']       = theData;
-            aEditorPrefs['autofocus']   = true;
-                
-			mTabs.add({
-				favicon: 'file-text-o', // TODO: dynamic icon?
-				title: theNodeData.name,
-				editor: CodeMirror(document.getElementById('working-area'), aEditorPrefs),
-				file: theNodeData.name,
-				path: theNodeData.path,
-                //TODO: add "entry: theNodeData.entry" for Chrome Packaged Apps
-			});
-		});
 	};
     
     // TODO: implement a pretty confirm dialog/panel
@@ -138,13 +78,12 @@ var CodebotUI = function() {
         mTabs       = new CodebotTabs();
 		
         mFilesPanel.init(this, mIO);
-        mTabs.init({
-            onFocus: onTabFocus,
-            onBlur:  onTabBlur,
-            onClose: onTabClose
-        });
+        mTabs.init(this, mIO);
         
         // TODO: read data from disk, using last open directory.
 		mIO.readDirectory('/Users/fernando/Downloads/codebot_test', mFilesPanel.load);
+        
+        // Init getters
+        this.tabs = mTabs;
 	};
 };

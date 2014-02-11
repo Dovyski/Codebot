@@ -22,35 +22,60 @@
 */
 
 var CodebotTabs = function() {
+    var mSelf           = null;
     var mTabController  = null;
     var mCurrentTab     = null;
-    var mListeners      = {};
+    var mIO             = null;
+    var mUI             = null;
     
-    var updateTabStatus = function(theTab, theEvent) {
-        var aData = theTab.data('tabData').data;
+    var onTabClose = function(theTab) {
+        var aData       = theTab.data('tabData').data;
+		var aEditor     = aData.editor;
+		var aEditorNode = aEditor ? aEditor.getWrapperElement() : null;
 		
-        aData.index = theTab.index();
-        
-        if(mListeners[theEvent]) {
-            mListeners[theEvent](aData);
+		// TODO: make a pretty confirm dialog.
+		// TODO: only confirm if content has changed.
+		if(aEditor && confirm("Save content before closing?")) {
+			mIO.writeFile(aData, aEditor.getDoc().getValue(), function() { console.log('Data written!');} );
+		}
+
+		if(aEditorNode) {
+            aEditorNode.parentNode.removeChild(aEditorNode);
         }
-        
-        //console.debug('Tab ' + theEvent, theTab.index(), ', title:', $.trim(theTab.text()), ', data:', aData);
-    };
-    
-	var onTabClosed = function(theTab) {
-		updateTabStatus(theTab, 'onClose');
+		aData.editor = null;
+		
+		console.debug('onTabClose', aData);
 	};
 	
-	var onTabDeactivated = function(theTab) {
-        updateTabStatus(theTab, 'onBlur');
+	var onTabBlur = function(theTab) {
+        var aData = theTab.data('tabData').data;
+		var aTabEditor = null;
+		
+		aTabEditor = aData.editor;
+        
+        if(aTabEditor) {
+		  aTabEditor.getWrapperElement().style.display = 'none';
+        }
+		
+        console.debug('onTabBlur', aData);
 	};
 	
-	var onTabActivated = function(theTab) {
-		mCurrentTab = theTab;
-        updateTabStatus(theTab, 'onFocus');
-	};
+	var onTabFocus = function(theTab) {
+        var aData = theTab.data('tabData').data;
+		var aTabEditor = null;
         
+        mCurrentTab = theTab;
+		
+		// Show the content of the newly active tab.
+		aTabEditor = aData.editor;
+        
+		if(aTabEditor) {
+            aTabEditor.getWrapperElement().style.display = 'block';
+        }
+		
+        console.debug('onTabFocus', aData);
+	};
+            
     /**
      * Adds a new tab.
      *
@@ -83,8 +108,10 @@ var CodebotTabs = function() {
         // TODO: remove tab
     };
     
-    this.init = function(theEvents) {
-        mListeners = theEvents;
+    this.init = function(theUI, theIO) {
+        mSelf = this;
+        mUI   = theUI;
+        mIO   = theIO;
         
         // get tab context from codebot.ui.tabs.js
 		mTabController = window.chromeTabs;
@@ -94,9 +121,9 @@ var CodebotTabs = function() {
 			minWidth: 20,
 			maxWidth: 100,
 			
-			deactivated: onTabDeactivated,
-			activated: onTabActivated,
-			closed: onTabClosed
+			deactivated: onTabBlur,
+			activated: onTabFocus,
+			closed: onTabClose
 		});
     };
 };

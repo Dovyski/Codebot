@@ -31,14 +31,37 @@ var CodebotFilesPanel = function() {
 	};
 	
 	var onDoubleClick = function(theEvent, theItem) {
-		var aData = theItem.node.data;
+		var aNode = theItem.node;
 		
-		console.debug('File panel double click: ' + theEvent + ' , folder: ' + theItem.node.folder);
+		console.debug('File panel double click: ' + theEvent + ' , folder: ' + aNode.folder);
 		
-		if(!theItem.node.folder) {
-			mUI.openTab(aData);
+		if(!aNode.folder) {
+            openNodeInTab(aNode);    
 		}
 	};
+    
+    var openNodeInTab = function(theNode) {
+        var aEditorPrefs = {};
+        $.extend(aEditorPrefs, CODEBOT.getPrefs().editor);
+
+        aEditorPrefs.mode        = 'javascript', // TODO: dynamic mode?
+        aEditorPrefs.value       = '';
+        aEditorPrefs.autofocus   = true;
+
+        // Create a new tab based on node data    
+        mIO.readFile(theNode.data, function(theData) {
+            aEditorPrefs.value = theData;
+
+            mUI.tabs.add({
+                favicon: 'file-text-o', // TODO: dynamic icon?
+                title: theNode.data.name,
+                editor: CodeMirror(document.getElementById('working-area'), aEditorPrefs),
+                file: theNode.data.name,
+                path: theNode.data.path
+                //TODO: add "entry: theNodeData.entry" for Chrome Packaged Apps
+            });
+        });
+    };
     
     var onDragStart = function(theNode, theDragData) {
         /** This function MUST be defined to enable dragging for the tree.
