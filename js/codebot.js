@@ -62,6 +62,15 @@ var CODEBOT = new function() {
         console.log('CODEBOT [plugins] Plugins loaded.');
     };
     
+    
+    this.writeTabToDisk = function(theTab) {
+		var aEditor = theTab.editor;
+		
+		if(aEditor) {
+			mIO.writeFile(theTab, aEditor.getDoc().getValue(), function() { console.log('Tab data written to disk!');} );
+		}
+    };
+    
 	this.handlePluginClick = function(thePluginId) {
 		invoke(mPlugins[thePluginId], 'clicked');
 		

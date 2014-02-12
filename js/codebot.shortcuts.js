@@ -27,8 +27,14 @@ var CodebotShortcuts = function() {
     var mPrefs  = null;
     var mSelf   = null;
     
-    var saveCurrentTab = function() {
-        console.debug('Save current file');
+    var saveActiveTab = function() {
+        var aTab = mUI.tabs.active;
+        
+        if(aTab) {
+            CODEBOT.writeTabToDisk(aTab);
+        }
+        
+        console.debug('Save active tab to disk.');
     };
     
     var newFile = function() {
@@ -54,7 +60,7 @@ var CodebotShortcuts = function() {
         var aCommand = null;
         var aKey = null;
         var aShortcutsMethods = {
-            'saveCurrentTab':   saveCurrentTab,
+            'saveActiveTab':    saveActiveTab,
             'newFile':          newFile,
             'chooseFile':       chooseFile,
             'closeTab':         closeTab,

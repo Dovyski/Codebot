@@ -24,8 +24,7 @@
 var CodebotTabs = function() {
     var mSelf           = null;
     var mTabController  = null;
-    var mCurrentTab     = null;
-    var mIO             = null;
+    var mActiveTab      = null;
     var mUI             = null;
     
     var onTabClose = function(theTab) {
@@ -36,7 +35,7 @@ var CodebotTabs = function() {
 		// TODO: make a pretty confirm dialog.
 		// TODO: only confirm if content has changed.
 		if(aEditor && confirm("Save content before closing?")) {
-			mIO.writeFile(aData, aEditor.getDoc().getValue(), function() { console.log('Data written!');} );
+			CODEBOT.writeTabToDisk(aData);
 		}
 
 		if(aEditorNode) {
@@ -64,7 +63,7 @@ var CodebotTabs = function() {
         var aData = theTab.data('tabData').data;
 		var aTabEditor = null;
         
-        mCurrentTab = theTab;
+        mActiveTab = theTab;
 		
 		// Show the content of the newly active tab.
 		aTabEditor = aData.editor;
@@ -108,10 +107,9 @@ var CodebotTabs = function() {
         // TODO: remove tab
     };
     
-    this.init = function(theUI, theIO) {
+    this.init = function(theUI) {
         mSelf = this;
         mUI   = theUI;
-        mIO   = theIO;
         
         // get tab context from codebot.ui.tabs.js
 		mTabController = window.chromeTabs;
@@ -126,6 +124,12 @@ var CodebotTabs = function() {
 			closed: onTabClose
 		});
     };
+    
+    // Getters and setters
+    
+    this.__defineGetter__("active", function(){
+        return mActiveTab ? mActiveTab.data('tabData').data : null;
+    });
 };
 
 

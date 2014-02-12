@@ -34,7 +34,7 @@
     },
     
     shortcuts: {
-        saveCurrentTab: 'mod+s',
+        saveActiveTab: 'mod+s',
         newFile: 'mod+n',
         chooseFile: 'mod+o',
         closeTab: 'mod+w',
