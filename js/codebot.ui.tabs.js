@@ -32,11 +32,6 @@ var CodebotTabs = function() {
 		var aEditor     = aData.editor;
 		var aEditorNode = aEditor ? aEditor.getWrapperElement() : null;
 		
-		// TODO: only write to disk if content has changed.
-		if(aEditor) {
-			CODEBOT.writeTabToDisk(aData);
-		}
-
 		if(aEditorNode) {
             aEditorNode.parentNode.removeChild(aEditorNode);
         }
@@ -79,11 +74,36 @@ var CodebotTabs = function() {
      *
      * @return bool <code>true</code> if the tab can be closed, or <code>false</code> otherwise (tab will remain open).
      */
-    var onTabShouldClose = function(theTab) {
-        // TODO: make a pretty confirm dialog with "yes", "no" and "cancel".
+    var tabPreClose = function(theTab) {
         // TODO: check if file has changes
         var aHasChanges = true;
-        return aHasChanges ? confirm("Save content before closing?") : true;
+        var aData = theTab.data('tabData').data;
+        
+        if(aHasChanges) {
+            mUI.showDialog({
+                keyboard: true,
+                title: 'Important',
+                content: 'This file has changes. Do you want to save them?',
+                buttons: {
+                    'Yes': {css: 'btn-primary', dismiss: true, callback: function() {
+                        CODEBOT.writeTabToDisk(aData);
+                        mTabController.closeTab(theTab);
+                    }},
+                    'No': {css: 'btn-default', dismiss: true, callback: function() {
+                        mTabController.closeTab(theTab);
+                    }},
+                    'Cancel': {css: 'btn-default', dismiss: true}
+                }
+            });
+            
+            // Inform the tab to remain active until the user has decided what
+            // to do with it (using the dialog above)
+            return false;
+            
+        } else {
+            // No changes, it's clear to go!
+            return true;
+        }
     };
             
     /**
@@ -117,8 +137,7 @@ var CodebotTabs = function() {
     this.remove = function(theTabData) {
         var aTabRaw = mTabController.getRawTabByData(theTabData);
         
-        // TODO: if user clicks cancel, remove() should keep the tab open.
-        if(aTabRaw) {
+        if(aTabRaw && tabPreClose(aTabRaw)) {
             mTabController.closeTab(aTabRaw);
         }
     };
@@ -138,7 +157,7 @@ var CodebotTabs = function() {
 			deactivated: onTabBlur,
 			activated: onTabFocus,
 			closed: onTabClose,
-			shouldClose: onTabShouldClose
+			shouldClose: tabPreClose
 		});
     };
     
