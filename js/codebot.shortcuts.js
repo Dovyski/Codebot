@@ -51,8 +51,14 @@ var CodebotShortcuts = function() {
     };
     
     var closeTab = function() {
+        var aTab = mUI.tabs.active;
+        console.log(aTab);
+        if(aTab) {
+            mUI.tabs.remove(aTab);
+        }
+        
         console.debug('Close current tab!');
-        return false;
+        return false; // prevent browser's default behavior
     };
 	
     var createKeyBindings = function() {

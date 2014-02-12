@@ -59,7 +59,7 @@ var CodebotFilesPanel = function() {
                 file: theNode.data.name,
                 path: theNode.data.path
                 //TODO: add "entry: theNodeData.entry" for Chrome Packaged Apps
-            });
+            });            
         });
     };
     

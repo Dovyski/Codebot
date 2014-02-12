@@ -103,8 +103,13 @@ var CodebotTabs = function() {
 	};
     
     
-    this.remove = function(theIndex) {
-        // TODO: remove tab
+    this.remove = function(theTabData) {
+        var aTabRaw = mTabController.getRawTabByData(theTabData);
+        
+        // TODO: if user clicks cancel, remove() should keep the tab open.
+        if(aTabRaw) {
+            mTabController.closeTab(aTabRaw);
+        }
     };
     
     this.init = function(theUI) {
@@ -256,7 +261,7 @@ var CodebotTabs = function() {
           return chromeTabs.setCurrent($tab);
         });
         return $tab.find('.chrome-tab-close').unbind('click').click(function() {
-          return chromeTabs.closeTab($shell, $tab);
+          return chromeTabs.closeTab($tab);
         });
       });
     },
@@ -279,7 +284,7 @@ var CodebotTabs = function() {
 	  
       return chromeTabs.render($shell);
     },
-    closeTab: function($shell, $tab) {
+    closeTab: function($tab) {
       if ($tab.hasClass('chrome-tab-current') && $tab.prev().length) {
         chromeTabs.setCurrent($tab.prev());
       }
@@ -292,7 +297,20 @@ var CodebotTabs = function() {
       $tab.find('.chrome-tab-title').html(tabData.title);
       $tab.find('.chrome-tab-favicon').html('<i class="fa fa-'+tabData.favicon+'"></i>');
       return $tab.data().tabData = tabData;
-    }
+    },
+    getRawTabByData: function(data) {
+      var ret = null;
+      $shell.find('.chrome-tab').each(function() {
+        var $tab;
+        $tab = $(this);
+        // TODO: PLEASE, FIX THIS MESS!
+        if($tab.data('tabData').data == data) {
+          ret = $tab;
+          return false;
+        }
+      });
+      return ret;
+    },
   };
   
   window.chromeTabs = chromeTabs; 
