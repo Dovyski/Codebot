@@ -32,9 +32,8 @@ var CodebotTabs = function() {
 		var aEditor     = aData.editor;
 		var aEditorNode = aEditor ? aEditor.getWrapperElement() : null;
 		
-		// TODO: make a pretty confirm dialog.
-		// TODO: only confirm if content has changed.
-		if(aEditor && confirm("Save content before closing?")) {
+		// TODO: only write to disk if content has changed.
+		if(aEditor) {
 			CODEBOT.writeTabToDisk(aData);
 		}
 
@@ -74,6 +73,18 @@ var CodebotTabs = function() {
 		
         console.debug('onTabFocus', aData);
 	};
+    
+    /**
+     * Invoked by the tab manager to check if the tab can be closed or not.
+     *
+     * @return bool <code>true</code> if the tab can be closed, or <code>false</code> otherwise (tab will remain open).
+     */
+    var onTabShouldClose = function(theTab) {
+        // TODO: make a pretty confirm dialog with "yes", "no" and "cancel".
+        // TODO: check if file has changes
+        var aHasChanges = true;
+        return aHasChanges ? confirm("Save content before closing?") : true;
+    };
             
     /**
      * Adds a new tab.
@@ -126,7 +137,8 @@ var CodebotTabs = function() {
 			
 			deactivated: onTabBlur,
 			activated: onTabFocus,
-			closed: onTabClose
+			closed: onTabClose,
+			shouldClose: onTabShouldClose
 		});
     };
     
@@ -261,7 +273,13 @@ var CodebotTabs = function() {
           return chromeTabs.setCurrent($tab);
         });
         return $tab.find('.chrome-tab-close').unbind('click').click(function() {
-          return chromeTabs.closeTab($tab);
+          var shouldClose = true;
+          if(opts.shouldClose) {
+              shouldClose = opts.shouldClose($tab);
+          }
+          if(shouldClose) {
+            return chromeTabs.closeTab($tab);
+          }
         });
       });
     },
