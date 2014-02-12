@@ -37,8 +37,14 @@ var CodebotUI = function() {
     
     // TODO: implement a pretty confirm dialog/panel
     this.confirm = function(theMessage) {
-        mSelf.log('Confirm? ' + theMessage);
-        return true;
+        mSelf.showDialog({
+            keyboard: true,
+            title: 'Confirm?',
+            content: 'Confirm something',
+            buttons: {
+                'Label': {css: 'btn-default', dismiss: true, callback: function() { console.log('hey!'); }}
+            }
+        });
     };
     
     this.log = function(theText) {
@@ -68,6 +74,49 @@ var CodebotUI = function() {
 			CODEBOT.handlePluginClick($(this).data('plugin'));
 		});
 	};
+    
+    /**
+     * Shows a dialog in the screen.
+     *
+     * @param Object theConfig how the dialog should be displayed. The structure is:
+     * {
+     *  backdrop: boolean | 'static' // Includes a modal-backdrop element. Alternatively, specify static for a backdrop which doesn't close the modal on click.
+     *  keyboard: boolean, // Closes the modal when escape key is pressed
+     *  title: string, // Dialog title
+     *  content: string, // Dialog content
+     *  buttons: {
+     *      'label': {css: string, dismiss: boolean, callback: Function},
+     *      'label1': {css: string, dismiss: boolean, callback: Function},
+     *      (...)
+     *  }
+     * }
+     */
+    this.showDialog = function(theConfig) {
+        var aText = '';
+        
+        $('#defaultModal .modal-body').html(theConfig.content || '');
+        $('#defaultModal .modal-title').html(theConfig.title || '');
+        $('#defaultModal .modal-footer').empty();
+        
+        if(theConfig.buttons) {
+            for(var i in theConfig.buttons) {
+                aText += '<button type="button" class="btn '+theConfig.buttons[i].css+'" ' + 
+                         (theConfig.buttons[i].dismiss ? 'data-dismiss="modal"' : '') + 
+                         '>'+i+'</button>';
+            }
+            $('#defaultModal .modal-footer').html(aText);
+            
+            $('#defaultModal .modal-footer button').click(function(theEvent) {
+                var aLabel = $(theEvent.currentTarget).html();
+
+                if(theConfig.buttons[aLabel].callback) {
+                    theConfig.buttons[aLabel].callback();
+                }
+            });
+        }
+        
+        $('#defaultModal').modal(theConfig);
+    }
 	
 	this.init = function(theIO) {
         console.log('CODEBOT [ui] Building UI');

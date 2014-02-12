@@ -9,6 +9,10 @@
     <script type="text/javascript" src="./js/3rdparty/jquery/jquery.min.js"></script>
 	<script type="text/javascript" src="./js/3rdparty/jquery/jquery-ui.min.js"></script>
 		
+    <!-- Bootstrap -->
+    <link href="./js/3rdparty/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="./js/3rdparty/bootstrap/js/bootstrap.min.js"></script>
+    
     <!-- FontAwesome -->
     <link href="./css/3rdparty/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     
@@ -61,6 +65,25 @@
 	</div>
     
     <div id="console"></div>
+    
+    <!-- Default modal -->
+    <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="defaultModalLabel">Modal title</h4>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
 	
 	<script type="text/javascript" src="./js/codebot.js"></script>
     <script type="text/javascript" src="./js/codebot.utils.js"></script>
