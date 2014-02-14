@@ -130,7 +130,7 @@ var CodebotUI = function() {
         mTabs.init(this);
         
         // TODO: read data from disk, using last open directory.
-		mIO.readDirectory('/Users/fernando/Downloads/codebot_test', mFilesPanel.load);
+        //mFilesPanel.load('/Users/fernando/Downloads/codebot_test');
         
         // Init getters
         this.tabs = mTabs;

@@ -25,8 +25,11 @@ var CodebotFilesPanel = function() {
     var mUI = null;
     var mIO = null;
     var mSelf = null;
+    var mFocusedNode = null;
+    var mRootNode = null;
     
     var onClick = function(theEvent, theItem) {
+        mFocusedNode = theItem;
         console.debug('FilesPanel.click() ', theEvent, theItem);
 	};
 	
@@ -168,14 +171,14 @@ var CodebotFilesPanel = function() {
         }
     };
     
-    this.load = function(theData) {
+    var onTreeLoaded = function(theData) {
 		if(theData && theData.length > 0) {
             // TODO: improve this! fancytree should init just once
 			$("#folders").fancytree({
                 extensions: ['dnd', 'edit', 'awesome', 'contextMenu'],
 				click: onClick,
 				dblclick: onDoubleClick,
-				source: theData,
+				source: [{title: 'Project', folder: true, key: 'root', expanded: true, children: theData}], // TODO: this should come from IO layer.
 				checkbox: false,
 				selectMode: 3,
                 debugLevel: 0,
@@ -217,6 +220,11 @@ var CodebotFilesPanel = function() {
 			$("#folders").html('<div class="">no</div>');
 		}
 	};
+    
+    this.load = function(thePath) {
+        mRootNode = thePath; // TODO: extend object?
+        mIO.readDirectory(thePath, onTreeLoaded);
+    };
     
     this.init = function(theUI, theIO) {
         mUI = theUI;
