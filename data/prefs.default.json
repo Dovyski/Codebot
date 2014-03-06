@@ -38,6 +38,7 @@
         newFile: 'mod+n',
         chooseFile: 'mod+o',
         closeTab: 'mod+w',
+        renameNode: 'f2',
         exit: 'mod+q'
     }
 }

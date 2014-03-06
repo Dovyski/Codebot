@@ -27,10 +27,7 @@ var CodebotUI = function() {
 	var mFilesPanel         = null;
     var mIO                 = null;
     var mSelf               = null;
-    
-    // Public properties. TODO: make something better than this...
-    this.tabs               = null;
-    
+        
 	var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
 	};
@@ -135,4 +132,13 @@ var CodebotUI = function() {
         // Init getters
         this.tabs = mTabs;
 	};
+    
+    // getters
+    this.__defineGetter__("tabs", function(){
+        return mTabs;
+    });
+    
+    this.__defineGetter__("filesPanel", function(){
+        return mFilesPanel;
+    });
 };

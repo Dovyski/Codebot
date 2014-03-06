@@ -29,6 +29,11 @@ var CodebotFilesPanel = function() {
     var mRootNode = null;
     
     var onClick = function(theEvent, theItem) {
+        // If the currently focused node has the rename form active,
+        // close it and finish the renaming process.
+        if(mFocusedNode && mFocusedNode.node.isEditing()) {
+            mFocusedNode.node.endEdit();
+        }
         mFocusedNode = theItem;
         console.debug('FilesPanel.click() ', theEvent, theItem);
 	};
@@ -193,7 +198,8 @@ var CodebotFilesPanel = function() {
                 },
                 edit: {
                     save: onRename,
-                    triggerStart: ['f2', 'shift+click'],
+                    triggerCancel: ['esc', 'tab', 'click'],
+                    triggerStart: ['f2']
                 },
                 contextMenu: {
                     menu: {
@@ -220,6 +226,13 @@ var CodebotFilesPanel = function() {
 			$("#folders").html('<div class="">no</div>');
 		}
 	};
+    
+    this.renameFocusedNode = function() {
+        if(mFocusedNode) {
+            mFocusedNode.node.startEdit();
+            console.log('Open rename panel', mFocusedNode);
+        }
+    };
     
     this.load = function(thePath) {
         mRootNode = thePath; // TODO: extend object?

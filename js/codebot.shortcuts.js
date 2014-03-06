@@ -45,6 +45,11 @@ var CodebotShortcuts = function() {
         console.debug('Show dialog to open file');
     };
     
+    var renameNode = function() {
+        mUI.filesPanel.renameFocusedNode();
+        console.debug('Rename node');
+    };
+    
     var exit = function() {
         console.debug('Exit application!');
         return false;
@@ -70,6 +75,7 @@ var CodebotShortcuts = function() {
             'newFile':          newFile,
             'chooseFile':       chooseFile,
             'closeTab':         closeTab,
+            'renameNode':       renameNode,
             'exit':             exit
         };
 

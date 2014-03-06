@@ -223,7 +223,7 @@ $.ui.fancytree.registerExtension({
 		adjustWidthOfs: 4,   // null: don't adjust input size to content
 		inputCss: {minWidth: "3em"},
 		triggerCancel: ["esc", "tab", "click"],
-		triggerStart: ["f2", "dblclick", "shift+click", "mac+enter"],
+		triggerStart: ["f2"],
 		beforeClose: $.noop, // Return false to prevent cancel/save (data.input is available)
 		beforeEdit: $.noop,  // Return false to prevent edit mode
 		close: $.noop,       // Editor was removed
