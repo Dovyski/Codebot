@@ -169,7 +169,7 @@ var CodebotFilesPanel = function() {
                         console.error('Problem with createDirectory!');
                     } else {
                         // TODO: refreash filesPanel
-                        mIO.readDirectory('/Users/fernando/Downloads/codebot_test', mSelf.load);
+                        mIO.readDirectory('/Users/fernando/Downloads/codebot_test', mSelf.populateTree);
                     }
                 });
                 break;
@@ -234,9 +234,10 @@ var CodebotFilesPanel = function() {
         }
     };
     
-    this.load = function(thePath) {
-        mRootNode = thePath; // TODO: extend object?
-        mIO.readDirectory(thePath, onTreeLoaded);
+    this.populateTree = function(theNodes) {
+        if(theNodes) {
+            onTreeLoaded(theNodes);
+        }
     };
     
     this.init = function(theUI, theIO) {
@@ -246,7 +247,7 @@ var CodebotFilesPanel = function() {
         
         $('#files-panel header a').on('click', function() {
             mIO.chooseDirectory(function(thePath) {
-                mIO.readDirectory(thePath, mSelf.load);
+                mIO.readDirectory(thePath, mSelf.populateTree);
             });
         });
     };

@@ -127,7 +127,6 @@ var CodebotUI = function() {
         mTabs.init(this);
         
         // TODO: read data from disk, using last open directory.
-        //mFilesPanel.load('/Users/fernando/Downloads/codebot_test');
         
         // Init getters
         this.tabs = mTabs;
