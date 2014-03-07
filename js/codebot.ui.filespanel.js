@@ -27,6 +27,7 @@ var CodebotFilesPanel = function() {
     var mSelf = null;
     var mFocusedNode = null;
     var mRootNode = null;
+    var mTree = null;
     
     var onClick = function(theEvent, theItem) {
         // If the currently focused node has the rename form active,
@@ -176,55 +177,48 @@ var CodebotFilesPanel = function() {
         }
     };
     
-    var onTreeLoaded = function(theData) {
-		if(theData && theData.length > 0) {
-            // TODO: improve this! fancytree should init just once
-			$("#folders").fancytree({
-                extensions: ['dnd', 'edit', 'awesome', 'contextMenu'],
-				click: onClick,
-				dblclick: onDoubleClick,
-				source: [{title: 'Project', folder: true, key: 'root', expanded: true, children: theData}], // TODO: this should come from IO layer.
-				checkbox: false,
-				selectMode: 3,
-                debugLevel: 0,
-                
-                dnd: {
-                    preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
-                    preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
-                    autoExpandMS: 400,
-                    dragStart: onDragStart,
-                    dragEnter: onDragEnter,
-                    dragDrop: onDragDrop
-                },
-                edit: {
-                    save: onRename,
-                    triggerCancel: ['esc', 'tab', 'click'],
-                    triggerStart: ['f2']
-                },
-                contextMenu: {
-                    menu: {
-                        'edit': { 'name': 'Edit', 'icon': 'edit' },
-                        'rename': { 'name': 'Rename', 'icon': 'rename' },
-                        'delete': { 'name': 'Delete', 'icon': 'delete', 'disabled': true },
-                        'sep1': '---------',
-                        'new': {
-                            'name': 'New',
-                            'items': {
-                                'new-folder': { 'name': 'Folder' },
-                                'new-file': { 'name': 'File' }
-                            }
+    var initTree = function() {
+        $("#folders").fancytree({
+            extensions: ['dnd', 'edit', 'awesome', 'contextMenu'],
+            click: onClick,
+            dblclick: onDoubleClick,
+            source: [],
+            checkbox: false,
+            selectMode: 3,
+            debugLevel: 0,
+
+            dnd: {
+                preventVoidMoves: true, // Prevent dropping nodes 'before self', etc.
+                preventRecursiveMoves: true, // Prevent dropping nodes on own descendants
+                autoExpandMS: 400,
+                dragStart: onDragStart,
+                dragEnter: onDragEnter,
+                dragDrop: onDragDrop
+            },
+            edit: {
+                save: onRename,
+                triggerCancel: ['esc', 'tab', 'click'],
+                triggerStart: ['f2']
+            },
+            contextMenu: {
+                menu: {
+                    'edit': { 'name': 'Edit', 'icon': 'edit' },
+                    'rename': { 'name': 'Rename', 'icon': 'rename' },
+                    'delete': { 'name': 'Delete', 'icon': 'delete', 'disabled': true },
+                    'sep1': '---------',
+                    'new': {
+                        'name': 'New',
+                        'items': {
+                            'new-folder': { 'name': 'Folder' },
+                            'new-file': { 'name': 'File' }
                         }
-                    },
-                    actions: onContexAction
-                }
-			});
+                    }
+                },
+                actions: onContexAction
+            }
+        });
 			
-			var aDirs = $("#folders").fancytree("getTree");
-			aDirs.reload();
-			
-		} else {
-			$("#folders").html('<div class="">no</div>');
-		}
+        mTree = $("#folders").fancytree("getTree");
 	};
     
     this.renameFocusedNode = function() {
@@ -235,8 +229,9 @@ var CodebotFilesPanel = function() {
     };
     
     this.populateTree = function(theNodes) {
-        if(theNodes) {
-            onTreeLoaded(theNodes);
+        if(theNodes && theNodes.length > 0) {
+            mTree.reload([{title: 'Project', folder: true, key: 'root', expanded: true, children: theNodes}]); // TODO: this should come from IO layer.
+            console.debug('Tree has been populated.');
         }
     };
     
@@ -245,6 +240,8 @@ var CodebotFilesPanel = function() {
         mIO = theIO;
         mSelf = this;
         
+        initTree();
+                
         $('#files-panel header a').on('click', function() {
             mIO.chooseDirectory(function(thePath) {
                 mIO.readDirectory(thePath, mSelf.populateTree);
