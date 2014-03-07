@@ -36,9 +36,15 @@ var NodeWebkitFileSystem = function() {
         mSelf = this;
 	};
     
-    this.move = function(theOldPath, theNewPath, theCallback) {
-        fs.rename(theOldPath, theNewPath, function (theError) {
-            console.log('Rename "'+theOldPath+'" to "'+theNewPath+'"');
+    this.move = function(theOldNode, theNewNode, theCallback) {
+        fs.rename(theOldNode.path, theNewNode.path, function (theError) {
+            console.log('Rename "'+theOldNode.path+'" to "'+theNewNode.path+'"');
+            
+            if(!theError) {
+                theOldNode.path = theNewNode.path;
+                // TODO: change title, name , etc here.
+            }
+            
             theCallback(theError);
         });
     };

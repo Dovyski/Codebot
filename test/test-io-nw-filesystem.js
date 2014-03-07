@@ -11,6 +11,7 @@ var os      = require("os");
 var nwfs    = null;
 var tmp     = null;
 var workDir = null;
+var file    = null;
 
 eval(fs.readFileSync('./js/codebot.io.js')+'');
 eval(fs.readFileSync('./js/node-webkit/codebot.nw.filesystem.js')+'');
@@ -129,14 +130,40 @@ describe('IO [codebot.nw.filesystem]', function(){
         
         it('reads existent file', function(){
             nwfs.readDirectory(workDir, function(d) {
-                var f = d[0].children[0].children[0];
-                assert.ok(f);
+                file = d[0].children[0].children[0];
+                assert.ok(file);
                 
-                nwfs.readFile(f, function(e) {
+                nwfs.readFile(file, function(e) {
                     assert(!(e instanceof Error));
                     assert(e == 'New content of test.txt');
                 });    
             });
         });
+    });
+    
+    describe('#move()', function(){
+        it('rename existent file', function(){
+            nwfs.move(file, {path: workDir.path + '/a/test.new.name.txt'}, function(e) {
+                assert(!(e instanceof Error));
+                
+                var content = fs.readFileSync(workDir.path + '/a/test.new.name.txt') + '';
+                assert(content.length);
+            });
+        }); 
+        
+        it('move existent file', function(){
+            nwfs.move(file, {path: workDir.path + '/b/test.txt'}, function(e) {
+                assert(!(e instanceof Error));
+                
+                var content = fs.readFileSync(workDir.path + '/b/test.txt') + '';
+                assert(content.length);
+            });
+        }); 
+        
+        it('move inexistent file', function(){
+            nwfs.move({path: 'invalid:path'}, {path: workDir.path + '/c/should.not.be.here.txt'}, function(e) {
+                assert(e instanceof Error);
+            });
+        }); 
     });
 });
