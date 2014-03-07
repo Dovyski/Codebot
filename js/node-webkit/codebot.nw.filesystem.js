@@ -20,10 +20,10 @@
 	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
-var fs = require('fs');
-
-var NodeWebkitFileSystem = new function() {
+var NodeWebkitFileSystem = function() {
+    var fs = require('fs');
+    var os = require('os');
+    
 	this.driver = 'Node-webkit FileSystem';
         
 	this.init = function() {
@@ -37,21 +37,32 @@ var NodeWebkitFileSystem = new function() {
             theCallback(theError);
         });
     };
+    
+    this.getTempDirectory = function(theCallback) {
+        theCallback({
+            title: 'tmp',
+            folder: true,
+            key: 'tmp',
+            children: [],
+            path: os.tmpdir(),
+            name: 'tmp'
+        });
+    };
 	
     // Reference: http://stackoverflow.com/a/6358661/29827
-    this.readDirectory = function(thePath, theCallback) {
+    this.readDirectory = function(theNode, theCallback) {
         var walk = function(theDir) {
             var aResults = [];
             var aList = fs.readdirSync(theDir);
-            
+
             aList.forEach(function(theFile) {
                 var aNode = null;
                 var aName = theFile;
                 
-                theFile = theDir + '/' + theFile
+                theFile = theDir + theFile;
                 
                 var aStat = fs.statSync(theFile)
-                
+
                 if(aStat && aStat.isDirectory()) {
                     aNode = {
                         title: aName,
@@ -73,8 +84,15 @@ var NodeWebkitFileSystem = new function() {
 
             return aResults;
         };
-        
-        theCallback(walk(thePath));
+
+        theCallback([{
+            title: theNode.name,
+            folder: true,
+            key: theNode.key,
+            children: walk(theNode.path),
+            path: theNode.path,
+            name: theNode.name
+        }]);
     };
     
 	this.chooseDirectory = function(theCallback) {
@@ -108,16 +126,21 @@ var NodeWebkitFileSystem = new function() {
 	};
 	
 	this.createDirectory = function(theName, theNode, theCallback) {
-        var aPath = theNode.folder ? theNode.data.path : CODEBOT.utils.dirName(theNode.data.path);
+        var aPath = theNode.folder ? theNode.path : CODEBOT.utils.dirName(theNode.path);
         
         aPath += theName;
         
         console.log('Create directory "'+aPath+'"');
         
 		fs.mkdir(aPath, 0777, function (theError) {
-            theCallback(theError);
+            theCallback(theError || {
+                title: theName,
+                folder: true,
+                key: theName,
+                children: [],
+                path: aPath + '/',
+                name: theName
+            });
         });
 	};
 };
-
-CODEBOT.init(NodeWebkitFileSystem);

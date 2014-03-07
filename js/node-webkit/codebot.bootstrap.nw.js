@@ -36,4 +36,6 @@ fs.readFile('./js/node-webkit/codebot.nw.filesystem.js', function (theErr, theDa
     
     console.log('Bootstrapping using node-webkit FileSystem');
     eval(String(theData));
+    
+    CODEBOT.init(new NodeWebkitFileSystem());
 });

@@ -37,23 +37,38 @@ var CodebotIO = function() {
     };
     
     /**
+     * Gets a pointer to the temp directory where Codebot can write/read freely.
+     *
+     * @param {Function} theCallback - callback with signarure <code>func(node)</code>, where <code>node</code> has the following structure: <code>{title: string, folder: true, key: string, children: [nodes, ...], path: string, name: string}</code>.
+     */
+    this.getTempDirectory = function(theCallback) {
+        console.error("No IO controller has been loaded!");
+    };
+        
+    /**
+	 * Reads a directory, returning its structure as an array of nodes.
 	 *
+     * @param {Node} theNode - node to be used as the starting point. This node is first in the list returned by the method, containing all the directory structure as its children.
+     * @param {function} theCallback - callback invoked when the reading is done. It has thestructure <code>func(data)</code>, where <code>data</code> is:
 	 *
-	 * theCallback: function(data)
-	 *
-	 * "data" structure:
+	 * <code>
 	 *	 [
-	 *		{title: "Test.as", path: "/proj/folder/Test.as", name: "Test.as"},
-	 *		{title: "Folder 2", folder: true, key: "folder2",
-	 *		  children: [
-	 *			{title: "Test2.as", path: "/proj/folder/Test2.as", name: "Test2.as"},
-	 *			{title: "Test3.as", path: "/proj/folder/Test3.as", name: "Test3.as"}
-	 *		  ]
-	 *		},
-	 *		{title: "Test4.as", path: "/proj/folder/Test4.as", name: "Test4.as"}
+     *      {title: "theNode.title", path: "theNode.path", name: "theNode.name", folder: true, key: "theNode.key",
+     *          children: [
+	 *		       {title: "Test.as", path: "/proj/folder/Test.as", name: "Test.as"},
+	 *		       {title: "Folder 2", path: "/proj/folder/Folder 2", name: "Folder 2", folder: true, key: "folder2",
+	 *		           children: [
+	 *			          {title: "Test2.as", path: "/proj/folder/Test2.as", name: "Test2.as"},
+	 *			          {title: "Test3.as", path: "/proj/folder/Test3.as", name: "Test3.as"}
+	 *		           ]
+	 *		       },
+	 *		       {title: "Test4.as", path: "/proj/folder/Test4.as", name: "Test4.as"}
+     *          ]
+     *      }
 	 *	]
+     * </code>
 	 */
-    this.readDirectory = function(thePath, theCallback) {
+    this.readDirectory = function(theNode, theCallback) {
         console.error("No IO controller has been loaded!");
     };
     
@@ -82,7 +97,13 @@ var CodebotIO = function() {
 		console.error("No IO controller has been loaded!");
 	};
 	
-	// Creates a new directory.
+	/**
+     * Creates a new directory.
+     *
+     * @param {string} theName - name of the new directory
+     * @param {Node} theNode - node where the new directory will be created. See {@link getTempDirectory} for information about <code>Node</code> structure.
+     * @param {function} theCallback - callback like <code>func(err)</code>, where <code>err</code> will be not null if the operation fails.
+     */
 	this.createDirectory = function(theName, theNode, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
