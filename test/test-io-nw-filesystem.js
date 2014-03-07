@@ -38,6 +38,7 @@ describe('IO [codebot.nw.filesystem]', function(){
         it('works as a class', function(){
             nwfs = new NodeWebkitFileSystem();
             nwfs.init();
+            nwfs.console = {log: function() {}};
             
             assert.ok(nwfs);
         });
@@ -50,7 +51,7 @@ describe('IO [codebot.nw.filesystem]', function(){
         });
     });
     
-    describe('#getTempDirectory()', function(){
+    describe('getTempDirectory()', function(){
         it('returns accurate pointer', function(){
             nwfs.getTempDirectory(function(node) {
                 tmp = node;
@@ -64,7 +65,7 @@ describe('IO [codebot.nw.filesystem]', function(){
         });
     });
 
-    describe('#createDirectory()', function(){
+    describe('createDirectory()', function(){
         it('creates dir with valid name', function(done){
             nwfs.createDirectory(TESTING_DIR, tmp, function(n) {
                 assert.ok(n);
@@ -91,7 +92,7 @@ describe('IO [codebot.nw.filesystem]', function(){
         });
     });
     
-    describe('#readDirectory()', function(){
+    describe('readDirectory()', function(){
         it('reads valid dir', function(){
             nwfs.readDirectory(workDir, function(d) {
                 assert(d instanceof Array);
@@ -105,7 +106,7 @@ describe('IO [codebot.nw.filesystem]', function(){
         });
     });
     
-    describe('#createFile()', function(){
+    describe('createFile()', function(){
         it('creates inexistent file', function(){
             nwfs.createFile('test.txt', workDir.children[0], 'Content of test.txt', function(e) {
                 var content = fs.readFileSync(workDir.children[0].path + '/' + 'test.txt') + '';
@@ -121,7 +122,7 @@ describe('IO [codebot.nw.filesystem]', function(){
         });
     });
     
-    describe('#readFile()', function(){
+    describe('readFile()', function(){
         it('reads inexistent file', function(){
             nwfs.readFile({path: 'invalid:path'}, function(e) {
                 assert(e instanceof Error);
@@ -141,7 +142,7 @@ describe('IO [codebot.nw.filesystem]', function(){
         });
     });
     
-    describe('#move()', function(){
+    describe('move()', function(){
         it('rename existent file', function(){
             nwfs.move(file, {path: workDir.path + '/a/test.new.name.txt'}, function(e) {
                 assert(!(e instanceof Error));

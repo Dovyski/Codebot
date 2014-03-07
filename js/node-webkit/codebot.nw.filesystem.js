@@ -26,6 +26,7 @@ var NodeWebkitFileSystem = function() {
     var os = require('os');
     
 	this.driver = 'Node-webkit FileSystem';
+    this.console = console;
         
 	this.init = function() {
         // Allow native dialogs to read directories. Needed by chooseDirectory().
@@ -38,7 +39,7 @@ var NodeWebkitFileSystem = function() {
     
     this.move = function(theOldNode, theNewNode, theCallback) {
         fs.rename(theOldNode.path, theNewNode.path, function (theError) {
-            console.log('Rename "'+theOldNode.path+'" to "'+theNewNode.path+'"');
+            mSelf.console.log('Rename "'+theOldNode.path+'" to "'+theNewNode.path+'"');
             
             if(!theError) {
                 theOldNode.path = theNewNode.path;
@@ -128,12 +129,12 @@ var NodeWebkitFileSystem = function() {
             fs.writeFileSync(theNode.path, theData);
             
         } catch (e) { 
-            console.error("Write failed: " + e);
+            mSelf.console.error("Write failed: " + e);
             theCallback(e);
             return;
         }
         
-        console.log("Write completed.");
+        mSelf.console.log("Write completed.");
         theCallback();
 	};
     
@@ -146,7 +147,7 @@ var NodeWebkitFileSystem = function() {
         
         aPath += theName;
         
-        console.log('Create directory "'+aPath+'"');
+        mSelf.console.log('Create directory "'+aPath+'"');
         
 		fs.mkdir(aPath, 0777, function (theError) {
             theCallback(theError || {
