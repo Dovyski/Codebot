@@ -96,6 +96,11 @@ var CodebotIO = function() {
 	this.writeFile = function(theNode, theData, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
+    
+    // Creates a file
+	this.createFile = function(theName, theNode, theData, theCallback) {
+		console.error("No IO controller has been loaded!");
+	};
 	
 	/**
      * Creates a new directory.

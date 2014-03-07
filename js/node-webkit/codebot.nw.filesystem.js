@@ -21,6 +21,7 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 var NodeWebkitFileSystem = function() {
+    var mSelf = null;
     var fs = require('fs');
     var os = require('os');
     
@@ -28,7 +29,11 @@ var NodeWebkitFileSystem = function() {
         
 	this.init = function() {
         // Allow native dialogs to read directories. Needed by chooseDirectory().
-        $('body').append('<input style="display:none;" id="codebotNWFileDialog" type="file" nwdirectory />');
+        if(typeof($) == 'Function') {
+            $('body').append('<input style="display:none;" id="codebotNWFileDialog" type="file" nwdirectory />');
+        }
+        
+        mSelf = this;
 	};
     
     this.move = function(theOldPath, theNewPath, theCallback) {
@@ -59,7 +64,7 @@ var NodeWebkitFileSystem = function() {
                 var aNode = null;
                 var aName = theFile;
                 
-                theFile = theDir + theFile;
+                theFile = theDir + '/' + theFile;
                 
                 var aStat = fs.statSync(theFile)
 
@@ -108,21 +113,26 @@ var NodeWebkitFileSystem = function() {
 	
 	this.readFile = function(theNode, theCallback) {
         fs.readFile(theNode.path, function (theError, theData) {
-            if (theError) throw theError;
-            theCallback(String(theData));
+            theCallback(theError || String(theData));
         });
 	};
 	
 	this.writeFile = function(theNode, theData, theCallback) {
-        fs.writeFile(theNode.path, theData, function (theError) {
-            if (theError) {
-              console.error("Write failed: " + theError);
-              return;
-            }
+        try {
+            fs.writeFileSync(theNode.path, theData);
+            
+        } catch (e) { 
+            console.error("Write failed: " + e);
+            theCallback(e);
+            return;
+        }
         
-            console.log("Write completed.");
-            theCallback();
-        });
+        console.log("Write completed.");
+        theCallback();
+	};
+    
+    this.createFile = function(theName, theNode, theData, theCallback) {
+		mSelf.writeFile({path: theNode.path + theName}, theData, theCallback);
 	};
 	
 	this.createDirectory = function(theName, theNode, theCallback) {

@@ -36,6 +36,8 @@ describe('IO [codebot.nw.filesystem]', function(){
     describe('API', function(){
         it('works as a class', function(){
             nwfs = new NodeWebkitFileSystem();
+            nwfs.init();
+            
             assert.ok(nwfs);
         });
         
@@ -89,8 +91,6 @@ describe('IO [codebot.nw.filesystem]', function(){
     });
     
     describe('#readDirectory()', function(){
-        this.timeout(5000);
-        
         it('reads valid dir', function(){
             nwfs.readDirectory(workDir, function(d) {
                 assert(d instanceof Array);
@@ -98,7 +98,45 @@ describe('IO [codebot.nw.filesystem]', function(){
                 assert(d[0].children.length == 4);
                 
                 checkValidNode(d[0], true);
+                
+                workDir = d[0];
             }); 
+        });
+    });
+    
+    describe('#createFile()', function(){
+        it('creates inexistent file', function(){
+            nwfs.createFile('test.txt', workDir.children[0], 'Content of test.txt', function(e) {
+                var content = fs.readFileSync(workDir.children[0].path + '/' + 'test.txt') + '';
+                assert(content == 'Content of test.txt');
+            });
+        });
+        
+        it('updates existent file', function(){
+            nwfs.createFile('test.txt', workDir.children[0], 'New content of test.txt', function(e) {
+                var content = fs.readFileSync(workDir.children[0].path + '/' + 'test.txt') + '';
+                assert(content == 'New content of test.txt');
+            });
+        });
+    });
+    
+    describe('#readFile()', function(){
+        it('reads inexistent file', function(){
+            nwfs.readFile({path: 'invalid:path'}, function(e) {
+                assert(e instanceof Error);
+            });
+        });
+        
+        it('reads existent file', function(){
+            nwfs.readDirectory(workDir, function(d) {
+                var f = d[0].children[0].children[0];
+                assert.ok(f);
+                
+                nwfs.readFile(f, function(e) {
+                    assert(!(e instanceof Error));
+                    assert(e == 'New content of test.txt');
+                });    
+            });
         });
     });
 });
