@@ -147,9 +147,9 @@ var CodebotFilesPanel = function() {
         var aNewName = theData.value;
 
         if(aNewName != aNode.data.name) {
-            var aNewPath = {path: CODEBOT.utils.dirName(aNode.data.path) + aNewName}; // TODO: fix this, it breaks IO layer.
+            var aNewNode = {path: CODEBOT.utils.dirName(aNode.data.path, aNode.folder ? 3 : 1) + aNewName}; // TODO: fix this, it breaks IO layer.
             
-            mIO.move(aNode.data, aNewPath, function(theError) {
+            mIO.move(aNode.data, aNewNode, function(theError) {
                 if(theError) {
                     console.log('Problem with rename/move!');
                     // TODO: warn about error and reload tree.
@@ -184,6 +184,9 @@ var CodebotFilesPanel = function() {
                         // TODO: open node in new tab
                     }
                 });
+                break;
+            case 'rename':
+                theNode.startEdit();
                 break;
         }
     };

@@ -26,12 +26,22 @@ var CODEBOT = CODEBOT || {};
 CODEBOT.utils = new function() {
     
     /**
-     * Returns the "directory part" of a string representing a path. Ex.: /my/path/file returns /my/path/
+     * Returns the "directory part" of a string representing a path. E.g.: <code>/my/path/file</code> returns </code>/my/path/</code>
+     *
+     * @param {string} thePath - path to be analyzed
+     * @param {int} theHowManyCuts - how many directories the method should remove from the path. E.g. if <code>theHowManyCuts = 1</code> (default), the path <code>/my/path/file</code> results in </code>/my/path/</code>. If <code>theHowManyCuts = 2</code>, the path <code>/my/path/file</code> results in </code>/my/</code>.
+     * @returns {string} the path with some directories removed.
      */
-    this.dirName = function(thePath) {
+    this.dirName = function(thePath, theHowManyCuts) {
         // From: http://stackoverflow.com/a/1051303/29827
         var aParts = thePath.split(/(\\|\/|\:)/);
-        aParts.pop();
+        var i = 0;
+        
+        theHowManyCuts = theHowManyCuts || 1;
+        
+        while(i++ < theHowManyCuts) {
+            aParts.pop();
+        }
 
         return aParts.join('');
     };
