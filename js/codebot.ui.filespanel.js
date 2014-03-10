@@ -197,6 +197,26 @@ var CodebotFilesPanel = function() {
             case 'rename':
                 theNode.startEdit();
                 break;
+                
+            case 'delete':
+                mUI.showDialog({
+                    keyboard: true,
+                    title: 'Delete',
+                    content: 'Are you sure you want to delete this?',
+                    buttons: {
+                        'Yes': {css: 'btn-info', dismiss: true, callback: function() {
+                            mIO.delete(theNode.data, function(e) {
+                                if(e) {
+                                    console.log('Something went wrong when deleting file: ' + e);
+                                } else {
+                                    mSelf.refreshTree();
+                                }
+                            });
+                        }},
+                        'No': {css: 'btn-default', dismiss: true}
+                    }
+                });
+                break;
         }
     };
     
@@ -227,7 +247,7 @@ var CodebotFilesPanel = function() {
                 menu: {
                     'edit': { 'name': 'Edit', 'icon': 'edit' },
                     'rename': { 'name': 'Rename', 'icon': 'rename' },
-                    'delete': { 'name': 'Delete', 'icon': 'delete', 'disabled': true },
+                    'delete': { 'name': 'Delete', 'icon': 'delete' },
                     'sep1': '---------',
                     'new': {
                         'name': 'New',

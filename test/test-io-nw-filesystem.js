@@ -167,4 +167,14 @@ describe('IO [codebot.nw.filesystem]', function(){
             });
         }); 
     });
+    
+    describe('delete()', function(){
+        it('delete existent file', function(){
+            nwfs.delete(file, function(e) {
+                assert(!(e instanceof Error));
+            });
+        });
+        
+        // TODO: test nonexistent file, empty folder and non-empty folder.
+    });
 });

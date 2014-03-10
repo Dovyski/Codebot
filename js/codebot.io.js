@@ -123,6 +123,17 @@ var CodebotIO = function() {
 	this.createFile = function(theName, theNode, theData, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
+    
+    
+    /**
+     * Deletes a node.
+     *
+     * @param {Node} theNode - node to be deleted. It can be a file or a directory.
+     * @param {function} theCallback - callback invoked when the file has been deleteds. It has the following signature: <code>func(error)</code>: if everything works, <code>error</code> will be undefined, otherwise it will have information about what went wrong.
+     */
+    this.delete = function(theNode, theCallback) {
+		console.error("No IO controller has been loaded!");
+	};
 	
 	/**
      * Creates a new directory.

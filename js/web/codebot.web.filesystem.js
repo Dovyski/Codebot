@@ -75,6 +75,11 @@ var CodebotWebFilesystem = function() {
 		theCallback();
 	};
 	
+    this.delete = function(theNode, theCallback) {
+        console.log('CodebotFS.delete(' + theNode.path +')');
+		theCallback();
+	};
+    
 	this.createDirectory = function(theName, theNode, theCallback) {
 		console.log('CodebotFS.createDirectory(' + theNode + '/'+theName+')');
         theCallback();

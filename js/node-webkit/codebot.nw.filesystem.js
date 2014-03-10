@@ -141,6 +141,17 @@ var NodeWebkitFileSystem = function() {
     this.createFile = function(theName, theNode, theData, theCallback) {
 		mSelf.writeFile({path: theNode.path + theName}, theData, theCallback);
 	};
+    
+    this.delete = function(theNode, theCallback) {
+        var aLastChar = theNode.path.charAt(theNode.path.length - 1);
+        var aIsFolder = aLastChar == '/' || aLastChar == '\\';
+        
+		if(aIsFolder) {
+            fs.rmdir(theNode.path, theCallback)
+        } else {
+            fs.unlink(theNode.path, theCallback);
+        }
+	};
 	
 	this.createDirectory = function(theName, theNode, theCallback) {
         var aPath = theNode.folder ? theNode.path : CODEBOT.utils.dirName(theNode.path);
