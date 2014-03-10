@@ -20,7 +20,7 @@
 /* *****************************************************************************
  * Private functions and variables
  */
-var logMsg = $.ui.fancytree.debug,
+var logMsg = function() {}/*$.ui.fancytree.debug*/,
 	didRegisterDnd = false;
 
 /* Convert number to string and prepend +/-; return empty string for 0.*/
