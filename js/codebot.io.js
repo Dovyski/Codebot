@@ -22,16 +22,25 @@
 */
 
 var CodebotIO = function() {
-	this.driver = 'none';
+	/**
+     * Name of the filesystem API, e.g. <code>Node-webkit Filesystem</code>.
+     */
+    this.driver = 'none';
 	
-	this.init = function() {
+    /**
+     * Invoked by Codebot as soon as the filesystem API is loaded. It should initialize internal
+     * properties required for the API to work.
+     */
+    this.init = function() {
 		console.error("No IO controller has been loaded!");
 	};
 	
-    // TODO: make all IO methods receive "nodes" (directly from fancyfree). It's easier
-    // to abstract and implement new IO drivers.
-    
-    // theCallback(theError) - if theError == null, Ok, else it contains the error info.
+    /**
+     * Moves/rename a file.
+     * @param {Node} theOldNode - node that will be moved.
+     * @param {Node} theNewNode - node describing how the old node should be changed.
+     * @param {function} theCallback - callback with signature <code>func(error)</code>: if everything works, <code>error</code> will be undefined, otherwise it will have information about what went wrong.
+     */
     this.move = function(theOldNode, theNewNode, theCallback) {
         console.error("No IO controller has been loaded!");
     };
@@ -73,31 +82,44 @@ var CodebotIO = function() {
     };
     
 	/**
-	 *
-	 *
-	 * theCallback: function(data)
-	 *
-	 * "data" is the path to the directory.
+	 * Shows a native dialog where the user can pick a directory. It is used to
+	 * open project folders, for instance.
+     *
+	 * @param {function} theCallback - callback with signature <code>func(data)</code>, where <code>data</code> contains the information related to the selected directory.
 	 */
 	this.chooseDirectory = function(theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
 	
 	/**
+	 * Reads a file.
 	 *
-	 *
-	 * theCallback: function(data)
+	 * @param {Node} theNode - node describing the file to be read
+     * @param {function} theCallback - callback invoked when the file has been read. It has the following signature: <code>func(data)</code>, where <code>data</code> can be an <code>Error</code> if something goes wrong, or it can be a string with the file's content.
 	 */
 	this.readFile = function(theNode, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
 	
-	// Write content to file. Create file if not exist.
+	/**
+     * Writes data to a file. It creates the file if doesn't exist.
+     *
+     * @param {Node} theNode - node describing the file to be written.
+     * @param {string} theData - data to be written into the file.
+     * @param {function} theCallback - callback invoked when the file has been written. It has the following signature: <code>func(error)</code>: if everything works, <code>error</code> will be undefined, otherwise it will have information about what went wrong.
+     */
 	this.writeFile = function(theNode, theData, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
     
-    // Creates a file
+    /**
+     * Creates a file.
+     *
+     * @param {string} theName - name of the new file.
+     * @param {Node} theNode - node where the new file will be attached to.
+     * @param {string} theData - content of the new file
+     * @param {function} theCallback - callback invoked when the file has been written. It has the following signature: <code>func(error)</code>: if everything works, <code>error</code> will be undefined, otherwise it will have information about what went wrong.
+     */
 	this.createFile = function(theName, theNode, theData, theCallback) {
 		console.error("No IO controller has been loaded!");
 	};
