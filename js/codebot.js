@@ -95,6 +95,15 @@ var CODEBOT = new function() {
     this.setPrefs = function(theObj) {
         mPreferences = theObj;
     };
+    
+    this.showDebugger= function() {
+        if(typeof(require) == 'function') {
+            var aGui = require('nw.gui');
+            var aWin = aGui.Window.get();
+
+            aWin.showDevTools();
+        }
+    };
 	
 	this.init = function(theIODriver) {
         console.log('CODEBOT [core] Initializing...');		
@@ -114,6 +123,8 @@ var CODEBOT = new function() {
             mShortcuts.init(mUI, mIO, CODEBOT.getPrefs());
             
             console.log('CODEBOT [core] Done, ready to rock!');
+            
+            mSelf.showDebugger();
         });
 	};
 };
