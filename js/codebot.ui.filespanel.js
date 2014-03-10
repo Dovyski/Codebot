@@ -168,9 +168,20 @@ var CodebotFilesPanel = function() {
                 var aName = prompt('Directory name');
                 mIO.createDirectory(aName, theNode.data, function(theInfo) {
                     if(theInfo instanceof Error) {
-                        console.error('Problem with createDirectory!');
+                        console.error('Problem with createDirectory!' + theInfo);
                     } else {
                         mSelf.refreshTree();
+                    }
+                });
+                break;
+            case 'new-file':
+                var aName = prompt('File name');
+                mIO.createFile(aName, theNode.data, '', function(theInfo) {
+                    if(theInfo instanceof Error) {
+                        console.error('Problem with createFile!' + theInfo);
+                    } else {
+                        mSelf.refreshTree();
+                        // TODO: open node in new tab
                     }
                 });
                 break;
