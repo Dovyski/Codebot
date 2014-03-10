@@ -116,7 +116,7 @@ var CodebotFilesPanel = function() {
         
         aNodeBeingDragged.moveTo(theDestinationNode, theDragData.hitMode);
         
-        var aOldPath = aNodeBeingDragged.data.path;
+        var aOldPath = aNodeBeingDragged.data;
         var aNewPath = null;
         
         if(theDragData.hitMode == "over") {
@@ -133,7 +133,8 @@ var CodebotFilesPanel = function() {
         aNewPath += aNodeBeingDragged.data.name;
         
         // TODO: only move the UI item when the IO opperation informs everything went ok.
-        mIO.move(aOldPath, aNewPath, function(theError) {
+        // TODO: fix the {path: } because it breaks IO layer.
+        mIO.move(aOldPath, {path: aNewPath}, function(theError) {
             if(theError) {
                 console.log('Problem with move!');
                 // TODO: warn about error and reload tree.
@@ -146,9 +147,9 @@ var CodebotFilesPanel = function() {
         var aNewName = theData.value;
 
         if(aNewName != aNode.data.name) {
-            var aNewPath = CODEBOT.utils.dirName(aNode.data.path) + aNewName;
+            var aNewPath = {path: CODEBOT.utils.dirName(aNode.data.path) + aNewName}; // TODO: fix this, it breaks IO layer.
             
-            mIO.move(aNode.data.path, aNewPath, function(theError) {
+            mIO.move(aNode.data, aNewPath, function(theError) {
                 if(theError) {
                     console.log('Problem with rename/move!');
                     // TODO: warn about error and reload tree.
@@ -230,7 +231,7 @@ var CodebotFilesPanel = function() {
     
     this.populateTree = function(theNodes) {
         if(theNodes && theNodes.length > 0) {
-            mTree.reload([{title: 'Project', folder: true, key: 'root', expanded: true, children: theNodes}]); // TODO: this should come from IO layer.
+            mTree.reload(theNodes);
             console.debug('Tree has been populated.');
         }
     };

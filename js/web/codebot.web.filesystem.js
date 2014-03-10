@@ -21,15 +21,21 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var CodebotWebFilesystem = new function() {
+var CodebotWebFilesystem = function() {
 	this.driver = 'Web FileSystem';
         
 	this.init = function() {
 	};
     
-    this.move = function(theOldPath, theNewPath, theCallback) {
-        console.log('Move \''+theOldPath+'\' to \''+theNewPath+'\'');
+    this.move = function(theOldNode, theNewNode, theCallback) {
+        console.log('Move \''+theOldNode.path+'\' to \''+theNewNode.path+'\'');
+        theOldNode.path = theNewNode.path;
+        
         theCallback();
+    };
+    
+    this.getTempDirectory = function(theCallback) {
+        theCallback({title: "tmp", path: "/tmp", name: "tmp", folder: true, key: "tmp"});
     };
 	
     // Reference: http://stackoverflow.com/a/6358661/29827
@@ -53,7 +59,7 @@ var CodebotWebFilesystem = new function() {
     };
     
 	this.chooseDirectory = function(theCallback) {
-        this.readDirectory('', theCallback);
+        theCallback({path: 'chosenDir', title: 'chosenDir', name: 'chosenDir'});
 	};
 	
 	this.readFile = function(theNode, theCallback) {
@@ -63,11 +69,14 @@ var CodebotWebFilesystem = new function() {
 	this.writeFile = function(theNode, theData, theCallback) {
         theCallback();
 	};
+    
+	this.createFile = function(theName, theNode, theData, theCallback) {
+        console.log('CodebotFS.createFile(' + theNode + '/'+theName+')');
+		theCallback();
+	};
 	
 	this.createDirectory = function(theName, theNode, theCallback) {
 		console.log('CodebotFS.createDirectory(' + theNode + '/'+theName+')');
         theCallback();
 	};
 };
-
-CODEBOT.init(CodebotWebFilesystem);

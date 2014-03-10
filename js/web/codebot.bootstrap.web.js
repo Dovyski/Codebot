@@ -31,3 +31,5 @@
  */
 
 $('body').append('<script type="text/javascript" src="./js/web/codebot.web.filesystem.js"></script>');
+
+CODEBOT.init(new CodebotWebFilesystem());

@@ -85,7 +85,7 @@ var CodebotIO = function() {
 	 * Shows a native dialog where the user can pick a directory. It is used to
 	 * open project folders, for instance.
      *
-	 * @param {function} theCallback - callback with signature <code>func(data)</code>, where <code>data</code> contains the information related to the selected directory.
+	 * @param {function} theCallback - callback with signature <code>func(node)</code>, where <code>data</code> contains a node with information related to the selected directory.
 	 */
 	this.chooseDirectory = function(theCallback) {
 		console.error("No IO controller has been loaded!");

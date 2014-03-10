@@ -30,7 +30,7 @@ var NodeWebkitFileSystem = function() {
         
 	this.init = function() {
         // Allow native dialogs to read directories. Needed by chooseDirectory().
-        if(typeof($) == 'Function') {
+        if(typeof($) == 'function') {
             $('body').append('<input style="display:none;" id="codebotNWFileDialog" type="file" nwdirectory />');
         }
         
@@ -112,7 +112,7 @@ var NodeWebkitFileSystem = function() {
         
         aChooser.unbind();
         aChooser.change(function(e) {
-            theCallback($(this).val());
+            theCallback({path: $(this).val(), name: $(this).val(), title: $(this).val(), expanded: true});
         });
     
         aChooser.trigger('click');

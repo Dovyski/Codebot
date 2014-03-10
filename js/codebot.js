@@ -49,9 +49,10 @@ var CODEBOT = new function() {
     var loadPlugins = function() {
         console.log('CODEBOT [plugins] Loading plugins...');
         
-        mIO.readDirectory('./plugins', function(theData) {
-            for(var i in theData) {
-                var aItem = theData[i];
+        // TODO: fix the {path: , etc} below because it breaks IO layer.
+        mIO.readDirectory({path: './plugins'}, function(theData) {
+            for(var i in theData[0].children) {
+                var aItem = theData[0].children[i];
                 
                 if(aItem.title.lastIndexOf('.js') != -1) {
                     $('body').append('<script type="text/javascript" src="'+aItem.path+'"></script>');
