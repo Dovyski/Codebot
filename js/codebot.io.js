@@ -129,7 +129,7 @@ var CodebotIO = function() {
      *
      * @param {string} theName - name of the new directory
      * @param {Node} theNode - node where the new directory will be created. See {@link getTempDirectory} for information about <code>Node</code> structure.
-     * @param {function} theCallback - callback like <code>func(err)</code>, where <code>err</code> will be not null if the operation fails.
+     * @param {function} theCallback - callback like <code>func(e)</code>, where <code>e</code> will be an error if the operation fails or it will be a node describing the newly created node.
      */
 	this.createDirectory = function(theName, theNode, theCallback) {
 		console.error("No IO controller has been loaded!");

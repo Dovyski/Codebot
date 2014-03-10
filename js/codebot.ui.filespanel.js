@@ -166,12 +166,12 @@ var CodebotFilesPanel = function() {
         switch(theAction) {
             case 'new-folder':
                 var aName = prompt('Directory name');
-                mIO.createDirectory(aName, theNode, function(theError) {
-                    if(theError) {
+                mIO.createDirectory(aName, theNode.data, function(theInfo) {
+                    if(theInfo instanceof Error) {
                         console.error('Problem with createDirectory!');
                     } else {
-                        // TODO: refreash filesPanel
-                        mIO.readDirectory('/Users/fernando/Downloads/codebot_test', mSelf.populateTree);
+                        // TODO: refreash filesPanel correctly
+                        mIO.readDirectory({path: '/Users/fernando/Downloads/codebot_test'}, mSelf.populateTree);
                     }
                 });
                 break;
