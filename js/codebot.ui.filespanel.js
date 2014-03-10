@@ -36,6 +36,11 @@ var CodebotFilesPanel = function() {
             mFocusedNode.node.endEdit();
         }
         mFocusedNode = theItem;
+        
+        if(mFocusedNode.node.folder) {
+            mFocusedNode.node.toggleExpanded(); 
+        }
+        
         console.debug('FilesPanel.click() ', theEvent, theItem);
 	};
 	
