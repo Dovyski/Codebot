@@ -5,7 +5,7 @@
   "main": "index.html",
   "window": {
     "width": 1200,
-    "height": 800,
+    "height": 820,
     "title": "Codebot",
     "toolbar": false
   }

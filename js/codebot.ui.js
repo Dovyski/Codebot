@@ -128,8 +128,14 @@ var CodebotUI = function() {
         
         // TODO: read data from disk, using last open directory.
         
-        // Init getters
-        this.tabs = mTabs;
+        // Ugly hack to achieve 100% height.
+        $(window).resize(function() {
+            var aHeight = $(window).height();
+            $('#working-area').height(aHeight - 28);
+            $('#files-panel').height(aHeight);
+            $('#folders').height(aHeight - 20);
+        });
+        $(window).trigger('resize');
 	};
     
     // getters
