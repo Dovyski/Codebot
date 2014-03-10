@@ -51,6 +51,8 @@ var CodebotFilesPanel = function() {
     
     var openNodeInTab = function(theNode) {
         var aEditorPrefs = {};
+        var aTab = null;
+        
         $.extend(aEditorPrefs, CODEBOT.getPrefs().editor);
 
         aEditorPrefs.mode        = 'javascript', // TODO: dynamic mode?
@@ -61,14 +63,16 @@ var CodebotFilesPanel = function() {
         mIO.readFile(theNode.data, function(theData) {
             aEditorPrefs.value = theData;
 
-            mUI.tabs.add({
+            aTab = mUI.tabs.add({
                 favicon: 'file-text-o', // TODO: dynamic icon?
                 title: theNode.data.name,
-                editor: CodeMirror(document.getElementById('working-area'), aEditorPrefs),
                 file: theNode.data.name,
-                path: theNode.data.path
+                path: theNode.data.path,
+                editor: null
                 //TODO: add "entry: theNodeData.entry" for Chrome Packaged Apps
-            });            
+            });
+
+            aTab.editor = CodeMirror(document.getElementById(aTab.container), aEditorPrefs);
         });
     };
     

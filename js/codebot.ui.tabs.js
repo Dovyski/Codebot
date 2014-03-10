@@ -26,15 +26,11 @@ var CodebotTabs = function() {
     var mTabController  = null;
     var mActiveTab      = null;
     var mUI             = null;
+    var mIds            = 0;
     
     var onTabClose = function(theTab) {
-        var aData       = theTab.data('tabData').data;
-		var aEditor     = aData.editor;
-		var aEditorNode = aEditor ? aEditor.getWrapperElement() : null;
-		
-		if(aEditorNode) {
-            aEditorNode.parentNode.removeChild(aEditorNode);
-        }
+        var aData = theTab.data('tabData').data;
+        $('#' + aData.container).remove();
 		aData.editor = null;
 		
 		console.debug('onTabClose', aData);
@@ -42,29 +38,14 @@ var CodebotTabs = function() {
 	
 	var onTabBlur = function(theTab) {
         var aData = theTab.data('tabData').data;
-		var aTabEditor = null;
-		
-		aTabEditor = aData.editor;
-        
-        if(aTabEditor) {
-		  aTabEditor.getWrapperElement().style.display = 'none';
-        }
-		
+        $('#' + aData.container).hide();
         console.debug('onTabBlur', aData);
 	};
 	
 	var onTabFocus = function(theTab) {
         var aData = theTab.data('tabData').data;
-		var aTabEditor = null;
-        
+		$('#' + aData.container).show();
         mActiveTab = theTab;
-		
-		// Show the content of the newly active tab.
-		aTabEditor = aData.editor;
-        
-		if(aTabEditor) {
-            aTabEditor.getWrapperElement().style.display = 'block';
-        }
 		
         console.debug('onTabFocus', aData);
 	};
@@ -105,12 +86,24 @@ var CodebotTabs = function() {
             return true;
         }
     };
+    
+    var onTabSorted = function(theTab, theNewZIndex) {
+        var aTab = theTab.data('tabData');
+        
+        if(aTab) {
+            aTab.data.index = theNewZIndex;
+        }
+	};
+    
+    var getTabDataById = function(theId) {
+        return mTabController.getRawTabById(theId).data('tabData').data;
+    };
             
     /**
      * Adds a new tab.
      *
-     * @param Object theConfig configuration used to create the new tab. Structure:
-     *
+     * @param {object} theConfig - configuration used to create the new tab. Structure:
+     * <code>
      * {
      *    favicon: String,      // FontAwesome class, e.g. <code>file-text-o</code>
      *    title: String,        // Tab title.
@@ -119,23 +112,37 @@ var CodebotTabs = function() {
      *    path: String,         // File path. E.g. <code>/home/user/project/codebot.js</code>
      *    data: Object,         // (Optional) Any special data you want connected to that tab (read it later at <code>tab.data</code>).
      * }
+     * </code>
+     * @returns {object} an object describing the newly created tab.
      */
     this.add = function(theConfig) {
-        var aTab = {};
-        $.extend(aTab, theConfig);
+        var aTab = {
+            favicon: 'file-text-o',
+            title: 'Unknown',
+            editor: null,
+            file: 'unknown',
+            path: '',
+            id: mIds,
+            index: 0,
+            container: 'tab-content-' + mIds
+        };
         
-        aTab.index = -1; // TODO: fix index mess!
+        $.extend(aTab, theConfig);
+        $('#working-area').append('<div id="'+aTab.container+'"></div>');
         
         mTabController.add({
             favicon: theConfig.favicon || 'file-text-o',
             title: theConfig.title,
             data: aTab
         });
+        
+        mIds++;
+        
+        return getTabDataById(mIds - 1);
 	};
     
-    
-    this.remove = function(theTabData) {
-        var aTabRaw = mTabController.getRawTabByData(theTabData);
+    this.remove = function(theTabId) {
+        var aTabRaw = mTabController.getRawTabById(theTabId);
         
         if(aTabRaw && tabPreClose(aTabRaw)) {
             mTabController.closeTab(aTabRaw);
@@ -157,7 +164,8 @@ var CodebotTabs = function() {
 			deactivated: onTabBlur,
 			activated: onTabFocus,
 			closed: onTabClose,
-			shouldClose: tabPreClose
+			shouldClose: tabPreClose,
+			sorted: onTabSorted,
 		});
     };
     
@@ -270,6 +278,9 @@ var CodebotTabs = function() {
         var $tab, zIndex;
         $tab = $(this);
         zIndex = $tabs.length - i;
+        
+        if(opts.sorted) { opts.sorted($tab, i); }
+          
         if ($tab.hasClass('chrome-tab-current')) {
           zIndex = $tabs.length + 40;
         }
@@ -308,11 +319,13 @@ var CodebotTabs = function() {
       $shell.find('.chrome-tabs').append($newTab);
       tabData = $.extend(true, {}, defaultNewTabData, newTabData);
       chromeTabs.updateTab($shell, $newTab, tabData);
+      chromeTabs.fixZIndexes($shell);
       return chromeTabs.setCurrent($newTab);
     },
     setCurrent: function($tab) {
 	  var $old = $shell.find('.chrome-tab-current');
-      
+      chromeTabs.fixZIndexes($shell);
+        
 	  $old.removeClass('chrome-tab-current');
 	  if($old.length && opts.deactivated) { opts.deactivated($old); }
 	  
@@ -335,13 +348,12 @@ var CodebotTabs = function() {
       $tab.find('.chrome-tab-favicon').html('<i class="fa fa-'+tabData.favicon+'"></i>');
       return $tab.data().tabData = tabData;
     },
-    getRawTabByData: function(data) {
+    getRawTabById: function(theId) {
       var ret = null;
       $shell.find('.chrome-tab').each(function() {
         var $tab;
         $tab = $(this);
-        // TODO: PLEASE, FIX THIS MESS!
-        if($tab.data('tabData').data == data) {
+        if($tab.data('tabData').data.id == theId) {
           ret = $tab;
           return false;
         }
