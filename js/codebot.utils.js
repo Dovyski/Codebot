@@ -45,4 +45,14 @@ CODEBOT.utils = new function() {
 
         return aParts.join('');
     };
+    
+    /**
+     * Returns the extension of a file name.
+     *
+     * @param {string} theFileName - name of the file
+     * @returns {string} the file extension. E.g. if <code>theFileName</code> is <code>Test.as</code>, the method returns <code>as</code>.
+     */
+    this.getExtension = function(theFileName) {
+        return theFileName.substring(theFileName.lastIndexOf('.') + 1);
+    };
 };

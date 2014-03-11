@@ -26,23 +26,6 @@ var CodebotEditors = function() {
     var mPreferences = null;
     var mExtensionsMap = {};
     
-    var createCodeEditor = function(theContainer, theContent, theNode) {
-        var aEditor = null;
-
-        aEditor = ace.edit(theContainer);
-        aEditor.setTheme("ace/theme/twilight");
-        aEditor.getSession().setMode("ace/mode/javascript");
-        aEditor.setValue(theContent);
-        
-        aEditor.session.selection.clearSelection();
-
-        for(var i in mPreferences.editor) {
-            aEditor.setOption(i, mPreferences.editor[i]);
-        }
-        
-        return aEditor;
-    };
-    
     /**
      * Regiter an editor able to open an specific file type. The editor used
      * to open a file is selected based on the file extension. e.g. .html means HTML file.
@@ -50,7 +33,7 @@ var CodebotEditors = function() {
      * @param {string|array} theFileExtension - extension of the file able to be open by the editor, without the point. E.g.: <code>html</code>. It can be an array of extensions.
      * @param {function} theEditorFactory - function invoked by Codebot to create an editor. The function signature is <code>func(theContainer, theContent, theNode)</code>, the <code>theContainer</code> is the id of a div where the editor will be placed, <code>theContent</code> is the file content and <code>theNode</code> is a filesystem node describing the file.
      */
-    this.registerEditor = function(theFileExtension, theEditorFactory) {
+    this.register = function(theFileExtension, theEditorFactory) {
         if(theFileExtension instanceof Array) {
             for(var i = 0; i < theFileExtension.length; i++) {
                 mExtensionsMap[theFileExtension[i].replace('.', '')] = theEditorFactory;
@@ -71,25 +54,26 @@ var CodebotEditors = function() {
      * @param {Node} theNode - filesystem node describing the file.
      */
     this.create = function(theContainer, theContent, theNode) {
-        var aExtension = theNode.name.substring(theNode.name.lastIndexOf('.') + 1); // TODO: get extension from theNode.title
-        var aEditor = null;
-
+        var aExtension = CODEBOT.utils.getExtension(theNode.name);
+        var aEditorFactory = null;
+        
         // Does the extension has an editor to open it?
         if(aExtension in mExtensionsMap) {
             // Yeah, it has. Let's use it then.
-            var aEditorFactory = mExtensionsMap[aExtension];
-            aEditor = aEditorFactory(theContainer, theContent, theNode);
+            aEditorFactory = mExtensionsMap[aExtension];
             
         } else {
             // No editor for that extension. Let's use the default code editor.
-            aEditor = createCodeEditor(theContainer, theContent, theNode);
+            aEditorFactory = mExtensionsMap['*'];
         }
         
-        return aEditor;
+        return aEditorFactory(theContainer, theContent, theNode);
     };
     
     this.init = function(thePreferences) {
         mSelf = this;
         mPreferences = thePreferences;
+        
+        mSelf.register('*', CodebotEditorAce.create);
     };
 };
