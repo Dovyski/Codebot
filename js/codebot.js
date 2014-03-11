@@ -25,6 +25,7 @@ var CODEBOT = new function() {
 	var mShortcuts = null;
 	var mUI = null;
 	var mIO = null;
+	var mEditors = null;
     var mPlugins = {};
     var mPreferences = {}; // TODO: default prefs here?
     var mSelf;
@@ -133,13 +134,17 @@ var CODEBOT = new function() {
         console.log('CODEBOT [IO driver] ' + mIO.driver);
         mIO.init();
         
+        mEditors = new CodebotEditors();
         mShortcuts = new CodebotShortcuts();
         mUI = new CodebotUI();
         
         loadPreferences(function() {
-            mUI.init(mIO);
+            mEditors.init(mPreferences);
+            mUI.init(mIO, mEditors);
+            
             loadPlugins();
-            mShortcuts.init(mUI, mIO, CODEBOT.getPrefs());
+            
+            mShortcuts.init(mUI, mIO, mPreferences);
             
             console.log('CODEBOT [core] Done, ready to rock!');
             

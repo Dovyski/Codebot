@@ -22,6 +22,7 @@
 */
 
 var CodebotFilesPanel = function() {
+    var mEditors = null;
     var mUI = null;
     var mIO = null;
     var mSelf = null;
@@ -66,7 +67,7 @@ var CodebotFilesPanel = function() {
                 editor: null
             });
 
-            aTab.editor = CODEBOT.createEditor(aTab.container, theData, theNode.data);
+            aTab.editor = mEditors.create(aTab.container, theData, theNode.data);
         });
     };
     
@@ -271,9 +272,10 @@ var CodebotFilesPanel = function() {
         }
     };
     
-    this.init = function(theUI, theIO) {
+    this.init = function(theUI, theIO, theEditors) {
         mUI = theUI;
         mIO = theIO;
+        mEditors = theEditors;
         mSelf = this;
         
         initTree();

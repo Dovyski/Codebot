@@ -115,7 +115,7 @@ var CodebotUI = function() {
         $('#defaultModal').modal(theConfig);
     }
 	
-	this.init = function(theIO) {
+	this.init = function(theIO, theEditors) {
         console.log('CODEBOT [ui] Building UI');
         
         mSelf       = this;
@@ -123,7 +123,7 @@ var CodebotUI = function() {
 		mFilesPanel = new CodebotFilesPanel();
         mTabs       = new CodebotTabs();
 		
-        mFilesPanel.init(this, mIO);
+        mFilesPanel.init(this, mIO, theEditors);
         mTabs.init(this);
         
         // TODO: read data from disk, using last open directory.
