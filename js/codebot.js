@@ -68,7 +68,7 @@ var CODEBOT = new function() {
 		var aEditor = theTab.editor;
 		
 		if(aEditor) {
-			mIO.writeFile(theTab, aEditor.getDoc().getValue(), function() { console.log('Tab data written to disk!');} );
+			mIO.writeFile(theTab, aEditor.getValue(), function() { console.log('Tab data written to disk!');} );
 		}
     };
     
@@ -103,6 +103,25 @@ var CODEBOT = new function() {
 
             aWin.showDevTools();
         }
+    };
+    
+    this.createEditor = function(theContainer, theContent, theNode) {
+        var aEditorPrefs = {};
+        
+        $.extend(aEditorPrefs, mSelf.getPrefs().editor);
+
+        var editor = ace.edit(theContainer);
+        editor.setTheme("ace/theme/twilight");
+        editor.getSession().setMode("ace/mode/javascript");
+        editor.setValue(theContent);
+        
+        editor.session.selection.clearSelection();
+
+        for(var i in aEditorPrefs) {
+            editor.setOption(i, aEditorPrefs[i]);
+        }
+        
+        return editor;
     };
 	
 	this.init = function(theIODriver) {

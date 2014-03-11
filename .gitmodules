@@ -1,3 +1,6 @@
 [submodule "js/3rdparty/mousetrap"]
 	path = js/3rdparty/mousetrap
 	url = git@github.com:ccampbell/mousetrap.git
+[submodule "js/3rdparty/ace"]
+	path = js/3rdparty/ace
+	url = git@github.com:ajaxorg/ace-builds.git

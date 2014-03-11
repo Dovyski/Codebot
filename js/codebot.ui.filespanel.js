@@ -55,29 +55,18 @@ var CodebotFilesPanel = function() {
 	};
     
     var openNodeInTab = function(theNode) {
-        var aEditorPrefs = {};
         var aTab = null;
-        
-        $.extend(aEditorPrefs, CODEBOT.getPrefs().editor);
 
-        aEditorPrefs.mode        = 'javascript', // TODO: dynamic mode?
-        aEditorPrefs.value       = '';
-        aEditorPrefs.autofocus   = true;
-
-        // Create a new tab based on node data    
         mIO.readFile(theNode.data, function(theData) {
-            aEditorPrefs.value = theData;
-
             aTab = mUI.tabs.add({
                 favicon: 'file-text-o', // TODO: dynamic icon?
                 title: theNode.data.name,
                 file: theNode.data.name,
                 path: theNode.data.path,
                 editor: null
-                //TODO: add "entry: theNodeData.entry" for Chrome Packaged Apps
             });
 
-            aTab.editor = CodeMirror(document.getElementById(aTab.container), aEditorPrefs);
+            aTab.editor = CODEBOT.createEditor(aTab.container, theData, theNode.data);
         });
     };
     
