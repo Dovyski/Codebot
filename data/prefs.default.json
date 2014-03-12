@@ -22,6 +22,7 @@
 */
 
 {
+    // https://github.com/ajaxorg/ace/wiki/Configuring-Ace
     editor: {
         selectionStyle: 'line', 
         highlightActiveLine: true,
