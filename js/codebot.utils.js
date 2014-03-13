@@ -55,4 +55,13 @@ CODEBOT.utils = new function() {
     this.getExtension = function(theFileName) {
         return theFileName.substring(theFileName.lastIndexOf('.') + 1);
     };
+    
+    
+    this.invoke = function(theObj, theMethod, theParam) {
+        return theObj[theMethod](theParam);
+	};
+    
+    this.sanitizeId = function(theString) {
+        return theString.replace(/\./g, '-');
+    };
 };

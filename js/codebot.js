@@ -29,12 +29,6 @@ var CODEBOT = new function() {
     var mPlugins = {};
     var mPreferences = {}; // TODO: default prefs here?
     var mSelf;
-	
-	var invoke = function(theObj, theMethod, theParam) {
-		if(theObj && theObj[theMethod]) {
-			return theObj[theMethod](theParam);
-		}
-	};
     
     var loadPreferences = function(theCallback) {
         console.log('CODEBOT [prefs] Loading preferences...');
@@ -60,10 +54,9 @@ var CODEBOT = new function() {
                 }
             }
         });
-        
+
         console.log('CODEBOT [plugins] Plugins loaded.');
     };
-    
     
     this.writeTabToDisk = function(theTab) {
 		var aEditor = theTab.editor;
@@ -72,21 +65,16 @@ var CODEBOT = new function() {
 			mIO.writeFile(theTab, aEditor.getValue(), function() { console.log('Tab data written to disk!');} );
 		}
     };
-    
-	this.handlePluginClick = function(thePluginId) {
-		invoke(mPlugins[thePluginId], 'clicked');
-		
-		var aPluginContent = invoke(mPlugins[thePluginId], 'content');
-		mUI.showConfigDialog(true, aPluginContent);
-	};
+        
+    this.getPlugin = function(theId) {
+        return mPlugins[theId];
+    };
 	
-	this.addPlugin = function(theId, theObj) {
-		console.log('CODEBOT [plugin added] ' + theId + ' - ' + theObj);
+	this.addPlugin = function(theObj) {
+		console.log('CODEBOT [plugin added] ' + theObj.id);
 		
-		mPlugins[theId] = theObj;
-		
-		mUI.addPlugin(theId, theObj);
-		invoke(mPlugins[theId], 'added');
+		mPlugins[theObj.id] = theObj;
+		CODEBOT.utils.invoke(mPlugins[theObj.id], 'init', {ui: mUI}); // TODO: improve this
 	};
     
     this.getPrefs = function() {

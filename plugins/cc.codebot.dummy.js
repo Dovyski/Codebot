@@ -21,16 +21,35 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var plugin = new function() {
-	this.icon = 'puzzle-piece';
-	
-	this.clicked = function() {
-		console.log('cc.codebot.ane.clicked()');
-	};
+/**
+ * This is a boilerplate for plugin creation.
+ */
+var DummyPlugin = function() {
+    this.id         = 'cc.codebot.dummy';
+    
+    var mSelf       = null;
+    var mContext    = null;
+    
+    this.init = function(theContext) {
+        console.debug('DummyPlugin::init()');
 
-	this.content = function() {
-		return 'cc.codebot.ane.content(). <a href="#" onclick="CODEBOT.ui.showConfigDialog(false);">[CLOSE]</a>';
-	};
+        mSelf = this;
+        mContext = theContext;
+
+        mContext.ui.addButton(mSelf.id + 'btn0', function() {
+            mSelf.anotherMethod();
+        });
+    };
+    
+    this.anotherMethod = function() {
+        mContext.ui.showDialog({
+            title: 'Dialog',
+            content: 'Hello world!',
+            buttons: {
+                'Ok, got it!': {dismiss: true}
+            }
+        });
+    };
 };
 
-CODEBOT.addPlugin('cc.codebot.ane', plugin);
+CODEBOT.addPlugin(new DummyPlugin());

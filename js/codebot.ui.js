@@ -25,8 +25,9 @@ var CodebotUI = function() {
     // Private properties
 	var mTabs 				= null;
 	var mFilesPanel         = null;
-	var mSlidePanel        = null;
+	var mSlidePanel         = null;
     var mIO                 = null;
+    var mButtons            = {};
     var mSelf               = null;
             
     // TODO: implement a pretty confirm dialog/panel
@@ -45,16 +46,22 @@ var CodebotUI = function() {
         $('#console').append(theText + '<br />');
     };
 		
-	this.addPlugin = function(theId, theObj) {
-		$('#config-bar').html(
-			$('#config-bar').html() +
-			'<a href="#" data-plugin="'+theId+'"><i class="fa fa-'+theObj.icon+'"></i></a>'
-		);
-		
-		$('#config-bar a').click(function() {
-			CODEBOT.handlePluginClick($(this).data('plugin'));
+	this.addButton = function(theId, theCallback, theIcon) {
+        var aId = CODEBOT.utils.sanitizeId(theId);
+        
+        mButtons[aId] = theCallback;
+        
+		$('#config-bar').append('<a href="#" id="'+ aId +'"><i class="fa fa-'+(theIcon || 'question')+'"></i></a>');
+
+		$('#' + aId).click(function() {
+			var aIndex = $(this).attr('id');
+            mButtons[aIndex]($(this));
 		});
 	};
+    
+    this.removeButton = function(theCallback) {
+        // TODO: implement
+    }
     
     /**
      * Shows a dialog in the screen.
