@@ -25,13 +25,10 @@ var CodebotUI = function() {
     // Private properties
 	var mTabs 				= null;
 	var mFilesPanel         = null;
+	var mSlidePanel        = null;
     var mIO                 = null;
     var mSelf               = null;
-        
-	var transform3d = function(theElementId, theX, theY, theZ) {
-		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
-	};
-    
+            
     // TODO: implement a pretty confirm dialog/panel
     this.confirm = function(theMessage) {
         mSelf.showDialog({
@@ -48,19 +45,6 @@ var CodebotUI = function() {
         $('#console').append(theText + '<br />');
     };
 		
-	this.showConfigDialog = function(theStatus, theContent) {
-		if(theStatus) {
-			$('#config-dialog').html(theContent);
-			
-			// TODO: remove the hardcoded value
-			transform3d('content', '-600px', '0', '0');
-			transform3d('config-dialog', '-600px', '0', '0');
-		} else {
-			transform3d('content', '0', '0', '0');
-			transform3d('config-dialog', '0', '0', '0');
-		}
-	};
-
 	this.addPlugin = function(theId, theObj) {
 		$('#config-bar').html(
 			$('#config-bar').html() +
@@ -118,13 +102,15 @@ var CodebotUI = function() {
 	this.init = function(theIO, theEditors) {
         console.log('CODEBOT [ui] Building UI');
         
-        mSelf       = this;
-        mIO         = theIO;
-		mFilesPanel = new CodebotFilesPanel();
-        mTabs       = new CodebotTabs();
+        mSelf           = this;
+        mIO             = theIO;
+		mFilesPanel     = new CodebotFilesPanel();
+        mTabs           = new CodebotTabs();
+        mSlidePanel     = new CodebotSlidePanel();
 		
         mFilesPanel.init(this, mIO, theEditors);
         mTabs.init(this);
+        mSlidePanel.init(this);
         
         // TODO: read data from disk, using last open directory.
         
@@ -145,5 +131,9 @@ var CodebotUI = function() {
     
     this.__defineGetter__("filesPanel", function(){
         return mFilesPanel;
+    });
+    
+    this.__defineGetter__("slidePanel", function(){
+        return mSlidePanel;
     });
 };
