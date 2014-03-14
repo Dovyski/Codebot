@@ -72,7 +72,28 @@ var DummyPlugin = function() {
         theContainer.css('background', '#00ff00');
         //theContainer.css('width', '100%');
         //theContainer.css('height', '100%');
-        theContainer.html('<a href="#" id="myAnother">popState()<a/>');
+        theContainer.append('<a href="#" id="myAnother">pushState()<a/>');
+        theContainer.append('<a href="#" id="myAnotherPop">popState()<a/>');
+        
+        $('#myAnother').click(function() {
+            console.log('HERE!', mContext);
+            mContext.panel.pushState(mSelf.renderAnotherNewPanel);
+        });
+        
+        $('#myAnotherPop').click(function() {
+            console.log('HERE!', mContext);
+            mContext.panel.popState();
+        });
+    };
+    
+    this.renderAnotherNewPanel = function(theContainer) {
+        theContainer.css('background', '#0d00cf');
+        theContainer.html('<a href="#" id="myAnotherNew">popState()<a/>');
+        
+        $('#myAnotherNew').click(function() {
+            console.log('HERE!', mContext);
+            mContext.panel.popState();
+        });
     };
 };
 

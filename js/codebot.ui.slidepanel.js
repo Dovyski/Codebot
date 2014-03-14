@@ -36,38 +36,57 @@ var CodebotSlidePanel = function() {
         $('#config-dialog').empty();
     };
     
+    var getSliderPanelWidth = function() {
+        return $('#config-dialog').width();
+    };
+    
     this.pushState = function(theStateRender) {
+        var aPanelWidth = getSliderPanelWidth();
+        
         if(!theStateRender || typeof(theStateRender) != 'function') {
             console.error('Unable to push slide panel state. The provided state render is invalid: it should be a function, e.g. func(jQueryNode).');
             return;
         }
         
         if(mStack.length > 0) {
-            // TODO: implement this
             var aStackTop = mStack[mStack.length - 1];
             
-            $('#' + aStackTop).css('-webkit-transition', 'all 5000ms');
-            $('#' + aStackTop).css('-webkit-transform', 'translate3d(-800px, 0px, 0px)');
+            $('#' + aStackTop).css('-webkit-transition', 'all 2000ms');
+            $('#' + aStackTop).css('-webkit-transform', 'translate3d(-'+(aPanelWidth * 2)+'px, 0px, 0px)');
         }
         
         var aId = mIds++;
         var aContainerId = 'panel-content-' + aId;
         
         $('#config-dialog').append('<div id="' + aContainerId + '" style="position: absolute;"></div>');
-        
-        $('#' + aContainerId).css('left', '400px');
-        
-        setTimeout(function() {
-            $('#' + aContainerId).css('-webkit-transition', 'all 5000ms');
-            $('#' + aContainerId).css( '-webkit-transform', 'translate3d(-400px, 0px, 0px)');
-        }, 500);
+
+        $('#' + aContainerId).css('left', aPanelWidth + 'px');
+        theStateRender($('#' + aContainerId));
         
         mStack.push(aContainerId);
-        theStateRender($('#' + aContainerId));
+        
+        setTimeout(function() {
+            $('#' + aContainerId).css('-webkit-transition', 'all '+(mStack.length != 1 ? '2000' : '1')+'ms');
+            $('#' + aContainerId).css( '-webkit-transform', 'translate3d(-'+aPanelWidth+'px, 0px, 0px)');
+        }, 500);
     };
     
     this.popState = function() {
-        // TODO: implement this.
+        var aPanelWidth = getSliderPanelWidth();
+        
+        for(var i = 0; i < 2; i++) {
+            if(mStack.length > 0) {
+                var aStackTop = mStack[mStack.length - 1 - i];
+
+                $('#' + aStackTop).css('-webkit-transition', 'all 2000ms');
+                $('#' + aStackTop).css('-webkit-transform', 'translate3d('+(i == 1 ? '-'+aPanelWidth+'px' : '0')+', 0px, 0px)');
+            }
+        }
+        
+        setTimeout(function() {
+            var aElement = mStack.pop();
+            $('#' + aElement).remove();
+        }, 2000);
     };
     
     this.open = function(theStateRender) {
