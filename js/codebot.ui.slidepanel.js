@@ -22,6 +22,8 @@
 */
 
 var CodebotSlidePanel = function() {
+    var SLIDE_DURATION = 500; // in ms
+    
     var mUI = null;
     var mSelf = null;
     var mIds = 0;
@@ -30,10 +32,21 @@ var CodebotSlidePanel = function() {
     var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
 	};
+    
+    var slideElement = function(theId, theX, theDuration) {
+        $('#' + theId).css({
+            '-webkit-transition': 'all ' + (theDuration || SLIDE_DURATION) + 'ms',
+            '-webkit-transform': 'translate3d('+theX+'px, 0px, 0px)'
+        });    
+    }
         
     var clearStates = function() {
-        // TODO: remove all stack elements from dom
         $('#config-dialog').empty();
+        
+        for(var i = 0; i < mStack.length; i++) {
+            $('#' + mStack[i]).remove();
+        }
+        mStack.splice(0);
     };
     
     var getSliderPanelWidth = function() {
@@ -49,10 +62,7 @@ var CodebotSlidePanel = function() {
         }
         
         if(mStack.length > 0) {
-            var aStackTop = mStack[mStack.length - 1];
-            
-            $('#' + aStackTop).css('-webkit-transition', 'all 2000ms');
-            $('#' + aStackTop).css('-webkit-transform', 'translate3d(-'+(aPanelWidth * 2)+'px, 0px, 0px)');
+            slideElement(mStack[mStack.length - 1], aPanelWidth * -2);
         }
         
         var aId = mIds++;
@@ -66,9 +76,8 @@ var CodebotSlidePanel = function() {
         mStack.push(aContainerId);
         
         setTimeout(function() {
-            $('#' + aContainerId).css('-webkit-transition', 'all '+(mStack.length != 1 ? '2000' : '1')+'ms');
-            $('#' + aContainerId).css( '-webkit-transform', 'translate3d(-'+aPanelWidth+'px, 0px, 0px)');
-        }, 500);
+            slideElement(aContainerId, -aPanelWidth, mStack.length != 1 ? SLIDE_DURATION : 1);
+        }, 50);
     };
     
     this.popState = function() {
@@ -77,30 +86,24 @@ var CodebotSlidePanel = function() {
         for(var i = 0; i < 2; i++) {
             if(mStack.length > 0) {
                 var aStackTop = mStack[mStack.length - 1 - i];
-
-                $('#' + aStackTop).css('-webkit-transition', 'all 2000ms');
-                $('#' + aStackTop).css('-webkit-transform', 'translate3d('+(i == 1 ? '-'+aPanelWidth+'px' : '0')+', 0px, 0px)');
+                slideElement(aStackTop, i == 1 ? -aPanelWidth : 0);
             }
         }
         
-        setTimeout(function() {
-            var aElement = mStack.pop();
-            $('#' + aElement).remove();
-        }, 2000);
+        setTimeout(function() { $('#' + mStack.pop()).remove(); }, SLIDE_DURATION);
     };
     
     this.open = function(theStateRender) {
         clearStates();
         mSelf.pushState(theStateRender);
         
-        // TODO: remove the hardcoded value
-        transform3d('content', '-600px', '0', '0');
-        transform3d('config-dialog', '-600px', '0', '0');
+        slideElement('content', -getSliderPanelWidth());
+        slideElement('config-dialog', -getSliderPanelWidth());
     };
     
     this.close = function() {
-        transform3d('content', '0', '0', '0');
-        transform3d('config-dialog', '0', '0', '0');
+        slideElement('content', 0);
+        slideElement('config-dialog', 0);
     }
     
     this.init = function(theUI) {

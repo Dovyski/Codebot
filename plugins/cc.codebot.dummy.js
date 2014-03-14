@@ -54,9 +54,7 @@ var DummyPlugin = function() {
         });
     };
         
-    this.renderPanel = function(theContainer) {
-        console.log('fdfjdk', theContainer);
-        
+    this.renderPanel = function(theContainer) {        
         theContainer.html('<a href="#" id="myLink">pushState()<a/>');
         theContainer.css('background', '#ff0000');
         theContainer.css('width', '100%');
