@@ -24,24 +24,56 @@
 var CodebotSlidePanel = function() {
     var mUI = null;
     var mSelf = null;
+    var mIds = 0;
+    var mStack = [];
     
     var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
 	};
+        
+    var clearStates = function() {
+        // TODO: remove all stack elements from dom
+        $('#config-dialog').empty();
+    };
     
-    this.pushState = function() {
-        // TODO: implement this.
-        $('#panel-fr').css( '-webkit-transition', 'all 500ms');
-        $('#panel-fr').css( '-webkit-transform', 'translate3d(-600px, 0px, 0px)');
+    this.pushState = function(theStateRender) {
+        if(!theStateRender || typeof(theStateRender) != 'function') {
+            console.error('Unable to push slide panel state. The provided state render is invalid: it should be a function, e.g. func(jQueryNode).');
+            return;
+        }
+        
+        if(mStack.length > 0) {
+            // TODO: implement this
+            var aStackTop = mStack[mStack.length - 1];
+            
+            $('#' + aStackTop).css('-webkit-transition', 'all 5000ms');
+            $('#' + aStackTop).css('-webkit-transform', 'translate3d(-800px, 0px, 0px)');
+        }
+        
+        var aId = mIds++;
+        var aContainerId = 'panel-content-' + aId;
+        
+        $('#config-dialog').append('<div id="' + aContainerId + '" style="position: absolute;"></div>');
+        
+        $('#' + aContainerId).css('left', '400px');
+        
+        setTimeout(function() {
+            $('#' + aContainerId).css('-webkit-transition', 'all 5000ms');
+            $('#' + aContainerId).css( '-webkit-transform', 'translate3d(-400px, 0px, 0px)');
+        }, 500);
+        
+        mStack.push(aContainerId);
+        theStateRender($('#' + aContainerId));
     };
     
     this.popState = function() {
         // TODO: implement this.
     };
     
-    this.open = function(theContent) {
-        $('#config-dialog').html(theContent);
-
+    this.open = function(theStateRender) {
+        clearStates();
+        mSelf.pushState(theStateRender);
+        
         // TODO: remove the hardcoded value
         transform3d('content', '-600px', '0', '0');
         transform3d('config-dialog', '-600px', '0', '0');

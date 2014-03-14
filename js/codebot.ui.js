@@ -28,6 +28,7 @@ var CodebotUI = function() {
 	var mSlidePanel         = null;
     var mIO                 = null;
     var mButtons            = {};
+    var mButtonsIds         = 0;
     var mSelf               = null;
             
     // TODO: implement a pretty confirm dialog/panel
@@ -45,24 +46,40 @@ var CodebotUI = function() {
     this.log = function(theText) {
         $('#console').append(theText + '<br />');
     };
-		
-	this.addButton = function(theId, theCallback, theIcon) {
-        var aId = CODEBOT.utils.sanitizeId(theId);
+	
+    /**
+    {
+        panel: function,
+        icon: string,
+        customIcon: string,
+        action: function
+    }
+     */
+	this.addButton = function(theOptions) {
+        var aId = mButtonsIds++;
+        var aIcon = '';
         
-        mButtons[aId] = theCallback;
+        mButtons[aId] = theOptions;
+        aIcon = theOptions.customIcon ? theOptions.customIcon : ('<i class="fa fa-'+(theOptions.icon || 'question')+'"></i>');
         
-		$('#config-bar').append('<a href="#" id="'+ aId +'"><i class="fa fa-'+(theIcon || 'question')+'"></i></a>');
+		$('#config-bar').append('<a href="#" id="'+ aId +'">' + aIcon + '</a>');
 
 		$('#' + aId).click(function() {
 			var aIndex = $(this).attr('id');
-            mButtons[aIndex]($(this));
+            
+            if('action' in mButtons[aIndex]) {
+                mButtons[aIndex].action();
+                
+            } else if('panel' in mButtons[aIndex]) {
+                mSlidePanel.open(mButtons[aIndex].panel);
+            }
 		});
 	};
     
     this.removeButton = function(theCallback) {
         // TODO: implement
     }
-    
+        
     /**
      * Shows a dialog in the screen.
      *

@@ -36,8 +36,11 @@ var DummyPlugin = function() {
         mSelf = this;
         mContext = theContext;
 
-        mContext.ui.addButton(mSelf.id + 'btn0', function() {
-            mSelf.anotherMethod();
+        mContext.ui.addButton({
+            icon: 'puzzle-piece',
+            customIcon: 'R',
+            //action: mSelf.anotherMethod,
+            panel: mSelf.renderPanel
         });
     };
     
@@ -49,6 +52,27 @@ var DummyPlugin = function() {
                 'Ok, got it!': {dismiss: true}
             }
         });
+    };
+        
+    this.renderPanel = function(theContainer) {
+        console.log('fdfjdk', theContainer);
+        
+        theContainer.html('<a href="#" id="myLink">pushState()<a/>');
+        theContainer.css('background', '#ff0000');
+        theContainer.css('width', '100%');
+        theContainer.css('height', '100%');
+        
+        $('#myLink').click(function() {
+            console.log('HERE!', mContext);
+            mContext.panel.pushState(mSelf.renderAnotherPanel);
+        });
+    };
+    
+    this.renderAnotherPanel = function(theContainer) {
+        theContainer.css('background', '#00ff00');
+        //theContainer.css('width', '100%');
+        //theContainer.css('height', '100%');
+        theContainer.html('<a href="#" id="myAnother">popState()<a/>');
     };
 };
 
