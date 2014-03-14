@@ -83,10 +83,15 @@ var CodebotSlidePanel = function() {
     this.popState = function() {
         var aPanelWidth = getSliderPanelWidth();
         
-        for(var i = 0; i < 2; i++) {
-            if(mStack.length > 0) {
-                var aStackTop = mStack[mStack.length - 1 - i];
-                slideElement(aStackTop, i == 1 ? -aPanelWidth : 0);
+        if(mStack.length == 1) {
+            mSelf.close();
+            
+        } else {
+            for(var i = 0; i < 2; i++) {
+                if(mStack.length > 0) {
+                    var aStackTop = mStack[mStack.length - 1 - i];
+                    slideElement(aStackTop, i == 1 ? -aPanelWidth : 0);
+                }
             }
         }
         

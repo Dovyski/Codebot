@@ -55,7 +55,8 @@ var DummyPlugin = function() {
     };
         
     this.renderPanel = function(theContainer) {        
-        theContainer.html('<a href="#" id="myLink">pushState()<a/>');
+        theContainer.append('<a href="#" id="myLink">pushState()<a/>');
+        theContainer.append('<a href="#" id="myAnotherPopHere">popState()<a/>');
         theContainer.css('background', '#ff0000');
         theContainer.css('width', '100%');
         theContainer.css('height', '100%');
@@ -63,6 +64,10 @@ var DummyPlugin = function() {
         $('#myLink').click(function() {
             console.log('HERE!', mContext);
             mContext.panel.pushState(mSelf.renderAnotherPanel);
+        });
+        
+        $('#myAnotherPopHere').click(function() {
+            mContext.panel.popState();
         });
     };
     
