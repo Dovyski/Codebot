@@ -112,12 +112,12 @@ var CODEBOT = new function() {
         mUI = new CodebotUI();
         
         loadPreferences(function() {
-            mEditors.init(mPreferences);
+            mEditors.init(mSelf);
             mUI.init(mSelf);
             
             loadPlugins();
             
-            mShortcuts.init(mUI, mIO, mPreferences);
+            mShortcuts.init(mSelf);
             
             console.log('CODEBOT [core] Done, ready to rock!');
             

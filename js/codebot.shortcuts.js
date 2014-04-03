@@ -22,16 +22,14 @@
 */
 
 var CodebotShortcuts = function() {
-    var mUI     = null;
-    var mIO     = null;
-    var mPrefs  = null;
-    var mSelf   = null;
+    var mCodebot    = null;
+    var mSelf       = null;
     
     var saveActiveTab = function() {
-        var aTab = mUI.tabs.active;
+        var aTab = mCodebot.ui.tabs.active;
         
         if(aTab) {
-            CODEBOT.writeTabToDisk(aTab);
+            mCodebot.writeTabToDisk(aTab);
         }
         
         console.debug('Save active tab to disk.');
@@ -46,7 +44,7 @@ var CodebotShortcuts = function() {
     };
     
     var renameNode = function() {
-        mUI.filesPanel.renameFocusedNode();
+        mCodebot.ui.filesPanel.renameFocusedNode();
         console.debug('Rename node');
     };
     
@@ -56,10 +54,10 @@ var CodebotShortcuts = function() {
     };
     
     var closeTab = function() {
-        var aTab = mUI.tabs.active;
-        console.log(aTab);
+        var aTab = mCodebot.ui.tabs.active;
+
         if(aTab) {
-            mUI.tabs.remove(aTab);
+            mCodebot.ui.tabs.remove(aTab);
         }
         
         console.debug('Close current tab!');
@@ -67,7 +65,7 @@ var CodebotShortcuts = function() {
     };
 	
     var createKeyBindings = function() {
-        var aShortcuts = mPrefs.shortcuts;
+        var aShortcuts = mCodebot.getPrefs().shortcuts;
         var aCommand = null;
         var aKey = null;
         var aShortcutsMethods = {
@@ -88,12 +86,9 @@ var CodebotShortcuts = function() {
         }
     };
     
-    this.init = function(theUI, theIO, thePrefs) {
-        mSelf = this;
-        
-        mUI     = theUI;
-        mIO     = theIO;
-        mPrefs  = thePrefs;
+    this.init = function(theCodebot) {
+        mSelf    = this;
+        mCodebot = theCodebot;
         
         createKeyBindings();
     };
