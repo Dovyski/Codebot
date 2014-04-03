@@ -27,6 +27,7 @@ var CodebotFilesPanel = function() {
     var mFocusedNode = null;
     var mRootNode = null;
     var mTree = null;
+    var mContextMenu = null;
     
     var onClick = function(theEvent, theItem) {
         // If the currently focused node has the rename form active,
@@ -157,57 +158,6 @@ var CodebotFilesPanel = function() {
         }
     }; 
     
-    var onContexAction = function(theNode, theAction, theOptions) {
-        console.debug('Selected action "' + theAction + '" on node ', theNode, theNode.data);
-        
-        switch(theAction) {
-            case 'new-folder':
-                var aName = prompt('Directory name');
-                mCodebot.io.createDirectory(aName, theNode.data, function(theInfo) {
-                    if(theInfo instanceof Error) {
-                        console.error('Problem with createDirectory!' + theInfo);
-                    } else {
-                        mSelf.refreshTree();
-                    }
-                });
-                break;
-            case 'new-file':
-                var aName = prompt('File name');
-                mCodebot.io.createFile(aName, theNode.data, '', function(theInfo) {
-                    if(theInfo instanceof Error) {
-                        console.error('Problem with createFile!' + theInfo);
-                    } else {
-                        mSelf.refreshTree();
-                        // TODO: open node in new tab
-                    }
-                });
-                break;
-            case 'rename':
-                theNode.startEdit();
-                break;
-                
-            case 'delete':
-                mCodebot.ui.showDialog({
-                    keyboard: true,
-                    title: 'Delete',
-                    content: 'Are you sure you want to delete this?',
-                    buttons: {
-                        'Yes': {css: 'btn-info', dismiss: true, callback: function() {
-                            mCodebot.io.delete(theNode.data, function(e) {
-                                if(e) {
-                                    console.log('Something went wrong when deleting file: ' + e);
-                                } else {
-                                    mSelf.refreshTree();
-                                }
-                            });
-                        }},
-                        'No': {css: 'btn-default', dismiss: true}
-                    }
-                });
-                break;
-        }
-    };
-    
     var initTree = function() {
         $("#folders").fancytree({
             extensions: ['dnd', 'edit', 'awesome', 'contextMenu'],
@@ -231,22 +181,7 @@ var CodebotFilesPanel = function() {
                 triggerCancel: ['esc', 'tab', 'click'],
                 triggerStart: ['f2']
             },
-            contextMenu: {
-                menu: {
-                    'edit': { 'name': 'Edit', 'icon': 'edit' },
-                    'rename': { 'name': 'Rename', 'icon': 'rename' },
-                    'delete': { 'name': 'Delete', 'icon': 'delete' },
-                    'sep1': '---------',
-                    'new': {
-                        'name': 'New',
-                        'items': {
-                            'new-folder': { 'name': 'Folder' },
-                            'new-file': { 'name': 'File' }
-                        }
-                    }
-                },
-                actions: onContexAction
-            }
+            contextMenu: mContextMenu.create()
         });
 			
         mTree = $("#folders").fancytree("getTree");
@@ -271,9 +206,11 @@ var CodebotFilesPanel = function() {
     };
     
     this.init = function(theCodebot) {
-        mCodebot = theCodebot;
-        mSelf = this;
+        mCodebot     = theCodebot;
+        mSelf        = this;
+        mContextMenu = new CodebotContextMenu();
         
+        mContextMenu.init(mCodebot);
         initTree();
                 
         $('#files-panel header a').on('click', function() {
