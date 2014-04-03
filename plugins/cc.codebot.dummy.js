@@ -63,11 +63,11 @@ var DummyPlugin = function() {
         
         $('#myLink').click(function() {
             console.log('HERE!', mContext);
-            mContext.panel.pushState(mSelf.renderAnotherPanel);
+            mContext.ui.slidePanel.pushState(mSelf.renderAnotherPanel);
         });
         
         $('#myAnotherPopHere').click(function() {
-            mContext.panel.popState();
+            mContext.ui.slidePanel.popState();
         });
     };
     
@@ -80,12 +80,12 @@ var DummyPlugin = function() {
         
         $('#myAnother').click(function() {
             console.log('HERE!', mContext);
-            mContext.panel.pushState(mSelf.renderAnotherNewPanel);
+            mContext.ui.slidePanel.pushState(mSelf.renderAnotherNewPanel);
         });
         
         $('#myAnotherPop').click(function() {
             console.log('HERE!', mContext);
-            mContext.panel.popState();
+            mContext.ui.slidePanel.popState();
         });
     };
     
@@ -95,7 +95,7 @@ var DummyPlugin = function() {
         
         $('#myAnotherNew').click(function() {
             console.log('HERE!', mContext);
-            mContext.panel.popState();
+            mContext.ui.slidePanel.popState();
         });
     };
 };

@@ -75,10 +75,7 @@ var CODEBOT = new function() {
 		
 		mPlugins[theObj.id] = theObj;
 		
-        CODEBOT.utils.invoke(mPlugins[theObj.id], 'init', {
-            ui: mUI,
-            panel: mUI.slidePanel
-        });
+        CODEBOT.utils.invoke(mPlugins[theObj.id], 'init', mSelf);
 	};
     
     this.getPrefs = function() {
