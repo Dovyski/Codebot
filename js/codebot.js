@@ -97,25 +97,6 @@ var CODEBOT = new function() {
             aWin.showDevTools();
         }
     };
-    
-    this.createEditor = function(theContainer, theContent, theNode) {
-        var aEditorPrefs = {};
-        
-        $.extend(aEditorPrefs, mSelf.getPrefs().editor);
-
-        var editor = ace.edit(theContainer);
-        editor.setTheme("ace/theme/twilight");
-        editor.getSession().setMode("ace/mode/javascript");
-        editor.setValue(theContent);
-        
-        editor.session.selection.clearSelection();
-
-        for(var i in aEditorPrefs) {
-            editor.setOption(i, aEditorPrefs[i]);
-        }
-        
-        return editor;
-    };
 	
 	this.init = function(theIODriver) {
         console.log('CODEBOT [core] Initializing...');		
@@ -132,7 +113,7 @@ var CODEBOT = new function() {
         
         loadPreferences(function() {
             mEditors.init(mPreferences);
-            mUI.init(mIO, mEditors);
+            mUI.init(mSelf);
             
             loadPlugins();
             
@@ -143,4 +124,9 @@ var CODEBOT = new function() {
             mSelf.showDebugger();
         });
 	};
+    
+    // getters
+    this.__defineGetter__("editors", function() { return mEditors; });
+    this.__defineGetter__("ui", function() { return mUI; });
+    this.__defineGetter__("io", function() { return mIO; });
 };

@@ -22,9 +22,7 @@
 */
 
 var CodebotFilesPanel = function() {
-    var mEditors = null;
-    var mUI = null;
-    var mIO = null;
+    var mCodebot = null;
     var mSelf = null;
     var mFocusedNode = null;
     var mRootNode = null;
@@ -58,8 +56,8 @@ var CodebotFilesPanel = function() {
     var openNodeInTab = function(theNode) {
         var aTab = null;
 
-        mIO.readFile(theNode.data, function(theData) {
-            aTab = mUI.tabs.add({
+        mCodebot.io.readFile(theNode.data, function(theData) {
+            aTab = mCodebot.ui.tabs.add({
                 favicon: 'file-text-o', // TODO: dynamic icon?
                 title: theNode.data.name,
                 file: theNode.data.name,
@@ -67,7 +65,7 @@ var CodebotFilesPanel = function() {
                 editor: null
             });
 
-            aTab.editor = mEditors.create(aTab.container, theData, theNode.data);
+            aTab.editor = mCodebot.editors.create(aTab.container, theData, theNode.data);
         });
     };
     
@@ -133,7 +131,7 @@ var CodebotFilesPanel = function() {
         
         // TODO: only move the UI item when the IO opperation informs everything went ok.
         // TODO: fix the {path: } because it breaks IO layer.
-        mIO.move(aOldPath, {path: aNewPath}, function(theError) {
+        mCodebot.io.move(aOldPath, {path: aNewPath}, function(theError) {
             if(theError) {
                 console.log('Problem with move!');
                 // TODO: warn about error and reload tree.
@@ -148,7 +146,7 @@ var CodebotFilesPanel = function() {
         if(aNewName != aNode.data.name) {
             var aNewNode = {path: CODEBOT.utils.dirName(aNode.data.path, aNode.folder ? 3 : 1) + aNewName}; // TODO: fix this, it breaks IO layer.
             
-            mIO.move(aNode.data, aNewNode, function(theError) {
+            mCodebot.io.move(aNode.data, aNewNode, function(theError) {
                 if(theError) {
                     console.log('Problem with rename/move!');
                     // TODO: warn about error and reload tree.
@@ -165,7 +163,7 @@ var CodebotFilesPanel = function() {
         switch(theAction) {
             case 'new-folder':
                 var aName = prompt('Directory name');
-                mIO.createDirectory(aName, theNode.data, function(theInfo) {
+                mCodebot.io.createDirectory(aName, theNode.data, function(theInfo) {
                     if(theInfo instanceof Error) {
                         console.error('Problem with createDirectory!' + theInfo);
                     } else {
@@ -175,7 +173,7 @@ var CodebotFilesPanel = function() {
                 break;
             case 'new-file':
                 var aName = prompt('File name');
-                mIO.createFile(aName, theNode.data, '', function(theInfo) {
+                mCodebot.io.createFile(aName, theNode.data, '', function(theInfo) {
                     if(theInfo instanceof Error) {
                         console.error('Problem with createFile!' + theInfo);
                     } else {
@@ -189,13 +187,13 @@ var CodebotFilesPanel = function() {
                 break;
                 
             case 'delete':
-                mUI.showDialog({
+                mCodebot.ui.showDialog({
                     keyboard: true,
                     title: 'Delete',
                     content: 'Are you sure you want to delete this?',
                     buttons: {
                         'Yes': {css: 'btn-info', dismiss: true, callback: function() {
-                            mIO.delete(theNode.data, function(e) {
+                            mCodebot.io.delete(theNode.data, function(e) {
                                 if(e) {
                                     console.log('Something went wrong when deleting file: ' + e);
                                 } else {
@@ -262,7 +260,7 @@ var CodebotFilesPanel = function() {
     };
     
     this.refreshTree = function() {
-        mIO.readDirectory(mRootNode, mSelf.populateTree);
+        mCodebot.io.readDirectory(mRootNode, mSelf.populateTree);
     }
     
     this.populateTree = function(theNodes) {
@@ -272,18 +270,16 @@ var CodebotFilesPanel = function() {
         }
     };
     
-    this.init = function(theUI, theIO, theEditors) {
-        mUI = theUI;
-        mIO = theIO;
-        mEditors = theEditors;
+    this.init = function(theCodebot) {
+        mCodebot = theCodebot;
         mSelf = this;
         
         initTree();
                 
         $('#files-panel header a').on('click', function() {
-            mIO.chooseDirectory(function(theNode) {
+            mCodebot.io.chooseDirectory(function(theNode) {
                 mRootNode = theNode;
-                mIO.readDirectory(theNode, mSelf.populateTree);
+                mCodebot.io.readDirectory(theNode, mSelf.populateTree);
             });
         });
     };

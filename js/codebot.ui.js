@@ -26,7 +26,7 @@ var CodebotUI = function() {
 	var mTabs 				= null;
 	var mFilesPanel         = null;
 	var mSlidePanel         = null;
-    var mIO                 = null;
+	var mCodebot            = null;
     var mButtons            = {};
     var mButtonsIds         = 0;
     var mSelf               = null;
@@ -123,16 +123,16 @@ var CodebotUI = function() {
         $('#defaultModal').modal(theConfig);
     }
 	
-	this.init = function(theIO, theEditors) {
+	this.init = function(theCodebot) {
         console.log('CODEBOT [ui] Building UI');
         
         mSelf           = this;
-        mIO             = theIO;
+        mCodebot        = theCodebot;
 		mFilesPanel     = new CodebotFilesPanel();
         mTabs           = new CodebotTabs();
         mSlidePanel     = new CodebotSlidePanel();
 		
-        mFilesPanel.init(this, mIO, theEditors);
+        mFilesPanel.init(mCodebot);
         mTabs.init(this);
         mSlidePanel.init(this);
         
@@ -149,15 +149,7 @@ var CodebotUI = function() {
 	};
     
     // getters
-    this.__defineGetter__("tabs", function(){
-        return mTabs;
-    });
-    
-    this.__defineGetter__("filesPanel", function(){
-        return mFilesPanel;
-    });
-    
-    this.__defineGetter__("slidePanel", function(){
-        return mSlidePanel;
-    });
+    this.__defineGetter__("tabs", function(){ return mTabs; });
+    this.__defineGetter__("filesPanel", function(){ return mFilesPanel; });
+    this.__defineGetter__("slidePanel", function(){ return mSlidePanel; });
 };
