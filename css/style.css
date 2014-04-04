@@ -66,11 +66,12 @@ Config panel
 	z-index: 10;
 	width: 30px;
 	height: 100%;
-	background: #3f3f3f;
+	background: #555;
+    border-left: 1px solid #3D3D3D;
 }
 
 #config-bar a {
-	color: #fff;
+	color: #ebebeb;
 	float: left;
 	clear: both;
 	margin: 5px 0 10px 8px;
@@ -91,21 +92,59 @@ Files panel
 }
 
 #files-panel header {
+    height: 28px;
+    padding-top: 3px;
 	text-align: center;
-	background: #d3d0c8;
+	background: #AAA;
+}
+
+#files-panel header ul {
+    text-align: left;
+}
+
+#files-panel header a:link,
+#files-panel header a:active,
+#files-panel header a:visited,
+#files-panel header a:hover {
+    color: #000;
+    text-decoration: none;
 }
 
 #folders {
 	width: 100%;
 	height: 100%;
 	padding: 2px;
-	background: #d3d0c8;
+	background: #C7C7C7;
     overflow: scroll;
 }
 
 ul.fancytree-container {
   background-color: transparent;
   border: none;
+}
+
+span.fancytree-node {
+  border: 1px solid transparent;
+}
+
+span.fancytree-node:hover {
+  background-color: #e0e0e0;
+  border-color: #aaa;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
+  border-color: #f2f3f4;
+}
+span.fancytree-node.fancytree-active,
+span.fancytree-node.fancytree-selected {
+  background-color: #F7F7F7;
+  border-color: #DEDEDE;
+}
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
+.fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
+span.fancytree-node.fancytree-active:hover,
+span.fancytree-node.fancytree-selected:hover {
+  background-color: #e0e0e0;
+  border-color: #aaa;
 }
 
 /*
@@ -143,28 +182,7 @@ Content area (where code is edited)
     position: absolute;
     top: 0;
 	width: 100%;
-	height: 100%; /* TODO: fix it! */
-}
-
-/*
------------------------------------------------------
-Console
------------------------------------------------------
-*/
-
-#console {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: 30;
-    width: 800px;
-    height: 80px;
-    color: #fff;
-    font-family:monospace;
-    font-size: 10px;
-    background: #000;
-    overflow: scroll;
-    display: none;
+	height: 100%;
 }
 
 /*
