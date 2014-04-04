@@ -42,7 +42,7 @@ var CodebotEditorAce = new function() {
         initSearch();
 
         aEditor = ace.edit(theContainer);
-        aEditor.setTheme("ace/theme/twilight"); // TODO: get theme from Codebot?
+        aEditor.setTheme("ace/theme/tomorrow_night_eighties"); // TODO: get theme from Codebot?
         aEditor.getSession().setMode("ace/mode/javascript"); // TODO: choose mode based on file extension.
         aEditor.setValue(theContent);
         

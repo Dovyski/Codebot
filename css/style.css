@@ -86,22 +86,26 @@ Files panel
 	z-index: 10;
 	float: right;
 	width: 20%;
-	background: #1f1f1f;
 	height: 100%;
 	color: #000;
 }
 
 #files-panel header {
 	text-align: center;
-	background: #f1f1f1;
+	background: #d3d0c8;
 }
 
 #folders {
 	width: 100%;
 	height: 100%;
 	padding: 2px;
-	background: #e9e9e9;
+	background: #d3d0c8;
     overflow: scroll;
+}
+
+ul.fancytree-container {
+  background-color: transparent;
+  border: none;
 }
 
 /*
@@ -120,14 +124,15 @@ Content area (where code is edited)
 }
 
 #tabs {
-	height: 2px;
-	background: #efefef;
+    padding-top: 2px;
+	height: 27px;
+	background: #3C3C3C;
 }
 
 #working-area {
     position: relative;
 	float: left;
-	margin-top: 23px;
+	margin-top: 0;
 	width: 80%;
 	background: #fff;
 	overflow: scroll;
@@ -255,31 +260,26 @@ Tabs
 
 .chrome-tabs-shell {
   position: relative;
-  background-color: #e0e0e0;
-  background-image: -webkit-linear-gradient(#e2e2e2, #d0d0d0);
-  background-image: -moz-linear-gradient(#e2e2e2, #d0d0d0);
-  padding: 0 10px 4px 10px;
+  background-color: transparent;
+  padding: 0 10px 4px 0;
   -webkit-border-radius: 4px 4px 0 0;
   -moz-border-radius: 4px 4px 0 0;
   -ms-border-radius: 4px 4px 0 0;
   -o-border-radius: 4px 4px 0 0;
   border-radius: 4px 4px 0 0;
-  height: 24px;
+  height: 25px;
   overflow: hidden; }
   .chrome-tabs-shell .chrome-shell-bottom-bar {
     position: absolute;
     bottom: 0px;
-    height: 3px;
+    height: 4px;
     left: 0px;
     width: 100%;
-    border-top: 1px solid rgba(0, 0, 0, 0.21);
-    -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.6);
-    -moz-box-shadow: inset 0 1px rgba(255, 255, 255, 0.6);
-    box-shadow: inset 0 1px rgba(255, 255, 255, 0.6);
-    background-color: #e3e3e3;
-    background-image: -webkit-linear-gradient(#e3e3e3, #e0e0e0);
-    background-image: -moz-linear-gradient(#e3e3e3, #e0e0e0);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+    border-top: 1px solid rgba(43, 43, 43, 1);
+    -webkit-box-shadow: inset 0 1px rgba(134, 134, 134, 0.6);
+    -moz-box-shadow: inset 0 1px rgba(134, 134, 134, 0.6);
+    box-shadow: inset 0 1px rgba(134, 134, 134, 0.6);
+    background-color: #525252;
     z-index: 20; }
 
 .chrome-tabs {
@@ -303,19 +303,18 @@ Tabs
     border: 0px;
     margin: 0px;
     z-index: 1;
-    background-color: #e0e0e0;
+    background-color: #696868;
     -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.6), 0 -1px rgba(0, 0, 0, 0.2), -1px 0 rgba(0, 0, 0, 0.2), 1px 0 rgba(0, 0, 0, 0.2);
     -moz-box-shadow: inset 0 1px rgba(255, 255, 255, 0.6), 0 -1px rgba(0, 0, 0, 0.2), -1px 0 rgba(0, 0, 0, 0.2), 1px 0 rgba(0, 0, 0, 0.2);
     box-shadow: inset 0 1px rgba(255, 255, 255, 0.6), 0 -1px rgba(0, 0, 0, 0.2), -1px 0 rgba(0, 0, 0, 0.2), 1px 0 rgba(0, 0, 0, 0.2);
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ececec), color-stop(100%, #d3d3d3));
-    background-image: -webkit-linear-gradient(top, #ececec, #d3d3d3);
-    background-image: -moz-linear-gradient(top, #ececec, #d3d3d3);
-    background-image: -o-linear-gradient(top, #ececec, #d3d3d3);
-    background-image: linear-gradient(top, #ececec, #d3d3d3); }
+    background-image: -webkit-linear-gradient(top, #555555, #413B3B);
+    background-image: -moz-linear-gradient(top, #555555, #413B3B);
+    background-image: -o-linear-gradient(top, #555555, #413B3B);
+    background-image: linear-gradient(top, #555555, #413B3B); }
     .cssmasks .chrome-tabs .chrome-tab {
-      -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.8), 0 -1px rgba(0, 0, 0, 0.2);
-      -moz-box-shadow: inset 0 1px rgba(255, 255, 255, 0.8), 0 -1px rgba(0, 0, 0, 0.2);
-      box-shadow: inset 0 1px rgba(255, 255, 255, 0.8), 0 -1px rgba(0, 0, 0, 0.2);
+      -webkit-box-shadow: inset 0 1px rgba(116, 116, 116, 0.8), 0 -1px rgba(0, 0, 0, 0.2);
+      -moz-box-shadow: inset 0 1px rgba(116, 116, 116, 0.8), 0 -1px rgba(0, 0, 0, 0.2);
+      box-shadow: inset 0 1px rgba(116, 116, 116, 0.8), 0 -1px rgba(0, 0, 0, 0.2);
       margin: 0 5px 0 20px; }
     .chrome-tabs .chrome-tab .chrome-tab-curves {
       display: none; }
@@ -334,11 +333,10 @@ Tabs
         top: 1px;
         z-index: 1;
         background-color: #e0e0e0;
-        background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ececec), color-stop(100%, #d3d3d3));
-        background-image: -webkit-linear-gradient(top, #ececec, #d3d3d3);
-        background-image: -moz-linear-gradient(top, #ececec, #d3d3d3);
-        background-image: -o-linear-gradient(top, #ececec, #d3d3d3);
-        background-image: linear-gradient(top, #ececec, #d3d3d3); }
+        background-image: -webkit-linear-gradient(top, #555555, #413B3B);
+        background-image: -moz-linear-gradient(top, #555555, #413B3B);
+        background-image: -o-linear-gradient(top, #555555, #413B3B);
+        background-image: linear-gradient(top, #555555, #413B3B); }
       .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-left {
         left: -20px; }
       .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-right {
@@ -347,7 +345,7 @@ Tabs
         top: 0px;
         width: 21px;
         height: 25px;
-        background-color: white; }
+        background-color: rgb(116, 116, 116); }
       .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-left-shadow1 {
         left: -21px; }
       .chrome-tabs .chrome-tab .chrome-tab-curves .chrome-tab-curve-right-shadow1 {
@@ -363,19 +361,17 @@ Tabs
         right: -22px; }
     .chrome-tabs .chrome-tab.chrome-tab-current {
       z-index: 999;
-      background-color: #f9f9f9;
-      background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f9f9f9), color-stop(100%, #e3e3e3));
-      background-image: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
-      background-image: -moz-linear-gradient(top, #f9f9f9, #e3e3e3);
-      background-image: -o-linear-gradient(top, #f9f9f9, #e3e3e3);
-      background-image: linear-gradient(top, #f9f9f9, #e3e3e3); }
+      background-color: #e0e0e0;
+      background-image: -webkit-linear-gradient(top, #555555, #574E4E);
+      background-image: -moz-linear-gradient(top, #555555, #574E4E);
+      background-image: -o-linear-gradient(top, #555555, #574E4E);
+      background-image: linear-gradient(top, #555555, #574E4E); }
       .chrome-tabs .chrome-tab.chrome-tab-current .chrome-tab-curves .chrome-tab-curve-left, .chrome-tabs .chrome-tab.chrome-tab-current .chrome-tab-curves .chrome-tab-curve-right {
-        background-color: #f9f9f9;
-        background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f9f9f9), color-stop(100%, #e3e3e3));
-        background-image: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
-        background-image: -moz-linear-gradient(top, #f9f9f9, #e3e3e3);
-        background-image: -o-linear-gradient(top, #f9f9f9, #e3e3e3);
-        background-image: linear-gradient(top, #f9f9f9, #e3e3e3); }
+        background-color: #e0e0e0;
+        background-image: -webkit-linear-gradient(top, #555555, #574E4E);
+        background-image: -moz-linear-gradient(top, #555555, #574E4E);
+        background-image: -o-linear-gradient(top, #555555, #574E4E);
+        background-image: linear-gradient(top, #555555, #574E4E); }
       .chrome-tabs .chrome-tab.chrome-tab-current .chrome-tab-curves .chrome-tab-curve-left-shadow1, .chrome-tabs .chrome-tab.chrome-tab-current .chrome-tab-curves .chrome-tab-curve-right-shadow1, .chrome-tabs .chrome-tab.chrome-tab-current .chrome-tab-curves .chrome-tab-curve-left-shadow2, .chrome-tabs .chrome-tab.chrome-tab-current .chrome-tab-curves .chrome-tab-curve-right-shadow2 {
         height: 25px; }
     .chrome-tabs .chrome-tab .chrome-tab-favicon {
@@ -390,13 +386,13 @@ Tabs
         left: -2px;
         top: 4px; }
     .chrome-tabs .chrome-tab .chrome-tab-title {
-      color: #444444;
+      color: #B3B3B3;
       padding: 5px 30px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap; }
       .cssmasks .chrome-tabs .chrome-tab .chrome-tab-title {
-        padding: 5px 5px 5px 19px; }
+        padding: 5px 5px 5px 10px; }
     .chrome-tabs .chrome-tab .chrome-tab-close {
       position: absolute;
       top: 6px;
