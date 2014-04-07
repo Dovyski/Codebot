@@ -125,11 +125,13 @@ var CodebotTabs = function() {
             id: mIds,
             index: 0,
             container: 'tab-content-' + mIds,
+            dirty: false, // TODO: make it private
             
             // TODO: move this to a new class
             setDirty: function(theStatus) {
-                // TODO: implement the dirty mark
-                console.log('Tab ' + this.id + ' is dirty');
+                this.dirty = theStatus;
+                var aColor = this.dirty ? '#ff0000' : 'transparent';
+                $('#codebot-tab-' + this.id + ' div.chrome-tab-favicon').html('<i class="fa fa-file-text-o" style="color: '+ aColor +';"></i>');
             }
         };
         
@@ -237,7 +239,7 @@ var CodebotTabs = function() {
   } else {
     $('html').addClass('no-cssmasks');
   }
-  tabTemplate = '<div class="chrome-tab">\n    <div class="chrome-tab-favicon"></div>\n    <div class="chrome-tab-title"></div>\n    <div class="chrome-tab-close"></div>\n    <div class="chrome-tab-curves">\n        <div class="chrome-tab-curve-left-shadow2"></div>\n        <div class="chrome-tab-curve-left-shadow1"></div>\n        <div class="chrome-tab-curve-left"></div>\n        <div class="chrome-tab-curve-right-shadow2"></div>\n        <div class="chrome-tab-curve-right-shadow1"></div>\n        <div class="chrome-tab-curve-right"></div>\n    </div>\n</div>';
+  tabTemplate = '<div class="chrome-tab" id="{id}">\n    <div class="chrome-tab-favicon"></div>\n    <div class="chrome-tab-title"></div>\n    <div class="chrome-tab-close"></div>\n    <div class="chrome-tab-curves">\n        <div class="chrome-tab-curve-left-shadow2"></div>\n        <div class="chrome-tab-curve-left-shadow1"></div>\n        <div class="chrome-tab-curve-left"></div>\n        <div class="chrome-tab-curve-right-shadow2"></div>\n        <div class="chrome-tab-curve-right-shadow1"></div>\n        <div class="chrome-tab-curve-right"></div>\n    </div>\n</div>';
   defaultNewTabData = {
     title: 'New Tab',
     favicon: '',
@@ -343,7 +345,7 @@ var CodebotTabs = function() {
     },
     add: function(newTabData) {
       var $newTab, tabData;
-      $newTab = $(tabTemplate);
+      $newTab = $(tabTemplate.replace('{id}', 'codebot-tab-' + newTabData.data.id));
       $shell.find('.chrome-tabs').append($newTab);
       tabData = $.extend(true, {}, defaultNewTabData, newTabData);
       chromeTabs.updateTab($shell, $newTab, tabData);
