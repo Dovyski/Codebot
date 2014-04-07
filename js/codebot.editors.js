@@ -23,7 +23,7 @@
 
 var CodebotEditors = function() {
     var mSelf = null;
-    var mPreferences = null;
+    var mCodebot = null;
     var mExtensionsMap = {};
     
     /**
@@ -49,11 +49,11 @@ var CodebotEditors = function() {
     /**
      * Creates an instance of a editor to manipulate a file.
      *
-     * @param {string} theContainer - id of a div where the editor will be placed
+     * @param {CodebotTab} theTab - tab where the editor will be inserted.
      * @param {string} theContent -  file content
      * @param {Node} theNode - filesystem node describing the file.
      */
-    this.create = function(theContainer, theContent, theNode) {
+    this.create = function(theTab, theContent, theNode) {
         var aExtension = CODEBOT.utils.getExtension(theNode.name);
         var aEditorFactory = null;
         
@@ -67,12 +67,12 @@ var CodebotEditors = function() {
             aEditorFactory = mExtensionsMap['*'];
         }
         
-        return aEditorFactory(theContainer, theContent, theNode);
+        return aEditorFactory(theTab, theContent, theNode);
     };
     
-    this.init = function(thePreferences) {
+    this.init = function(theCodebot) {
         mSelf = this;
-        mPreferences = thePreferences;
+        mCodebot = theCodebot;
         
         mSelf.register('*', CodebotEditorAce.create);
     };

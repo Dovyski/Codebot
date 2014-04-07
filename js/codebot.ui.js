@@ -133,7 +133,7 @@ var CodebotUI = function() {
         mSlidePanel     = new CodebotSlidePanel();
 		
         mFilesPanel.init(mCodebot);
-        mTabs.init(this);
+        mTabs.init(mCodebot);
         mSlidePanel.init(this);
         
         // TODO: read data from disk, using last open directory.

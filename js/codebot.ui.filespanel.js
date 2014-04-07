@@ -50,25 +50,9 @@ var CodebotFilesPanel = function() {
 		console.debug('File panel double click: ' + theEvent + ' , folder: ' + aNode.folder);
 		
 		if(!aNode.folder) {
-            openNodeInTab(aNode);    
+            mCodebot.ui.tabs.openNode(aNode);    
 		}
 	};
-    
-    var openNodeInTab = function(theNode) {
-        var aTab = null;
-
-        mCodebot.io.readFile(theNode.data, function(theData) {
-            aTab = mCodebot.ui.tabs.add({
-                favicon: 'file-text-o', // TODO: dynamic icon?
-                title: theNode.data.name,
-                file: theNode.data.name,
-                path: theNode.data.path,
-                editor: null
-            });
-
-            aTab.editor = mCodebot.editors.create(aTab.container, theData, theNode.data);
-        });
-    };
     
     var onDragStart = function(theNode, theDragData) {
         /** This function MUST be defined to enable dragging for the tree.

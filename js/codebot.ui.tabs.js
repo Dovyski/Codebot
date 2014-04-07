@@ -25,7 +25,7 @@ var CodebotTabs = function() {
     var mSelf           = null;
     var mTabController  = null;
     var mActiveTab      = null;
-    var mUI             = null;
+    var mCodebot        = null;
     var mIds            = 0;
     
     var onTabClose = function(theTab) {
@@ -61,7 +61,7 @@ var CodebotTabs = function() {
         var aData = theTab.data('tabData').data;
         
         if(aHasChanges) {
-            mUI.showDialog({
+            mCodebot.ui.showDialog({
                 keyboard: true,
                 title: 'Important',
                 content: 'This file has changes. Do you want to save them?',
@@ -124,7 +124,13 @@ var CodebotTabs = function() {
             path: '',
             id: mIds,
             index: 0,
-            container: 'tab-content-' + mIds
+            container: 'tab-content-' + mIds,
+            
+            // TODO: move this to a new class
+            setDirty: function(theStatus) {
+                // TODO: implement the dirty mark
+                console.log('Tab ' + this.id + ' is dirty');
+            }
         };
         
         $.extend(aTab, theConfig);
@@ -149,9 +155,31 @@ var CodebotTabs = function() {
         }
     };
     
-    this.init = function(theUI) {
+    /**
+     * Opens any filespanel node in a new tab. The method will use Codebot
+     * registered editors to pick the best one able to handle the file editing.
+     * 
+     * @param {Object} theNode - filespanel node.
+     */
+    this.openNode = function(theNode) {
+        var aTab = null;
+
+        mCodebot.io.readFile(theNode.data, function(theData) {
+            aTab = mCodebot.ui.tabs.add({
+                favicon: 'file-text-o', // TODO: dynamic icon?
+                title: theNode.data.name,
+                file: theNode.data.name,
+                path: theNode.data.path,
+                editor: null
+            });
+
+            aTab.editor = mCodebot.editors.create(aTab, theData, theNode.data);
+        });
+    };
+    
+    this.init = function(theCodebot) {
         mSelf = this;
-        mUI   = theUI;
+        mCodebot = theCodebot;
         
         // get tab context from codebot.ui.tabs.js
 		mTabController = window.chromeTabs;
