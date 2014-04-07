@@ -72,9 +72,19 @@ Config panel
 
 #config-bar a {
 	color: #ebebeb;
-	float: left;
+}
+
+#config-bar a.top {
+    float: left;
 	clear: both;
 	margin: 5px 0 10px 8px;
+}
+
+#config-bar a.bottom {
+	position: absolute;
+	bottom: 0;
+	height: 25px;
+    left: 8px;
 }
 
 /*

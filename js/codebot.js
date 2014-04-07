@@ -26,20 +26,9 @@ var CODEBOT = new function() {
 	var mUI = null;
 	var mIO = null;
 	var mEditors = null;
+	var mPreferences = null;
     var mPlugins = {};
-    var mPreferences = {}; // TODO: default prefs here?
     var mSelf;
-    
-    var loadPreferences = function(theCallback) {
-        console.log('CODEBOT [prefs] Loading preferences...');
-        
-        // TODO: read another preference file?
-        mIO.readFile({path: './data/prefs.default.json'}, function(theData) {
-            eval('CODEBOT.setPrefs('+theData+')');
-            console.log('CODEBOT [prefs] Preferences loaded!', CODEBOT.getPrefs());
-            theCallback();
-        });
-    };
     
     var loadPlugins = function() {
         console.log('CODEBOT [plugins] Loading plugins...');
@@ -78,14 +67,6 @@ var CODEBOT = new function() {
         CODEBOT.utils.invoke(mPlugins[theObj.id], 'init', mSelf);
 	};
     
-    this.getPrefs = function() {
-        return mPreferences;
-    };
-    
-    this.setPrefs = function(theObj) {
-        mPreferences = theObj;
-    };
-    
     this.showDebugger= function() {
         if(typeof(require) == 'function') {
             var aGui = require('nw.gui');
@@ -107,8 +88,11 @@ var CODEBOT = new function() {
         mEditors = new CodebotEditors();
         mShortcuts = new CodebotShortcuts();
         mUI = new CodebotUI();
+        mPreferences = new CodebotPreferences();
         
-        loadPreferences(function() {
+        mPreferences.init(mSelf);
+        
+        mPreferences.load(function() {
             mEditors.init(mSelf);
             mUI.init(mSelf);
             
@@ -126,4 +110,5 @@ var CODEBOT = new function() {
     this.__defineGetter__("editors", function() { return mEditors; });
     this.__defineGetter__("ui", function() { return mUI; });
     this.__defineGetter__("io", function() { return mIO; });
+    this.__defineGetter__("preferences", function() { return mPreferences; });
 };

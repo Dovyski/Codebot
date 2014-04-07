@@ -24,7 +24,7 @@
 var CodebotSlidePanel = function() {
     var SLIDE_DURATION = 500; // in ms
     
-    var mUI = null;
+    var mCodebot = null;
     var mSelf = null;
     var mIds = 0;
     var mStack = [];
@@ -71,7 +71,7 @@ var CodebotSlidePanel = function() {
         $('#config-dialog').append('<div id="' + aContainerId + '" style="position: absolute;"></div>');
 
         $('#' + aContainerId).css('left', aPanelWidth + 'px');
-        theStateRender($('#' + aContainerId));
+        theStateRender($('#' + aContainerId), mCodebot);
         
         mStack.push(aContainerId);
         
@@ -111,8 +111,8 @@ var CodebotSlidePanel = function() {
         slideElement('config-dialog', 0);
     }
     
-    this.init = function(theUI) {
+    this.init = function(theCodebot) {
         mSelf = this;
-        mUI = theUI;
+        mCodebot = theCodebot;
     };
 };

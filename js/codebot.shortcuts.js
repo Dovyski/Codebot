@@ -65,7 +65,7 @@ var CodebotShortcuts = function() {
     };
 	
     var createKeyBindings = function() {
-        var aShortcuts = mCodebot.getPrefs().shortcuts;
+        var aShortcuts = mCodebot.preferences.get().shortcuts;
         var aCommand = null;
         var aKey = null;
         var aShortcutsMethods = {

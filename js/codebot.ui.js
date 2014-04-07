@@ -30,7 +30,16 @@ var CodebotUI = function() {
     var mButtons            = {};
     var mButtonsIds         = 0;
     var mSelf               = null;
-            
+    
+    var adjustButtonsPosition = function() {
+	    var aHeight = 0;
+	    
+		$('#config-bar a.bottom').each(function() {
+		    $(this).css('bottom', aHeight + (aHeight > 0 ? 'px' : ''));
+		    aHeight += $(this).height();
+		});
+	};
+    
     // TODO: implement a pretty confirm dialog/panel
     this.confirm = function(theMessage) {
         mSelf.showDialog({
@@ -53,6 +62,7 @@ var CodebotUI = function() {
         icon: string,
         customIcon: string,
         action: function
+        position: string ('top' or 'bottom')
     }
      */
 	this.addButton = function(theOptions) {
@@ -62,22 +72,25 @@ var CodebotUI = function() {
         mButtons[aId] = theOptions;
         aIcon = theOptions.customIcon ? theOptions.customIcon : ('<i class="fa fa-'+(theOptions.icon || 'question')+'"></i>');
         
-		$('#config-bar').append('<a href="#" id="'+ aId +'">' + aIcon + '</a>');
+		$('#config-bar').append('<a href="#" id="'+ aId +'" class="'+(theOptions.position || 'top')+'">' + aIcon + '</a>');
 
 		$('#' + aId).click(function() {
 			var aIndex = $(this).attr('id');
             
             if('action' in mButtons[aIndex]) {
-                mButtons[aIndex].action();
+                mButtons[aIndex].action(mCodebot);
                 
             } else if('panel' in mButtons[aIndex]) {
                 mSlidePanel.open(mButtons[aIndex].panel);
             }
 		});
+		
+		adjustButtonsPosition();
 	};
     
     this.removeButton = function(theCallback) {
         // TODO: implement
+        adjustButtonsPosition();
     }
         
     /**
@@ -134,7 +147,10 @@ var CodebotUI = function() {
 		
         mFilesPanel.init(mCodebot);
         mTabs.init(mCodebot);
-        mSlidePanel.init(this);
+        mSlidePanel.init(mCodebot);
+        
+        // Add Codebot button at the bottom of the sliding bar.
+        mSelf.addButton({ icon: 'cogs', position: 'bottom', panel: mCodebot.preferences.renderMainPanel});
         
         // TODO: read data from disk, using last open directory.
         

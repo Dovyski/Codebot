@@ -43,8 +43,8 @@ var CodebotEditorAce = new function() {
         aEditor.session.selection.clearSelection();
 
         // TODO: remove this CODEBOT singleton call.
-        for(var i in CODEBOT.getPrefs().editor) {
-            aEditor.setOption(i, CODEBOT.getPrefs().editor[i]);
+        for(var i in CODEBOT.preferences.get().editor) {
+            aEditor.setOption(i, CODEBOT.preferences.get().editor[i]);
         }
         
         aEditor.getSession().on('change', function(e) {
