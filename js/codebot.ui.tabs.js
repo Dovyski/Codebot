@@ -55,23 +55,22 @@ var CodebotTabs = function() {
      *
      * @return bool <code>true</code> if the tab can be closed, or <code>false</code> otherwise (tab will remain open).
      */
-    var tabPreClose = function(theTab) {
+    var tabPreClose = function(theRawTab) {
         // TODO: check if file has changes
-        var aHasChanges = true;
-        var aData = theTab.data('tabData').data;
+        var aTab = theRawTab.data('tabData').data;
         
-        if(aHasChanges) {
+        if(aTab.isDirty()) {
             mCodebot.ui.showDialog({
                 keyboard: true,
                 title: 'Important',
                 content: 'This file has changes. Do you want to save them?',
                 buttons: {
                     'Yes': {css: 'btn-primary', dismiss: true, callback: function() {
-                        CODEBOT.writeTabToDisk(aData);
-                        mTabController.closeTab(theTab);
+                        CODEBOT.writeTabToDisk(aTab);
+                        mTabController.closeTab(theRawTab);
                     }},
                     'No': {css: 'btn-default', dismiss: true, callback: function() {
-                        mTabController.closeTab(theTab);
+                        mTabController.closeTab(theRawTab);
                     }},
                     'Cancel': {css: 'btn-default', dismiss: true}
                 }
@@ -132,6 +131,10 @@ var CodebotTabs = function() {
                 this.dirty = theStatus;
                 var aColor = this.dirty ? '#ff0000' : 'transparent';
                 $('#codebot-tab-' + this.id + ' div.chrome-tab-favicon').html('<i class="fa fa-file-text-o" style="color: '+ aColor +';"></i>');
+            },
+            
+            isDirty: function() {
+                return this.dirty;
             }
         };
         
