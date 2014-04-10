@@ -150,7 +150,7 @@ var CodebotUI = function() {
         mSlidePanel.init(mCodebot);
         
         // Add Codebot button at the bottom of the sliding bar.
-        mSelf.addButton({ icon: 'cogs', position: 'bottom', panel: mCodebot.preferences.renderMainPanel});
+        mSelf.addButton({ icon: 'cogs', position: 'bottom', panel: mCodebot.preferences.panelSections});
         
         // TODO: read data from disk, using last open directory.
         

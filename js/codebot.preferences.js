@@ -23,6 +23,7 @@
 
 var CodebotPreferences = function() {
     var mSelf = 0;
+    var mSections = {};
     var mCodebot = null;
     var mData = {};
     
@@ -34,18 +35,62 @@ var CodebotPreferences = function() {
         $.extend(true, mData, theObj);
     };
     
-    this.renderMainPanel = function(theContainer, theContext) {        
-        theContainer.append('<a href="#" id="myLink">pushState()<a/>');
-        theContainer.append('<a href="#" id="myAnotherPopHere">popState()<a/>');
-        theContainer.css('background', '#ff0000');
-        theContainer.css('width', '100%');
-        theContainer.css('height', '100%');
+    /**
+     * Add a new section to the preferences panel. A section is a link that, when clicked, opens
+     * a new panel with more preferences (e.g. UI preferences).
+     * 
+     * @param {Object} theObj - an object describing the new section. It has the following structure: <code>{id: string, title: string, icon: string, panel: function}</code>. The <code>panel</code> property should be a function able to render a panel.
+     */ 
+    this.addSection = function(theObj) {
+        mSections[theObj.id] = theObj;
+    }
+    
+    var panelEditor = function(theContainer, theContext) {
+        var aContent = '';
         
-        $('#myLink').click(function() {
-            theContext.ui.slidePanel.pushState(mSelf.renderAnotherPanel);
+        aContent += '<div class="panel panel-default" style="height: 100%;">';
+            aContent += '<div class="panel-heading" style="height: 40px;">'+
+                            '<h2 class="panel-title pull-right">Editor <i class="fa fa-code"></i></h2>'+
+                            '<a href="#" id="codebotPrefEditorBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
+                        '</div>';
+        aContent += '</div>';
+        
+        theContainer.append(aContent);
+        
+        $('#codebotPrefEditorBackButton').click(function() {
+            theContext.ui.slidePanel.popState();
+        });
+    }
+    
+    this.panelSections = function(theContainer, theContext) {
+        var aOptions = '';
+        var aContent = '';
+        
+        aContent += '<div class="panel panel-default" style="height: 100%;">';
+        aContent += '<div class="panel-heading" style="height: 40px;">'+
+                        '<h2 class="panel-title pull-right">Preferences</h2>'+
+                        '<a href="#" id="codebotPrefBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
+                    '</div>';
+                    
+        aContent += '<ul class="list-group">';
+                    
+        for(var aId in mSections) {
+            aContent += '<li class="list-group-item"><a href="#" id="codebotPrefSection'+ aId +'" data-section="'+ aId +'">'+ mSections[aId].icon +' '+ mSections[aId].title +'</a></li>';
+        }
+        
+        aContent += '</ul>';
+        aContent += '</div>';
+  
+        theContainer.append(aContent);
+        
+        theContainer.find('li a').each(function(i, e) {
+            $(e).click(function() {
+                var aId = $(this).data('section');
+                theContext.ui.slidePanel.pushState(mSections[aId].panel);
+            });
         });
         
-        $('#myAnotherPopHere').click(function() {
+        $('#codebotPrefBackButton').click(function() {
             theContext.ui.slidePanel.popState();
         });
     };
@@ -64,5 +109,14 @@ var CodebotPreferences = function() {
     this.init = function(theCodebot) {
         mSelf = this;
         mCodebot = theCodebot;
+
+        // TODO: move it to a better place?
+        mSelf.addSection({id: 'editor', title: 'Editor', icon: '<i class="fa fa-code fa-lg"></i>', panel: panelEditor});
+        mSelf.addSection({id: 'shortcuts', title: 'Shortcuts', icon: '<i class="fa fa-keyboard-o fa-lg"></i>', panel: null});
+        mSelf.addSection({id: 'appearance', title: 'UI and Appearance', icon: '<i class="fa fa-picture-o fa-lg"></i>', panel: null});
+        mSelf.addSection({id: 'extensions', title: 'Extensions', icon: '<i class="fa fa-puzzle-piece fa-lg"></i>', panel: null});
+        mSelf.addSection({id: 'devenv', title: 'Development Environments', icon: '<i class="fa fa-flask fa-lg"></i>', panel: null});
+        mSelf.addSection({id: 'about', title: 'About and Updates', icon: '<i class="fa fa-question-circle fa-lg"></i>', panel: null});
+        mSelf.addSection({id: 'bugs', title: 'Feedback and Bug Report', icon: '<i class="fa fa-bug fa-lg"></i>', panel: null});
     };
 };
