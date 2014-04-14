@@ -26,6 +26,84 @@ var CodebotPreferencesUI = function() {
     var mSections = {};
     var mCodebot = null;
     
+    // From: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
+    // Where not indicated otherwise option values are boolean.
+    var mEditorPrefs = {
+        // editor
+        selectionStyle: {name: 'Selection style', value: ["line", "text"]},
+        highlightActiveLine: {name: 'Hightlight active line', value: null},
+        highlightSelectedWord: {name: 'Hightlight selected word', value: Number, tip: 'This is a tip.'} 
+        /*
+        readOnly: ,
+        cursorStyle: "ace"|"slim"|"smooth"|"wide",
+        mergeUndoDeltas: false true "always",
+        behavioursEnabled: ,
+        wrapBehavioursEnabled:, 
+        autoScrollEditorIntoView: ,// this is needed if editor is inside scrollable page
+        
+        // renderer
+        hScrollBarAlwaysVisible: ,
+        vScrollBarAlwaysVisible: ,
+        highlightGutterLine: ,
+        animatedScroll: ,
+        showInvisibles:,
+        showPrintMargin:,
+        printMarginColumn:,
+        printMargin:,
+        fadeFoldWidgets:,
+        showFoldWidgets:,
+        showLineNumbers:,
+        showGutter:,
+        displayIndentGuides:,
+        fontSize: number or css font-size string,
+        fontFamily: css,
+        maxLines: ,
+        minLines:,
+        scrollPastEnd: ,
+        fixedWidthGutter:,
+        theme: path to a theme e.g "ace/theme/textmate",
+        
+        // mouse
+        scrollSpeed: number,
+        dragDelay:  number,
+        dragEnabled:,
+        focusTimout: number,
+        tooltipFollowsMouse:,
+        
+        // session
+        firstLineNumber: number,
+        overwrite:,
+        newLineMode:,
+        useWorker:,
+        useSoftTabs:,
+        tabSize: number,
+        wrap: ,
+        foldStyle:,
+        mode: path to a mode e.g "ace/mode/text"*/
+    };
+    
+    var convertConfigOptionToFormElement = function(theConfigId, theConfigDescription, theValues) {
+        var aValue = theConfigDescription.value;
+        var aRet = '';
+        var aDiskValue = theValues ? theValues[theConfigId] || '' : '';
+
+        if(aValue instanceof Array) {
+            aRet = '<select name="'+theConfigId+'">';
+            for(var i = 0; i < aValue.length; i++) {
+                aRet += '<option value="' + aValue[i] + '" '+(aDiskValue == aValue[i] ? ' selected="selected" ' : '')+'>' + aValue[i] + '</option>';
+            }
+            aRet += '</select>';
+            
+        } else if(aValue === null) {
+            aRet = '<input type="checkbox" style="margin-top: -5px" id="' + theConfigId + '" value="' + aDiskValue + '" '+(Boolean(aDiskValue) ? ' checked="checked" ' : '')+' />';
+
+        } else {
+            aRet = '<input type="text" class="form-control input-sm" style="margin-top: -5px;" id="' + theConfigId + '" value="' + aDiskValue + '" />';
+        }
+
+        return aRet;
+    };
+    
     /**
      * Add a new section to the preferences panel. A section is a link that, when clicked, opens
      * a new panel with more preferences (e.g. UI preferences).
@@ -38,12 +116,31 @@ var CodebotPreferencesUI = function() {
     
     var editor = function(theContainer, theContext) {
         var aContent = '';
+        var aPrefsFromDisk = mCodebot.preferences.get().editor;
         
         aContent += '<div class="panel panel-default" style="height: 100%;">';
             aContent += '<div class="panel-heading" style="height: 40px;">'+
                             '<h2 class="panel-title pull-right">Editor <i class="fa fa-code"></i></h2>'+
                             '<a href="#" id="codebotPrefEditorBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
                         '</div>';
+        
+            aContent += '<form class="form-horizontal" role="form">';
+                    
+            for(var aId in mEditorPrefs) {
+                aContent += '<li class="list-group-item">';
+                
+                  aContent += '<div style="height: 20px;">'+
+                                '<div class="col-sm-8">' + mEditorPrefs[aId].name +
+                                    (mEditorPrefs[aId].tip ? ' <i class="fa fa-question-circle" style="color: #cfcfcf;" title="'+mEditorPrefs[aId].tip+'"></i>' : '') +
+                                '</div>'+
+                                '<div class="col-sm-4">'+
+                                    convertConfigOptionToFormElement(aId, mEditorPrefs[aId], aPrefsFromDisk) + 
+                                '</div>'+
+                              '</div>';
+                aContent += '</li>';
+            }
+        
+            aContent += '</form>';
         aContent += '</div>';
         
         theContainer.append(aContent);
