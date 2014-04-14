@@ -26,6 +26,7 @@ var CodebotUI = function() {
 	var mTabs 				= null;
 	var mFilesPanel         = null;
 	var mSlidePanel         = null;
+	var mPreferences        = null;
 	var mCodebot            = null;
     var mButtons            = {};
     var mButtonsIds         = 0;
@@ -144,13 +145,15 @@ var CodebotUI = function() {
 		mFilesPanel     = new CodebotFilesPanel();
         mTabs           = new CodebotTabs();
         mSlidePanel     = new CodebotSlidePanel();
+        mPreferences    = new CodebotPreferencesUI();
 		
         mFilesPanel.init(mCodebot);
         mTabs.init(mCodebot);
         mSlidePanel.init(mCodebot);
+        mPreferences.init(mCodebot);
         
         // Add Codebot button at the bottom of the sliding bar.
-        mSelf.addButton({ icon: 'cogs', position: 'bottom', panel: mCodebot.preferences.panelSections});
+        mSelf.addButton({ icon: 'cogs', position: 'bottom', panel: mPreferences.main});
         
         // TODO: read data from disk, using last open directory.
         
@@ -168,4 +171,5 @@ var CodebotUI = function() {
     this.__defineGetter__("tabs", function(){ return mTabs; });
     this.__defineGetter__("filesPanel", function(){ return mFilesPanel; });
     this.__defineGetter__("slidePanel", function(){ return mSlidePanel; });
+    this.__defineGetter__("preferences", function(){ return mPreferences; });
 };
