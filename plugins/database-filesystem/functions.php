@@ -22,44 +22,56 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/**
- * A REST API to access a database file-system.
- */
+function dbfsGetNodeById(& $theList, $theNodeId) {
+	$aRet = null;
 
-@include_once dirname(__FILE__).'/config.local.php';
-include_once dirname(__FILE__).'/config.php';
+	if(count($theList) == 0) return null;
 
-require_once dirname(__FILE__).'/db.php';
-require_once dirname(__FILE__).'/functions.php';
+	foreach($theList as &$aNode) {
+		if($aNode->id == $theNodeId) {
+			$aRet = $aNode;
+			break;
 
-$aMethod = isset($_REQUEST['method']) ? $_REQUEST['method'] : '';
+		} else if(isset($aNode->folder)) {
+			$aRet = dbfsGetNodeById($aNode->children, $theNodeId);
+		}
+	}
 
-$aMime = 'text/plain';
-$aOut = '';
-
-switch($aMethod) {
-	case 'ls':
-		$aFiles = dbfsList();
-		$aMime = 'application/json';
-		$aOut = json_encode($aFiles);
-		break;
-
-	case 'mv':
-		break;
-
-	case 'read':
-		break;
-
-	case 'write':
-		break;
-
-
-	default:
-		echo 'Problem?';
-		break;
+	return $aRet;
 }
 
-header('Content-Type: ' . $aMime);
-echo $aOut;
+function dbfsList() {
+	global $gDb;
+
+	$aRet = array();
+	$aQuery = $gDb->prepare("SELECT id, fk_parent, name, dir FROM files WHERE 1");
+
+	if ($aQuery->execute()) {
+		while($aRow = $aQuery->fetch(PDO::FETCH_OBJ)) {
+			if($aRow->dir) {
+				$aRow->folder = true;
+				$aRow->key = $aRow->name;
+				$aRow->children = array();
+			}
+			unset($aRow->dir);
+			$aRow->title = $aRow->name;
+
+			$aRet[] = $aRow;
+		}
+
+		foreach($aRet as $aId => $aNode) {
+			if($aNode->fk_parent != null) {
+				$aParent = dbfsGetNodeById($aRet, $aNode->fk_parent);
+
+				if($aParent != null) {
+					$aParent->children[] = $aNode;
+					unset($aRet[$aId]);
+				}
+			}
+		}
+	}
+
+	return array_values($aRet);
+}
 
 ?>

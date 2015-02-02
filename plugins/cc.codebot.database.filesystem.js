@@ -30,7 +30,8 @@ var CodebotDatabaseFilesystem = function() {
 		$.ajax({
 			url: API_URL,
 			method: 'post',
-			data: theParams
+			data: theParams,
+			dataType: 'json'
 		}).done(function(theData) {
 			theCallback(theData);
 
