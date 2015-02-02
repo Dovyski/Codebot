@@ -29,15 +29,15 @@ var CODEBOT = new function() {
 	var mPreferences = null;
     var mPlugins = {};
     var mSelf;
-    
+
     var loadPlugins = function() {
         console.log('CODEBOT [plugins] Loading plugins...');
-        
+
         // TODO: fix the {path: , etc} below because it breaks IO layer.
         mIO.readDirectory({path: './plugins'}, function(theData) {
             for(var i in theData[0].children) {
                 var aItem = theData[0].children[i];
-                
+
                 if(aItem.title.lastIndexOf('.js') != -1) {
                     $('body').append('<script type="text/javascript" src="'+aItem.path+'"></script>');
                 }
@@ -46,27 +46,27 @@ var CODEBOT = new function() {
 
         console.log('CODEBOT [plugins] Plugins loaded.');
     };
-    
+
     this.writeTabToDisk = function(theTab) {
 		var aEditor = theTab.editor;
-		
+
 		if(aEditor) {
 			mIO.writeFile(theTab, aEditor.getValue(), function() { theTab.setDirty(false); console.log('Tab data written to disk!');} );
 		}
     };
-        
+
     this.getPlugin = function(theId) {
         return mPlugins[theId];
     };
-	
+
 	this.addPlugin = function(theObj) {
 		console.log('CODEBOT [plugin added] ' + theObj.id);
-		
+
 		mPlugins[theObj.id] = theObj;
-		
+
         CODEBOT.utils.invoke(mPlugins[theObj.id], 'init', mSelf);
 	};
-    
+
     this.showDebugger= function() {
         if(typeof(require) == 'function') {
             var aGui = require('nw.gui');
@@ -75,37 +75,41 @@ var CODEBOT = new function() {
             aWin.showDevTools();
         }
     };
-	
+
+	this.setIODriver = function(theIODriver) {
+		mIO = theIODriver;
+		console.log('CODEBOT [IO driver] ' + mIO.driver);
+		mIO.init();
+	};
+
 	this.init = function(theIODriver) {
-        console.log('CODEBOT [core] Initializing...');		
-        
+        console.log('CODEBOT [core] Initializing...');
+
         mSelf = this;
-        
-        mIO = theIODriver || new CodebotIO();
-        console.log('CODEBOT [IO driver] ' + mIO.driver);
-        mIO.init();
-        
+
+		mSelf.setIODriver(theIODriver || new CodebotIO());
+
         mEditors = new CodebotEditors();
         mShortcuts = new CodebotShortcuts();
         mUI = new CodebotUI();
         mPreferences = new CodebotPreferences();
-        
+
         mPreferences.init(mSelf);
-        
+
         mPreferences.load(function() {
             mEditors.init(mSelf);
             mUI.init(mSelf);
-            
+
             loadPlugins();
-            
+
             mShortcuts.init(mSelf);
-            
+
             console.log('CODEBOT [core] Done, ready to rock!');
-            
+
             mSelf.showDebugger();
         });
 	};
-    
+
     // getters
     this.__defineGetter__("editors", function() { return mEditors; });
     this.__defineGetter__("ui", function() { return mUI; });
