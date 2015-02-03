@@ -26,12 +26,12 @@ var CodebotDatabaseFilesystem = function() {
 
 	this.driver = 'Database Web FileSystem';
 
-	var runCommand = function(theParams, theCallback) {
+	var runCommand = function(theParams, theDataType, theCallback) {
 		$.ajax({
 			url: API_URL,
 			method: 'post',
 			data: theParams,
-			dataType: 'json'
+			dataType: theDataType
 		}).done(function(theData) {
 			theCallback(theData);
 
@@ -56,7 +56,7 @@ var CodebotDatabaseFilesystem = function() {
     };
 
     this.readDirectory = function(thePath, theCallback) {
-		runCommand({method: 'ls'}, theCallback);
+		runCommand({method: 'ls'}, 'json', theCallback);
     };
 
 	this.chooseDirectory = function(theCallback) {
@@ -64,7 +64,7 @@ var CodebotDatabaseFilesystem = function() {
 	};
 
 	this.readFile = function(theNode, theCallback) {
-        theCallback('{ content:\'' + theNode.path + '\'}');
+		runCommand({method: 'read', id: theNode.id}, 'text', theCallback);
 	};
 
 	this.writeFile = function(theNode, theData, theCallback) {

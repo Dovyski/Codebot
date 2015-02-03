@@ -48,6 +48,14 @@ switch($aMethod) {
 		break;
 
 	case 'read':
+		$aOut = '';
+		$aMime = 'text/plain';
+		$aId = isset($_REQUEST['id']) ? $_REQUEST['id'] : 0;
+		$aFile = dbfsGetFileById($aId);
+
+		if($aFile != null) {
+			$aOut = $aFile->data;
+		}
 		break;
 
 	case 'write':

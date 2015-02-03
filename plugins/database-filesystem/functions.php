@@ -74,4 +74,17 @@ function dbfsList() {
 	return array_values($aRet);
 }
 
+function dbfsGetFileById($theId) {
+	global $gDb;
+
+	$aRet = null;
+	$aQuery = $gDb->prepare("SELECT id, data FROM files WHERE id = ?");
+
+	if ($aQuery->execute(array($theId))) {
+		$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
+	}
+
+	return $aRet;
+}
+
 ?>
