@@ -27,29 +27,29 @@ var CodebotTabs = function() {
     var mActiveTab      = null;
     var mCodebot        = null;
     var mIds            = 0;
-    
+
     var onTabClose = function(theTab) {
         var aData = theTab.data('tabData').data;
         $('#' + aData.container).remove();
 		aData.editor = null;
-		
+
 		console.debug('onTabClose', aData);
 	};
-	
+
 	var onTabBlur = function(theTab) {
         var aData = theTab.data('tabData').data;
         $('#' + aData.container).hide();
         console.debug('onTabBlur', aData);
 	};
-	
+
 	var onTabFocus = function(theTab) {
         var aData = theTab.data('tabData').data;
 		$('#' + aData.container).show();
         mActiveTab = theTab;
-		
+
         console.debug('onTabFocus', aData);
 	};
-    
+
     /**
      * Invoked by the tab manager to check if the tab can be closed or not.
      *
@@ -58,7 +58,7 @@ var CodebotTabs = function() {
     var tabPreClose = function(theRawTab) {
         // TODO: check if file has changes
         var aTab = theRawTab.data('tabData').data;
-        
+
         if(aTab.isDirty()) {
             mCodebot.ui.showDialog({
                 keyboard: true,
@@ -75,29 +75,29 @@ var CodebotTabs = function() {
                     'Cancel': {css: 'btn-default', dismiss: true}
                 }
             });
-            
+
             // Inform the tab to remain active until the user has decided what
             // to do with it (using the dialog above)
             return false;
-            
+
         } else {
             // No changes, it's clear to go!
             return true;
         }
     };
-    
+
     var onTabSorted = function(theTab, theNewZIndex) {
         var aTab = theTab.data('tabData');
-        
+
         if(aTab) {
             aTab.data.index = theNewZIndex;
         }
 	};
-    
+
     var getTabDataById = function(theId) {
         return mTabController.getRawTabById(theId).data('tabData').data;
     };
-            
+
     /**
      * Adds a new tab.
      *
@@ -125,45 +125,45 @@ var CodebotTabs = function() {
             index: 0,
             container: 'tab-content-' + mIds,
             dirty: false, // TODO: make it private
-            
+
             // TODO: move this to a new class
             setDirty: function(theStatus) {
                 this.dirty = theStatus;
                 var aColor = this.dirty ? '#ff0000' : 'transparent';
                 $('#codebot-tab-' + this.id + ' div.chrome-tab-favicon').html('<i class="fa fa-file-text-o" style="color: '+ aColor +';"></i>');
             },
-            
+
             isDirty: function() {
                 return this.dirty;
             }
         };
-        
+
         $.extend(aTab, theConfig);
         $('#working-area').append('<div id="'+aTab.container+'"></div>');
-        
+
         mTabController.add({
             favicon: theConfig.favicon || 'file-text-o',
             title: theConfig.title,
             data: aTab
         });
-        
+
         mIds++;
-        
+
         return getTabDataById(mIds - 1);
 	};
-    
+
     this.remove = function(theTabId) {
         var aTabRaw = mTabController.getRawTabById(theTabId);
-        
+
         if(aTabRaw && tabPreClose(aTabRaw)) {
             mTabController.closeTab(aTabRaw);
         }
     };
-    
+
     /**
      * Opens any filespanel node in a new tab. The method will use Codebot
      * registered editors to pick the best one able to handle the file editing.
-     * 
+     *
      * @param {Object} theNode - filespanel node.
      */
     this.openNode = function(theNode) {
@@ -175,25 +175,26 @@ var CodebotTabs = function() {
                 title: theNode.data.name,
                 file: theNode.data.name,
                 path: theNode.data.path,
+                node: theNode.data, // TODO: make this the only property here...
                 editor: null
             });
 
             aTab.editor = mCodebot.editors.create(aTab, theData, theNode.data);
         });
     };
-    
+
     this.init = function(theCodebot) {
         mSelf = this;
         mCodebot = theCodebot;
-        
+
         // get tab context from codebot.ui.tabs.js
 		mTabController = window.chromeTabs;
-		
+
 		mTabController.init({
 			container: '.chrome-tabs-shell',
 			minWidth: 20,
 			maxWidth: 100,
-			
+
 			deactivated: onTabBlur,
 			activated: onTabFocus,
 			closed: onTabClose,
@@ -201,9 +202,9 @@ var CodebotTabs = function() {
 			sorted: onTabSorted,
 		});
     };
-    
+
     // Getters and setters
-    
+
     this.__defineGetter__("active", function(){
         return mActiveTab ? mActiveTab.data('tabData').data : null;
     });
@@ -230,7 +231,7 @@ var CodebotTabs = function() {
 	COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-    
+
     NOTE: original code has been modified by Fernando Bevilacqua <dovyski@gmail.com>
 */
 
@@ -251,10 +252,10 @@ var CodebotTabs = function() {
   chromeTabs = {
     init: function(options) {
       var render;
-	  
+
 	  opts = options;
 	  $shell = $(options.container);
-	  
+
       $.extend($shell.data(), options);
       $shell.find('.chrome-tab').each(function() {
         return $(this).data().tabData = {
@@ -311,9 +312,9 @@ var CodebotTabs = function() {
         var $tab, zIndex;
         $tab = $(this);
         zIndex = $tabs.length - i;
-        
+
         if(opts.sorted) { opts.sorted($tab, i); }
-          
+
         if ($tab.hasClass('chrome-tab-current')) {
           zIndex = $tabs.length + 40;
         }
@@ -358,13 +359,13 @@ var CodebotTabs = function() {
     setCurrent: function($tab) {
 	  var $old = $shell.find('.chrome-tab-current');
       chromeTabs.fixZIndexes($shell);
-        
+
 	  $old.removeClass('chrome-tab-current');
 	  if($old.length && opts.deactivated) { opts.deactivated($old); }
-	  
+
       $tab.addClass('chrome-tab-current');
 	  if(opts.activated) { opts.activated($tab); }
-	  
+
       return chromeTabs.render($shell);
     },
     closeTab: function($tab) {
@@ -373,7 +374,7 @@ var CodebotTabs = function() {
       }
 	  if(opts.closed) { opts.closed($tab); }
       $tab.remove();
-	  
+
       return chromeTabs.render($shell);
     },
     updateTab: function($shell, $tab, tabData) {
@@ -394,6 +395,6 @@ var CodebotTabs = function() {
       return ret;
     },
   };
-  
-  window.chromeTabs = chromeTabs; 
+
+  window.chromeTabs = chromeTabs;
 }).call(this);

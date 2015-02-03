@@ -34,6 +34,8 @@ require_once dirname(__FILE__).'/functions.php';
 
 $aMethod = isset($_REQUEST['method']) ? $_REQUEST['method'] : '';
 
+unset($_REQUEST['method']);
+
 $aMime = 'text/plain';
 $aOut = '';
 
@@ -59,8 +61,23 @@ switch($aMethod) {
 		break;
 
 	case 'write':
-		break;
+		$aMime = 'application/json';
 
+		$aInfos = array();
+		$aInfos['data'] = isset($_REQUEST['data']) ? $_REQUEST['data'] : '';
+		$aInfos['name'] = isset($_REQUEST['name']) ? $_REQUEST['name'] : '';
+		$aInfos['id'] 	= isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
+
+		$aFile = dbfsGetFileById($aInfos['id']);
+
+		if($aFile != null) {
+			$aInfos['name'] = $aFile->name;
+			$aInfos['fk_parent'] = $aFile->fk_parent;
+		}
+
+		$aOk = dbfsUpdateOrCreateFile($aInfos);
+		$aOut = json_encode(array('success' => $aOk, 'msg' => ''));
+		break;
 
 	default:
 		echo 'Problem?';

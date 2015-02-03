@@ -78,11 +78,38 @@ function dbfsGetFileById($theId) {
 	global $gDb;
 
 	$aRet = null;
-	$aQuery = $gDb->prepare("SELECT id, data FROM files WHERE id = ?");
+	$aQuery = $gDb->prepare("SELECT * FROM files WHERE id = ?");
 
 	if ($aQuery->execute(array($theId))) {
 		$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
 	}
+
+	return $aRet;
+}
+
+function dbfsUpdateOrCreateFile($theInfo) {
+	global $gDb;
+
+	$aRet = null;
+
+	$aId	 = isset($theInfo['id']) 		? $theInfo['id'] 		: null;
+	$aParent = isset($theInfo['fk_parent']) ? $theInfo['fk_parent'] : null;
+	$aName 	 = isset($theInfo['name']) 		? $theInfo['name'] 		: ('Untitled ' . rand(1, 9999));
+	$aDir 	 = isset($theInfo['dir']) 		? $theInfo['dir'] 		: 0;
+	$aData 	 = isset($theInfo['data']) 		? $theInfo['data'] 		: '';
+
+	if($aId == 0) {
+		$aId = null;
+	}
+
+	$aQuery = $gDb->prepare("INSERT INTO files (id, fk_parent, name, dir, data) VALUES (?, ?, ?, ?, ?)
+								ON DUPLICATE KEY UPDATE fk_parent = ?, name = ?, dir = ?, data = ?");
+
+	$aParams = array($aId, $aParent, $aName, $aDir, $aData,
+						   $aParent, $aName, $aDir, $aData);
+
+	$aQuery->execute($aParams);
+	$aRet = $aQuery->rowCount() != 0;
 
 	return $aRet;
 }

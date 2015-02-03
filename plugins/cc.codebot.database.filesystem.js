@@ -68,7 +68,19 @@ var CodebotDatabaseFilesystem = function() {
 	};
 
 	this.writeFile = function(theNode, theData, theCallback) {
-        theCallback();
+		runCommand(
+			{
+				method: 'write',
+				id: theNode.node.id,
+				name: theNode.node.name,
+				data: theData
+			},
+			'json',
+			function(theResponse) {
+				console.log(theResponse);
+				theCallback();
+			}
+		);
 	};
 
 	this.createFile = function(theName, theNode, theData, theCallback) {

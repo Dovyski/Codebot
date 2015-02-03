@@ -51,6 +51,7 @@ var CODEBOT = new function() {
 		var aEditor = theTab.editor;
 
 		if(aEditor) {
+			// TODO: change to theTab.node?
 			mIO.writeFile(theTab, aEditor.getValue(), function() { theTab.setDirty(false); console.log('Tab data written to disk!');} );
 		}
     };
