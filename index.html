@@ -8,14 +8,14 @@
 	<link href="./js/3rdparty/jquery/jquery-ui.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="./js/3rdparty/jquery/jquery.min.js"></script>
 	<script type="text/javascript" src="./js/3rdparty/jquery/jquery-ui.min.js"></script>
-		
+
     <!-- Bootstrap -->
     <link href="./js/3rdparty/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script type="text/javascript" src="./js/3rdparty/bootstrap/js/bootstrap.min.js"></script>
-    
+
     <!-- FontAwesome -->
     <link href="./css/3rdparty/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    
+
     <!-- Fancytree -->
     <link href="./js/3rdparty/jquery.fancytree-2.0.0-5/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
 	<link href="./js/3rdparty/jquery.fancytree-2.0.0-5/skin-awesome/ui.fancytree.css" rel="stylesheet" type="text/css">
@@ -26,14 +26,17 @@
 	<script type="text/javascript" src="./js/3rdparty/jquery.fancytree.awesome.js"></script>
 	<script type="text/javascript" src="./js/3rdparty/contextmenu/js/jquery.contextMenu-1.6.5.js"></script>
 	<script type="text/javascript" src="./js/3rdparty/contextmenu/js/jquery.fancytree.contextMenu.js"></script>
-    
+
     <!-- Mousetrap -->
     <script type="text/javascript" src="./js/3rdparty/mousetrap/mousetrap.min.js"></script>
     <script type="text/javascript" src="./js/3rdparty/mousetrap/plugins/global-bind/mousetrap-global-bind.min.js"></script>
-	
+
     <!-- Ace -->
     <script type="text/javascript" src="./js/3rdparty/ace/src-min-noconflict/ace.js"></script>
-    
+
+	<!-- dat.GUI -->
+	<script type="text/javascript" src="./js/3rdparty/dat.gui/dat.gui.js"></script>
+
     <!-- Codebot -->
     <link href="./css/style.css" rel="stylesheet" type="text/css">
 </head>
@@ -59,7 +62,7 @@
                 </header>
 				<div id="folders"></div>
 			</div>
-			
+
 			<div id="tabs">
 				<div class="chrome-tabs-shell">
 					<div class="chrome-tabs"></div>
@@ -68,15 +71,15 @@
 			</div>
 			<div id="working-area"></div>
 		</div>
-		
+
 		<div id="config">
 			<div id="config-dialog">#config-dialog <a href="#">close</a></div>
 			<div id="config-bar"></div>
 		</div>
 	</div>
-    
+
     <div id="console"></div>
-    
+
     <!-- Default modal -->
     <div class="modal fade" id="defaultModal" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -95,7 +98,7 @@
         </div>
       </div>
     </div>
-	
+
 	<script type="text/javascript" src="./js/codebot.js"></script>
     <script type="text/javascript" src="./js/codebot.utils.js"></script>
     <script type="text/javascript" src="./js/codebot.io.js"></script>
@@ -109,7 +112,7 @@
 	<script type="text/javascript" src="./js/codebot.ui.contextmenu.js"></script>
 	<script type="text/javascript" src="./js/codebot.ui.preferences.js"></script>
 	<script type="text/javascript" src="./js/codebot.shortcuts.js"></script>
-	
+
     <!--
         The bootstrap file will load all core modules and kick off the application.
         Each platform must provide its own bootstrap lib, otherwise Codebot won't
