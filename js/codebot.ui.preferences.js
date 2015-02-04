@@ -25,22 +25,22 @@ var CodebotPreferencesUI = function() {
     var mSelf = 0;
     var mSections = {};
     var mCodebot = null;
-    
+
     // From: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
     // Where not indicated otherwise option values are boolean.
     var mEditorPrefs = {
         // editor
         selectionStyle: {name: 'Selection style', value: ["line", "text"]},
         highlightActiveLine: {name: 'Hightlight active line', value: null},
-        highlightSelectedWord: {name: 'Hightlight selected word', value: Number, tip: 'This is a tip.'} 
+        highlightSelectedWord: {name: 'Hightlight selected word', value: Number, tip: 'This is a tip.'}
         /*
         readOnly: ,
         cursorStyle: "ace"|"slim"|"smooth"|"wide",
         mergeUndoDeltas: false true "always",
         behavioursEnabled: ,
-        wrapBehavioursEnabled:, 
+        wrapBehavioursEnabled:,
         autoScrollEditorIntoView: ,// this is needed if editor is inside scrollable page
-        
+
         // renderer
         hScrollBarAlwaysVisible: ,
         vScrollBarAlwaysVisible: ,
@@ -62,14 +62,14 @@ var CodebotPreferencesUI = function() {
         scrollPastEnd: ,
         fixedWidthGutter:,
         theme: path to a theme e.g "ace/theme/textmate",
-        
+
         // mouse
         scrollSpeed: number,
         dragDelay:  number,
         dragEnabled:,
         focusTimout: number,
         tooltipFollowsMouse:,
-        
+
         // session
         firstLineNumber: number,
         overwrite:,
@@ -81,7 +81,7 @@ var CodebotPreferencesUI = function() {
         foldStyle:,
         mode: path to a mode e.g "ace/mode/text"*/
     };
-    
+
     var convertConfigOptionToFormElement = function(theConfigId, theConfigDescription, theValues) {
         var aValue = theConfigDescription.value;
         var aRet = '';
@@ -93,7 +93,7 @@ var CodebotPreferencesUI = function() {
                 aRet += '<option value="' + aValue[i] + '" '+(aDiskValue == aValue[i] ? ' selected="selected" ' : '')+'>' + aValue[i] + '</option>';
             }
             aRet += '</select>';
-            
+
         } else if(aValue === null) {
             aRet = '<input type="checkbox" style="margin-top: -5px" id="' + theConfigId + '" value="' + aDiskValue + '" '+(Boolean(aDiskValue) ? ' checked="checked" ' : '')+' />';
 
@@ -103,188 +103,206 @@ var CodebotPreferencesUI = function() {
 
         return aRet;
     };
-    
+
     /**
      * Add a new section to the preferences panel. A section is a link that, when clicked, opens
      * a new panel with more preferences (e.g. UI preferences).
-     * 
+     *
      * @param {Object} theObj - an object describing the new section. It has the following structure: <code>{id: string, title: string, icon: string, panel: function}</code>. The <code>panel</code> property should be a function able to render a panel.
-     */ 
+     */
     this.addSection = function(theObj) {
         mSections[theObj.id] = theObj;
     }
-    
+
     var editor = function(theContainer, theContext) {
         var aContent = '';
         var aPrefsFromDisk = mCodebot.preferences.get().editor;
-        
+
         aContent += '<div class="panel panel-default" style="height: 100%;">';
             aContent += '<div class="panel-heading" style="height: 40px;">'+
                             '<h2 class="panel-title pull-right">Editor <i class="fa fa-code"></i></h2>'+
                             '<a href="#" id="codebotPrefEditorBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
                         '</div>';
-        
+
             aContent += '<form class="form-horizontal" role="form">';
-                    
+
             for(var aId in mEditorPrefs) {
                 aContent += '<li class="list-group-item">';
-                
+
                   aContent += '<div style="height: 20px;">'+
                                 '<div class="col-sm-8">' + mEditorPrefs[aId].name +
                                     (mEditorPrefs[aId].tip ? ' <i class="fa fa-question-circle" style="color: #cfcfcf;" title="'+mEditorPrefs[aId].tip+'"></i>' : '') +
                                 '</div>'+
                                 '<div class="col-sm-4">'+
-                                    convertConfigOptionToFormElement(aId, mEditorPrefs[aId], aPrefsFromDisk) + 
+                                    convertConfigOptionToFormElement(aId, mEditorPrefs[aId], aPrefsFromDisk) +
                                 '</div>'+
                               '</div>';
                 aContent += '</li>';
             }
-        
+
             aContent += '</form>';
         aContent += '</div>';
-        
+
         theContainer.append(aContent);
-        
+
         $('#codebotPrefEditorBackButton').click(function() {
             theContext.ui.slidePanel.popState();
         });
     };
-    
+
     var shortcuts = function(theContainer, theContext) {
         var aContent = '';
-        
+
         aContent += '<div class="panel panel-default" style="height: 100%;">';
             aContent += '<div class="panel-heading" style="height: 40px;">'+
                             '<h2 class="panel-title pull-right">Shortcuts <i class="fa fa-keyboard-o"></i></h2>'+
                             '<a href="#" id="codebotPrefEditorBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
                         '</div>';
         aContent += '</div>';
-        
+
         theContainer.append(aContent);
-        
+
         $('#codebotPrefEditorBackButton').click(function() {
             theContext.ui.slidePanel.popState();
         });
     };
-    
+
     var appearance = function(theContainer, theContext) {
         var aContent = '';
-        
+
         aContent += '<div class="panel panel-default" style="height: 100%;">';
             aContent += '<div class="panel-heading" style="height: 40px;">'+
                             '<h2 class="panel-title pull-right">UI and Appearance <i class="fa fa-picture-o"></i></h2>'+
                             '<a href="#" id="codebotPrefEditorBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
                         '</div>';
         aContent += '</div>';
-        
+
         theContainer.append(aContent);
-        
+
         $('#codebotPrefEditorBackButton').click(function() {
             theContext.ui.slidePanel.popState();
         });
     };
-    
+
     var extensions = function(theContainer, theContext) {
         var aContent = '';
-        
+
         aContent += '<div class="panel panel-default" style="height: 100%;">';
             aContent += '<div class="panel-heading" style="height: 40px;">'+
                             '<h2 class="panel-title pull-right">Extensions <i class="fa fa-puzzle-piece"></i></h2>'+
                             '<a href="#" id="codebotPrefEditorBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
                         '</div>';
         aContent += '</div>';
-        
+
         theContainer.append(aContent);
-        
+
         $('#codebotPrefEditorBackButton').click(function() {
             theContext.ui.slidePanel.popState();
         });
     };
-    
+
     var devenvs = function(theContainer, theContext) {
         var aContent = '';
-        
+
         aContent += '<div class="panel panel-default" style="height: 100%;">';
             aContent += '<div class="panel-heading" style="height: 40px;">'+
                             '<h2 class="panel-title pull-right">Development Environments <i class="fa fa-flask"></i></h2>'+
                             '<a href="#" id="codebotPrefEditorBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
                         '</div>';
         aContent += '</div>';
-        
+
         theContainer.append(aContent);
-        
+
         $('#codebotPrefEditorBackButton').click(function() {
             theContext.ui.slidePanel.popState();
         });
     };
-    
+
     var about = function(theContainer, theContext) {
         var aContent = '';
-        
+
         aContent += '<div class="panel panel-default" style="height: 100%;">';
             aContent += '<div class="panel-heading" style="height: 40px;">'+
                             '<h2 class="panel-title pull-right">About <i class="fa fa-question-circle"></i></h2>'+
                             '<a href="#" id="codebotPrefEditorBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
                         '</div>';
         aContent += '</div>';
-        
+
         theContainer.append(aContent);
-        
+
         $('#codebotPrefEditorBackButton').click(function() {
             theContext.ui.slidePanel.popState();
         });
     };
-    
+
     var bugs = function(theContainer, theContext) {
         var aContent = '';
-        
+
         aContent += '<div class="panel panel-default" style="height: 100%;">';
             aContent += '<div class="panel-heading" style="height: 40px;">'+
                             '<h2 class="panel-title pull-right">Bugs <i class="fa fa-bug"></i></h2>'+
                             '<a href="#" id="codebotPrefEditorBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
                         '</div>';
         aContent += '</div>';
-        
+
         theContainer.append(aContent);
-        
+
         $('#codebotPrefEditorBackButton').click(function() {
             theContext.ui.slidePanel.popState();
         });
     };
-    
+
     this.main = function(theContainer, theContext) {
         var aOptions = '';
         var aContent = '';
-        
+
         aContent += '<div class="panel panel-default" style="height: 100%;">';
-        aContent += '<div class="panel-heading" style="height: 40px;">'+
-                        '<h2 class="panel-title pull-right">Preferences</h2>'+
-                        '<a href="#" id="codebotPrefBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>'+
-                    '</div>';
-                    
-        aContent += '<ul class="list-group">';
-                    
+
+        aContent += '<div class="dg main" style="height: 40px;">'+
+                        '<ul>'+
+                            '<li class="folder">'+
+                                '<div class="dg">'+
+                                    '<ul>'+
+                                        '<li class="title"><a href="#" id="codebotPrefBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/>Preferences</li>';
+
         for(var aId in mSections) {
-            aContent += '<li class="list-group-item"><a href="#" id="codebotPrefSection'+ aId +'" data-section="'+ aId +'">'+ mSections[aId].icon +' '+ mSections[aId].title +'</a></li>';
+            //aContent += '<li class="list-group-item"><a href="#" id="codebotPrefSection'+ aId +'" data-section="'+ aId +'">'+ mSections[aId].icon +' '+ mSections[aId].title +'</a></li>';
+            aContent +=
+
+
+                                        '<li class="cr function" data-section="'+ aId +'">' +
+                                            '<div>' +
+                                                '<span class="property-name">'+ mSections[aId].icon + ' ' + mSections[aId].title + '</span>'+
+                                                '<div class="c">'+
+                                                    '<a class="button pref-button" data-section="'+ aId +'"></a>'+
+                                                '</div>'+
+                                            '</div>'+
+                                        '</li>';
         }
-        
-        aContent += '</ul>';
+
+        aContent +=
+                                    '</ul>'+
+                                '</div>'+
+                            '</li>' +
+                        '</ul>'+
+                            //'+
+                    '</div>';
         aContent += '</div>';
-  
+
         theContainer.append(aContent);
-        
-        theContainer.find('li a').each(function(i, e) {
+
+        theContainer.find('li.function').each(function(i, e) {
             $(e).click(function() {
                 var aId = $(this).data('section');
                 theContext.ui.slidePanel.pushState(mSections[aId].panel);
             });
         });
-        
+
         $('#codebotPrefBackButton').click(function() {
             theContext.ui.slidePanel.popState();
         });
     };
-    
+
     this.init = function(theCodebot) {
         mSelf = this;
         mCodebot = theCodebot;
