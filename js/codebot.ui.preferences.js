@@ -68,7 +68,7 @@ var CodebotFancyPanel = function(theTitle) {
                         '<div class="dg">'+
                             '<ul>';
 
-        if(mTitle != '') {
+        if(mTitle) {
             aContent += '<li class="title">' + mTitle + '</li>';
         }
 
@@ -337,7 +337,7 @@ var CodebotPreferencesUI = function() {
 
     this.main = function(theContainer, theContext) {
         var aContent = '';
-        var aPanel = new CodebotFancyPanel('Preferences');
+        var aPanel = new CodebotFancyPanel();
 
         var aFolder = aPanel.addFolder('<a href="#" id="codebotPrefBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/> Preferences', 'preferences');
 
@@ -345,9 +345,7 @@ var CodebotPreferencesUI = function() {
             aFolder.add(mSections[aId].title, '', aId, 'function');
         }
 
-        aContent += '<div class="panel panel-default" style="height: 100%;">';
         aContent += aPanel.html();
-        aContent += '</div>';
 
         theContainer.append(aContent);
 
