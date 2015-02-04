@@ -55,12 +55,22 @@ var CoreIdePlugin = function() {
     };
 
     this.build = function() {
-        mContext.ui.showDialog({
+        var aTab = null;
+
+        aTab = mContext.ui.tabs.add({
+            favicon: 'file-text-o', // TODO: dynamic icon?
             title: 'Build',
-            content: 'TODO: make it start the build process.',
-            buttons: {
-                'Ok, got it!': {dismiss: true}
-            }
+            file: 'Build.log',
+            path: 'build.log',
+            node: null,
+            editor: null
+        });
+
+        mContext.io.build(function(theData) {
+            console.log(theData);
+            theData.shift();
+
+            aTab.editor = mContext.editors.create(aTab, theData.join('\n'), {name: 'Mode.swf'});
         });
     };
 

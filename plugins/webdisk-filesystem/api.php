@@ -40,10 +40,7 @@ switch($aMethod) {
 	case 'ls':
 		$aFiles = listDirectory(WORK_DIR);
 		$aMime = 'application/json';
-		//$aMime = 'text/html';
-		//echo '<pre>';
-		//print_r($aFiles);
-		//echo '</pre>';
+
 		$aOut = json_encode($aFiles);
 		break;
 
@@ -67,6 +64,18 @@ switch($aMethod) {
 
 		file_put_contents($aPath, @$_REQUEST['data']);
 		$aOut = json_encode(array('success' => true, 'msg' => ''));
+		break;
+
+	case 'build':
+		$aMime = 'text/plain';
+		$aReturn = array();
+		exec(FLEX_SDK . 'mxmlc -default-size 640 480 '.WORK_DIR.'/src/Mode.as -library-path+='.WORK_DIR.'/lib/ -swf-version=22 -debug=true -static-link-runtime-shared-libraries=true -o '.WORK_DIR.'/bin/Mode.swf 2>&1', $aReturn);
+
+		foreach($aReturn as $aKey => $aValue) {
+			$aReturn[$aKey] = str_replace(WORK_DIR, '', $aReturn[$aKey]);
+		}
+
+		$aOut = json_encode($aReturn);
 		break;
 
 	default:
