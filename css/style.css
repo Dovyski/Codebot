@@ -53,7 +53,7 @@ Config panel
 	z-index: 1;
 	width: 300px;
 	height: 100%;
-	background: #9f9f9f;
+	background: #666;
 	color: #fff;
 	overflow: auto;
 
@@ -89,7 +89,6 @@ Config panel
 
 .content-slide-panel {
     position: absolute;
-    background: #cfcfcf;
     width: 100%;
     height: 100%;
     color: #000;
@@ -115,25 +114,6 @@ Files panel
 	width: 20%;
 	height: 100%;
 	color: #AAA;
-}
-
-#files-panel header {
-    height: 28px;
-    padding-top: 3px;
-	text-align: center;
-	background: #AAA;
-}
-
-#files-panel header ul {
-    text-align: left;
-}
-
-#files-panel header a:link,
-#files-panel header a:active,
-#files-panel header a:visited,
-#files-panel header a:hover {
-    color: #000;
-    text-decoration: none;
 }
 
 #folders {
@@ -401,7 +381,7 @@ body .dg li.save-row .button {
 }
 
 body .dg li.title {
-    padding-left: 22px;
+    padding-left: 10px;
     border-bottom: 1px solid #555;
     background: #444;
 }

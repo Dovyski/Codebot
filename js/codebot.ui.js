@@ -31,16 +31,16 @@ var CodebotUI = function() {
     var mButtons            = {};
     var mButtonsIds         = 0;
     var mSelf               = null;
-    
+
     var adjustButtonsPosition = function() {
 	    var aHeight = 0;
-	    
+
 		$('#config-bar a.bottom').each(function() {
 		    $(this).css('bottom', aHeight + (aHeight > 0 ? 'px' : ''));
 		    aHeight += $(this).height();
 		});
 	};
-    
+
     // TODO: implement a pretty confirm dialog/panel
     this.confirm = function(theMessage) {
         mSelf.showDialog({
@@ -52,16 +52,15 @@ var CodebotUI = function() {
             }
         });
     };
-    
+
     this.log = function(theText) {
         $('#console').append(theText + '<br />');
     };
-	
+
     /**
     {
         panel: function,
         icon: string,
-        customIcon: string,
         action: function
         position: string ('top' or 'bottom')
     }
@@ -69,31 +68,31 @@ var CodebotUI = function() {
 	this.addButton = function(theOptions) {
         var aId = mButtonsIds++;
         var aIcon = '';
-        
+
         mButtons[aId] = theOptions;
-        aIcon = theOptions.customIcon ? theOptions.customIcon : ('<i class="fa fa-'+(theOptions.icon || 'question')+'"></i>');
-        
+        aIcon = theOptions.icon || '<i class="fa fa-question"></i>';
+
 		$('#config-bar').append('<a href="#" id="'+ aId +'" class="'+(theOptions.position || 'top')+'">' + aIcon + '</a>');
 
 		$('#' + aId).click(function() {
 			var aIndex = $(this).attr('id');
-            
+
             if('action' in mButtons[aIndex]) {
                 mButtons[aIndex].action(mCodebot);
-                
+
             } else if('panel' in mButtons[aIndex]) {
                 mSlidePanel.open(mButtons[aIndex].panel);
             }
 		});
-		
+
 		adjustButtonsPosition();
 	};
-    
+
     this.removeButton = function(theCallback) {
         // TODO: implement
         adjustButtonsPosition();
     }
-        
+
     /**
      * Shows a dialog in the screen.
      *
@@ -112,19 +111,19 @@ var CodebotUI = function() {
      */
     this.showDialog = function(theConfig) {
         var aText = '';
-        
+
         $('#defaultModal .modal-body').html(theConfig.content || '');
         $('#defaultModal .modal-title').html(theConfig.title || '');
         $('#defaultModal .modal-footer').empty();
-        
+
         if(theConfig.buttons) {
             for(var i in theConfig.buttons) {
-                aText += '<button type="button" class="btn '+theConfig.buttons[i].css+'" ' + 
-                         (theConfig.buttons[i].dismiss ? 'data-dismiss="modal"' : '') + 
+                aText += '<button type="button" class="btn '+theConfig.buttons[i].css+'" ' +
+                         (theConfig.buttons[i].dismiss ? 'data-dismiss="modal"' : '') +
                          '>'+i+'</button>';
             }
             $('#defaultModal .modal-footer').html(aText);
-            
+
             $('#defaultModal .modal-footer button').click(function(theEvent) {
                 var aLabel = $(theEvent.currentTarget).html();
 
@@ -133,30 +132,30 @@ var CodebotUI = function() {
                 }
             });
         }
-        
+
         $('#defaultModal').modal(theConfig);
     }
-	
+
 	this.init = function(theCodebot) {
         console.log('CODEBOT [ui] Building UI');
-        
+
         mSelf           = this;
         mCodebot        = theCodebot;
 		mFilesPanel     = new CodebotFilesPanel();
         mTabs           = new CodebotTabs();
         mSlidePanel     = new CodebotSlidePanel();
         mPreferences    = new CodebotPreferencesUI();
-		
+
         mFilesPanel.init(mCodebot);
         mTabs.init(mCodebot);
         mSlidePanel.init(mCodebot);
         mPreferences.init(mCodebot);
-        
+
         // Add Codebot button at the bottom of the sliding bar.
-        mSelf.addButton({ icon: 'cogs', position: 'bottom', panel: mPreferences.main});
-        
+        mSelf.addButton({ icon: '<i class="fa fa-cog"></i>', position: 'bottom', panel: mPreferences.main});
+
         // TODO: read data from disk, using last open directory.
-        
+
         // Ugly hack to achieve 100% height.
         $(window).resize(function() {
             var aHeight = $(window).height();
@@ -166,7 +165,7 @@ var CodebotUI = function() {
         });
         $(window).trigger('resize');
 	};
-    
+
     // getters
     this.__defineGetter__("tabs", function(){ return mTabs; });
     this.__defineGetter__("filesPanel", function(){ return mFilesPanel; });
