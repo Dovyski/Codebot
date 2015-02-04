@@ -25,7 +25,7 @@ var CodebotEditors = function() {
     var mSelf = null;
     var mCodebot = null;
     var mExtensionsMap = {};
-    
+
     /**
      * Regiter an editor able to open an specific file type. The editor used
      * to open a file is selected based on the file extension. e.g. .html means HTML file.
@@ -38,14 +38,14 @@ var CodebotEditors = function() {
             for(var i = 0; i < theFileExtension.length; i++) {
                 mExtensionsMap[theFileExtension[i].replace('.', '')] = theEditorFactory;
             }
-            
+
         } else {
             mExtensionsMap[theFileExtension.replace('.', '')] = theEditorFactory;
         }
-        
+
         console.log('CODEBOT [editors] Available editors by extension: ', mExtensionsMap);
     };
-    
+
     /**
      * Creates an instance of a editor to manipulate a file.
      *
@@ -56,24 +56,25 @@ var CodebotEditors = function() {
     this.create = function(theTab, theContent, theNode) {
         var aExtension = CODEBOT.utils.getExtension(theNode.name);
         var aEditorFactory = null;
-        
+
         // Does the extension has an editor to open it?
         if(aExtension in mExtensionsMap) {
             // Yeah, it has. Let's use it then.
             aEditorFactory = mExtensionsMap[aExtension];
-            
+
         } else {
             // No editor for that extension. Let's use the default code editor.
             aEditorFactory = mExtensionsMap['*'];
         }
-        
+
         return aEditorFactory(theTab, theContent, theNode);
     };
-    
+
     this.init = function(theCodebot) {
         mSelf = this;
         mCodebot = theCodebot;
-        
+
+        mSelf.register('swf', CodebotEditorGraphic.create);
         mSelf.register('*', CodebotEditorAce.create);
     };
 };

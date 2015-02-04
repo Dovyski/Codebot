@@ -66,11 +66,11 @@ var CoreIdePlugin = function() {
             editor: null
         });
 
+        aTab.editor = mContext.editors.create(aTab, 'Build started...', {name: 'Mode.swf'});
+
         mContext.io.build(function(theData) {
             console.log(theData);
-            theData.shift();
-
-            aTab.editor = mContext.editors.create(aTab, theData.join('\n'), {name: 'Mode.swf'});
+            aTab.editor.setContent(theData);
         });
     };
 
