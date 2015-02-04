@@ -1,8 +1,8 @@
-
+<?php
 /*
 	The MIT License (MIT)
 
-	Copyright (c) 2013 Fernando Bevilacqua
+	Copyright (c) 2015 Fernando Bevilacqua
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy of
 	this software and associated documentation files (the "Software"), to deal in
@@ -21,18 +21,34 @@
 	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+/*
+{title: "Test.as", path: "/proj/Test.as", name: "Test.as"},
+{title: "Folder 2", folder: true, key: "folder2", path: "/proj/Folder 2/", name: "Folder 2",
+children: [
+	{title: "Test2.as", path: "/proj/Folder 2/Test2.as", name: "Test2.as"},
+	{title: "Test3.as", path: "/proj/Folder 2/Test3.as", name: "Test3.as"}
+]
+},
+*/
+function listDirectory($theDir, $thePrettyDir = '') {
+	$aContent = array();
+	foreach (scandir($theDir) as $aNode) {
+		if ($aNode == '.' || $aNode == '..') continue;
 
-/**
- *  Bootstrap file for web
- *
- *  The bootstrap file will load the IO driver and kick off the application.
- *  Each platform must provide its own bootstrap file, otherwise Codebot won't
- *  be able to perform IO opperations.
- */
+		$aObj = new stdClass();
+		$aObj->title = $aNode;
+		$aObj->name = $aNode;
+		$aObj->path = $thePrettyDir . $aNode;
 
-$('body').append('<script type="text/javascript" src="./js/web/codebot.web.filesystem.js"></script>');
+		if (is_dir($theDir . '/' . $aNode)) {
+			$aObj->folder = true;
+			$aObj->key = $aObj->path;
+			$aObj->children = listDirectory($theDir . $aNode . '/', $thePrettyDir . $aNode . '/');
+		}
 
-CODEBOT.init(new CodebotWebFilesystem());
+		$aContent[] = $aObj;
+	}
+	return $aContent;
+}
 
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.webdisk.filesystem.js"></script>');
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.core.ide.js"></script>');
+?>
