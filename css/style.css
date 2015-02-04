@@ -56,7 +56,7 @@ Config panel
 	background: #9f9f9f;
 	color: #fff;
 	overflow: auto;
-	
+
 	-webkit-transition: -webkit-transform 0.5s;
 	transition: -webkit-transform 0.5s;
 }
@@ -114,7 +114,7 @@ Files panel
 	float: right;
 	width: 20%;
 	height: 100%;
-	color: #000;
+	color: #AAA;
 }
 
 #files-panel header {
@@ -140,8 +140,9 @@ Files panel
 	width: 100%;
 	height: 100%;
 	padding: 2px;
-	background: #C7C7C7;
+	background: #282828;
     overflow: scroll;
+    border-left: 1px solid #000;
 }
 
 ul.fancytree-container {
@@ -151,26 +152,31 @@ ul.fancytree-container {
 
 span.fancytree-node {
   border: 1px solid transparent;
+  color: #AAA;
+}
+
+span.fancytree-title {
+  color: #AAA;
 }
 
 span.fancytree-node:hover {
-  background-color: #e0e0e0;
-  border-color: #aaa;
+    background-color: #444;
+    border-color: #444;
 }
 .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-focused {
-  border-color: #f2f3f4;
+    border-color: #444;
 }
 span.fancytree-node.fancytree-active,
 span.fancytree-node.fancytree-selected {
-  background-color: #F7F7F7;
-  border-color: #DEDEDE;
+    background-color: #444;
+    border-color: #444;
 }
 .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-active,
 .fancytree-container.fancytree-treefocus span.fancytree-node.fancytree-selected,
 span.fancytree-node.fancytree-active:hover,
 span.fancytree-node.fancytree-selected:hover {
-  background-color: #e0e0e0;
-  border-color: #aaa;
+    background-color: #444;
+    border-color: #444;
 }
 
 /*
@@ -183,7 +189,7 @@ Content area (where code is edited)
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	
+
 	-webkit-transition: -webkit-transform 0.5s;
 	transition: -webkit-transform 0.5s;
 }
@@ -200,7 +206,7 @@ Content area (where code is edited)
 	margin-top: 0;
 	width: 80%;
 	background: #fff;
-	overflow: scroll;
+	overflow: hidden;
 	height: 100%;
 }
 
@@ -209,6 +215,10 @@ Content area (where code is edited)
     top: 0;
 	width: 100%;
 	height: 100%;
+}
+
+#working-area::-webkit-scrollbar {
+    display: none;
 }
 
 /*
@@ -488,7 +498,7 @@ Tabs
  * Editor Search Form
  * --------------------------------------------------------------------------------------- */
  .ace_search {
-    background-color: #ddd; 
+    background-color: #ddd;
     border: 1px solid #cbcbcb;
     border-top: 0 none;
     max-width: 400px !important;
@@ -570,10 +580,10 @@ Tabs
     width: 27px;
 }
 .ace_searchbtn.prev {
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADFJREFUeNpiSU1NZUAC/6E0I0yACYskCpsJiySKIiY0SUZk40FyTEgCjGgKwTRAgAEAQJUIPCE+qfkAAAAASUVORK5CYII=);    
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADFJREFUeNpiSU1NZUAC/6E0I0yACYskCpsJiySKIiY0SUZk40FyTEgCjGgKwTRAgAEAQJUIPCE+qfkAAAAASUVORK5CYII=);
 }
 .ace_searchbtn.next {
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADRJREFUeNpiTE1NZQCC/0DMyIAKwGJMUAYDEo3M/s+EpvM/mkKwCQxYjIeLMaELoLMBAgwAU7UJObTKsvAAAAAASUVORK5CYII=);    
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAYAAAB4ka1VAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADRJREFUeNpiTE1NZQCC/0DMyIAKwGJMUAYDEo3M/s+EpvM/mkKwCQxYjIeLMaELoLMBAgwAU7UJObTKsvAAAAAASUVORK5CYII=);
 }
 .ace_searchbtn_close {
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAYAAABRVo5BAAAAZ0lEQVR42u2SUQrAMAhDvazn8OjZBilCkYVVxiis8H4CT0VrAJb4WHT3C5xU2a2IQZXJjiQIRMdkEoJ5Q2yMqpfDIo+XY4k6h+YXOyKqTIj5REaxloNAd0xiKmAtsTHqW8sR2W5f7gCu5nWFUpVjZwAAAABJRU5ErkJggg==) no-repeat 50% 0;
