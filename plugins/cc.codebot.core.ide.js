@@ -42,11 +42,11 @@ var CoreIdePlugin = function() {
         mContext.ui.addButton({ icon: '<i class="fa fa-wrench"></i>', action: mSelf.settings });
     };
 
-    this.openFolder = function() {
+    this.openFolder = function(theContext, theButton) {
         mContext.ui.filesPanel.showChooseDirectoryDialog();
     };
 
-    this.save = function() {
+    this.save = function(theContext, theButton) {
         var aTab = mContext.ui.tabs.active;
 
         if(aTab) {
@@ -54,7 +54,7 @@ var CoreIdePlugin = function() {
         }
     };
 
-    this.build = function() {
+    this.build = function(theContext, theButton) {
         var aTab = null;
 
         aTab = mContext.ui.tabs.add({
@@ -66,15 +66,17 @@ var CoreIdePlugin = function() {
             editor: null
         });
 
+        theButton.html('<i class="fa fa-circle-o-notch fa-spin"></i>');
+
         aTab.editor = mContext.editors.create(aTab, 'Build started...', {name: 'Mode.swf'});
 
         mContext.io.build(function(theData) {
-            console.log(theData);
+            theButton.html('<i class="fa fa-play"></i>');
             aTab.editor.setContent(theData);
         });
     };
 
-    this.settings = function() {
+    this.settings = function(theContext, theButton) {
         mContext.ui.showDialog({
             title: 'Settings',
             content: 'Show project settings.',

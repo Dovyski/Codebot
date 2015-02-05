@@ -61,7 +61,7 @@ var CodebotUI = function() {
     {
         panel: function,
         icon: string,
-        action: function
+        action: function (func(context, button_as_jquery_obj))
         position: string ('top' or 'bottom')
     }
      */
@@ -72,13 +72,13 @@ var CodebotUI = function() {
         mButtons[aId] = theOptions;
         aIcon = theOptions.icon || '<i class="fa fa-question"></i>';
 
-		$('#config-bar').append('<a href="#" id="'+ aId +'" class="'+(theOptions.position || 'top')+'">' + aIcon + '</a>');
+		$('#config-bar').append('<a href="#" id="config-bar-button-'+ aId +'" data-button-id="'+ aId +'" class="'+(theOptions.position || 'top')+'">' + aIcon + '</a>');
 
-		$('#' + aId).click(function() {
-			var aIndex = $(this).attr('id');
+		$('#config-bar-button-' + aId).click(function() {
+			var aIndex = $(this).data('button-id');
 
             if('action' in mButtons[aIndex]) {
-                mButtons[aIndex].action(mCodebot);
+                mButtons[aIndex].action(mCodebot, $(this));
 
             } else if('panel' in mButtons[aIndex]) {
                 mSlidePanel.open(mButtons[aIndex].panel);
