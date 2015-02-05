@@ -159,9 +159,9 @@ var CodebotUI = function() {
         // Ugly hack to achieve 100% height.
         $(window).resize(function() {
             var aHeight = $(window).height();
-            $('#working-area').height(aHeight - 28);
+            $('#working-area').height(aHeight - 26);
             $('#files-panel').height(aHeight);
-            $('#folders').height(aHeight - 20);
+            $('#folders').height(aHeight);
         });
         $(window).trigger('resize');
 	};
