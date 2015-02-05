@@ -23,21 +23,21 @@
 var SimpleGraphicViewer = function(theContainer) {
     var mContainer = theContainer;
 
-    this.setContent = function(theData) {
-        $('#' + mContainer).html('something?');
+    this.renderSWFByURL = function(theURL, theWidth, theHeight) {
+        $('#' + mContainer).html(
+            '<object type="application/x-shockwave-flash" data="'+theURL+'" width="'+(theWidth || '640')+'" height="'+(theHeight || '480')+'">' +
+                '<param name="movie" value="'+theURL+'" />' +
+                '<param name="quality" value="high" />' +
+            '</object>'
+        );
+    };
 
-        if(theData.length == 2) {
-            console.log('SimpleGraphicViewer 2');
+    this.showMessage = function(theText) {
+        $('#' + mContainer).html(theText);
+    }
 
-            $('#' + mContainer).html(
-                '<object type="application/x-shockwave-flash" data="http://dev.local.com/tmp/1/bin/Mode.swf" width="640" height="480">' +
-                    '<param name="movie" value="http://dev.local.com/tmp/1/bin/Mode.swf" />' +
-                    '<param name="quality" value="high" />' +
-                '</object>'
-            );
-        } else {
-            console.log('SimpleGraphicViewer MORE');
-        }
+    this.showLoading = function() {
+        $('#' + mContainer).html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading...');
     };
 };
 
@@ -45,8 +45,7 @@ var CodebotEditorGraphic = new function() {
     this.create = function(theTab, theContent, theNode) {
         var aEditor = new SimpleGraphicViewer(theTab.container);
 
-        aEditor.setContent(theContent);
-        console.log(theContent);
+        aEditor.showLoading();
         return aEditor;
     };
 };

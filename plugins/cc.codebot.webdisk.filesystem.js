@@ -96,21 +96,6 @@ var CodebotWebDiskFilesystem = function() {
 		console.log('CodebotFS.createDirectory(' + theNode + '/'+theName+')');
         theCallback();
 	};
-
-	this.build = function(theCallback) {
-		console.log('Start build...');
-		$.ajax({
-			url: API_URL,
-			method: 'post',
-			data: {method: 'build'},
-			dataType: 'json'
-		}).done(function(theData) {
-			theCallback(theData);
-
-		}).fail(function(theJqXHR, theTextStatus, theError) {
-			console.error('Error: ' + theTextStatus + ', ' + theError);
-		});
-	};
 };
 
 /**

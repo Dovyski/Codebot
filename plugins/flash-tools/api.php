@@ -1,8 +1,8 @@
-
+<?php
 /*
 	The MIT License (MIT)
 
-	Copyright (c) 2013 Fernando Bevilacqua
+	Copyright (c) 2015 Fernando Bevilacqua
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy of
 	this software and associated documentation files (the "Software"), to deal in
@@ -23,18 +23,40 @@
 */
 
 /**
- *  Bootstrap file for web
- *
- *  The bootstrap file will load the IO driver and kick off the application.
- *  Each platform must provide its own bootstrap file, otherwise Codebot won't
- *  be able to perform IO opperations.
+ * A REST API to build Flash projects.
  */
 
-$('body').append('<script type="text/javascript" src="./js/web/codebot.web.filesystem.js"></script>');
+include_once dirname(__FILE__). '/config.local.php';
+include_once dirname(__FILE__). '/config.php';
 
-CODEBOT.init(new CodebotWebFilesystem());
+$aMethod = isset($_REQUEST['method']) ? $_REQUEST['method'] : '';
+unset($_REQUEST['method']);
 
-// Load all web plugins
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.webdisk.filesystem.js"></script>');
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.core.ide.js"></script>');
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.flash.tools.js"></script>');
+$aMime = 'text/plain';
+$aOut = '';
+
+switch($aMethod) {
+	case 'build':
+		$aMime = 'appliction/json';
+		$aReturn = array();
+		exec(FLEX_SDK . 'mxmlc -default-size 640 480 '.WORK_DIR.'/src/Mode.as -library-path+='.WORK_DIR.'/lib/ -swf-version=22 -debug=true -static-link-runtime-shared-libraries=true -o '.WORK_DIR.'/bin/Mode.swf 2>&1', $aReturn);
+
+		foreach($aReturn as $aKey => $aValue) {
+			$aReturn[$aKey] = str_replace(WORK_DIR, '', $aReturn[$aKey]);
+		}
+
+		$aOut = json_encode(array(
+			'url' => 'http://dev.local.com/tmp/1/bin/Mode.swf', // TODO: get this right!
+			'log' => $aReturn
+		));
+		break;
+
+	default:
+		echo 'Problem?';
+		break;
+}
+
+header('Content-Type: ' . $aMime);
+echo $aOut;
+
+?>
