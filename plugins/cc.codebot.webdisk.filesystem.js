@@ -21,12 +21,27 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var CodebotWebDiskFilesystem = function() {
+var CodebotWebDiskFilesystem = function(theContext) {
+	// Constants
 	const API_URL = 'plugins/webdisk-filesystem/api.php';
 
+	// Public properties
 	this.driver = 'Web Disk FileSystem';
 
+	// Private properties
+	var mDisk = '';
+	var mContext = theContext;
+
+	function getURLParamByName(theName) {
+		theName = theName.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var aRegex = new RegExp("[\\?&]" + theName + "=([^&#]*)"),
+			aResults = aRegex.exec(location.search);
+		return aResults === null ? "" : decodeURIComponent(aResults[1].replace(/\+/g, " "));
+	}
+
 	var runCommand = function(theParams, theDataType, theCallback) {
+		theParams.disk = mDisk;
+
 		$.ajax({
 			url: API_URL,
 			method: 'post',
@@ -41,7 +56,8 @@ var CodebotWebDiskFilesystem = function() {
 	};
 
 	this.init = function() {
-		console.debug('CodebotWebDiskFilesystem::init()');
+		mDisk = getURLParamByName('disk');
+		console.log('CodebotWebDiskFilesystem::init() - disk id = ' + mDisk);
 	};
 
     this.move = function(theOldNode, theNewNode, theCallback) {
@@ -117,7 +133,7 @@ var WebFileSystemPlugin = function() {
 		mSelf = this;
 		mContext = theContext;
 
-		mContext.setIODriver(new CodebotWebDiskFilesystem());
+		mContext.setIODriver(new CodebotWebDiskFilesystem(mContext));
 	};
 };
 

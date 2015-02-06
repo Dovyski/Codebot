@@ -1,3 +1,3 @@
 <?php
-@define('WORK_DIR', '/tmp/');
+@define('WORK_POOL', '/tmp/');
 ?>

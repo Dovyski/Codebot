@@ -189,13 +189,6 @@ var CodebotFilesPanel = function() {
         }
     };
 
-    this.showChooseDirectoryDialog = function() {
-        mCodebot.io.chooseDirectory(function(theNode) {
-            mRootNode = theNode;
-            mCodebot.io.readDirectory(theNode, mSelf.populateTree);
-        });
-    };
-
     this.init = function(theCodebot) {
         mCodebot     = theCodebot;
         mSelf        = this;

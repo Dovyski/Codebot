@@ -30,6 +30,13 @@
 include_once dirname(__FILE__). '/config.php';
 require_once dirname(__FILE__).'/functions.php';
 
+// Adjust the working dir based on the selected virtual disk.
+$aDisk = isset($_REQUEST['disk']) ? $_REQUEST['disk'] : '';
+$aDisk = $aDisk == '' ? 'default' : $aDisk;
+
+define('WORK_DIR', WORK_POOL . $aDisk . '/');
+
+// Decide which API method we should process.
 $aMethod = isset($_REQUEST['method']) ? $_REQUEST['method'] : '';
 unset($_REQUEST['method']);
 

@@ -41,7 +41,9 @@ var CoreIdePlugin = function() {
     };
 
     this.openFolder = function(theContext, theButton) {
-        mContext.ui.filesPanel.showChooseDirectoryDialog();
+        mContext.io.chooseDirectory(function(theNode) {
+            mContext.io.readDirectory(theNode, mContext.ui.filesPanel.populateTree);
+        });
     };
 
     this.save = function(theContext, theButton) {
