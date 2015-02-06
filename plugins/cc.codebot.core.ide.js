@@ -30,19 +30,84 @@ var CoreIdePlugin = function() {
     var mSelf       = null;
     var mContext    = null;
 
+    var doCreateNewProject = function() {
+        console.log($('#form-new-project').serialize());
+    };
+
+    var doOpenProject = function() {
+        console.log('Open project!');
+
+        //mContext.io.chooseDirectory(function(theNode) {
+        //    mContext.io.readDirectory(theNode, mContext.ui.filesPanel.populateTree);
+        //});
+    };
+
     this.init = function(theContext) {
         console.debug('CoreIdePlugin::init()');
 
         mSelf = this;
         mContext = theContext;
 
+        mContext.ui.addButton({ icon: '<i class="fa fa-plus-square"></i>', action: mSelf.newProject });
         mContext.ui.addButton({ icon: '<i class="fa fa-folder-open"></i>', action: mSelf.openFolder });
         mContext.ui.addButton({ icon: '<i class="fa fa-floppy-o"></i>', action: mSelf.save });
     };
 
+    this.newProject = function(theContext, theButton) {
+        var aForm =
+            '<form id="form-new-project">'+
+              '<div class="form-group">'+
+                '<label for="exampleInputEmail1">Name</label>'+
+                '<input type="text" class="form-control" name="name" id="project-name" placeholder="Project name">'+
+              '</div>'+
+              '<div class="form-group">'+
+                '<label for="project-type">Type</label>'+
+                '<select class="form-control" name="type" name="project-type">'+
+                    '<option value="flash">Flash/AS3</option>'+
+                    '<option value="haxe">Haxe (coming soon!)</option>'+
+                    '<option value="flash">Javascript (coming soon!)</option>'+
+                '</select>'+
+              '</div>'+
+              '<div class="form-group">'+
+                '<label for="project-template">Template</label>'+
+                '<select class="form-control" name="template" name="project-template">'+
+                    '<option value="none"></option>'+
+                    '<option value="flash">Flash/AS3</option>'+
+                    '<option value="haxe">Haxe (coming soon!)</option>'+
+                    '<option value="flash">Flash/AS3</option>'+
+                '</select>'+
+              '</div>'+
+            '</form>';
+
+        mContext.ui.showDialog({
+            keyboard: true,
+            title: 'Create project',
+            content: aForm,
+            buttons: {
+                'Create': {css: 'btn-primary', dismiss: true, callback: doCreateNewProject }
+            }
+        });
+    };
+
     this.openFolder = function(theContext, theButton) {
-        mContext.io.chooseDirectory(function(theNode) {
-            mContext.io.readDirectory(theNode, mContext.ui.filesPanel.populateTree);
+        var aForm =
+            '<form id="form-open-project">'+
+              '<div class="form-group">'+
+                '<select class="form-control" name="type" name="project-type">'+
+                    '<option value="flash">Flash/AS3</option>'+
+                    '<option value="haxe">Haxe (coming soon!)</option>'+
+                    '<option value="flash">Javascript (coming soon!)</option>'+
+                '</select>'+
+              '</div>'+
+            '</form>';
+
+        mContext.ui.showDialog({
+            keyboard: true,
+            title: 'Open project',
+            content: aForm,
+            buttons: {
+                'Open': {css: 'btn-primary', dismiss: true, callback: doOpenProject }
+            }
         });
     };
 
