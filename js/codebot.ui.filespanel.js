@@ -104,7 +104,7 @@ var CodebotFilesPanel = function() {
         if(theDragData.hitMode == "over") {
             // Dragging node into a folder. In that case, the destination node (the folder)
             // already has a nice path to be used. e.g. /proj/test/folder/
-            aNewPath = theDestinationNode.data.path;
+            aNewPath = theDestinationNode.data.path + '/';
 
         } else {
             // Dragging node after or before another node. In that case, we need to get the
