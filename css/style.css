@@ -462,6 +462,21 @@ body .dg.a {
     border-right:4px solid #3d3d3d;
 }
 
+
+/*
+-----------------------------------------------------
+Fancy panels
+-----------------------------------------------------
+*/
+
+.fancypanel-close-button {
+    padding-right: 10px;
+}
+
+.fancypanel-close-button i {
+    color: #fff;
+}
+
 /*
 -----------------------------------------------------
 Custom scrollbars

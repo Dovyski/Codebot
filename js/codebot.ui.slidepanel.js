@@ -54,6 +54,19 @@ var CodebotSlidePanel = function() {
         return $('#config-dialog').width();
     };
 
+    var runStateRender = function(theStateRender, theContainerId) {
+        theStateRender($('#' + theContainerId), mCodebot);
+
+        // Walk the just rendered content looking for
+        // actionable code, such as buttons, etc.
+
+        $('#' + theContainerId + ' [data-action="close"]').each(function(i, e) {
+            $(e).click(function() {
+                mSelf.popState();
+            });
+        });
+    };
+
     this.pushState = function(theStateRender) {
         var aPanelWidth = getSliderPanelWidth();
 
@@ -72,7 +85,7 @@ var CodebotSlidePanel = function() {
         $('#config-dialog').append('<div id="' + aContainerId + '" class="content-slide-panel"></div>');
 
         $('#' + aContainerId).css('left', aPanelWidth + 'px');
-        theStateRender($('#' + aContainerId), mCodebot);
+        runStateRender(theStateRender, aContainerId);
 
         mStack.push(aContainerId);
 

@@ -20,89 +20,6 @@
 	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-var CodebotFancyPanelFolder = function(theTitle, theId) {
-    this.title   = theTitle;
-    this.id      = theId;
-
-    var mItens   = [];
-
-    this.add = function(theLabel, theContent, theId, theBehavior) {
-        mItens.push({
-            label: theLabel,
-            content: theContent,
-            id: theId,
-            behavior: theBehavior
-        });
-    };
-
-    this.open = function() {
-        // TODO: implement
-    };
-
-    this.close = function() {
-        // TODO: implement
-    };
-
-    // getters
-    this.__defineGetter__("itens", function() { return mItens; });
-};
-
-var CodebotFancyPanel = function(theTitle) {
-    var mFolders = [];
-    var mTitle = theTitle;
-
-    this.addFolder = function(theTitle, theId) {
-        var aFolder = new CodebotFancyPanelFolder(theTitle, theId);
-        mFolders.push(aFolder);
-
-        return aFolder;
-    };
-
-    this.html = function() {
-        var aContent = '';
-
-        aContent +=
-            '<div class="dg main" style="height: 40px;">'+
-                '<ul>'+
-                    '<li class="folder">'+
-                        '<div class="dg">'+
-                            '<ul>';
-
-        if(mTitle) {
-            aContent += '<li class="title">' + mTitle + '</li>';
-        }
-
-        for(var i = 0; i < mFolders.length; i++) {
-            var aFolder = mFolders[i];
-
-            aContent += '<li class="title">' + aFolder.title + '</li>';
-
-            for(var j = 0; j < aFolder.itens.length; j++) {
-                var aItem = aFolder.itens[j];
-
-                aContent +=
-                    '<li class="cr '+ (aItem.behavior || 'function') +'" data-section="'+ aItem.id +'">' +
-                        '<div>' +
-                            '<span class="property-name">'+ aItem.label + '</span>'+
-                            '<div class="c">'+
-                                '<div>' + aItem.content + '</div>'+
-                            '</div>'+
-                        '</div>'+
-                    '</li>';
-            }
-        }
-
-        aContent +=
-                            '</ul>'+
-                        '</div>'+
-                    '</li>' +
-                '</ul>'+
-            '</div>';
-
-        return aContent;
-    };
-};
-
 
 var CodebotPreferencesUI = function() {
     var mSelf = 0;
@@ -337,9 +254,9 @@ var CodebotPreferencesUI = function() {
 
     this.main = function(theContainer, theContext) {
         var aContent = '';
-        var aPanel = new CodebotFancyPanel();
+        var aPanel = new CodebotFancyPanel('Preferences');
 
-        var aFolder = aPanel.addFolder('<a href="#" id="codebotPrefBackButton" class="pull-left"><i class="fa fa-arrow-circle-o-left fa-2x"></i><a/> Preferences', 'preferences');
+        var aFolder = aPanel.addFolder('', 'preferences');
 
         for(var aId in mSections) {
             aFolder.add(mSections[aId].title, '', aId, 'function');
@@ -354,10 +271,6 @@ var CodebotPreferencesUI = function() {
                 var aId = $(this).data('section');
                 theContext.ui.slidePanel.pushState(mSections[aId].panel);
             });
-        });
-
-        $('#codebotPrefBackButton').click(function() {
-            theContext.ui.slidePanel.popState();
         });
     };
 

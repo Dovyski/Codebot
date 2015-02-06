@@ -53,7 +53,7 @@ var FlashToolsPlugin = function() {
         mContext = theContext;
 
         mContext.ui.addButton({ icon: '<i class="fa fa-play"></i>', action: mSelf.build });
-        mContext.ui.addButton({ icon: '<i class="fa fa-wrench"></i>', action: mSelf.settings });
+        mContext.ui.addButton({ icon: '<i class="fa fa-wrench"></i>', panel: mSelf.settings });
     };
 
     this.build = function(theContext, theButton) {
@@ -85,14 +85,31 @@ var FlashToolsPlugin = function() {
         });
     };
 
-    this.settings = function(theContext, theButton) {
-        mContext.ui.showDialog({
-            title: 'Settings',
-            content: 'Show project settings.',
-            buttons: {
-                'Ok, got it!': {dismiss: true}
-            }
+    this.settings = function(theContainer, theContext) {
+        var aContent = '';
+        var aPanel = new CodebotFancyPanel();
+
+        var aFolder = aPanel.addFolder('Project settings', 'preferences');
+
+        aFolder.add('Title', '<input type="text" value="800" name="width">', 'aId', 'boolean');
+
+
+        aContent += aPanel.html();
+
+        theContainer.append(aContent);
+
+/*
+        theContainer.find('li.function').each(function(i, e) {
+            $(e).click(function() {
+                var aId = $(this).data('section');
+                theContext.ui.slidePanel.pushState(mSections[aId].panel);
+            });
         });
+
+        $('#codebotPrefBackButton').click(function() {
+            theContext.ui.slidePanel.popState();
+        });
+        */
     };
 
 };
