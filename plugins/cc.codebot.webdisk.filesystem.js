@@ -45,10 +45,14 @@ var CodebotWebDiskFilesystem = function() {
 	};
 
     this.move = function(theOldNode, theNewNode, theCallback) {
-        console.log('Move \''+theOldNode.path+'\' to \''+theNewNode.path+'\'');
-        theOldNode.path = theNewNode.path;
-
-        theCallback();
+		runCommand({method: 'mv', old: theOldNode.path, new: theNewNode.path}, 'text', function(theResponse) {
+			if(theResponse.success) {
+				theOldNode.path = theNewNode.path;
+				theCallback();
+			} else {
+				theCallback(theResponse.msg);
+			}
+		});
     };
 
     this.getTempDirectory = function(theCallback) {
@@ -87,8 +91,9 @@ var CodebotWebDiskFilesystem = function() {
 	};
 
     this.delete = function(theNode, theCallback) {
-        console.log('CodebotFS.delete(' + theNode.path +')');
-		theCallback();
+		runCommand({method: 'rm', path: theNode.path}, 'json', function(theResponse) {
+			theCallback(theResponse.success ? null : theResponse.msg);
+		});
 	};
 
 	this.createDirectory = function(theName, theNode, theCallback) {

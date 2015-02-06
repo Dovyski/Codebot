@@ -56,6 +56,29 @@ switch($aMethod) {
 		break;
 
 	case 'mv':
+		$aMime = 'application/json';
+
+		$aPathOld = isset($_REQUEST['old']) ? $_REQUEST['old'] : '';
+		$aPathNew = isset($_REQUEST['new']) ? $_REQUEST['new'] : '';
+		$aPathOld = WORK_DIR . $aPathOld;
+		$aPathNew = WORK_DIR . $aPathNew;
+
+		rename($aPathOld, $aPathNew);
+		$aOut = json_encode(array('success' => true, 'msg' => ''));
+		break;
+
+	case 'rm':
+		$aMime = 'application/json';
+
+		$aPath = isset($_REQUEST['path']) ? $_REQUEST['path'] : '';
+		$aPath = WORK_DIR . $aPath;
+
+		if(is_dir($aPath)) {
+			rmdir($aPath);
+		} else {
+			unlink($aPath);
+		}
+		$aOut = json_encode(array('success' => true, 'msg' => ''));
 		break;
 
 	case 'read':

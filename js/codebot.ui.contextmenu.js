@@ -27,7 +27,7 @@ var CodebotContextMenu = function() {
 
     var handleAction = function(theNode, theAction, theOptions) {
         console.debug('Selected action "' + theAction + '" on node ', theNode, theNode.data);
-        
+
         switch(theAction) {
             case 'new-folder':
                 var aName = prompt('Directory name');
@@ -53,7 +53,7 @@ var CodebotContextMenu = function() {
             case 'rename':
                 theNode.startEdit();
                 break;
-                
+
             case 'delete':
                 mCodebot.ui.showDialog({
                     keyboard: true,
@@ -65,7 +65,7 @@ var CodebotContextMenu = function() {
                                 if(e) {
                                     console.log('Something went wrong when deleting file: ' + e);
                                 } else {
-                                    mSelf.refreshTree();
+                                    mCodebot.ui.filesPanel.refreshTree();
                                 }
                             });
                         }},
@@ -75,7 +75,7 @@ var CodebotContextMenu = function() {
                 break;
         }
     };
-    
+
     this.create = function() {
         return {
             menu: {
@@ -94,7 +94,7 @@ var CodebotContextMenu = function() {
             actions: handleAction
         };
     };
-    
+
     this.init = function(theCodebot) {
         mSelf    = this;
         mCodebot = theCodebot;
