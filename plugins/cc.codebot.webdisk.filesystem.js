@@ -83,8 +83,7 @@ var CodebotWebDiskFilesystem = function() {
 	};
 
 	this.createFile = function(theName, theNode, theData, theCallback) {
-        console.log('CodebotFS.createFile(' + theNode + '/'+theName+')');
-		theCallback();
+		runCommand({method: 'write', path: theNode.path + '/' + theName, data: theData}, 'json', theCallback);
 	};
 
     this.delete = function(theNode, theCallback) {
@@ -93,8 +92,7 @@ var CodebotWebDiskFilesystem = function() {
 	};
 
 	this.createDirectory = function(theName, theNode, theCallback) {
-		console.log('CodebotFS.createDirectory(' + theNode + '/'+theName+')');
-        theCallback();
+		runCommand({method: 'mkdir', path: theNode.path + '/' + theName}, 'json', theCallback);
 	};
 };
 

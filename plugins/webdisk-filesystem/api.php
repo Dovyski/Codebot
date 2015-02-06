@@ -39,6 +39,17 @@ $aOut = '';
 switch($aMethod) {
 	case 'ls':
 		$aFiles = listDirectory(WORK_DIR);
+		$aFiles = array(
+			array(
+				'name' => 'Project',
+				'title' => 'Project',
+				'path' => '/',
+				'folder' => 'true',
+				'key' => 'root',
+				'expanded' => true,
+				'children' => $aFiles
+			)
+		);
 		$aMime = 'application/json';
 
 		$aOut = json_encode($aFiles);
@@ -63,6 +74,16 @@ switch($aMethod) {
 		$aPath = WORK_DIR . $aPath;
 
 		file_put_contents($aPath, @$_REQUEST['data']);
+		$aOut = json_encode(array('success' => true, 'msg' => ''));
+		break;
+
+	case 'mkdir':
+		$aMime = 'application/json';
+
+		$aPath = isset($_REQUEST['path']) ? $_REQUEST['path'] : '';
+		$aPath = WORK_DIR . $aPath;
+
+		mkdir($aPath, 0755);
 		$aOut = json_encode(array('success' => true, 'msg' => ''));
 		break;
 
