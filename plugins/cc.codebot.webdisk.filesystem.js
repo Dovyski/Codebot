@@ -33,13 +33,6 @@ var CodebotWebDiskFilesystem = function(theContext) {
 	var mProjectPath = '';
 	var mContext = theContext;
 
-	function getURLParamByName(theName) {
-		theName = theName.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-		var aRegex = new RegExp("[\\?&]" + theName + "=([^&#]*)"),
-			aResults = aRegex.exec(location.search);
-		return aResults === null ? "" : decodeURIComponent(aResults[1].replace(/\+/g, " "));
-	}
-
 	var runCommand = function(theParams, theDataType, theCallback) {
 		theParams.mount = mDisk + '/' + mProjectPath;
 
@@ -61,7 +54,7 @@ var CodebotWebDiskFilesystem = function(theContext) {
 	}
 
 	this.init = function() {
-		mDisk = getURLParamByName('disk');
+		mDisk = CODEBOT.utils.getURLParamByName('disk');
 		console.log('CodebotWebDiskFilesystem::init() - disk id = ' + mDisk);
 	};
 

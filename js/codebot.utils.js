@@ -24,7 +24,7 @@
 var CODEBOT = CODEBOT || {};
 
 CODEBOT.utils = new function() {
-    
+
     /**
      * Returns the "directory part" of a string representing a path. E.g.: <code>/my/path/file</code> returns </code>/my/path/</code>
      *
@@ -36,16 +36,16 @@ CODEBOT.utils = new function() {
         // From: http://stackoverflow.com/a/1051303/29827
         var aParts = thePath.split(/(\\|\/|\:)/);
         var i = 0;
-        
+
         theHowManyCuts = theHowManyCuts || 1;
-        
+
         while(i++ < theHowManyCuts) {
             aParts.pop();
         }
 
         return aParts.join('');
     };
-    
+
     /**
      * Returns the extension of a file name.
      *
@@ -55,13 +55,20 @@ CODEBOT.utils = new function() {
     this.getExtension = function(theFileName) {
         return theFileName.substring(theFileName.lastIndexOf('.') + 1);
     };
-    
-    
+
+
     this.invoke = function(theObj, theMethod, theParam) {
         return theObj[theMethod](theParam);
 	};
-    
+
     this.sanitizeId = function(theString) {
         return theString.replace(/\./g, '-');
+    };
+
+    this.getURLParamByName = function(theName) {
+        theName = theName.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var aRegex = new RegExp("[\\?&]" + theName + "=([^&#]*)"),
+            aResults = aRegex.exec(location.search);
+        return aResults === null ? "" : decodeURIComponent(aResults[1].replace(/\+/g, " "));
     };
 };

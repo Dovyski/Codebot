@@ -51,8 +51,8 @@ var CoreIdePlugin = function() {
         console.log($('#form-new-project').serialize());
     };
 
-    var doOpenProject = function() {
-        var aProjectPath = $('#project-to-open').val();
+    var doOpenProject = function(theProjectPath) {
+        var aProjectPath = theProjectPath || $('#project-to-open').val();
 
         console.debug('Opening project: ', aProjectPath);
 
@@ -69,6 +69,12 @@ var CoreIdePlugin = function() {
         mContext.ui.addButton({ icon: '<i class="fa fa-plus-square"></i>', action: mSelf.newProject });
         mContext.ui.addButton({ icon: '<i class="fa fa-folder-open"></i>', action: mSelf.openFolder });
         mContext.ui.addButton({ icon: '<i class="fa fa-floppy-o"></i>', action: mSelf.save });
+
+        var aProject = CODEBOT.utils.getURLParamByName('project');
+
+        if(aProject) {
+            doOpenProject(aProject);
+        }
     };
 
     this.newProject = function(theContext, theButton) {
