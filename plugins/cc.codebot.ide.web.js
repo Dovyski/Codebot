@@ -25,21 +25,39 @@
  * The bare minimum to use codebot as a IDE (save buttons, etc)
  */
 var CoreIdePlugin = function() {
+    // Constants
+    const API_URL   = 'plugins/ide-web/api.php';
+
     this.id         = 'cc.codebot.core.ide';
 
     var mSelf       = null;
     var mContext    = null;
+
+    var runCommand = function(theParams, theCallback) {
+        $.ajax({
+            url: API_URL,
+            method: 'post',
+            data: theParams,
+            dataType: 'json'
+        }).done(function(theData) {
+            theCallback(theData);
+
+        }).fail(function(theJqXHR, theTextStatus, theError) {
+            console.error('Error: ' + theTextStatus + ', ' + theError);
+        });
+    };
 
     var doCreateNewProject = function() {
         console.log($('#form-new-project').serialize());
     };
 
     var doOpenProject = function() {
-        console.log('Open project!');
+        var aProjectPath = $('#project-to-open').val();
 
-        //mContext.io.chooseDirectory(function(theNode) {
-        //    mContext.io.readDirectory(theNode, mContext.ui.filesPanel.populateTree);
-        //});
+        console.debug('Opening project: ', aProjectPath);
+
+        mContext.io.setProjectPath(aProjectPath);
+        mContext.io.readDirectory(aProjectPath, mContext.ui.filesPanel.populateTree);
     };
 
     this.init = function(theContext) {
@@ -92,12 +110,7 @@ var CoreIdePlugin = function() {
     this.openFolder = function(theContext, theButton) {
         var aForm =
             '<form id="form-open-project">'+
-              '<div class="form-group">'+
-                '<select class="form-control" name="type" name="project-type">'+
-                    '<option value="flash">Flash/AS3</option>'+
-                    '<option value="haxe">Haxe (coming soon!)</option>'+
-                    '<option value="flash">Javascript (coming soon!)</option>'+
-                '</select>'+
+              '<div class="form-group" id="container-list-projects">'+
               '</div>'+
             '</form>';
 
@@ -108,6 +121,20 @@ var CoreIdePlugin = function() {
             buttons: {
                 'Open': {css: 'btn-primary', dismiss: true, callback: doOpenProject }
             }
+        });
+
+        $('#container-list-projects').html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading the list, please wait.');
+
+        runCommand({method: 'list-projects'}, function(theData) {
+            var aInfo = '<select class="form-control" name="project-to-open" id="project-to-open">';
+
+            for(var i in theData.projects) {
+                aInfo += '<option value="'+theData.projects[i].path+'">'+theData.projects[i].name+' ('+theData.projects[i].type+')</option>';
+            }
+
+            aInfo += '</select>';
+
+            $('#container-list-projects').html(aInfo);
         });
     };
 

@@ -30,6 +30,7 @@ var CodebotWebDiskFilesystem = function(theContext) {
 
 	// Private properties
 	var mDisk = '';
+	var mProjectPath = '';
 	var mContext = theContext;
 
 	function getURLParamByName(theName) {
@@ -40,7 +41,7 @@ var CodebotWebDiskFilesystem = function(theContext) {
 	}
 
 	var runCommand = function(theParams, theDataType, theCallback) {
-		theParams.disk = mDisk;
+		theParams.mount = mDisk + '/' + mProjectPath;
 
 		$.ajax({
 			url: API_URL,
@@ -54,6 +55,10 @@ var CodebotWebDiskFilesystem = function(theContext) {
 			console.error('Error: ' + theTextStatus + ', ' + theError);
 		});
 	};
+
+	this.setProjectPath = function(thePath) {
+		mProjectPath = thePath;
+	}
 
 	this.init = function() {
 		mDisk = getURLParamByName('disk');

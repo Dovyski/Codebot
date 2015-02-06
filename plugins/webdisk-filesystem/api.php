@@ -31,10 +31,10 @@ include_once dirname(__FILE__). '/config.php';
 require_once dirname(__FILE__).'/functions.php';
 
 // Adjust the working dir based on the selected virtual disk.
-$aDisk = isset($_REQUEST['disk']) ? $_REQUEST['disk'] : '';
-$aDisk = $aDisk == '' ? 'default' : $aDisk;
+$aMount = isset($_REQUEST['mount']) ? $_REQUEST['mount'] : '';
+$aMount = $aMount == '' ? 'default' : $aMount;
 
-define('WORK_DIR', WORK_POOL . $aDisk . '/');
+define('WORK_DIR', WORK_POOL . $aMount . '/');
 
 // Decide which API method we should process.
 $aMethod = isset($_REQUEST['method']) ? $_REQUEST['method'] : '';
@@ -58,7 +58,6 @@ switch($aMethod) {
 			)
 		);
 		$aMime = 'application/json';
-
 		$aOut = json_encode($aFiles);
 		break;
 
@@ -77,44 +76,48 @@ switch($aMethod) {
 	case 'rm':
 		$aMime = 'application/json';
 
-		$aPath = isset($_REQUEST['path']) ? $_REQUEST['path'] : '';
-		$aPath = WORK_DIR . $aPath;
+		if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
+			$aPath = WORK_DIR . $_REQUEST['path'];
 
-		if(is_dir($aPath)) {
-			rmdir($aPath);
-		} else {
-			unlink($aPath);
+			if(is_dir($aPath)) {
+				rmdir($aPath);
+			} else {
+				unlink($aPath);
+			}
+			$aOut = json_encode(array('success' => true, 'msg' => ''));
 		}
-		$aOut = json_encode(array('success' => true, 'msg' => ''));
 		break;
 
 	case 'read':
 		$aOut = '';
 		$aMime = 'text/plain';
-		$aPath = isset($_REQUEST['path']) ? $_REQUEST['path'] : '';
-		$aPath = WORK_DIR . $aPath;
 
-		$aOut = file_get_contents($aPath);
+		if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
+			$aPath = WORK_DIR . $_REQUEST['path'];
+			$aOut = file_get_contents($aPath);
+		}
 		break;
 
 	case 'write':
 		$aMime = 'application/json';
 
-		$aPath = isset($_REQUEST['path']) ? $_REQUEST['path'] : '';
-		$aPath = WORK_DIR . $aPath;
+		if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
+			$aPath = WORK_DIR . $_REQUEST['path'];
 
-		file_put_contents($aPath, @$_REQUEST['data']);
-		$aOut = json_encode(array('success' => true, 'msg' => ''));
+			file_put_contents($aPath, @$_REQUEST['data']);
+			$aOut = json_encode(array('success' => true, 'msg' => ''));
+		}
 		break;
 
 	case 'mkdir':
 		$aMime = 'application/json';
 
-		$aPath = isset($_REQUEST['path']) ? $_REQUEST['path'] : '';
-		$aPath = WORK_DIR . $aPath;
+		if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
+			$aPath = WORK_DIR . $_REQUEST['path'];
 
-		mkdir($aPath, 0755);
-		$aOut = json_encode(array('success' => true, 'msg' => ''));
+			mkdir($aPath, 0755);
+			$aOut = json_encode(array('success' => true, 'msg' => ''));
+		}
 		break;
 
 	default:

@@ -1,8 +1,8 @@
-
+<?php
 /*
 	The MIT License (MIT)
 
-	Copyright (c) 2013 Fernando Bevilacqua
+	Copyright (c) 2015 Fernando Bevilacqua
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy of
 	this software and associated documentation files (the "Software"), to deal in
@@ -22,19 +22,10 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/**
- *  Bootstrap file for web
- *
- *  The bootstrap file will load the IO driver and kick off the application.
- *  Each platform must provide its own bootstrap file, otherwise Codebot won't
- *  be able to perform IO opperations.
- */
+@include_once dirname(__FILE__).'/config.local.php';
+include_once dirname(__FILE__).'/config.php';
 
-$('body').append('<script type="text/javascript" src="./js/web/codebot.web.filesystem.js"></script>');
-
-CODEBOT.init(new CodebotWebFilesystem());
-
-// Load all web plugins
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.webdisk.filesystem.js"></script>');
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.ide.web.js"></script>');
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.flash.tools.js"></script>');
+require_once dirname(__FILE__).'/db.php';
+require_once dirname(__FILE__).'/functions.php';
+require_once dirname(__FILE__).'/auth.php';
+?>

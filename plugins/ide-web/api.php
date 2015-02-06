@@ -1,8 +1,8 @@
-
+<?php
 /*
 	The MIT License (MIT)
 
-	Copyright (c) 2013 Fernando Bevilacqua
+	Copyright (c) 2015 Fernando Bevilacqua
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy of
 	this software and associated documentation files (the "Software"), to deal in
@@ -23,18 +23,46 @@
 */
 
 /**
- *  Bootstrap file for web
- *
- *  The bootstrap file will load the IO driver and kick off the application.
- *  Each platform must provide its own bootstrap file, otherwise Codebot won't
- *  be able to perform IO opperations.
+ * A REST API to manage projects when running in web IDE mode.
  */
 
-$('body').append('<script type="text/javascript" src="./js/web/codebot.web.filesystem.js"></script>');
+require_once dirname(__FILE__).'/globals.php';
 
-CODEBOT.init(new CodebotWebFilesystem());
+$aMethod = isset($_REQUEST['method']) ? $_REQUEST['method'] : '';
+unset($_REQUEST['method']);
 
-// Load all web plugins
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.webdisk.filesystem.js"></script>');
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.ide.web.js"></script>');
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.flash.tools.js"></script>');
+$aOut = '';
+$aUser = userGetById(@$_SESSION['id']);
+
+if($aUser != null) {
+	try {
+		switch($aMethod) {
+			case 'create-project':
+				$aOk = projectCreate($aUser, @$_REQUEST['name'], @$_REQUEST['type']);
+				$aOut = json_encode(array('success' => $aOk, 'msg' => ''));
+				break;
+
+			case 'list-projects':
+				$aProjects = projectFindByUser($aUser);
+				$aOut = json_encode(array('success' => true, 'msg' => '', 'projects' => $aProjects));
+				break;
+
+			case 'delete-project':
+				$aOut = json_encode(array('success' => true, 'msg' => ''));
+				break;
+
+			default:
+				echo 'Problem?';
+				break;
+		}
+	} catch(Exception $aProblem) {
+		$aOut = json_encode(array('success' => false, 'msg' => $aProblem->getMessage()));
+	}
+} else {
+	echo 'Questions?';
+}
+
+header('Content-Type: application/json');
+echo $aOut;
+
+?>
