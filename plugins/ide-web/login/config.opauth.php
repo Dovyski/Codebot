@@ -45,7 +45,7 @@ $config = array(
  */
 	'Strategy' => array(
 		// Define strategies and their respective configs here
-		'github' => array(
+		'GitHub' => array(
 			'client_id' => GITHUB_APP_ID,
 			'client_secret' => GITHUB_APP_SECRET
 		)
