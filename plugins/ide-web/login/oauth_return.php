@@ -18,6 +18,8 @@ require_once dirname(__FILE__).'/../globals.php';
 define('CONF_FILE', dirname(__FILE__).'/'.'config.opauth.php');
 define('OPAUTH_LIB_DIR', dirname(__FILE__).'/inc/lib/Opauth/');
 
+$aLocation = './?error=';
+
 // Load config
 if (!file_exists(CONF_FILE)) {
 	trigger_error('Config file missing at '.CONF_FILE, E_USER_ERROR);
@@ -44,13 +46,13 @@ switch($aOpauth->env['callback_transport']) {
 		$aResponse = unserialize(base64_decode( $_GET['opauth'] ));
 		break;
 	default:
-		echo '<strong style="color: red;">Error: </strong>Unsupported callback_transport.'."<br>\n";
+		$aLocation .= 'Unsupported callback_transport.';
 		break;
 }
 
 // Check if it's an error callback
-if (array_key_exists('error', $aResponse)) {
-	echo '<strong style="color: red;">Authentication error: </strong> Opauth returns error auth response.'."<br>\n";
+if ($aResponse == null || array_key_exists('error', $aResponse)) {
+	$aLocation .= 'Opauth returns error auth response.';
 
 } else {
 	// Auth response validation
@@ -58,13 +60,19 @@ if (array_key_exists('error', $aResponse)) {
 	// is sent through GET or POST.
 
 	if (empty($aResponse['auth']) || empty($aResponse['timestamp']) || empty($aResponse['signature']) || empty($aResponse['auth']['provider']) || empty($aResponse['auth']['uid'])) {
-		echo '<strong style="color: red;">Invalid auth response: </strong>Missing key auth response components.'."<br>\n";
-	} elseif (!$aOpauth->validate(sha1(print_r($aResponse['auth'], true)), $aResponse['timestamp'], $aResponse['signature'], $reason)) {
-		echo '<strong style="color: red;">Invalid auth response: </strong>'.$reason.".<br>\n";
-	} else {
-		echo '<strong style="color: green;">OK: </strong>Auth response is validated.'."<br>\n";
+		$aLocation .= 'Missing key auth response components.';
 
-		// It's all good. Go ahead with your application-specific authentication logic
-		authMakeAuthenticationUsingOAuthInfo($aResponse['auth']);
+	} elseif (!$aOpauth->validate(sha1(print_r($aResponse['auth'], true)), $aResponse['timestamp'], $aResponse['signature'], $aReason)) {
+		$aLocation .= $aReason;
+
+	} else {
+		// It's all good.
+		if(authMakeAuthenticationUsingOAuthInfo($aResponse['auth'])) {
+			$aUser = userGetById($_SESSION['id']);
+			$aLocation = '/ide/?disk=' . $aUser->disk;
+		}
 	}
 }
+
+header('Location: ' . $aLocation);
+exit();

@@ -131,6 +131,7 @@ function authMakeAuthenticationUsingOAuthInfo($theInfo) {
 
 	// Authenticate
 	$_SESSION['id'] = $aLocalUserId;
+	return true;
 }
 
 ?>
