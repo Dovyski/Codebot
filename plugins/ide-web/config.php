@@ -9,7 +9,7 @@
 @define('SID',					'codebotsid');
 
 // OAuth stuff
-@define('OAUTH_PATH',			'/plugins/ide-web/login/');
+@define('OAUTH_PATH',			'/plugins/ide-web/login/index.php/');
 @define('OAUTH_SECURITY_SALT',	'LDFmiilYf8Fyw5W10rx4W1KsVrieQCnpBzzpTBWA5vJidQKDx8pMJbmw28R1C4m');
 @define('GITHUB_APP_ID',		'');
 @define('GITHUB_APP_SECRET',	'');

@@ -18,11 +18,9 @@ if (!file_exists(CONF_FILE)) {
 }
 require CONF_FILE;
 
+$aHaveParams = strpos($_SERVER['REQUEST_URI'], 'index.php/') !== false;
 
-if(isset($_GET['action'])) {
-	// Fake the request_uri so Opauth will be happy and work like we want it to.
-	$_SERVER['REQUEST_URI'] = OAUTH_PATH . '/' . $_GET['action'];
-
+if($aHaveParams) {
 	// Instantiate Opauth with the loaded config
 	require OPAUTH_LIB_DIR.'Opauth.php';
 	$aOpauth = new Opauth( $config );
