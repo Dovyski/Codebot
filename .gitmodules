@@ -1,3 +1,0 @@
-[submodule "js/3rdparty/ace"]
-	path = js/3rdparty/ace
-	url = git@github.com:ajaxorg/ace-builds.git
