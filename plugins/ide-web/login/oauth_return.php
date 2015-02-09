@@ -69,7 +69,7 @@ if ($aResponse == null || array_key_exists('error', $aResponse)) {
 		// It's all good.
 		if(authMakeAuthenticationUsingOAuthInfo($aResponse['auth'])) {
 			$aUser = userGetById($_SESSION['id']);
-			$aLocation = '/ide/?disk=' . $aUser->disk;
+			$aLocation = './../ide/?disk=' . $aUser->disk;
 		}
 	}
 }
