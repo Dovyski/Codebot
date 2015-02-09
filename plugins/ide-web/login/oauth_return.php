@@ -12,37 +12,35 @@
  *
  */
 
+require_once dirname(__FILE__).'/../globals.php';
 
-/**
- * Define paths
- */
-define('CONF_FILE', dirname(__FILE__).'/'.'opauth.conf.php');
+authMakeAuthenticationUsingOAuthInfo(array(
+	'uid' => 512405,
+	'info' => array('email' => 'dovyski@openid.com'),
+	'provider' => 'GitHub'
+));
+exit();
+
+// Define paths
+define('CONF_FILE', dirname(__FILE__).'/'.'config.opauth.php');
 define('OPAUTH_LIB_DIR', dirname(__FILE__).'/inc/lib/Opauth/');
 
-/**
-* Load config
-*/
+// Load config
 if (!file_exists(CONF_FILE)) {
 	trigger_error('Config file missing at '.CONF_FILE, E_USER_ERROR);
 	exit();
 }
 require CONF_FILE;
 
-/**
- * Instantiate Opauth with the loaded config but not run automatically
- */
+// Instantiate Opauth with the loaded config but not run automatically
 require OPAUTH_LIB_DIR.'Opauth.php';
 $aOpauth = new Opauth( $config, false );
 
-
-/**
-* Fetch auth response, based on transport configuration for callback
-*/
+// Fetch auth response, based on transport configuration for callback
 $aResponse = null;
 
 switch($aOpauth->env['callback_transport']) {
 	case 'session':
-		session_start();
 		$aResponse = $_SESSION['opauth'];
 		unset($_SESSION['opauth']);
 		break;
@@ -57,20 +55,15 @@ switch($aOpauth->env['callback_transport']) {
 		break;
 }
 
-/**
- * Check if it's an error callback
- */
+// Check if it's an error callback
 if (array_key_exists('error', $aResponse)) {
 	echo '<strong style="color: red;">Authentication error: </strong> Opauth returns error auth response.'."<br>\n";
-}
 
-/**
- * Auth response validation
- *
- * To validate that the auth response received is unaltered, especially auth response that
- * is sent through GET or POST.
- */
-else{
+} else {
+	// Auth response validation
+	// To validate that the auth response received is unaltered, especially auth response that
+	// is sent through GET or POST.
+
 	if (empty($aResponse['auth']) || empty($aResponse['timestamp']) || empty($aResponse['signature']) || empty($aResponse['auth']['provider']) || empty($aResponse['auth']['uid'])) {
 		echo '<strong style="color: red;">Invalid auth response: </strong>Missing key auth response components.'."<br>\n";
 	} elseif (!$aOpauth->validate(sha1(print_r($aResponse['auth'], true)), $aResponse['timestamp'], $aResponse['signature'], $reason)) {
@@ -78,16 +71,7 @@ else{
 	} else {
 		echo '<strong style="color: green;">OK: </strong>Auth response is validated.'."<br>\n";
 
-		/**
-		 * It's all good. Go ahead with your application-specific authentication logic
-		 */
+		// It's all good. Go ahead with your application-specific authentication logic
+		authMakeAuthenticationUsingOAuthInfo($aResponse['auth']);
 	}
 }
-
-
-/**
-* Auth response dump
-*/
-echo "<pre>";
-print_r($aResponse);
-echo "</pre>";

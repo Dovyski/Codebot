@@ -22,17 +22,41 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-function userGetById($theId) {
+function userGetById($theId, $theFull = false) {
 	global $gDb;
 
 	$aRet = null;
-	$aQuery = $gDb->prepare("SELECT * FROM users WHERE id = ?");
+	$aQuery = $gDb->prepare("SELECT ".($theFull ? '*' : 'id, email, registration_date, disk')." FROM users WHERE id = ?");
 
 	if ($aQuery->execute(array($theId))) {
 		$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
 	}
 
 	return $aRet;
+}
+
+function userGetByProviderId($theProvider, $theProviderUserUid) {
+	global $gDb;
+
+	$aRet = null;
+	$aQuery = $gDb->prepare("SELECT id FROM users WHERE auth_uid = ?");
+
+	if ($aQuery->execute(array($theProvider . '/' . $theProviderUserUid))) {
+		$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
+	}
+
+	return $aRet;
+}
+
+function userCreate($theEmail, $theDisk, $theAuthUid, $theAuthRaw) {
+	global $gDb;
+
+	$aRet = null;
+	$aQuery = $gDb->prepare("INSERT INTO users (id, email, registration_date, disk, auth_uid, auth_raw) VALUES (null, ?, ?, ?, ?, ?)");
+
+	$aQuery->execute(array($theEmail, time(), $theDisk, $theAuthUid, $theAuthRaw));
+
+	return $gDb->lastInsertId();
 }
 
 
@@ -76,6 +100,37 @@ function projectFindByUser($theUser) {
 	}
 
 	return $aRet;
+}
+
+function diskCreate($theUser) {
+ 	$aDisk = md5($theUser . time());
+	mkdir(WORK_POOL . '/' . $aDisk);
+
+	return $aDisk;
+}
+
+function authMakeAuthenticationUsingOAuthInfo($theInfo) {
+	$aProvider 		= $theInfo['provider'];
+	$aUid 			= $theInfo['uid'];
+	$aLocalUser 	= userGetByProviderId($aProvider, $aUid);
+	$aLocalUserId 	= null;
+
+	if($aLocalUser == null) {
+		// No local account has been found.
+		// Let's create one then.
+
+		$aDisk 			= diskCreate($aProvider . $aUid);
+		$aEmail 		= isset($theInfo['info']['email']) ? $theInfo['info']['email'] : '';
+		$aAuthUid 		= $aProvider . '/' . $aUid;
+
+		$aLocalUserId 	= userCreate($aEmail, $aDisk, $aAuthUid, serialize($theInfo));
+
+	} else {
+		$aLocalUserId = $aLocalUser->id;
+	}
+
+	// Authenticate
+	$_SESSION['id'] = $aLocalUserId;
 }
 
 ?>

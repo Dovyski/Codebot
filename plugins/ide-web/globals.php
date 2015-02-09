@@ -25,6 +25,9 @@
 @include_once dirname(__FILE__).'/config.local.php';
 include_once dirname(__FILE__).'/config.php';
 
+@include_once dirname(__FILE__).'/../webdisk-filesystem/config.local.php';
+include_once dirname(__FILE__).'/../webdisk-filesystem/config.php';
+
 require_once dirname(__FILE__).'/db.php';
 require_once dirname(__FILE__).'/functions.php';
 require_once dirname(__FILE__).'/auth.php';

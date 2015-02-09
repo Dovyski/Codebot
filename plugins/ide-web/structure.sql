@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 06, 2015 at 07:10 PM
+-- Generation Time: Feb 09, 2015 at 01:54 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -48,8 +48,11 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(255) NOT NULL,
   `registration_date` int(11) NOT NULL,
   `disk` varchar(32) NOT NULL,
+  `auth_uid` varchar(255) NOT NULL,
+  `auth_raw` text NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `auth_uid` (`auth_uid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --

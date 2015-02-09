@@ -21,7 +21,7 @@ $config = array(
 /**
  * Callback URL: redirected to after authentication, successful or otherwise
  */
-	'callback_url' => '{path}callback.php',
+	'callback_url' => '{path}oauth_return.php',
 
 /**
  * A random string used for signing of $auth response.

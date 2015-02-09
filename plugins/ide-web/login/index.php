@@ -7,6 +7,8 @@
  *
  */
 
+require_once dirname(__FILE__).'/../globals.php';
+
 // Define paths
 define('CONF_FILE', dirname(__FILE__).'/'.'config.opauth.php');
 define('OPAUTH_LIB_DIR', dirname(__FILE__).'/inc/lib/Opauth/');
