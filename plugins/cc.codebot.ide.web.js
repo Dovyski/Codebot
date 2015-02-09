@@ -48,7 +48,16 @@ var CoreIdePlugin = function() {
     };
 
     var doCreateNewProject = function() {
-        console.log($('#form-new-project').serialize());
+        var aData = $('#form-new-project').serialize() + '&method=create-project';
+
+        runCommand(aData, function(theData) {
+            if(theData.success) {
+                doOpenProject(theData.path);
+                
+            } else {
+                console.error('Failed to create project: ' + theData.msg);
+            }
+        });
     };
 
     var doOpenProject = function(theProjectPath) {
@@ -67,7 +76,7 @@ var CoreIdePlugin = function() {
         mContext = theContext;
 
         mContext.ui.addButton({ icon: '<i class="fa fa-plus-square"></i>', action: mSelf.newProject });
-        mContext.ui.addButton({ icon: '<i class="fa fa-folder-open"></i>', action: mSelf.openFolder });
+        mContext.ui.addButton({ icon: '<i class="fa fa-folder-open"></i>', action: mSelf.openProject });
         mContext.ui.addButton({ icon: '<i class="fa fa-floppy-o"></i>', action: mSelf.save });
 
         var aProject = CODEBOT.utils.getURLParamByName('project');
@@ -113,7 +122,7 @@ var CoreIdePlugin = function() {
         });
     };
 
-    this.openFolder = function(theContext, theButton) {
+    this.openProject = function(theContext, theButton) {
         var aForm =
             '<form id="form-open-project">'+
               '<div class="form-group" id="container-list-projects">'+

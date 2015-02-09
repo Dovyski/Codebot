@@ -26,9 +26,7 @@
  * A REST API to access a disk file-system.
  */
 
-@include_once dirname(__FILE__). '/config.local.php';
-include_once dirname(__FILE__). '/config.php';
-require_once dirname(__FILE__).'/functions.php';
+require_once dirname(__FILE__).'/globals.php';
 
 // Adjust the working dir based on the selected virtual disk.
 $aMount = isset($_REQUEST['mount']) ? $_REQUEST['mount'] : '';

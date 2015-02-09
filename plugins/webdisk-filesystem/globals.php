@@ -22,47 +22,8 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/**
- * A REST API to manage projects when running in web IDE mode.
- */
+@include_once dirname(__FILE__).'/config.local.php';
+include_once dirname(__FILE__).'/config.php';
 
-require_once dirname(__FILE__).'/globals.php';
-
-$aMethod = isset($_REQUEST['method']) ? $_REQUEST['method'] : '';
-unset($_REQUEST['method']);
-
-$aOut = '';
-$aUser = userGetById(@$_SESSION['id']);
-
-if($aUser != null) {
-	try {
-		switch($aMethod) {
-			case 'create-project':
-				$aPath = projectCreate($aUser, @$_REQUEST['name'], @$_REQUEST['type']);
-				$aOut = json_encode(array('success' => true, 'path' => $aPath, 'msg' => ''));
-				break;
-
-			case 'list-projects':
-				$aProjects = projectFindByUser($aUser);
-				$aOut = json_encode(array('success' => true, 'msg' => '', 'projects' => $aProjects));
-				break;
-
-			case 'delete-project':
-				$aOut = json_encode(array('success' => true, 'msg' => ''));
-				break;
-
-			default:
-				echo 'Problem?';
-				break;
-		}
-	} catch(Exception $aProblem) {
-		$aOut = json_encode(array('success' => false, 'msg' => $aProblem->getMessage()));
-	}
-} else {
-	echo 'Questions?';
-}
-
-header('Content-Type: application/json');
-echo $aOut;
-
+require_once dirname(__FILE__).'/functions.php';
 ?>

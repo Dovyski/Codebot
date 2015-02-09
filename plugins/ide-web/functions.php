@@ -80,7 +80,10 @@ function projectCreate($theUser, $theName, $theType) {
 
 	$aQuery->execute(array($aFkUser, $aName, $aType, $aPath, time()));
 
-	return $aQuery->rowCount();
+	// Create physical folders and stuff
+	webdiskCreateProject($theUser->disk, $aPath);
+
+	return $aPath;
 }
 
 function projectDelete($theUser, $theId) {
@@ -102,6 +105,7 @@ function projectFindByUser($theUser) {
 	return $aRet;
 }
 
+// TODO: move this to webdisk API.
 function diskCreate($theUser) {
  	$aDisk = md5($theUser . time());
 	mkdir(WORK_POOL . '/' . $aDisk);
