@@ -1,11 +1,17 @@
 <?php
 
 // Database info
-@define('DB_DSN',           'mysql:host=localhost;dbname=codebot');
-@define('DB_USER',			'root');
-@define('DB_PASSWORD',		'');
+@define('DB_DSN',           	'mysql:host=localhost;dbname=codebot');
+@define('DB_USER',				'root');
+@define('DB_PASSWORD',			'');
 
 // Session info
-@define('SID',				'codebotsid');
+@define('SID',					'codebotsid');
+
+// OAuth stuff
+@define('OAUTH_PATH',			'/plugins/ide-web/login/');
+@define('OAUTH_SECURITY_SALT',	'LDFmiilYf8Fyw5W10rx4W1KsVrieQCnpBzzpTBWA5vJidQKDx8pMJbmw28R1C4m');
+@define('GITHUB_APP_ID',		'');
+@define('GITHUB_APP_SECRET',	'');
 
 ?>
