@@ -55,6 +55,18 @@ var CodebotWebDiskFilesystem = function(theContext) {
 
 	this.init = function() {
 		mDisk = CODEBOT.utils.getURLParamByName('disk');
+
+		if(!mDisk) {
+			mContext.ui.showDialog({
+				keyboard: true,
+				title: 'Atention',
+				content: 'It looks like you directly visited this link without a valid disk information. You will not be able to perform any IO operation, such as opening a project.<br/><br />Go to <a href="http://web.codebot.com">http://web.codebot.com</a> to fix the problem.',
+				buttons: {
+					'Ok': {css: 'btn-primary', dismiss: true}
+				}
+			});
+		}
+
 		console.log('CodebotWebDiskFilesystem::init() - disk id = ' + mDisk);
 	};
 
