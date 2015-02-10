@@ -94,12 +94,25 @@ function projectFindByUser($theUser) {
 	global $gDb;
 
 	$aRet = array();
-	$aQuery = $gDb->prepare("SELECT * FROM projects WHERE fk_user = ?");
+	$aQuery = $gDb->prepare("SELECT id, fk_user, name, type, path, creation_date FROM projects WHERE fk_user = ?");
 
 	if ($aQuery->execute(array($theUser->id))) {
 		while($aRow = $aQuery->fetch(PDO::FETCH_OBJ)) {
 			$aRet[] = $aRow;
 		}
+	}
+
+	return $aRet;
+}
+
+function projectGetById($theId, $theComplete = false) {
+	global $gDb;
+
+	$aRet = null;
+	$aQuery = $gDb->prepare("SELECT ".($theComplete ? '*' : 'id, fk_user, name, type, path, creation_date')." FROM projects WHERE id = ?");
+
+	if ($aQuery->execute(array($theId))) {
+		$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
 	}
 
 	return $aRet;

@@ -38,7 +38,7 @@ var FlashToolsPlugin = function() {
         $.ajax({
             url: API_URL,
             method: 'post',
-            data: {method: 'build', width: 640, height: 480},
+            data: {method: 'build', project: 1}, // TODO: get project id
             dataType: 'json'
         }).done(function(theData) {
             theCallback(theData);
@@ -77,8 +77,8 @@ var FlashToolsPlugin = function() {
 
             theButton.html('<i class="fa fa-play"></i>');
 
-            if(theData.log.length == 2) {
-                aTab.editor.renderSWFByURL(theData.url, 640, 480);
+            if(theData.success) {
+                aTab.editor.renderSWFByURL(theData.testingFileUrl, 640, 480); // TODO: get width/height from response?
             } else {
                 aTab.editor.showMessage(theData.log.join('\n'));
             }

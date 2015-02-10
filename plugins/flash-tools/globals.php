@@ -22,32 +22,11 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/**
- * A REST API to build Flash projects.
- */
+include_once dirname(__FILE__).'/config.local.php';
+include_once dirname(__FILE__).'/config.php';
 
-include_once dirname(__FILE__). '/globals.php';
+include_once dirname(__FILE__).'/functions.php';
 
-$aMethod = isset($_REQUEST['method']) ? $_REQUEST['method'] : '';
-unset($_REQUEST['method']);
-
-$aMime = 'plain/text';
-$aOut = '';
-
-switch($aMethod) {
-	case 'build':
-		$aMime = 'application/json';
-		$aReturn = flashBuilProject(@$_REQUEST['project'], $_SESSION['id']);
-
-		$aOut = json_encode($aReturn);
-		break;
-
-	default:
-		echo 'Problem?';
-		break;
-}
-
-header('Content-Type: ' . $aMime);
-echo $aOut;
+include_once dirname(__FILE__).'/../ide-web/globals.php';
 
 ?>
