@@ -28,7 +28,7 @@ var CoreIdePlugin = function() {
     // Constants
     const API_URL       = 'plugins/ide-web/api.php';
 
-    this.id             = 'cc.codebot.core.ide';
+    this.id             = 'cc.codebot.ide.web';
 
     var mSelf           = null;
     var mContext        = null;

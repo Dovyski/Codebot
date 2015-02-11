@@ -35,10 +35,12 @@ var FlashToolsPlugin = function() {
     var runRemoteBuild = function(theCallback) {
         console.debug('Asking for remote build...');
 
+        var aActiveProject = mContext.getPlugin('cc.codebot.ide.web').getActiveProject();
+
         $.ajax({
             url: API_URL,
             method: 'post',
-            data: {method: 'build', project: 1}, // TODO: get project id
+            data: {method: 'build', project: aActiveProject.id},
             dataType: 'json'
         }).done(function(theData) {
             theCallback(theData);
