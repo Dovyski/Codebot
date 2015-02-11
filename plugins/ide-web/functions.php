@@ -83,7 +83,15 @@ function projectCreate($theUser, $theName, $theType) {
 	// Create physical folders and stuff
 	webdiskCreateProject($theUser->disk, $aPath);
 
-	return $aPath;
+	$aRet = new stdClass();
+
+	$aRet->id 		= $gDb->lastInsertId();
+	$aRet->fk_user 	= $aFkUser;
+	$aRet->name 	= $aName;
+	$aRet->type 	= $aType;
+	$aRet->path 	= $aPath;
+
+	return $aRet;
 }
 
 function projectDelete($theUser, $theId) {
@@ -98,7 +106,7 @@ function projectFindByUser($theUser) {
 
 	if ($aQuery->execute(array($theUser->id))) {
 		while($aRow = $aQuery->fetch(PDO::FETCH_OBJ)) {
-			$aRet[] = $aRow;
+			$aRet[$aRow->id] = $aRow;
 		}
 	}
 

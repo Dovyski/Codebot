@@ -26,12 +26,14 @@
  */
 var CoreIdePlugin = function() {
     // Constants
-    const API_URL   = 'plugins/ide-web/api.php';
+    const API_URL       = 'plugins/ide-web/api.php';
 
-    this.id         = 'cc.codebot.core.ide';
+    this.id             = 'cc.codebot.core.ide';
 
-    var mSelf       = null;
-    var mContext    = null;
+    var mSelf           = null;
+    var mContext        = null;
+    var mProjects       = {};
+    var mActiveProject  = null;
 
     var runCommand = function(theParams, theCallback) {
         $.ajax({
@@ -52,21 +54,29 @@ var CoreIdePlugin = function() {
 
         runCommand(aData, function(theData) {
             if(theData.success) {
-                doOpenProject(theData.path);
-                
+                mProjects[theData.project.id] = theData.project;
+                doOpenProject(theData.project.id);
+
             } else {
                 console.error('Failed to create project: ' + theData.msg);
             }
         });
     };
 
-    var doOpenProject = function(theProjectPath) {
-        var aProjectPath = theProjectPath || $('#project-to-open').val();
+    var doOpenProject = function(theProjectId) {
+        var aId      = theProjectId || $('#project-to-open').val();
+        var aProject = mProjects[aId];
 
-        console.debug('Opening project: ', aProjectPath);
+        console.debug('Opening project: ', aProject.path);
 
-        mContext.io.setProjectPath(aProjectPath);
-        mContext.io.readDirectory(aProjectPath, mContext.ui.filesPanel.populateTree);
+        mContext.io.setProjectPath(aProject.path);
+        mContext.io.readDirectory(aProject.path, mContext.ui.filesPanel.populateTree);
+
+        mActiveProject = aProject;
+    };
+
+    this.getActiveProject = function() {
+        return mActiveProject;
     };
 
     this.init = function(theContext) {
@@ -143,8 +153,11 @@ var CoreIdePlugin = function() {
         runCommand({method: 'list-projects'}, function(theData) {
             var aInfo = '<select class="form-control" name="project-to-open" id="project-to-open">';
 
+            // Save projects for future use.
+            mProjects = theData.projects;
+
             for(var i in theData.projects) {
-                aInfo += '<option value="'+theData.projects[i].path+'">'+theData.projects[i].name+' ('+theData.projects[i].type+')</option>';
+                aInfo += '<option value="'+theData.projects[i].id+'">'+theData.projects[i].name+' ('+theData.projects[i].type+')</option>';
             }
 
             aInfo += '</select>';

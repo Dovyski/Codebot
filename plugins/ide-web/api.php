@@ -38,8 +38,8 @@ if($aUser != null) {
 	try {
 		switch($aMethod) {
 			case 'create-project':
-				$aPath = projectCreate($aUser, @$_REQUEST['name'], @$_REQUEST['type']);
-				$aOut = json_encode(array('success' => true, 'path' => $aPath, 'msg' => ''));
+				$aProject = projectCreate($aUser, @$_REQUEST['name'], @$_REQUEST['type']);
+				$aOut = json_encode(array('success' => true, 'project' => $aProject, 'msg' => ''));
 				break;
 
 			case 'list-projects':
