@@ -31,8 +31,8 @@ var CodebotFancyPanelFolder = function(theTitle, theId) {
 		mItens.push({
 			label: theLabel,
 			content: theContent,
-			id: theId,
-			behavior: theBehavior
+			id: theId || '',
+			behavior: theBehavior || 'number'
 		});
 	};
 
@@ -70,14 +70,14 @@ var CodebotFancyPanel = function(theTitle) {
 							'<ul>';
 
 		if(mTitle) {
-			aContent += '<li class="title">' + mTitle + ' <a href="#" class="fancypanel-close-button pull-right" data-action="close"><i class="fa fa-close"></i><a/></li>';
+			aContent += '<li class="title head"><i class="fa fa-caret-down"></i> ' + mTitle + ' <a href="#" class="fancypanel-close-button pull-right" data-action="close"><i class="fa fa-close"></i><a/></li>';
 		}
 
 		for(var i = 0; i < mFolders.length; i++) {
 			var aFolder = mFolders[i];
 
 			if(aFolder.title && aFolder.title != '') {
-				aContent += '<li class="title">' + aFolder.title + '</li>';
+				aContent += '<li class="title"><i class="fa fa-caret-down"></i> ' + aFolder.title + '</li>';
 			}
 
 			for(var j = 0; j < aFolder.itens.length; j++) {
@@ -88,7 +88,7 @@ var CodebotFancyPanel = function(theTitle) {
 						'<div>' +
 							'<span class="property-name">'+ aItem.label + '</span>'+
 							'<div class="c">'+
-								'<div>' + aItem.content + '</div>'+
+								aItem.content +
 							'</div>'+
 						'</div>'+
 					'</li>';

@@ -89,29 +89,29 @@ var FlashToolsPlugin = function() {
 
     this.settings = function(theContainer, theContext) {
         var aContent = '';
-        var aPanel = new CodebotFancyPanel();
+        var aPanel = new CodebotFancyPanel('Project settings');
 
-        var aFolder = aPanel.addFolder('Project settings', 'preferences');
+        var aFolder = aPanel.addFolder('Output', 'output');
 
-        aFolder.add('Title', '<input type="text" value="800" name="width">', 'aId', 'boolean');
+        aFolder.add('Output file', '<input type="text" name="outFile" value="/bin/Mode.swf" />');
+        aFolder.add('Width', '<input type="text" name="width" value="800" />');
+        aFolder.add('Height', '<input type="text" name="height" value="600" />');
 
+        var aFolder = aPanel.addFolder('Classpath', 'output');
+        aFolder.add('Libs', '<input type="text" name="libs" value="/libs/" />');
 
+        aFolder = aPanel.addFolder('SDK and Compiler', 'sdk');
+        aFolder.add('Platform', '<select name="platform"><option value="800">Flash Player</option></select>');
+        aFolder.add('Version', '<select name="swf"><option value="14.0">14.0</option></select>');
+        aFolder.add('Other', '<input type="text" name="other" value="/libs/" />');
+        aFolder.add('Test', '<input type="text" name="test" value="/libs/" />');
+        aFolder.add('Thing', '<select name="thing"><option value="800">Flash Player</option></select>');
+
+        aContent += '<form action="#" id="flash-tools-settings" data-persistent="flashTools">';
         aContent += aPanel.html();
+        aContent += '</form>';
 
         theContainer.append(aContent);
-
-/*
-        theContainer.find('li.function').each(function(i, e) {
-            $(e).click(function() {
-                var aId = $(this).data('section');
-                theContext.ui.slidePanel.pushState(mSections[aId].panel);
-            });
-        });
-
-        $('#codebotPrefBackButton').click(function() {
-            theContext.ui.slidePanel.popState();
-        });
-        */
     };
 
 };

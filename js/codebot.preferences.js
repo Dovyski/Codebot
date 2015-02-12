@@ -26,18 +26,23 @@ var CodebotPreferences = function() {
     var mSections = {};
     var mCodebot = null;
     var mData = {};
-    
+
     this.get = function() {
         return mData;
     };
-    
+
     this.set = function(theObj) {
         $.extend(true, mData, theObj);
     };
-    
+
+    this.add = function(theKey, theValue) {
+        mData[theKey] = theValue;
+        console.log('CODEBOT [prefs] Entry updated:', theKey, theValue);
+    };
+
     this.load = function(theCallback) {
         console.log('CODEBOT [prefs] Loading preferences...');
-        
+
         // TODO: fix this, it breaks IO layer
         mCodebot.io.readFile({path: './data/prefs.default.json'}, function(theData) {
             eval('mSelf.set('+theData+')');
@@ -45,7 +50,7 @@ var CodebotPreferences = function() {
             theCallback();
         });
     };
-    
+
     this.init = function(theCodebot) {
         mSelf = this;
         mCodebot = theCodebot;

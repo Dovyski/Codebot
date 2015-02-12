@@ -65,6 +65,30 @@ var CodebotSlidePanel = function() {
                 mSelf.popState();
             });
         });
+
+        restorePersistentPanelData(theContainerId);
+    };
+
+    var restorePersistentPanelData = function(theContainerId) {
+        $('#' + theContainerId + ' form:not([data-persistent=""])').each(function(i, e) {
+            var aStore = $(e).data('persistent');
+            var aPreferences = mCodebot.preferences.get();
+
+            console.log('Restore persistent data', aStore, aPreferences[aStore]);
+        });
+    };
+
+    var savePersistentPanelData = function() {
+        var aContainerId = mStack[mStack.length - 1];
+
+        if(aContainerId) {
+            $('#' + aContainerId + ' form:not([data-persistent=""])').each(function(i, e) {
+                var aStore = $(e).data('persistent');
+                var aData = $(e).serializeArray(); // TODO: switch to serializeObject()
+
+                mCodebot.preferences.add(aStore, aData);
+            });
+        }
     };
 
     this.pushState = function(theStateRender) {
@@ -98,6 +122,8 @@ var CodebotSlidePanel = function() {
 
     this.popState = function() {
         var aPanelWidth = getSliderPanelWidth();
+
+        savePersistentPanelData();
 
         if(mStack.length == 1) {
             mSelf.close();
@@ -133,6 +159,8 @@ var CodebotSlidePanel = function() {
     };
 
     this.close = function() {
+        savePersistentPanelData();
+
         slideElement('content', 0);
         slideElement('config-dialog', 0);
 
