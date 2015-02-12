@@ -13,7 +13,7 @@ License: MIT
 Font-Awesome
 Author: Dave Gandy - http://fontawesome.io
 License: MIT & SIL OFL 1.1 (http://scripts.sil.org/OFL)
-	
+
 ------------------------------------------------------------------------------------------
 
 jQuery and jQuery UI
@@ -49,3 +49,9 @@ License: MIT
 mousetrap
 Author: Craig Campbell - http://craig.is/killing/mice
 License: Apache 2.0
+
+
+------------------------------------------------------------------------------------------
+jQuery.serializeObject
+Author: David Hong - https://github.com/hongymagic/jQuery.serializeObject
+License: MIT

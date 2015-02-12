@@ -101,7 +101,7 @@ var CodebotWebDiskFilesystem = function(theContext) {
 		runCommand(
 			{
 				method: 'write',
-				path: theNode.node.path,
+				path: theNode.path,
 				data: theData
 			},
 			'json',

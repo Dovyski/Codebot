@@ -101,7 +101,7 @@ var FlashToolsPlugin = function() {
         aFolder.add('Libs', '<input type="text" name="libs" value="/libs/" />');
 
         aFolder = aPanel.addFolder('SDK and Compiler', 'sdk');
-        aFolder.add('Platform', '<select name="platform"><option value="800">Flash Player</option></select>');
+        aFolder.add('Platform', '<select name="platform"><option value="player">Flash Player</option><option value="air">AIR</option></select>');
         aFolder.add('Version', '<select name="swf"><option value="14.0">14.0</option></select>');
         aFolder.add('Other', '<input type="text" name="other" value="/libs/" />');
         aFolder.add('Test', '<input type="text" name="test" value="/libs/" />');

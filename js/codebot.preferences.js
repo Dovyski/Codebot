@@ -27,6 +27,12 @@ var CodebotPreferences = function() {
     var mCodebot = null;
     var mData = {};
 
+    var saveToDisk = function() {
+        mCodebot.io.writeFile({path: './data/prefs.default.json'}, JSON.stringify(mData), function() {
+            console.log('CODEBOT [prefs] Saved to disk');
+        });
+    };
+
     this.get = function() {
         return mData;
     };
@@ -38,6 +44,8 @@ var CodebotPreferences = function() {
     this.add = function(theKey, theValue) {
         mData[theKey] = theValue;
         console.log('CODEBOT [prefs] Entry updated:', theKey, theValue);
+
+        saveToDisk();
     };
 
     this.load = function(theCallback) {

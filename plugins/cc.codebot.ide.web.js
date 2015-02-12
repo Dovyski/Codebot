@@ -170,7 +170,7 @@ var CoreIdePlugin = function() {
         var aTab = mContext.ui.tabs.active;
 
         if(aTab) {
-            mContext.writeTabToDisk(aTab);
+            mContext.writeTabToDisk(aTab.node);
         }
     };
 };

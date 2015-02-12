@@ -71,10 +71,15 @@ var CodebotSlidePanel = function() {
 
     var restorePersistentPanelData = function(theContainerId) {
         $('#' + theContainerId + ' form:not([data-persistent=""])').each(function(i, e) {
-            var aStore = $(e).data('persistent');
+            var aStore       = $(e).data('persistent');
             var aPreferences = mCodebot.preferences.get();
+            var aData        = aPreferences[aStore];
 
-            console.log('Restore persistent data', aStore, aPreferences[aStore]);
+            for(var aProp in aData) {
+                $(this).find('[name=' + aProp + ']').val(aData[aProp]);
+            }
+
+            console.debug('Data restored to panel');
         });
     };
 
@@ -84,9 +89,11 @@ var CodebotSlidePanel = function() {
         if(aContainerId) {
             $('#' + aContainerId + ' form:not([data-persistent=""])').each(function(i, e) {
                 var aStore = $(e).data('persistent');
-                var aData = $(e).serializeArray(); // TODO: switch to serializeObject()
+                var aData  = $(e).serializeObject();
 
-                mCodebot.preferences.add(aStore, aData);
+                if(aStore) {
+                    mCodebot.preferences.add(aStore, aData);
+                }
             });
         }
     };
@@ -123,12 +130,12 @@ var CodebotSlidePanel = function() {
     this.popState = function() {
         var aPanelWidth = getSliderPanelWidth();
 
-        savePersistentPanelData();
-
         if(mStack.length == 1) {
             mSelf.close();
 
         } else {
+            savePersistentPanelData();
+
             for(var i = 0; i < 2; i++) {
                 if(mStack.length > 0) {
                     var aStackTop = mStack[mStack.length - 1 - i];
