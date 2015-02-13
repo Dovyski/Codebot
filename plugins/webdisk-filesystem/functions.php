@@ -21,16 +21,8 @@
 	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/*
-{title: "Test.as", path: "/proj/Test.as", name: "Test.as"},
-{title: "Folder 2", folder: true, key: "folder2", path: "/proj/Folder 2/", name: "Folder 2",
-children: [
-	{title: "Test2.as", path: "/proj/Folder 2/Test2.as", name: "Test2.as"},
-	{title: "Test3.as", path: "/proj/Folder 2/Test3.as", name: "Test3.as"}
-]
-},
-*/
-function listDirectory($theDir, $thePrettyDir = '') {
+
+function webdiskListDirectory($theDir, $thePrettyDir = '') {
 	$aContent = array();
 	foreach (scandir($theDir) as $aNode) {
 		if ($aNode == '.' || $aNode == '..') continue;
@@ -43,12 +35,89 @@ function listDirectory($theDir, $thePrettyDir = '') {
 		if (is_dir($theDir . '/' . $aNode)) {
 			$aObj->folder = true;
 			$aObj->key = $aObj->path;
-			$aObj->children = listDirectory($theDir . $aNode . '/', $thePrettyDir . $aNode . '/');
+			$aObj->children = webdiskListDirectory($theDir . $aNode . '/', $thePrettyDir . $aNode . '/');
 		}
 
 		$aContent[] = $aObj;
 	}
 	return $aContent;
+}
+
+function webdiskFindActivePlugins() {
+	return array(
+		array('name' => 'cc.codebot.ide.web.js', 'title' => 'cc.codebot.ide.web.js', 'path' => './plugins/cc.codebot.ide.web.js'),
+		array('name' => 'cc.codebot.flash.tools.js', 'title' => 'cc.codebot.flash.tools.js', 'path' => './plugins/cc.codebot.flash.tools.js'),
+	);
+}
+
+function webdiskLs($theDir) {
+	$aFiles = array(
+		array(
+			'name' => 'Project',
+			'title' => 'Project',
+			'path' => '/',
+			'folder' => 'true',
+			'key' => 'root',
+			'expanded' => true,
+			'children' => webdiskListDirectory($theDir)
+		)
+	);
+
+	return $aFiles;
+}
+
+function webdiskLsCodebot($theDir) {
+	$aFiles = array(
+		array(
+			'name' => 'Project',
+			'title' => 'Project',
+			'path' => '/',
+			'folder' => 'true',
+			'key' => 'root',
+			'expanded' => true,
+			'children' => array()
+		)
+	);
+
+	if($theDir == './plugins') {
+		$aFiles[0]['children'] = webdiskFindActivePlugins();
+	}
+
+	return $aFiles;
+}
+
+function webdiskReadCodebot($thePath) {
+	$aRet = '';
+
+	if($thePath == './data/prefs.default.json') {
+		$aRet = "
+			{
+				// https://github.com/ajaxorg/ace/wiki/Configuring-Ace
+				editor: {
+					selectionStyle: 'line',
+					highlightActiveLine: true,
+					highlightSelectedWord: true,
+					cursorStyle: ace, // ['ace', 'slim', 'smooth', 'wide'],
+					mergeUndoDeltas: true, // [false, true, 'always'],
+					behavioursEnabled: true,
+					wrapBehavioursEnabled: true,
+					hScrollBarAlwaysVisible: true,
+					animatedScroll: false
+				},
+
+				shortcuts: {
+					saveActiveTab: 'mod+s',
+					newFile: 'mod+n',
+					chooseFile: 'mod+o',
+					closeTab: 'mod+w',
+					renameNode: 'f2',
+					exit: 'mod+q'
+				}
+			}
+		";
+	}
+
+	return $aRet;
 }
 
 function webdiskCreateProject($theDisk, $theProjectName) {

@@ -34,8 +34,7 @@ var CODEBOT = new function() {
     var loadPlugins = function() {
         console.log('CODEBOT [plugins] Loading plugins...');
 
-        // TODO: fix the {path: , etc} below because it breaks IO layer.
-        mIO.readDirectory({path: './plugins'}, function(theData) {
+        mIO.readDirectory({path: 'codebot://./plugins'}, function(theData) {
             for(var i in theData[0].children) {
                 var aItem = theData[0].children[i];
 

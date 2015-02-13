@@ -27,6 +27,7 @@
  */
 
 require_once dirname(__FILE__).'/globals.php';
+require_once dirname(__FILE__).'/../ide-web/globals.php';
 
 // Adjust the working dir based on the selected virtual disk.
 $aMount = isset($_REQUEST['mount']) ? $_REQUEST['mount'] : '';
@@ -40,87 +41,94 @@ unset($_REQUEST['method']);
 
 $aMime = 'text/plain';
 $aOut = '';
+$aUser = userGetById(@$_SESSION['id']);
 
-switch($aMethod) {
-	case 'ls':
-		$aFiles = listDirectory(WORK_DIR);
-		$aFiles = array(
-			array(
-				'name' => 'Project',
-				'title' => 'Project',
-				'path' => '/',
-				'folder' => 'true',
-				'key' => 'root',
-				'expanded' => true,
-				'children' => $aFiles
-			)
-		);
-		$aMime = 'application/json';
-		$aOut = json_encode($aFiles);
-		break;
+if($aUser != null) {
+	try {
+		switch($aMethod) {
+			case 'ls':
+				$aMime = 'application/json';
+				$aOut = json_encode(webdiskLs(WORK_DIR));
+				break;
 
-	case 'mv':
-		$aMime = 'application/json';
+			case 'ls-codebot':
+				$aMime = 'application/json';
+				$aOut = json_encode(webdiskLsCodebot(@$_REQUEST['path']));
+				break;
 
-		$aPathOld = isset($_REQUEST['old']) ? $_REQUEST['old'] : '';
-		$aPathNew = isset($_REQUEST['new']) ? $_REQUEST['new'] : '';
-		$aPathOld = WORK_DIR . $aPathOld;
-		$aPathNew = WORK_DIR . $aPathNew;
+			case 'mv':
+				$aMime = 'application/json';
 
-		rename($aPathOld, $aPathNew);
-		$aOut = json_encode(array('success' => true, 'msg' => ''));
-		break;
+				$aPathOld = isset($_REQUEST['old']) ? $_REQUEST['old'] : '';
+				$aPathNew = isset($_REQUEST['new']) ? $_REQUEST['new'] : '';
+				$aPathOld = WORK_DIR . $aPathOld;
+				$aPathNew = WORK_DIR . $aPathNew;
 
-	case 'rm':
-		$aMime = 'application/json';
+				rename($aPathOld, $aPathNew);
+				$aOut = json_encode(array('success' => true, 'msg' => ''));
+				break;
 
-		if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
-			$aPath = WORK_DIR . $_REQUEST['path'];
+			case 'rm':
+				$aMime = 'application/json';
 
-			if(is_dir($aPath)) {
-				rmdir($aPath);
-			} else {
-				unlink($aPath);
-			}
-			$aOut = json_encode(array('success' => true, 'msg' => ''));
+				if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
+					$aPath = WORK_DIR . $_REQUEST['path'];
+
+					if(is_dir($aPath)) {
+						rmdir($aPath);
+					} else {
+						unlink($aPath);
+					}
+					$aOut = json_encode(array('success' => true, 'msg' => ''));
+				}
+				break;
+
+			case 'read':
+				$aOut = '';
+				$aMime = 'text/plain';
+
+				if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
+					$aPath = WORK_DIR . $_REQUEST['path'];
+					$aOut = file_get_contents($aPath);
+				}
+				break;
+
+			case 'read-codebot':
+				$aMime = 'text/plain';
+				$aOut = webdiskReadCodebot(@$_REQUEST['path']);
+				break;
+
+			case 'write':
+				$aMime = 'application/json';
+
+				if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
+					$aPath = WORK_DIR . $_REQUEST['path'];
+
+					file_put_contents($aPath, @$_REQUEST['data']);
+					$aOut = json_encode(array('success' => true, 'msg' => ''));
+				}
+				break;
+
+			case 'mkdir':
+				$aMime = 'application/json';
+
+				if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
+					$aPath = WORK_DIR . $_REQUEST['path'];
+
+					mkdir($aPath, 0755);
+					$aOut = json_encode(array('success' => true, 'msg' => ''));
+				}
+				break;
+
+			default:
+				echo 'Problem?';
+				break;
 		}
-		break;
-
-	case 'read':
-		$aOut = '';
-		$aMime = 'text/plain';
-
-		if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
-			$aPath = WORK_DIR . $_REQUEST['path'];
-			$aOut = file_get_contents($aPath);
-		}
-		break;
-
-	case 'write':
-		$aMime = 'application/json';
-
-		if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
-			$aPath = WORK_DIR . $_REQUEST['path'];
-
-			file_put_contents($aPath, @$_REQUEST['data']);
-			$aOut = json_encode(array('success' => true, 'msg' => ''));
-		}
-		break;
-
-	case 'mkdir':
-		$aMime = 'application/json';
-
-		if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
-			$aPath = WORK_DIR . $_REQUEST['path'];
-
-			mkdir($aPath, 0755);
-			$aOut = json_encode(array('success' => true, 'msg' => ''));
-		}
-		break;
-
-	default:
-		echo 'Problem?';
-		break;
+	} catch(Exception $aProblem) {
+		$aOut = json_encode(array('success' => false, 'msg' => $aProblem->getMessage()));
+	}
+} else {
+	echo 'Questions?';
 }
 
 header('Content-Type: ' . $aMime);

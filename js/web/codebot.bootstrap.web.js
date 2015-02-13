@@ -33,8 +33,3 @@
 $('body').append('<script type="text/javascript" src="./js/web/codebot.web.filesystem.js"></script>');
 
 CODEBOT.init(new CodebotWebFilesystem());
-
-// Load all web plugins
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.webdisk.filesystem.js"></script>');
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.ide.web.js"></script>');
-$('body').append('<script type="text/javascript" src="./plugins/cc.codebot.flash.tools.js"></script>');

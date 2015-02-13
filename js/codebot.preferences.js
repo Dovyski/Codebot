@@ -28,7 +28,7 @@ var CodebotPreferences = function() {
     var mData = {};
 
     var saveToDisk = function() {
-        mCodebot.io.writeFile({path: './data/prefs.default.json'}, JSON.stringify(mData), function() {
+        mCodebot.io.writeFile({path: 'codebot://./data/prefs.default.json'}, JSON.stringify(mData), function() {
             console.log('CODEBOT [prefs] Saved to disk');
         });
     };
@@ -55,7 +55,7 @@ var CodebotPreferences = function() {
         console.log('CODEBOT [prefs] Loading preferences...');
 
         // TODO: fix this, it breaks IO layer
-        mCodebot.io.readFile({path: './data/prefs.default.json'}, function(theData) {
+        mCodebot.io.readFile({path: 'codebot://./data/prefs.default.json'}, function(theData) {
             eval('mSelf.set('+theData+')');
             console.log('CODEBOT [prefs] Preferences loaded!', mSelf.get());
             theCallback();

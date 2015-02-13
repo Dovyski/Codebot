@@ -22,66 +22,121 @@
 */
 
 var CodebotWebFilesystem = function() {
-	this.driver = 'Web FileSystem';
-        
-	this.init = function() {
+	// Constants
+	const API_URL = 'plugins/webdisk-filesystem/api.php';
+
+	// Public properties
+	this.driver = 'Web Disk FileSystem';
+
+	// Private properties
+	var mDisk = '';
+	var mProjectPath = '';
+
+	var runCommand = function(theParams, theDataType, theCallback) {
+		theParams.mount = mDisk + '/' + mProjectPath;
+
+		$.ajax({
+			url: API_URL,
+			method: 'post',
+			data: theParams,
+			dataType: theDataType
+		}).done(function(theData) {
+			theCallback(theData);
+
+		}).fail(function(theJqXHR, theTextStatus, theError) {
+			console.error('Error: ' + theTextStatus + ', ' + theError);
+		});
 	};
-    
+
+	this.setProjectPath = function(thePath) {
+		mProjectPath = thePath;
+	}
+
+	this.init = function() {
+		mDisk = CODEBOT.utils.getURLParamByName('disk');
+
+		if(!mDisk) {
+			mContext.ui.showDialog({
+				keyboard: true,
+				title: 'Atention',
+				content: 'It looks like you directly visited this link without a valid disk information. You will not be able to perform any IO operation, such as opening a project.<br/><br />Go to <a href="http://web.codebot.com">http://web.codebot.com</a> to fix the problem.',
+				buttons: {
+					'Ok': {css: 'btn-primary', dismiss: true}
+				}
+			});
+		}
+
+		console.log('CodebotWebDiskFilesystem::init() - disk id = ' + mDisk);
+	};
+
     this.move = function(theOldNode, theNewNode, theCallback) {
-        console.log('Move \''+theOldNode.path+'\' to \''+theNewNode.path+'\'');
-        theOldNode.path = theNewNode.path;
-        
-        theCallback();
+		runCommand({method: 'mv', old: theOldNode.path, new: theNewNode.path}, 'text', function(theResponse) {
+			if(theResponse.success) {
+				theOldNode.path = theNewNode.path;
+				theCallback();
+			} else {
+				theCallback(theResponse.msg);
+			}
+		});
     };
-    
+
     this.getTempDirectory = function(theCallback) {
         theCallback({title: "tmp", path: "/tmp", name: "tmp", folder: true, key: "tmp"});
     };
-	
-    // Reference: http://stackoverflow.com/a/6358661/29827
-    this.readDirectory = function(thePath, theCallback) {
-        theCallback([
-	 		{title: "Test.as", path: "/proj/Test.as", name: "Test.as"},
-	 		{title: "Folder 2", folder: true, key: "folder2", path: "/proj/Folder 2/", name: "Folder 2",
-	 		  children: [
-	 			{title: "Test2.as", path: "/proj/Folder 2/Test2.as", name: "Test2.as"},
-	 			{title: "Test3.as", path: "/proj/Folder 2/Test3.as", name: "Test3.as"}
-	 		  ]
-	 		},
-            {title: "Folder 3", folder: true, key: "folder3", path: "/proj/Folder 3/", name: "Folder 3",
-	 		  children: [
-	 			{title: "Test33.as", path: "/proj/Folder 3/Test33.as", name: "Test33.as"},
-	 			{title: "Test34.as", path: "/proj/Folder 3/Test34.as", name: "Test34.as"}
-	 		  ]
-	 		},
-	 		{title: "Test4.as", path: "/proj/Test4.as", name: "Test4.as"}
-        ]);
+
+    this.readDirectory = function(theNode, theCallback) {
+		if(theNode.path.indexOf('codebot://') != -1) {
+			runCommand({method: 'ls-codebot', path: theNode.path.replace(/codebot:\/\//, '')}, 'json', theCallback);
+
+		} else {
+			runCommand({method: 'ls', path: thePath}, 'json', theCallback);
+		}
     };
-    
+
 	this.chooseDirectory = function(theCallback) {
         theCallback({path: 'chosenDir', title: 'chosenDir', name: 'chosenDir'});
 	};
-	
+
 	this.readFile = function(theNode, theCallback) {
-        theCallback('{ content:\'' + theNode.path + '\'}');
+		if(theNode.path.indexOf('codebot://') != -1) {
+			runCommand({method: 'read-codebot', path: theNode.path.replace(/codebot:\/\//, '')}, 'text', theCallback);
+
+		} else {
+			runCommand({method: 'read', path: theNode.path}, 'text', theCallback);
+		}
 	};
-	
+
 	this.writeFile = function(theNode, theData, theCallback) {
-        theCallback();
+		if(theNode.path.indexOf('codebot://') != -1) {
+			console.log('Write codebot file', theNode.path);
+
+		} else {
+			runCommand(
+				{
+					method: 'write',
+					path: theNode.path,
+					data: theData
+				},
+				'json',
+				function(theResponse) {
+					console.log(theResponse);
+					theCallback();
+				}
+			);
+		}
 	};
-    
+
 	this.createFile = function(theName, theNode, theData, theCallback) {
-        console.log('CodebotFS.createFile(' + theNode + '/'+theName+')');
-		theCallback();
+		runCommand({method: 'write', path: theNode.path + '/' + theName, data: theData}, 'json', theCallback);
 	};
-	
+
     this.delete = function(theNode, theCallback) {
-        console.log('CodebotFS.delete(' + theNode.path +')');
-		theCallback();
+		runCommand({method: 'rm', path: theNode.path}, 'json', function(theResponse) {
+			theCallback(theResponse.success ? null : theResponse.msg);
+		});
 	};
-    
+
 	this.createDirectory = function(theName, theNode, theCallback) {
-		console.log('CodebotFS.createDirectory(' + theNode + '/'+theName+')');
-        theCallback();
+		runCommand({method: 'mkdir', path: theNode.path + '/' + theName}, 'json', theCallback);
 	};
 };
