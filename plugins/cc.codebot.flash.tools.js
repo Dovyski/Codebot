@@ -21,6 +21,20 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+
+var FlashToolsCompilerOutputViewer = function(theContainer) {
+    var mContainer = theContainer;
+
+    this.formatOutput = function(theData) {
+        $('#' + mContainer).html('<pre style="color: #fff; background: transparent;">' + theData.join('\n') + '</pre>');
+    };
+
+    this.showMessage = function(theText) {
+        $('#' + mContainer).html(theText);
+    }
+};
+
+
 /**
  * A plugin that enables Codebot to work with AS3 projects.
  */
@@ -31,6 +45,7 @@ var FlashToolsPlugin = function() {
 
     var mSelf       = null;
     var mContext    = null;
+    var mTestWindow = null;
 
     var runRemoteBuild = function(theParams, theCallback) {
         $.ajax({
@@ -62,6 +77,10 @@ var FlashToolsPlugin = function() {
         });
     };
 
+    var createTestWindow = function(theSwfUrl, theWidth, theHeight) {
+        mTestWindow = window.open(theSwfUrl, 'Test', 'menubar=no,location=no,resizable=yes,scrollbars=no,status=no,width='+theWidth+',height=' + theHeight);
+    };
+
     this.init = function(theContext) {
         mSelf = this;
         mContext = theContext;
@@ -87,23 +106,12 @@ var FlashToolsPlugin = function() {
     };
 
     this.build = function(theContext, theButton) {
-        var aTab = null;
-
-        aTab = mContext.ui.tabs.add({
-            favicon: 'file-text-o', // TODO: dynamic icon?
-            title: 'Build',
-            file: 'Build.log',
-            path: 'build.log',
-            node: null,
-            editor: null
-        });
-
-        theButton.html('<i class="fa fa-circle-o-notch fa-spin"></i>');
-
-        aTab.editor = mContext.editors.create(aTab, 'Build started...', {name: 'Mode.swf'});
-
+        var aTab            = null;
         var aActiveProject  = mContext.getPlugin('cc.codebot.ide.web').getActiveProject();
         var aParams         = {method: 'build', project: aActiveProject.id};
+        var aSettings       = mContext.preferences.get().flashTools;
+
+        theButton.html('<i class="fa fa-refresh fa-spin"></i>');
 
         console.log('Requesting remote build');
 
@@ -113,9 +121,22 @@ var FlashToolsPlugin = function() {
             theButton.html('<i class="fa fa-play"></i>');
 
             if(theData.success) {
-                aTab.editor.renderSWFByURL(theData.testingFileUrl, 640, 480); // TODO: get width/height from response?
+                createTestWindow(theData.testingFileUrl, aSettings.width, aSettings.height);
+
             } else {
-                aTab.editor.showMessage(theData.log.join('\n'));
+
+
+                aTab = mContext.ui.tabs.add({
+                    favicon: 'file-text-o', // TODO: dynamic icon?
+                    title: 'Build',
+                    file: 'Build.log',
+                    path: 'build.log',
+                    node: null,
+                    editor: null
+                });
+
+                aTab.editor = new FlashToolsCompilerOutputViewer(aTab.container);
+                aTab.editor.formatOutput(theData.log);
             }
         });
     };
