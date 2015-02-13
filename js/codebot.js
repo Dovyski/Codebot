@@ -48,6 +48,11 @@ var CODEBOT = new function() {
         console.log('CODEBOT [plugins] Plugins loaded.');
     };
 
+	var handleError = function(theMsg, theUrl, theLineNumber) {
+		console.error("Error occured: " + theMsg);
+		return false;
+	};
+
     this.writeTabToDisk = function(theTab) {
 		var aEditor = theTab.editor;
 
@@ -88,6 +93,9 @@ var CODEBOT = new function() {
         console.log('CODEBOT [core] Initializing...');
 
         mSelf = this;
+
+		// Make Codebot catch all erros.
+		window.onerror = handleError;
 
 		mSelf.setIODriver(theIODriver || new CodebotIO());
 
