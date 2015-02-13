@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 09, 2015 at 01:54 PM
+-- Generation Time: Feb 13, 2015 at 01:30 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
   `type` varchar(20) NOT NULL,
   `path` varchar(100) NOT NULL,
   `creation_date` int(11) NOT NULL,
+  `settings` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_user` (`fk_user`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
