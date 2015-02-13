@@ -60,6 +60,18 @@ function userCreate($theEmail, $theDisk, $theAuthUid, $theAuthRaw) {
 }
 
 
+function userUpdatePreferences($theUserId, $theData) {
+	global $gDb;
+
+	$aRet = array();
+	$aQuery = $gDb->prepare("UPDATE users SET preferences = ? WHERE id = ?");
+
+	$aQuery->execute(array($theData, $theUserId));
+	return $aQuery->rowCount() != 0;
+}
+
+
+
 function projectCreate($theUser, $theName, $theType) {
 	global $gDb;
 

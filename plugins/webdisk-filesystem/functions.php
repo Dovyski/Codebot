@@ -86,35 +86,18 @@ function webdiskLsCodebot($theDir) {
 	return $aFiles;
 }
 
-function webdiskReadCodebot($thePath) {
+function webdiskWriteCodebot($thePath, $theData, $theUserId) {
+	if($thePath == './data/prefs.default.json') {
+		userUpdatePreferences($theUserId, $theData);
+	}
+}
+
+function webdiskReadCodebot($thePath, $theUserId) {
 	$aRet = '';
 
 	if($thePath == './data/prefs.default.json') {
-		$aRet = "
-			{
-				// https://github.com/ajaxorg/ace/wiki/Configuring-Ace
-				editor: {
-					selectionStyle: 'line',
-					highlightActiveLine: true,
-					highlightSelectedWord: true,
-					cursorStyle: ace, // ['ace', 'slim', 'smooth', 'wide'],
-					mergeUndoDeltas: true, // [false, true, 'always'],
-					behavioursEnabled: true,
-					wrapBehavioursEnabled: true,
-					hScrollBarAlwaysVisible: true,
-					animatedScroll: false
-				},
-
-				shortcuts: {
-					saveActiveTab: 'mod+s',
-					newFile: 'mod+n',
-					chooseFile: 'mod+o',
-					closeTab: 'mod+w',
-					renameNode: 'f2',
-					exit: 'mod+q'
-				}
-			}
-		";
+		$aUser = userGetById($theUserId, true);
+		$aRet = $aUser->preferences;
 	}
 
 	return $aRet;

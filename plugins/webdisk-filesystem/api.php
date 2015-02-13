@@ -95,7 +95,7 @@ if($aUser != null) {
 
 			case 'read-codebot':
 				$aMime = 'text/plain';
-				$aOut = webdiskReadCodebot(@$_REQUEST['path']);
+				$aOut = webdiskReadCodebot(@$_REQUEST['path'], $aUser->id);
 				break;
 
 			case 'write':
@@ -107,6 +107,12 @@ if($aUser != null) {
 					file_put_contents($aPath, @$_REQUEST['data']);
 					$aOut = json_encode(array('success' => true, 'msg' => ''));
 				}
+				break;
+
+			case 'write-codebot':
+				$aMime = 'application/json';
+				webdiskWriteCodebot(@$_REQUEST['path'], @$_REQUEST['data'], $aUser->id);
+				$aOut = json_encode(array('success' => true, 'msg' => ''));
 				break;
 
 			case 'mkdir':

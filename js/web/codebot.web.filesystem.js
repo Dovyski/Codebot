@@ -108,7 +108,7 @@ var CodebotWebFilesystem = function() {
 
 	this.writeFile = function(theNode, theData, theCallback) {
 		if(theNode.path.indexOf('codebot://') != -1) {
-			console.log('Write codebot file', theNode.path);
+			runCommand({method: 'write-codebot', path: theNode.path.replace(/codebot:\/\//, ''), data: theData}, 'json', theCallback);
 
 		} else {
 			runCommand(

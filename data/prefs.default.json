@@ -24,7 +24,7 @@
 {
     // https://github.com/ajaxorg/ace/wiki/Configuring-Ace
     editor: {
-        selectionStyle: 'line', 
+        selectionStyle: 'line',
         highlightActiveLine: true,
         highlightSelectedWord: true,
         cursorStyle: ace, // ["ace", "slim", "smooth", "wide"],
@@ -32,9 +32,9 @@
         behavioursEnabled: true,
         wrapBehavioursEnabled: true,
         hScrollBarAlwaysVisible: true,
-        animatedScroll: false 
+        animatedScroll: false
     },
-    
+
     shortcuts: {
         saveActiveTab: 'mod+s',
         newFile: 'mod+n',
