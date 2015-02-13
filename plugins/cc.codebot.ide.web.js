@@ -70,7 +70,7 @@ var CoreIdePlugin = function() {
         console.debug('Opening project: ', aProject.path);
 
         mContext.io.setProjectPath(aProject.path);
-        mContext.io.readDirectory(aProject.path, mContext.ui.filesPanel.populateTree);
+        mContext.io.readDirectory({path: aProject.path}, mContext.ui.filesPanel.populateTree);
 
         mActiveProject = aProject;
 
@@ -173,7 +173,7 @@ var CoreIdePlugin = function() {
         var aTab = mContext.ui.tabs.active;
 
         if(aTab) {
-            mContext.writeTabToDisk(aTab.node);
+            mContext.writeTabToDisk(aTab);
         }
     };
 };

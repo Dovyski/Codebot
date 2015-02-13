@@ -89,7 +89,7 @@ var CodebotWebFilesystem = function() {
 			runCommand({method: 'ls-codebot', path: theNode.path.replace(/codebot:\/\//, '')}, 'json', theCallback);
 
 		} else {
-			runCommand({method: 'ls', path: thePath}, 'json', theCallback);
+			runCommand({method: 'ls', path: theNode.path}, 'json', theCallback);
 		}
     };
 
