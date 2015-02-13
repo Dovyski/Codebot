@@ -45,6 +45,9 @@ var CodebotPreferences = function() {
         mData[theKey] = theValue;
         console.log('CODEBOT [prefs] Entry updated:', theKey, theValue);
 
+        // Tell everybody that the preferences have been updated.
+        mCodebot.signals.preferencesUpdated.dispatch([theKey, theValue]);
+
         saveToDisk();
     };
 

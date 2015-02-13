@@ -27,6 +27,7 @@ var CODEBOT = new function() {
 	var mIO = null;
 	var mEditors = null;
 	var mPreferences = null;
+	var mSignals = null;
     var mPlugins = {};
     var mSelf;
 
@@ -94,6 +95,7 @@ var CODEBOT = new function() {
         mShortcuts = new CodebotShortcuts();
         mUI = new CodebotUI();
         mPreferences = new CodebotPreferences();
+		mSignals = new CodebotSignals();
 
         mPreferences.init(mSelf);
 
@@ -106,6 +108,7 @@ var CODEBOT = new function() {
             mShortcuts.init(mSelf);
 
             console.log('CODEBOT [core] Done, ready to rock!');
+			mSignals.ready.dispatch();
 
             mSelf.showDebugger();
         });
@@ -116,4 +119,5 @@ var CODEBOT = new function() {
     this.__defineGetter__("ui", function() { return mUI; });
     this.__defineGetter__("io", function() { return mIO; });
     this.__defineGetter__("preferences", function() { return mPreferences; });
+    this.__defineGetter__("signals", function() { return mSignals; });
 };
