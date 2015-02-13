@@ -149,6 +149,7 @@ var FlashToolsPlugin = function() {
 
         aFolder.add('Output dir', '<input type="text" name="outDir" value="/bin/" />');
         aFolder.add('Output file', '<input type="text" name="outFile" value="Mode.swf" />');
+        aFolder.add('Doc class', '<input type="text" name="docClass" value="src/Main.as" />');
         aFolder.add('Width', '<input type="text" name="width" value="800" />');
         aFolder.add('Height', '<input type="text" name="height" value="600" />');
 
