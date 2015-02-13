@@ -58,17 +58,17 @@ function flashBuilProject($theProjectId, $theUserId) {
 }
 
 function flashCompileProject($theProject, $theUser) {
-	$aSettings 	= @unserialize($theProject->settings);
+	$aSettings 	= json_decode($theProject->settings);
 	$aSettings 	= $aSettings === false ? array() : $aSettings;
 
-	$aWidth 	= isset($aSettings['width']) ? $aSettings['width'] : 640;
-	$aHeight 	= isset($aSettings['height']) ? $aSettings['height'] : 480;
-	$aSwf 		= isset($aSettings['swf']) ? $aSettings['swf'] : 22;
-	$aDebug 	= isset($aSettings['debug']) ? $aSettings['debug'] : 'true';
-	$aLibs 		= isset($aSettings['libs']) ? $aSettings['libs'] : '/lib/';
-	$aDocClass 	= isset($aSettings['docClass']) ? $aSettings['docClass'] : '/src/Mode.as';
-	$aOutDir 	= isset($aSettings['outDir']) ? $aSettings['outDir'] : '/bin/';
-	$aOutFile 	= isset($aSettings['outFile']) ? $aSettings['outFile'] : 'Mode.swf';
+	$aWidth 	= property_exists($aSettings, 'width') 		? $aSettings->width 		: 640;
+	$aHeight 	= property_exists($aSettings, 'height') 	? $aSettings->height 		: 480;
+	$aSwf 		= property_exists($aSettings, 'swf') 		? $aSettings->swf 			: 22;
+	$aDebug 	= property_exists($aSettings, 'debug') 		? $aSettings->debug 		: 'true';
+	$aLibs 		= property_exists($aSettings, 'libs') 		? $aSettings->libs 			: '/lib/';
+	$aDocClass 	= property_exists($aSettings, 'docClass') 	? $aSettings->docClass 		: '/src/Mode.as';
+	$aOutDir 	= property_exists($aSettings, 'outDir') 	? $aSettings->outDir 		: '/bin/';
+	$aOutFile 	= property_exists($aSettings, 'outFile') 	? $aSettings->outFile 		: 'Mode.swf';
 
 	// TODO: get this from webdisk API
 	$aMount		= WORK_POOL . $theUser->disk . '/' . $theProject->path . '/';

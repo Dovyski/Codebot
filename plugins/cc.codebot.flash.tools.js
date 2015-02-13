@@ -147,7 +147,8 @@ var FlashToolsPlugin = function() {
 
         var aFolder = aPanel.addFolder('Output', 'output');
 
-        aFolder.add('Output file', '<input type="text" name="outFile" value="/bin/Mode.swf" />');
+        aFolder.add('Output dir', '<input type="text" name="outDir" value="/bin/" />');
+        aFolder.add('Output file', '<input type="text" name="outFile" value="Mode.swf" />');
         aFolder.add('Width', '<input type="text" name="width" value="800" />');
         aFolder.add('Height', '<input type="text" name="height" value="600" />');
 
@@ -156,7 +157,7 @@ var FlashToolsPlugin = function() {
 
         aFolder = aPanel.addFolder('SDK and Compiler', 'sdk');
         aFolder.add('Platform', '<select name="platform"><option value="player">Flash Player</option><option value="air">AIR</option></select>');
-        aFolder.add('Version', '<select name="swf"><option value="14.0">14.0</option></select>');
+        aFolder.add('Version', '<input type="text" name="swf" value="22" />');
         aFolder.add('Other', '<input type="text" name="other" value="/libs/" />');
         aFolder.add('Test', '<input type="text" name="test" value="/libs/" />');
         aFolder.add('Thing', '<select name="thing"><option value="800">Flash Player</option></select>');
