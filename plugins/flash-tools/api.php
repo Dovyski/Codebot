@@ -27,24 +27,35 @@
  */
 
 include_once dirname(__FILE__). '/globals.php';
+include_once dirname(__FILE__). '/../ide-web/globals.php';
 
 $aMethod = isset($_REQUEST['method']) ? $_REQUEST['method'] : '';
 unset($_REQUEST['method']);
 
-$aMime = 'plain/text';
+$aMime = 'application/json';
 $aOut = '';
 
-switch($aMethod) {
-	case 'build':
-		$aMime = 'application/json';
-		$aReturn = flashBuilProject(@$_REQUEST['project'], $_SESSION['id']);
+$aUser = userGetById(@$_SESSION['id']);
 
-		$aOut = json_encode($aReturn);
-		break;
+if($aUser != null) {
+	switch($aMethod) {
+		case 'build':
+			$aReturn = flashBuilProject(@$_REQUEST['project'], $aUser->id);
 
-	default:
-		echo 'Problem?';
-		break;
+			$aOut = json_encode($aReturn);
+			break;
+
+		case 'save-settings':
+			$aOk = projectUpdateSettings(@$_REQUEST['project'], $aUser->id, @$_REQUEST['data']);
+			$aOut = json_encode(array('success' => $aOk, 'msg' => ''));
+			break;
+
+		default:
+			echo 'Problem?';
+			break;
+	}
+} else {
+	echo 'Questions?';
 }
 
 header('Content-Type: ' . $aMime);

@@ -98,6 +98,16 @@ function projectDelete($theUser, $theId) {
 	// TODO: implement this.
 }
 
+function projectUpdateSettings($theProjectId, $theUserId, $theData) {
+	global $gDb;
+
+	$aRet = array();
+	$aQuery = $gDb->prepare("UPDATE projects SET settings = ? WHERE id = ? AND fk_user = ?");
+
+	$aQuery->execute(array($theData, $theProjectId, $theUserId));
+	return $aQuery->rowCount() != 0;
+}
+
 function projectFindByUser($theUser) {
 	global $gDb;
 

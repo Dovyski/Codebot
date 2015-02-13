@@ -32,21 +32,33 @@ var FlashToolsPlugin = function() {
     var mSelf       = null;
     var mContext    = null;
 
-    var runRemoteBuild = function(theCallback) {
-        console.debug('Asking for remote build...');
-
-        var aActiveProject = mContext.getPlugin('cc.codebot.ide.web').getActiveProject();
-
+    var runRemoteBuild = function(theParams, theCallback) {
         $.ajax({
             url: API_URL,
             method: 'post',
-            data: {method: 'build', project: aActiveProject.id},
+            data: theParams,
             dataType: 'json'
         }).done(function(theData) {
             theCallback(theData);
 
         }).fail(function(theJqXHR, theTextStatus, theError) {
-            console.error('Buil problem: ' + theTextStatus + ', ' + theError);
+            console.error('Flash tools problem: ' + theTextStatus + ', ' + theError);
+        });
+    };
+
+    var saveProjectSettings = function(theData) {
+        var aActiveProject  = mContext.getPlugin('cc.codebot.ide.web').getActiveProject();
+
+        var aParams = {
+            method: 'save-settings',
+            project: aActiveProject.id,
+            data: JSON.stringify(theData)
+        };
+
+        console.log('Saving project settings');
+
+        runRemoteBuild(aParams, function(theResponse) {
+            console.log('Project settings saved', theResponse.success);
         });
     };
 
@@ -56,6 +68,15 @@ var FlashToolsPlugin = function() {
 
         mContext.ui.addButton({ icon: '<i class="fa fa-play"></i>', action: mSelf.build });
         mContext.ui.addButton({ icon: '<i class="fa fa-wrench"></i>', panel: mSelf.settings });
+
+        // Monitor changes made to the editor's preferences. All changes triggered
+        // by the project settings panel will be indexed as 'flashTools'.
+
+        mContext.signals.preferencesUpdated.add(function(theKey, theValue) {
+            if(theKey == 'flashTools') {
+                saveProjectSettings(theValue);
+            }
+        });
     };
 
     this.build = function(theContext, theButton) {
@@ -74,8 +95,13 @@ var FlashToolsPlugin = function() {
 
         aTab.editor = mContext.editors.create(aTab, 'Build started...', {name: 'Mode.swf'});
 
-        runRemoteBuild(function(theData) {
-            console.debug('Remote build received!', theData);
+        var aActiveProject  = mContext.getPlugin('cc.codebot.ide.web').getActiveProject();
+        var aParams         = {method: 'build', project: aActiveProject.id};
+
+        console.log('Requesting remote build');
+
+        runRemoteBuild(aParams, function(theData) {
+            console.log('Remote build received!', theData);
 
             theButton.html('<i class="fa fa-play"></i>');
 
