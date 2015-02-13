@@ -77,6 +77,13 @@ var FlashToolsPlugin = function() {
                 saveProjectSettings(theValue);
             }
         });
+
+        // Restore/create project settings locally every time a new project is opened.
+        mContext.signals.projectOpened.add(function(theProject) {
+            if(theProject.type == 'flash') {
+                mContext.preferences.add('flashTools', JSON.parse(theProject.settings));
+            }
+        });
     };
 
     this.build = function(theContext, theButton) {

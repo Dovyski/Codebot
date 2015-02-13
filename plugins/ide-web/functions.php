@@ -112,7 +112,7 @@ function projectFindByUser($theUser) {
 	global $gDb;
 
 	$aRet = array();
-	$aQuery = $gDb->prepare("SELECT id, fk_user, name, type, path, creation_date FROM projects WHERE fk_user = ?");
+	$aQuery = $gDb->prepare("SELECT id, fk_user, name, type, path, creation_date, settings FROM projects WHERE fk_user = ?");
 
 	if ($aQuery->execute(array($theUser->id))) {
 		while($aRow = $aQuery->fetch(PDO::FETCH_OBJ)) {

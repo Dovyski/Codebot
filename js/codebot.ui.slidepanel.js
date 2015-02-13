@@ -79,7 +79,7 @@ var CodebotSlidePanel = function() {
                 $(this).find('[name=' + aProp + ']').val(aData[aProp]);
             }
 
-            console.debug('Data restored to panel');
+            console.debug('Data restored to panel', aStore, aData);
         });
     };
 

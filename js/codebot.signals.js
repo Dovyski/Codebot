@@ -36,4 +36,9 @@ var CodebotSignals = function() {
      * TODO: add docs.
      */
     this.preferencesUpdated = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
+    this.projectOpened = new CodebotSignal();
 };
