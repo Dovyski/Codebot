@@ -105,7 +105,7 @@ function webdiskReadCodebot($thePath, $theUserId) {
 }
 
 function webdiskCreateProject($theDisk, $theProjectName) {
-	$aPath = WORK_POOL . '/' . $theDisk . '/' . $theProjectName;
+	$aPath = WORK_POOL . DIRECTORY_SEPARATOR . $theDisk . DIRECTORY_SEPARATOR . $theProjectName;
 	mkdir($aPath);
 
 	return $aPath;

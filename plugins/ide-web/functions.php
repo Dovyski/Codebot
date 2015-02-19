@@ -109,16 +109,17 @@ function projectCreate($theUser, $theData) {
 }
 
 function projectInitBasedOnTemplate($theFileSystemPath, $theTemplate, $theData) {
-	$aTemplatePath = PROJECT_TEMPLATES_FOLDER . md5($theTemplate) . '/';
+	$aTemplatePath = PROJECT_TEMPLATES_FOLDER . md5($theTemplate) . DIRECTORY_SEPARATOR;
 
 	if($theTemplate == 'git') {
 		$aGitRepo = @$theData['git-repo'];
 
 		if(!empty($aGitRepo)) {
-			exec(escapeshellcmd('git clone '. $aGitRepo . ' ' . $theFileSystemPath));
+			// TODO: improve security here.
+			exec('git clone '. $aGitRepo . ' ' . $theFileSystemPath);
 		}
 	} else {
-		exec(escapeshellcmd('cp -R '. $aTemplatePath . '* ' . $theFileSystemPath));
+		exec('cp -R '. $aTemplatePath . '* ' . $theFileSystemPath);
 	}
 
 	file_put_contents($theFileSystemPath . '/README.txt', "This is a test!\nA nice welcome message will be placed here.\n\nCheers,\nCodebot Team");
