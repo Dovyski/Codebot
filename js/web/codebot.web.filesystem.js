@@ -140,7 +140,7 @@ var CodebotWebFilesystem = function() {
 		runCommand({method: 'mkdir', path: theNode.path + '/' + theName}, 'json', theCallback);
 	};
 
-	this.getFileUploadURL = function() {
-		return API_URL + '?method=upload&mount=' + mDisk + '/' + mProjectPath;
+	this.getAPIEndpoint = function() {
+		return API_URL + '?mount=' + mDisk + '/' + mProjectPath;
 	};
 };

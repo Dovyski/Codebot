@@ -70,12 +70,16 @@ var CoreIdePlugin = function() {
         console.debug('Opening project: ', aProject.path);
 
         mContext.io.setProjectPath(aProject.path);
-        mContext.io.readDirectory({path: aProject.path}, mContext.ui.filesPanel.populateTree);
-
         mActiveProject = aProject;
+
+        mSelf.refreshProjectFileList();
 
         // Tell everybody about the newly opened project.
         mContext.signals.projectOpened.dispatch([mActiveProject]);
+    };
+
+    this.refreshProjectFileList = function() {
+        mContext.io.readDirectory({path: mActiveProject.path}, mContext.ui.filesPanel.populateTree);
     };
 
     this.getActiveProject = function() {

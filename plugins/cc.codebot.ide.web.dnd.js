@@ -25,72 +25,122 @@
  * Allows drag and drop of files into Codebot.
  */
 var DragDropPlugin = function() {
-    // Constants
-    const API_URL       = 'plugins/webdisk-filesystem/api.php'; // get this from IO.
-
     this.id             = 'cc.codebot.ide.web.dnd';
 
     var mSelf           = null;
     var mContext        = null;
 
-    var uploadFile = function(theFile, theFileReader) {
-        console.log(theFile, theFileReader);
+    var updateUploadProgressBar = function(theProgress) {
+        $('#dnd-upload-bar div.progress').css('width', (theProgress * 100) + '%');
+    }
 
-        var formData = new FormData();
-        formData.append("mount", "6303e4ea85abb38dc7140c9a33279a24/Test1423246069"); // TODO: get this from IO
-        formData.append("path", theFile.name);
-        formData.append("method", "write");
-        formData.append("file", theFile);
+    var showUploadProgressBar = function(theStatus) {
+        if(theStatus) {
+            $('#files-panel').append(
+                '<div id="dnd-upload-bar" style="display: none; position: absolute; bottom: 10px; z-index: 100; width: 256px; height: 20px; background: #3d3d3d; padding: 3px; border: 1px solid #444;">'+
+                    '<i class="fa fa-upload" style="float: left;"></i>' +
+                    '<div style="position: relative; width: 90%; margin: 5px 0 0 20px;">' +
+                      '<div style="position: absolute; width: 100%; z-index: 2; height: 3px; background: #2a2a2a;"></div>' +
+                      '<div class="progress" style="position: absolute; width: 0; z-index: 3; height: 3px; background: #75BFFF;"></div>' +
+                    '</div>' +
+                '</div>'
+            );
+            $('#dnd-upload-bar').fadeIn();
 
-        var xmlHttpRequest = new XMLHttpRequest();
-        xmlHttpRequest.open("POST", API_URL, true);
+        } else {
+            $('#dnd-upload-bar').fadeOut(function() {
+                $(this).remove();
+            });
+        }
+    }
 
-        xmlHttpRequest.send(formData);
-    };
+    var handleUploadResponse = function(theEvent) {
+        switch(theEvent.type) {
+            case 'progress':
+                if (theEvent.lengthComputable) {
+                    var aPercent = theEvent.loaded / theEvent.total;
+                    updateUploadProgressBar(aPercent);
+                    console.debug(aPercent);
 
-    var handleFileSelect = function(evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
+                } else {
+                    // Unable to compute progress information since the total size is unknown
+                    console.debug('Uploading, no progress info....');
+                }
+                break;
 
-        var files = evt.dataTransfer.files; // FileList object.
+            case 'load':
+                console.debug('Upload complete!');
+                var aWebIde = mContext.getPlugin('cc.codebot.ide.web');
+                aWebIde.refreshProjectFileList();
+                showUploadProgressBar(false);
+                break;
 
-        // files is a FileList of File objects. List some properties.
-        var output = [];
-        for (var i = 0, f; f = files[i]; i++) {
-            var reader = new FileReader();
-
-            // Closure to capture the file information.
-            reader.onload = (function(theFile) {
-                return function(e) {
-                    uploadFile(theFile, e.target);
-                };
-            })(f);
-
-            // Read in the image file as a data URL.
-            reader.readAsArrayBuffer(f);
+            case 'error':
+            case 'abort':
+                console.debug('Upload stopped!');
+                break;
         }
     };
 
-    var handleDragOver = function(evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
-        evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+    var uploadFile = function(theFile, theFileReader) {
+        var aFormData = new FormData();
+        var aXmlHttpRequest = new XMLHttpRequest();
+
+        aFormData.append('path', theFile.name);
+        aFormData.append('method', 'write');
+        aFormData.append('file', theFile);
+
+        aXmlHttpRequest.upload.addEventListener("progress", handleUploadResponse, false);
+        aXmlHttpRequest.upload.addEventListener("load", handleUploadResponse, false);
+        aXmlHttpRequest.upload.addEventListener("error", handleUploadResponse, false);
+        aXmlHttpRequest.upload.addEventListener("abort", handleUploadResponse, false);
+
+        aXmlHttpRequest.open("POST", mContext.io.getAPIEndpoint(), true);
+        aXmlHttpRequest.send(aFormData);
+
+        console.debug('Sending file to server');
     };
 
-    var initFilesDragDrop = function() {
-        console.debug('DragDropPlugin:initFilesDragDrop()');
+    var handleFileSelect = function(theEvent) {
+        theEvent.stopPropagation();
+        theEvent.preventDefault();
 
-        // Setup the dnd listeners.
-        var dropZone = document.getElementById('folders');
-        dropZone.addEventListener('dragover', handleDragOver, false);
-        dropZone.addEventListener('drop', handleFileSelect, false);
+        var aFiles = theEvent.dataTransfer.files; // FileList object.
+
+        // files is a FileList of File objects. List some properties.
+        for (var i = 0, f; f = aFiles[i]; i++) {
+            var aReader = new FileReader();
+
+            // Closure to capture the file information.
+            aReader.onload = (function(theFile) {
+                return function(theEvt) {
+                    uploadFile(theFile, theEvt.target);
+                };
+            })(f);
+
+            console.debug('Adding file to browser');
+
+            showUploadProgressBar(true);
+            aReader.readAsArrayBuffer(f);
+        }
+    };
+
+    var handleDragOver = function(theEvt) {
+        theEvt.stopPropagation();
+        theEvt.preventDefault();
+        theEvt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
     };
 
     this.init = function(theContext) {
+        console.debug('DragDropPlugin:init()');
+
         mSelf = this;
         mContext = theContext;
 
-        initFilesDragDrop();
+        // Setup the dnd listeners.
+        var aDropZone = document.getElementById('folders');
+        aDropZone.addEventListener('dragover', handleDragOver, false);
+        aDropZone.addEventListener('drop', handleFileSelect, false);
     };
 };
 
