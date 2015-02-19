@@ -108,7 +108,7 @@ function webdiskCreateProject($theDisk, $theProjectName) {
 	$aPath = WORK_POOL . '/' . $theDisk . '/' . $theProjectName;
 	mkdir($aPath);
 
-	file_put_contents($aPath . '/README.txt', "This is a test!\nA nice welcome message will be placed here.\n\nCheers,\nCodebot Team");
+	return $aPath;
 }
 
 ?>

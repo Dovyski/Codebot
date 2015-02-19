@@ -38,7 +38,7 @@ if($aUser != null) {
 	try {
 		switch($aMethod) {
 			case 'create-project':
-				$aProject = projectCreate($aUser, @$_REQUEST['name'], @$_REQUEST['type']);
+				$aProject = projectCreate($aUser, $_REQUEST);
 				$aOut = json_encode(array('success' => true, 'project' => $aProject, 'msg' => ''));
 				break;
 

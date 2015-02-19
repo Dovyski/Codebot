@@ -107,7 +107,7 @@ var CoreIdePlugin = function() {
         var aForm =
             '<form id="form-new-project">'+
               '<div class="form-group">'+
-                '<label for="exampleInputEmail1">Name</label>'+
+                '<label for="project-name">Name</label>'+
                 '<input type="text" class="form-control" name="name" id="project-name" placeholder="Project name">'+
               '</div>'+
               '<div class="form-group">'+
@@ -120,12 +120,19 @@ var CoreIdePlugin = function() {
               '</div>'+
               '<div class="form-group">'+
                 '<label for="project-template">Template</label>'+
-                '<select class="form-control" name="template" name="project-template">'+
-                    '<option value="none"></option>'+
+                '<select class="form-control" name="template" id="project-template">'+
+                    '<option value="none">Empty project</option>'+
+                    '<option value=""></option>'+
+                    '<option value="git">Create from public git repository</option>'+
+                    '<option value=""></option>'+
                     '<option value="flash">Flash/AS3</option>'+
                     '<option value="haxe">Haxe (coming soon!)</option>'+
-                    '<option value="flash">Flash/AS3</option>'+
+                    '<option value="js">HTML5/Javascript (coming soon!)</option>'+
                 '</select>'+
+              '</div>'+
+              '<div class="form-group" style="display:none;" id="project-git-repo-panel">'+
+                '<label for="git-repo">Git repo</label>'+
+                '<input type="text" class="form-control" name="git-repo" id="project-git-repo" placeholder="https://github.com/User/proj.git">'+
               '</div>'+
             '</form>';
 
@@ -137,6 +144,15 @@ var CoreIdePlugin = function() {
                 'Create': {css: 'btn-primary', dismiss: true, callback: doCreateNewProject }
             }
         });
+
+        $('#form-new-project select#project-template').change(function(theEvent) {
+            if(theEvent.target.value == 'git') {
+                $('#project-git-repo-panel').slideDown();
+
+            } else {
+                $('#project-git-repo-panel').fadeOut('fast');
+            }
+        })
     };
 
     this.openProject = function(theContext, theButton) {

@@ -72,17 +72,18 @@ function userUpdatePreferences($theUserId, $theData) {
 
 
 
-function projectCreate($theUser, $theName, $theType) {
+function projectCreate($theUser, $theData) {
 	global $gDb;
 
 	$aQuery = $gDb->prepare("INSERT INTO projects (fk_user, name, type, path, creation_date) VALUES (?, ?, ?, ?, ?)");
 
-	$aFkUser = $theUser->id;
-	$aName = $theName;
-	$aType = $theType;
-	$aPath = preg_replace("/[^a-zA-Z0-9]+/", "", $aName) . time();
+	$aFkUser 	= $theUser->id;
+	$aName 		= @$theData['name'];
+	$aType 		= @$theData['type'];
+	$aTemplate 	= isset($theData['template']) ? $theData['template'] : 'empty';
+	$aPath 		= preg_replace("/[^a-zA-Z0-9]+/", "", $aName) . time();
 
-	if(strlen($theName) < 1) {
+	if(strlen($aName) < 1) {
 		throw new Exception('Invalid project name');
 	}
 
@@ -93,7 +94,8 @@ function projectCreate($theUser, $theName, $theType) {
 	$aQuery->execute(array($aFkUser, $aName, $aType, $aPath, time()));
 
 	// Create physical folders and stuff
-	webdiskCreateProject($theUser->disk, $aPath);
+	$aFileSystemPath = webdiskCreateProject($theUser->disk, $aPath);
+	projectInitBasedOnTemplate($aFileSystemPath, $aTemplate, $theData);
 
 	$aRet = new stdClass();
 
@@ -104,6 +106,22 @@ function projectCreate($theUser, $theName, $theType) {
 	$aRet->path 	= $aPath;
 
 	return $aRet;
+}
+
+function projectInitBasedOnTemplate($theFileSystemPath, $theTemplate, $theData) {
+	$aTemplatePath = PROJECT_TEMPLATES_FOLDER . md5($theTemplate) . '/';
+
+	if($theTemplate == 'git') {
+		$aGitRepo = @$theData['git-repo'];
+
+		if(!empty($aGitRepo)) {
+			exec(escapeshellcmd('git clone '. $aGitRepo . ' ' . $theFileSystemPath));
+		}
+	} else {
+		exec(escapeshellcmd('cp -R '. $aTemplatePath . '* ' . $theFileSystemPath));
+	}
+
+	file_put_contents($theFileSystemPath . '/README.txt', "This is a test!\nA nice welcome message will be placed here.\n\nCheers,\nCodebot Team");
 }
 
 function projectDelete($theUser, $theId) {

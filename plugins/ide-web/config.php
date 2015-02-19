@@ -15,4 +15,7 @@
 @define('GITHUB_APP_ID',		'');
 @define('GITHUB_APP_SECRET',	'');
 
+// Project templates
+@define('PROJECT_TEMPLATES_FOLDER',		'/home/user/templates/');
+
 ?>
