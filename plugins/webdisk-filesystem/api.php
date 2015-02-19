@@ -103,8 +103,9 @@ if($aUser != null) {
 
 				if(isset($_REQUEST['path']) && $_REQUEST['path'] != '') {
 					$aPath = WORK_DIR . $_REQUEST['path'];
+					$aData = isset($_REQUEST['data']) ? $_REQUEST['data'] : file_get_contents($_FILES['file']['tmp_name']);
 
-					file_put_contents($aPath, @$_REQUEST['data']);
+					file_put_contents($aPath, $aData);
 					$aOut = json_encode(array('success' => true, 'msg' => ''));
 				}
 				break;

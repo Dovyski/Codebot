@@ -139,4 +139,8 @@ var CodebotWebFilesystem = function() {
 	this.createDirectory = function(theName, theNode, theCallback) {
 		runCommand({method: 'mkdir', path: theNode.path + '/' + theName}, 'json', theCallback);
 	};
+
+	this.getFileUploadURL = function() {
+		return API_URL + '?method=upload&mount=' + mDisk + '/' + mProjectPath;
+	};
 };
