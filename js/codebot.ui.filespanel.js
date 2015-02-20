@@ -37,10 +37,6 @@ var CodebotFilesPanel = function() {
         }
         mFocusedNode = theItem;
 
-        if(mFocusedNode.node.folder) {
-            mFocusedNode.node.toggleExpanded();
-        }
-
         console.debug('FilesPanel.click() ', theEvent, theItem);
 	};
 
@@ -147,6 +143,7 @@ var CodebotFilesPanel = function() {
             extensions: ['dnd', 'edit', 'awesome', 'contextMenu'],
             click: onClick,
             dblclick: onDoubleClick,
+            clickFolderMode: 2, // 1:activate, 2:expand, 3:activate and expand, 4:activate (dblclick expands)
             source: [],
             checkbox: false,
             selectMode: 3,
