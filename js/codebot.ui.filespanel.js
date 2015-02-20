@@ -28,6 +28,7 @@ var CodebotFilesPanel = function() {
     var mRootNode = null;
     var mTree = null;
     var mContextMenu = null;
+    var mFoldersState = {};
 
     var onClick = function(theEvent, theItem) {
         // If the currently focused node has the rename form active,
@@ -36,6 +37,10 @@ var CodebotFilesPanel = function() {
             mFocusedNode.node.endEdit();
         }
         mFocusedNode = theItem;
+
+        if(theItem.node.folder) {
+            mFoldersState[theItem.node.key] = !theItem.node.expanded;
+        }
 
         console.debug('FilesPanel.click() ', theEvent, theItem);
 	};
@@ -138,6 +143,26 @@ var CodebotFilesPanel = function() {
         }
     };
 
+    var restoreFoldersStatus = function(theNode) {
+        if(!theNode || !theNode.folder) {
+            return;
+        }
+
+        // Was the folder expanded?
+        if(mFoldersState[theNode.key]) {
+            theNode.expanded = true;
+        }
+
+        // Check all children, if any.
+        if(theNode.children) {
+            for(var i = 0, t = theNode.children.length; i < t; i++) {
+                if(theNode.children[i].folder) {
+                    restoreFoldersStatus(theNode.children[i]);
+                }
+            }
+        }
+    };
+
     var initTree = function() {
         $("#folders").fancytree({
             extensions: ['dnd', 'edit', 'awesome', 'contextMenu'],
@@ -182,7 +207,9 @@ var CodebotFilesPanel = function() {
     this.populateTree = function(theNodes) {
         if(theNodes && theNodes.length > 0) {
             mRootNode = theNodes[0];
+            restoreFoldersStatus(theNodes[0]);
             mTree.reload(theNodes);
+
             console.debug('Tree has been populated.');
         }
     };
@@ -194,5 +221,11 @@ var CodebotFilesPanel = function() {
 
         mContextMenu.init(mCodebot);
         initTree();
+
+        // If a new project is open, clear the folder status cache.
+        mCodebot.signals.projectOpened.add(function() {
+            mFoldersState = null;
+            mFoldersState = {};
+        });
     };
 };

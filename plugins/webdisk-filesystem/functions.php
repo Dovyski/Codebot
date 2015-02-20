@@ -57,7 +57,7 @@ function webdiskLs($theDir) {
 			'name' => 'Project',
 			'title' => 'Project',
 			'path' => '/',
-			'folder' => 'true',
+			'folder' => true,
 			'key' => 'root',
 			'expanded' => true,
 			'children' => webdiskListDirectory($theDir)
