@@ -139,7 +139,7 @@ var CodebotTabs = function() {
         };
 
         $.extend(aTab, theConfig);
-        $('#working-area').append('<div id="'+aTab.container+'"></div>');
+        $('#working-area').append('<div id="'+aTab.container+'" class="tab-content"><span class="tab-loading-info"><i class="fa fa-sun-o fa-spin fa-2x"></i></span></div>');
 
         mTabController.add({
             favicon: theConfig.favicon || 'file-text-o',
@@ -169,16 +169,16 @@ var CodebotTabs = function() {
     this.openNode = function(theNode) {
         var aTab = null;
 
-        mCodebot.io.readFile(theNode.data, function(theData) {
-            aTab = mCodebot.ui.tabs.add({
-                favicon: 'file-text-o', // TODO: dynamic icon?
-                title: theNode.data.name,
-                file: theNode.data.name,
-                path: theNode.data.path,
-                node: theNode.data, // TODO: make this the only property here...
-                editor: null
-            });
+        aTab = mCodebot.ui.tabs.add({
+            favicon: 'file-text-o', // TODO: dynamic icon?
+            title: theNode.data.name,
+            file: theNode.data.name,
+            path: theNode.data.path,
+            node: theNode.data, // TODO: make this the only property here...
+            editor: null
+        });
 
+        mCodebot.io.readFile(theNode.data, function(theData) {
             aTab.editor = mCodebot.editors.create(aTab, theData, theNode.data);
         });
     };

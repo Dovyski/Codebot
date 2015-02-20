@@ -201,6 +201,17 @@ Content area (where code is edited)
     display: none;
 }
 
+#working-area .tab-content {
+}
+
+#working-area .tab-loading-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #A1A1A1;
+}
+
 /*
 -----------------------------------------------------
 Context menu
