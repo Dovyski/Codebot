@@ -48,10 +48,22 @@ function flashBuilProject($theProjectId, $theUserId) {
 		$aTestingPath 	= TESTING_POOL . $aTestDir;
 
 		@mkdir($aTestingPath);
+
+		$aTestingPath .= DIRECTORY_SEPARATOR . $aReturn['outDir'];
+		@mkdir($aTestingPath);
+
+		// Remove any slash from the end of the string, otherwise the
+		// 'cp' command will go nuts.
+		$aLastChar = $aTestingPath[strlen($aTestingPath) - 1];
+
+		if($aLastChar == '/' || $aLastChar == '\\') {
+			$aTestingPath = substr($aTestingPath, 0, -1);
+		}
+
 		exec('cp -R ' . $aReturn['mount'] . $aReturn['outDir'] . '* ' . $aTestingPath);
 
 		$aReturn['testingDirUrl'] = PUBLIC_TESTING_URL . $aTestDir;
-		$aReturn['testingFileUrl'] = PUBLIC_TESTING_URL . $aTestDir . '/' . $aReturn['outDir'] . $aReturn['outFile'];
+		$aReturn['testingFileUrl'] = PUBLIC_TESTING_URL . $aTestDir . DIRECTORY_SEPARATOR . $aReturn['outDir'] . $aReturn['outFile'];
 	}
 
 	return $aReturn;
