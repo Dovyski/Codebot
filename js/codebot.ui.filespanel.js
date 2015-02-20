@@ -181,6 +181,7 @@ var CodebotFilesPanel = function() {
 
     this.populateTree = function(theNodes) {
         if(theNodes && theNodes.length > 0) {
+            mRootNode = theNodes[0];
             mTree.reload(theNodes);
             console.debug('Tree has been populated.');
         }
