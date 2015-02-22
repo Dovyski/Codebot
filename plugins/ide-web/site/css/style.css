@@ -85,11 +85,17 @@ body {
   text-align: center;
 }
 .marketing h2 {
-  font-weight: normal;
+	font-weight: bolder;
+	margin-top: -2px;
 }
 .marketing .col-lg-4 p {
   margin-right: 10px;
   margin-left: 10px;
+}
+
+.marketing-top img {
+	width: 100px;
+	height: 100px;
 }
 
 
@@ -121,6 +127,11 @@ body {
 	background: url(../img/hero.jpg) no-repeat bottom center #3e3f3a;
 	text-align: center;
 	overflow: hidden;
+}
+
+footer {
+	text-align: center;
+	margin-top: 20px;
 }
 
 /* RESPONSIVE CSS
