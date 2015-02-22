@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:900,300);
+
 /* GLOBAL STYLES
 -------------------------------------------------- */
 /* Padding below the footer and lighter body text */
@@ -6,6 +8,10 @@ body {
 	padding-bottom: 40px;
 	color: #3e3f3a;
 	overflow-x: hidden;
+}
+
+p {
+	font-family: 'Roboto', sans-serif;
 }
 
 
@@ -46,6 +52,11 @@ body {
 .navbar-wrapper a:visited,
 .navbar-wrapper a:hover {
 	color: #fff;
+}
+
+.navbar-brand {
+	font-size: 2em;
+	font-weight: bold;
 }
 
 
@@ -98,6 +109,10 @@ body {
 	height: 100px;
 }
 
+.marketing-top p {
+	font-size: 1.1em;
+}
+
 
 /* Featurettes
 ------------------------- */
@@ -132,6 +147,33 @@ body {
 footer {
 	text-align: center;
 	margin-top: 20px;
+}
+
+footer small {
+	color: #9d9d9d;
+}
+
+footer small a:link,
+footer small a:active,
+footer small a:hover,
+footer small a:visited {
+	color: #9d9d9d;
+}
+
+footer a:link,
+footer a:active,
+footer a:hover,
+footer a:visited {
+	color: #202020;
+}
+
+.shortcuts a {
+	font-weight: bold;
+	margin-right: 100px;
+}
+
+.shortcuts {
+
 }
 
 /* RESPONSIVE CSS
