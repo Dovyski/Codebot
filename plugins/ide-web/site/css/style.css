@@ -59,6 +59,10 @@ p {
 	font-weight: bold;
 }
 
+ul.nav a:hover {
+	background: #549EFF;
+}
+
 
 /* CUSTOMIZE THE CAROUSEL
 -------------------------------------------------- */
@@ -146,6 +150,16 @@ p {
 	background: url(../img/hero.jpg) no-repeat bottom center #3e3f3a;
 	text-align: center;
 	overflow: hidden;
+}
+
+.action-call p {
+	font-size: 1.3em;
+	margin-top: 20px;
+}
+
+.action-call strong {
+	font-size: 1.5em;
+	font-weight: bold;
 }
 
 footer {

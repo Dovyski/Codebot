@@ -60,6 +60,19 @@ if($aHaveParams) {
 					margin-top: 50px;
 				}
 
+				.warning {
+					width: 50%;
+					margin: 170px auto;
+					border: 2px solid #EBCCD1;
+					background: #F2DEDE;
+					color: #B84442;
+					padding: 10px;
+				}
+
+				.warning a:link, .warning a:hover, .warning a:visited, .warning a:active {
+					color: #B84442;
+				}
+
 				footer a:active,
 				footer a:hover,
 				footer a:visited,
@@ -86,6 +99,7 @@ if($aHaveParams) {
 			echo '<p>Gamedev IDE on the cloud</p>';
 			echo '<a href="./index.php/github" class="zocial github">Login with Github</a>';
 		echo '</div>';
+		echo '<div class="warning">Codebot is in <strong>closed alpha</strong>. In order to participate, you need an invite. If you want one, just ping <a href="https://twitter.com/As3GameGears" target="_blank">@As3GameGears</a> on twitter.</div>';
 		echo '<footer>Developed by <a href="http://twitter.com/As3GameGears" target="_blank">@As3GameGears</a><br />Icon made by <a href="http://www.simpleicon.com" title="SimpleIcon">SimpleIcon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></footer>';
 	echo '</body>';
 	echo '</html>';
