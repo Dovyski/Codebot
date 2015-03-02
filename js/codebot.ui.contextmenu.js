@@ -23,80 +23,116 @@
 
 var CodebotContextMenu = function() {
     var mCodebot = null;
-    var mSelf    = null;
+    var mItems   = {};
+    var mSelf    = this;
 
     var handleAction = function(theNode, theAction, theOptions) {
         console.debug('Selected action "' + theAction + '" on node ', theNode, theNode.data);
 
-        switch(theAction) {
-            case 'new-folder':
-                var aName = prompt('Directory name');
-                mCodebot.io.createDirectory(aName, theNode.data, function(theInfo) {
-                    if(theInfo instanceof Error) {
-                        console.error('Problem with createDirectory!' + theInfo);
-                    } else {
-                        mCodebot.ui.filesPanel.refreshTree();
-                    }
-                });
-                break;
-            case 'new-file':
-                var aName = prompt('File name');
-                mCodebot.io.createFile(aName, theNode.data, '', function(theInfo) {
-                    if(theInfo instanceof Error) {
-                        console.error('Problem with createFile!' + theInfo);
-                    } else {
-                        mCodebot.ui.filesPanel.refreshTree();
-                        // TODO: open node in new tab
-                    }
-                });
-                break;
-            case 'rename':
-                theNode.startEdit();
-                break;
+        if(mItems[theAction].action) {
+            mItems[theAction].action(theNode);
+        }
+    };
 
-            case 'delete':
-                mCodebot.ui.showDialog({
-                    keyboard: true,
-                    title: 'Delete',
-                    content: 'Are you sure you want to delete this?',
-                    buttons: {
-                        'Yes': {css: 'btn-info', dismiss: true, callback: function() {
-                            mCodebot.io.delete(theNode.data, function(e) {
-                                if(e) {
-                                    console.log('Something went wrong when deleting file: ' + e);
-                                } else {
-                                    mCodebot.ui.filesPanel.refreshTree();
-                                }
-                            });
-                        }},
-                        'No': {css: 'btn-default', dismiss: true}
-                    }
-                });
-                break;
+    var doRename = function(theNode) {
+        theNode.startEdit();
+    };
+
+    var doDelete = function(theNode) {
+        mCodebot.ui.showDialog({
+            keyboard: true,
+            title: 'Delete',
+            content: 'Are you sure you want to delete this?',
+            buttons: {
+                'Yes': {css: 'btn-info', dismiss: true, callback: function() {
+                    mCodebot.io.delete(theNode.data, function(e) {
+                        if(e) {
+                            console.log('Something went wrong when deleting file: ' + e);
+                        } else {
+                            mCodebot.ui.filesPanel.refreshTree();
+                        }
+                    });
+                }},
+                'No': {css: 'btn-default', dismiss: true}
+            }
+        });
+    };
+
+    var doNewFile = function(theNode) {
+        var aName = prompt('File name');
+        mCodebot.io.createFile(aName, theNode.data, '', function(theInfo) {
+            if(theInfo instanceof Error) {
+                console.error('Problem with createFile!' + theInfo);
+            } else {
+                mCodebot.ui.filesPanel.refreshTree();
+                // TODO: open node in new tab
+            }
+        });
+    };
+
+    var doNewFolder = function(theNode) {
+        var aName = prompt('Directory name');
+        mCodebot.io.createDirectory(aName, theNode.data, function(theInfo) {
+            if(theInfo instanceof Error) {
+                console.error('Problem with createDirectory!' + theInfo);
+            } else {
+                mCodebot.ui.filesPanel.refreshTree();
+            }
+        });
+    };
+
+    var generateMenuItems = function(theNode) {
+        var aNode = theNode.data;
+        var aMenu = {};
+
+        for(var aKey in mItems) {
+            if(!mItems[aKey].hide && (!mItems[aKey].regex || mItems[aKey].regex.test(aNode.name))) {
+                // A registered item has interest on this node.
+                // Add the registered item to the menu then.
+                aMenu[aKey] = mItems[aKey];
+            }
+        }
+
+        return aMenu;
+    };
+
+    this.addItem = function(theKey, theOptions) {
+        mItems[theKey] = theOptions;
+
+        // Add subitems if they exist.
+        if(theOptions.items) {
+            for(var aKey in theOptions.items) {
+                mItems[aKey] = theOptions.items[aKey];
+                mItems[aKey].hide = true;
+            }
         }
     };
 
     this.create = function() {
+        mSelf.addItem('edit', {regex: /.*/, name: 'Edit', icon: 'edit', action: null});
+        mSelf.addItem('rename', {regex: /.*/, name: 'Rename', icon: 'rename', action: doRename});
+        mSelf.addItem('delete', {regex: /.*/, name: 'Delete', icon: 'delete', action: doDelete});
+
+        mSelf.addItem('sep1', '--------');
+
+        mSelf.addItem('new', {
+            regex: /.*/,
+            name: 'New',
+            items: {
+                'new-folder': { 'name': 'Folder', action: doNewFolder },
+                'new-file': { 'name': 'File', action: doNewFile }
+            }
+        });
+
+        mSelf.addItem('sep2', '--------');
+
         return {
-            menu: {
-                'edit': { 'name': 'Edit', 'icon': 'edit' },
-                'rename': { 'name': 'Rename', 'icon': 'rename' },
-                'delete': { 'name': 'Delete', 'icon': 'delete' },
-                'sep1': '---------',
-                'new': {
-                    'name': 'New',
-                    'items': {
-                        'new-folder': { 'name': 'Folder' },
-                        'new-file': { 'name': 'File' }
-                    }
-                }
-            },
+            menu: generateMenuItems,
             actions: handleAction
         };
     };
 
     this.init = function(theCodebot) {
-        mSelf    = this;
         mCodebot = theCodebot;
     };
 };
