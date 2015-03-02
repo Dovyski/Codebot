@@ -81,12 +81,19 @@ var FlashToolsPlugin = function() {
         mTestWindow = window.open(theSwfUrl, 'Test', 'menubar=no,location=no,resizable=yes,scrollbars=no,status=no,width='+theWidth+',height=' + theHeight);
     };
 
+    var addSwcToLib = function(theNode) {
+        console.log('Add ' + theNode.name + ' to library-path', theNode);
+    };
+
     this.init = function(theContext) {
         mSelf = this;
         mContext = theContext;
 
         mContext.ui.addButton({ icon: '<i class="fa fa-play"></i>', action: mSelf.build });
         mContext.ui.addButton({ icon: '<i class="fa fa-wrench"></i>', panel: mSelf.settings });
+
+        // Register a context menu entry in the filesPanel for SWC files.
+        mContext.ui.filesPanel.contextMenu.addItem('add-to-library', {regex: /.*\.swc/, name: 'Add to lib', icon: 'delete', action: addSwcToLib});
 
         // Monitor changes made to the editor's preferences. All changes triggered
         // by the project settings panel will be indexed as 'flashTools'.
