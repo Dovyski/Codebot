@@ -36,12 +36,13 @@ if($aHaveParams) {
 		echo '
 			<style type="text/css">
 				body {
-					background: #2D2D2D;
+					background: url(\'../site/img/hero.jpg\') center top #2D2D2D;
 					color: #efefef;
 					font-family: Arial;
 				}
 				.panel {
 					width: 300px;
+					height: 60%;
 					padding: 10px;
 					margin: 70px auto;
 					text-align: center;
@@ -60,17 +61,24 @@ if($aHaveParams) {
 					margin-top: 50px;
 				}
 
-				.warning {
-					width: 50%;
-					margin: 170px auto;
-					border: 2px solid #EBCCD1;
-					background: #F2DEDE;
-					color: #B84442;
+				.error-panel {
+					margin: 50px 0 0 0;
+					border: 1px solid #FF594F;
+					color: #FF594F;
 					padding: 10px;
 				}
 
+				.warning {
+					width: 50%;
+					margin: 0 auto;
+					border: 1px solid #9D9D9D;
+					background: #3D3D3D;
+					color: #DDDDDD;
+					padding: 20px;
+				}
+
 				.warning a:link, .warning a:hover, .warning a:visited, .warning a:active {
-					color: #B84442;
+					color: #DDDDDD;
 				}
 
 				footer a:active,
@@ -98,6 +106,10 @@ if($aHaveParams) {
 			echo '<h2>Codebot</h2>';
 			echo '<p>Gamedev IDE on the cloud</p>';
 			echo '<a href="./index.php/github" class="zocial github">Login with Github</a>';
+
+			if(isset($_GET['error'])) {
+				echo '<div class="error-panel">' . htmlspecialchars($_GET['error']) . '</div>';
+			}
 		echo '</div>';
 		echo '<div class="warning">Codebot is in <strong>closed alpha</strong>. In order to participate, you need an invite. If you want one, just ping <a href="https://twitter.com/As3GameGears" target="_blank">@As3GameGears</a> on twitter.</div>';
 		echo '<footer>Developed by <a href="http://twitter.com/As3GameGears" target="_blank">@As3GameGears</a><br />Icon made by <a href="http://www.simpleicon.com" title="SimpleIcon">SimpleIcon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></footer>';
