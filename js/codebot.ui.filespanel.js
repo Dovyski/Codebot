@@ -228,4 +228,6 @@ var CodebotFilesPanel = function() {
             mFoldersState = {};
         });
     };
+
+    this.__defineGetter__("contextMenu", function(){ return mContextMenu; });
 };

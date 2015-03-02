@@ -30,7 +30,7 @@ var CodebotContextMenu = function() {
         console.debug('Selected action "' + theAction + '" on node ', theNode, theNode.data);
 
         if(mItems[theAction].action) {
-            mItems[theAction].action(theNode);
+            mItems[theAction].action(theNode.data);
         }
     };
 
