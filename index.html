@@ -8,12 +8,6 @@
 	<link rel="apple-touch-icon-precomposed" href="./img/favicon-152.png">
 
 	<style type="text/css">
-		body {
-			background: #2D2D2D;
-			color: #efefef;
-			font-family: Arial;
-		}
-
 		#loading {
 			position: absolute;
 			top: 50%;
@@ -27,7 +21,7 @@
 			position: absolute;
 			top: 50%;
 			left: 50%;
-			margin: -28px 0 0 -26px;
+			margin: -26px 0 0 -26px;
 			width: 50px;
 			height: 50px;
 			border-radius: 50%;
@@ -108,9 +102,10 @@
 	</style>
 </head>
 
-<body>
-	<div id="loading"><span class="effect-jagoda active"></span><img src="./img/logo/codebot-logo-64-alpha.png" width="64" height="64"/></div>
+<body style="background: #2D2D2D;">
 	<div id="wrapper">
+		<div id="loading"><span class="effect-jagoda active"></span><img src="./img/logo/codebot-logo-64-alpha.png" width="64" height="64"/></div>
+
 		<div id="content">
 			<div id="files-panel">
 				<div id="folders"></div>
@@ -151,6 +146,63 @@
         </div>
       </div>
     </div>
+
+	<!-- jQuery and jQueryUI -->
+	<link href="./js/3rdparty/jquery/jquery-ui.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="./js/3rdparty/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/3rdparty/jquery/jquery-ui.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link href="./js/3rdparty/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="./js/3rdparty/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- FontAwesome -->
+    <link href="./css/3rdparty/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Fancytree -->
+    <link href="./js/3rdparty/jquery.fancytree-2.0.0-5/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
+	<link href="./js/3rdparty/jquery.fancytree-2.0.0-5/skin-awesome/ui.fancytree.css" rel="stylesheet" type="text/css">
+	<link href="./js/3rdparty/contextmenu/css/jquery.contextMenu.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="./js/3rdparty/jquery.fancytree-2.0.0-5/jquery.fancytree.js"></script>
+	<script type="text/javascript" src="./js/3rdparty/jquery.fancytree-2.0.0-5/jquery.fancytree.dnd.js"></script>
+	<script type="text/javascript" src="./js/3rdparty/jquery.fancytree-2.0.0-5/jquery.fancytree.edit.js"></script>
+	<script type="text/javascript" src="./js/3rdparty/jquery.fancytree.awesome.js"></script>
+	<script type="text/javascript" src="./js/3rdparty/contextmenu/js/jquery.contextMenu-1.6.5.js"></script>
+	<script type="text/javascript" src="./js/3rdparty/contextmenu/js/jquery.fancytree.contextMenu.js"></script>
+
+    <!-- Mousetrap -->
+    <script type="text/javascript" src="./js/3rdparty/mousetrap/mousetrap.min.js"></script>
+    <script type="text/javascript" src="./js/3rdparty/mousetrap/plugins/global-bind/mousetrap-global-bind.min.js"></script>
+
+    <!-- Ace -->
+    <script type="text/javascript" src="./js/3rdparty/ace/src-min-noconflict/ace.js"></script>
+
+	<!-- dat.GUI -->
+	<script type="text/javascript" src="./js/3rdparty/dat.gui/dat.gui.js"></script>
+
+	<!-- jQuery serializeObject -->
+	<script type="text/javascript" src="./js/3rdparty/jquery.serializeobject/jquery.serializeObject.min.js"></script>
+
+    <!-- Codebot -->
+    <link href="./css/style.css" rel="stylesheet" type="text/css">
+
+	<script type="text/javascript" src="./js/codebot.js"></script>
+    <script type="text/javascript" src="./js/codebot.utils.js"></script>
+	<script type="text/javascript" src="./js/codebot.signal.js"></script>
+	<script type="text/javascript" src="./js/codebot.signals.js"></script>
+    <script type="text/javascript" src="./js/codebot.io.js"></script>
+    <script type="text/javascript" src="./js/codebot.preferences.js"></script>
+    <script type="text/javascript" src="./js/codebot.editors.js"></script>
+    <script type="text/javascript" src="./js/codebot.editors.ace.js"></script>
+    <script type="text/javascript" src="./js/codebot.editors.graphic.js"></script>
+    <script type="text/javascript" src="./js/codebot.ui.fancypanel.js"></script>
+    <script type="text/javascript" src="./js/codebot.ui.filespanel.js"></script>
+    <script type="text/javascript" src="./js/codebot.ui.slidepanel.js"></script>
+	<script type="text/javascript" src="./js/codebot.ui.js"></script>
+	<script type="text/javascript" src="./js/codebot.ui.tabs.js"></script>
+	<script type="text/javascript" src="./js/codebot.ui.contextmenu.js"></script>
+	<script type="text/javascript" src="./js/codebot.ui.preferences.js"></script>
+	<script type="text/javascript" src="./js/codebot.shortcuts.js"></script>
 
     <!--
         The bootstrap file will load all core modules and kick off the application.
