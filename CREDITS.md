@@ -55,3 +55,8 @@ License: Apache 2.0
 jQuery.serializeObject
 Author: David Hong - https://github.com/hongymagic/jQuery.serializeObject
 License: MIT
+
+------------------------------------------------------------------------------------------
+Loading effect
+Author: codrops - https://github.com/codrops/ClickEffects
+License: Free (http://tympanus.net/codrops/licensing/)
