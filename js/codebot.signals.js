@@ -41,4 +41,9 @@ var CodebotSignals = function() {
      * TODO: add docs.
      */
     this.projectOpened = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
+    this.beforeFilesPanelRefresh = new CodebotSignal();    
 };

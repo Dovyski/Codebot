@@ -82,7 +82,39 @@ var FlashToolsPlugin = function() {
     };
 
     var addSwcToLib = function(theNode) {
-        console.log('Add ' + theNode.name + ' to library-path', theNode);
+        var aPrefs = mContext.preferences.get().flashTools;
+
+        if(aPrefs.libs != theNode.path) {
+            // New element added.
+            aPrefs.libs = theNode.path;
+            console.debug('Add ' + theNode.name + ' to library-path');
+        } else {
+            // Trying to add an element that is already
+            // in the lib list. Let's remove it then.
+            aPrefs.libs = '';
+            console.debug('Remove ' + theNode.name + ' from library-path');
+        }
+
+        saveProjectSettings(aPrefs);
+        mContext.ui.filesPanel.refreshTree();
+    };
+
+    var highlightSwcsAddedToLib = function(theNode) {
+        var aLibs, i, aTotal;
+
+        if(theNode.folder) {
+            for(i = 0, aTotal = theNode.children.length; i < aTotal; i++) {
+                highlightSwcsAddedToLib(theNode.children[i]);
+            }
+
+        } else {
+            // TODO: make it support more than a single element
+            aLibs = mContext.preferences.get().flashTools.libs;
+
+            if(theNode.path == aLibs) {
+                theNode.title = '<span style="color: #B0C5FF">' + theNode.name + '</span>';
+            }
+        }
     };
 
     this.init = function(theContext) {
@@ -101,6 +133,11 @@ var FlashToolsPlugin = function() {
         mContext.signals.preferencesUpdated.add(function(theKey, theValue) {
             if(theKey == 'flashTools') {
                 saveProjectSettings(theValue);
+
+                // Force the files panel to refresh so any highlighted elements
+                // (those added to the lib) can be updated according to the
+                // new preferences.
+                mContext.ui.filesPanel.refreshTree();
             }
         });
 
@@ -110,6 +147,10 @@ var FlashToolsPlugin = function() {
                 mContext.preferences.add('flashTools', JSON.parse(theProject.settings));
             }
         });
+
+        // Monitor files panel changes, so we can highlight nodes marked
+        // to be included in the compilation process (like blue SWCs in FlashDevelop)
+        mContext.signals.beforeFilesPanelRefresh.add(highlightSwcsAddedToLib);
     };
 
     this.build = function(theContext, theButton) {

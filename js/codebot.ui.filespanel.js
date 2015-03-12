@@ -208,6 +208,12 @@ var CodebotFilesPanel = function() {
         if(theNodes && theNodes.length > 0) {
             mRootNode = theNodes[0];
             restoreFoldersStatus(theNodes[0]);
+
+            // Tell everybody that the files panel is about to
+            // refresh. Plugins can change the tree structure,
+            // for instance.
+            mCodebot.signals.beforeFilesPanelRefresh.dispatch([theNodes[0]]);
+
             mTree.reload(theNodes);
 
             console.debug('Tree has been populated.');
