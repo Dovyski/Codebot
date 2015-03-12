@@ -22,7 +22,7 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-include_once dirname(__FILE__).'/config.local.php';
+@include_once dirname(__FILE__).'/config.local.php';
 include_once dirname(__FILE__).'/config.php';
 
 include_once dirname(__FILE__).'/functions.php';
