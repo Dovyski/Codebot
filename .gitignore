@@ -2,3 +2,4 @@
 /plugins/flash-tools/config.local.php
 /plugins/ide-web/config.local.php
 /plugins/asset-finder/config.local.php
+/plugins/ide-web/api/config.local.php
