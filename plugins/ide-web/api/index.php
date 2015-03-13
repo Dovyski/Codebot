@@ -61,7 +61,10 @@ if(!Auth::isUserAuthenticated()) {
 
 	// Get the party started and running!
 	try {
-		$aOut = $aRouter->run($_REQUEST);
+		$aStatus = $aRouter->run($_REQUEST);
+
+		$aOut = $aStatus['out'];
+		header('Content-Type: ' . $aStatus['mime']);
 
 	} catch(Exception $aProblem) {
 		$aOut = json_encode(array('success' => false, 'msg' => $aProblem->getMessage()));

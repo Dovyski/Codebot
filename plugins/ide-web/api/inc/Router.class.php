@@ -33,27 +33,45 @@ class Router {
 		$mHandlers = array();
 	}
 
-	public function add($theMethod, $theClassHandler) {
-		$this->mHandlers[$theMethod] = $theClassHandler;
+	private function invokeMethod($theClass, $theObj, $theMethod, $theParams) {
+		$aReflection = new ReflectionMethod($theClass, $theMethod);
+		$aRet = $aReflection->invokeArgs($theObj, $theParams);
+
+		return $aRet;
+	}
+
+	public function add($theAlias, $theClassHandler) {
+		$this->mHandlers[$theAlias] = $theClassHandler;
 	}
 
 	public function run($theRequest) {
 		$aRet 		= '';
+
+		$aAlias 	= isset($theRequest['class']) ? $theRequest['class'] : '';
 		$aMethod 	= isset($theRequest['method']) ? $theRequest['method'] : '';
 
+		unset($theRequest['class']);
 		unset($theRequest['method']);
 
 		// Do we have the handler to process this method?
-		if(isset($this->mHandlers[$aMethod])) {
-			// Yes, we do have it!
-			$aHandlerClass = $this->mHandlers[$aMethod];
-
-			$aObj = new $aHandlerClass;
-			$aRet = 'handler ' . $aHandlerClass; // TODO: invoke metho
-		} else {
+		if(!isset($this->mHandlers[$aAlias])) {
 			// No, we dont. It's a no show.
-			throw new Exception('Unknown API method named "'.$aMethod.'".');
+			throw new Exception('Unknown API class named "'.$aAlias.'".');
 		}
+
+		$aClass = $this->mHandlers[$aAlias];
+		$aRet 	= array('out' => '', 'mime' => '');
+
+		$aObj 	= new $aClass;
+		$aOut 	= $this->invokeMethod($aClass, $aObj, $aMethod, $theRequest);
+
+		// Decide which content-type the class wants for its content type.
+		// If none is provided, we use json.
+		$aMime 	= isset($aClass::$contentType) && isset($aClass::$contentType[$aMethod]) ? $aClass::$contentType[$aMethod] : 'application/json';
+
+		// If content-type is json, we do the convertion here in the router.
+		$aRet['mime'] = $aMime;
+		$aRet['out']  = $aMime == 'application/json' ? json_encode($aOut) : $aOut;
 
 		return $aRet;
 	}

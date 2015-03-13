@@ -23,6 +23,7 @@
 */
 
 class Disk {
+
 	public function create($theUser) {
 	 	$aDisk = md5($theUser . time());
 		mkdir(WORK_POOL . '/' . $aDisk);
@@ -51,7 +52,7 @@ class Disk {
 		return $aContent;
 	}
 
-	public function FindActivePlugins() {
+	public function findActivePlugins() {
 		return array(
 			array('name' => 'cc.codebot.ide.web.js', 'title' => 'cc.codebot.ide.web.js', 'path' => './plugins/cc.codebot.ide.web.js'),
 			array('name' => 'cc.codebot.flash.tools.js', 'title' => 'cc.codebot.flash.tools.js', 'path' => './plugins/cc.codebot.flash.tools.js'),
@@ -101,7 +102,7 @@ class Disk {
 			userUpdatePreferences($theUserId, $theData);
 		}
 	}
-	
+
 	public function ReadCodebot($thePath, $theUserId) {
 		$aRet = '';
 
