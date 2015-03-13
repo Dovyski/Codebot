@@ -409,6 +409,11 @@ body .dg .cr.boolean:hover {
     background: #3d3d3d;
 }
 
+body .dg .cr.raw {
+    background: #3d3d3d;
+    height: auto;
+}
+
 body .dg .cr.function {
     border-top: 1px solid #444;
     background: #333;

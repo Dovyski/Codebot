@@ -84,13 +84,21 @@ var CodebotFancyPanel = function(theTitle) {
 				var aItem = aFolder.itens[j];
 
 				aContent +=
-					'<li class="cr '+ (aItem.behavior || 'function') +'" data-section="'+ aItem.id +'">' +
-						'<div>' +
-							'<span class="property-name">'+ aItem.label + '</span>'+
-							'<div class="c">'+
-								aItem.content +
-							'</div>'+
-						'</div>'+
+					'<li class="cr '+ (aItem.behavior || 'function') +'" data-section="'+ aItem.id +'">';
+						// If there is a label, use the "label | content" structure,
+						// otherwise use just the content, no structure.
+						if(aItem.label != null) {
+							aContent +=
+								'<div>' +
+									'<span class="property-name">'+ aItem.label + '</span>'+
+									'<div class="c">'+
+										aItem.content +
+									'</div>' +
+								'</div>';
+
+						} else {
+							aContent += aItem.content;
+						}
 					'</li>';
 			}
 		}
