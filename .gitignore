@@ -1,3 +1,4 @@
 /plugins/webdisk-filesystem/config.local.php
 /plugins/flash-tools/config.local.php
 /plugins/ide-web/config.local.php
+/plugins/asset-finder/config.local.php
