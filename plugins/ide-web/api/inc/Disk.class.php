@@ -23,8 +23,12 @@
 */
 
 class Disk {
+	private function escapePath($thePath) {
+		return escapeshellcmd(str_replace('..', '', $thePath));
+	}
+
 	private function path($theMount) {
-		return CODEBOT_DISK_WORK_POOL . str_replace('..', '', $theMount) . DIRECTORY_SEPARATOR;
+		return CODEBOT_DISK_WORK_POOL . $this->escapePath($theMount) . DIRECTORY_SEPARATOR;
 	}
 
 	private function create($theUser) {
@@ -62,6 +66,15 @@ class Disk {
 			array('name' => 'cc.codebot.ide.web.dnd.js', 'title' => 'cc.codebot.ide.web.dnd.js', 'path' => './plugins/cc.codebot.ide.web.dnd.js'),
 			array('name' => 'cc.codebot.asset.finder.js', 'title' => 'cc.codebot.asset.finder.js', 'path' => './plugins/cc.codebot.asset.finder.js')
 		);
+	}
+
+	public function mv($theMount, $theOldPath, $theNewPath) {
+		$aOldPath = $this->path($theMount) . $this->escapePath($theOldPath);
+		$aNewPath = $this->path($theMount) . $this->escapePath($theNewPath);
+
+		rename($aOldPath, $aNewPath);
+
+		return array('success' => true, 'msg' => '');
 	}
 
 	public function ls($theDir) {
