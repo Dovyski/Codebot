@@ -72,6 +72,18 @@ class Disk {
 		);
 	}
 
+	public function mkdir($theMount, $thePath) {
+		if(empty($thePath)) {
+			throw new Exception('Empty path in Disk::mkdir().');
+		}
+
+		$aPath = $this->path($theMount) . $this->escapePath($thePath);
+
+		mkdir($aPath, 0755, true);
+
+		return array('success' => true, 'msg' => '');
+	}
+
 	public function write($theMount, $thePath, $theData = null) {
 		if(empty($thePath)) {
 			throw new Exception('Empty path in Disk::write().');
@@ -158,9 +170,10 @@ class Disk {
 		return $aFiles;
 	}
 
-	public function WriteCodebot($thePath, $theData, $theUserId) {
+	public function writeCodebot($thePath, $theData, $theUserId) {
 		if($thePath == './data/prefs.default.json') {
-			userUpdatePreferences($theUserId, $theData);
+			// TODO: find a better way of doing it.
+			//userUpdatePreferences($theUserId, $theData);
 		}
 	}
 
