@@ -35,13 +35,6 @@ class Disk {
 		return CODEBOT_DISK_WORK_POOL . $this->escapePath($theMount) . DIRECTORY_SEPARATOR;
 	}
 
-	private function create($theUser) {
-	 	$aDisk = md5($theUser . time());
-		mkdir(WORK_POOL . '/' . $aDisk);
-
-		return $aDisk;
-	}
-
 	private function listDirectory($theDir, $thePrettyDir = '') {
 		$aContent = array();
 		foreach (scandir($theDir) as $aNode) {
@@ -164,34 +157,22 @@ class Disk {
 		);
 
 		if($theDir == './plugins') {
+			// TODO: improve this
 			$aFiles[0]['children'] = $this->findActivePlugins();
 		}
 
 		return $aFiles;
 	}
 
-	public function writeCodebot($thePath, $theData, $theUserId) {
-		if($thePath == './data/prefs.default.json') {
-			// TODO: find a better way of doing it.
-			//userUpdatePreferences($theUserId, $theData);
-		}
+	public static function create($theUserNickname) {
+		$aDiskName = md5($theUserNickname . time());
+		mkdir(CODEBOT_DISK_WORK_POOL . DIRECTORY_SEPARATOR . $aDiskName);
+
+		return $aDiskName;
 	}
 
-	public function readCodebot($thePath, $theUserId) {
-		$aRet = '';
-
-		if($thePath == './data/prefs.default.json') {
-			// TODO: get user info.
-			// TODO: find a better way of doing it.
-			//$aUser = userGetById($theUserId, true);
-			//$aRet = $aUser->preferences;
-		}
-
-		return $aRet;
-	}
-
-	public function CreateProject($theDisk, $theProjectName) {
-		$aPath = WORK_POOL . DIRECTORY_SEPARATOR . $theDisk . DIRECTORY_SEPARATOR . $theProjectName;
+	public static function createProjectDir($theDisk, $theProjectName) {
+		$aPath = CODEBOT_DISK_WORK_POOL . DIRECTORY_SEPARATOR . $theDisk . DIRECTORY_SEPARATOR . $theProjectName;
 		mkdir($aPath);
 
 		return $aPath;

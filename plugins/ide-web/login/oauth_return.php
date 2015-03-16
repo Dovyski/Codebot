@@ -12,23 +12,12 @@
  *
  */
 
-require_once dirname(__FILE__).'/../globals.php';
-
-// Define paths
-define('CONF_FILE', dirname(__FILE__).'/'.'config.opauth.php');
-define('OPAUTH_LIB_DIR', dirname(__FILE__).'/inc/lib/Opauth/');
+// Include all internal stuff.
+include_once dirname(__FILE__).'/inc/globals.php';
 
 $aLocation = './?error=';
 
-// Load config
-if (!file_exists(CONF_FILE)) {
-	trigger_error('Config file missing at '.CONF_FILE, E_USER_ERROR);
-	exit();
-}
-require CONF_FILE;
-
 // Instantiate Opauth with the loaded config but not run automatically
-require OPAUTH_LIB_DIR.'Opauth.php';
 $aOpauth = new Opauth( $config, false );
 
 // Fetch auth response, based on transport configuration for callback
@@ -52,7 +41,7 @@ switch($aOpauth->env['callback_transport']) {
 
 // Check if it's an error callback
 if ($aResponse == null || array_key_exists('error', $aResponse)) {
-	$aLocation .= 'Opauth returns error auth response.';
+	$aLocation .= 'Opauth returns error auth response';
 
 } else {
 	// Auth response validation
@@ -66,10 +55,15 @@ if ($aResponse == null || array_key_exists('error', $aResponse)) {
 		$aLocation .= $aReason;
 
 	} else {
-		// It's all good.
-		if(authMakeAuthenticationUsingOAuthInfo($aResponse['auth'])) {
-			$aUser = userGetById($_SESSION['id']);
-			$aLocation = './../ide/?disk=' . $aUser->disk;
+		// It's all good. Let's get the local account for that
+		// oauth info (or create a new one, if it doesnt exist.)
+		$aUserId = User::getOrCreateByOAuthInfo($aResponse['auth']);
+
+		if($aUserId != null) {
+			Auth::authenticate($aUserId);
+
+			$aUser 		= User::getById($aUserId);
+			$aLocation 	= './../ide/?disk=' . $aUser->disk;
 		}
 	}
 }

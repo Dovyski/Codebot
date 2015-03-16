@@ -23,6 +23,10 @@
 */
 
 class Auth {
+    public static function authenticate($theUserId) {
+        $_SESSION['id'] = $theUserId;
+    }
+
     public static function signInUsingOAuthInfo($theInfo) {
     	$aProvider 		= $theInfo['provider'];
     	$aUid 			= $theInfo['uid'];

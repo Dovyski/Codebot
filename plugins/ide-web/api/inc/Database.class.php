@@ -23,7 +23,26 @@
 */
 
 class Database {
+	private static $mInstance;
 
+	public static function init() {
+		try {
+		    $aDb = new PDO(DB_DSN, DB_USER, DB_PASSWORD, array(PDO::ATTR_PERSISTENT => true));
+			$aDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			self::$mInstance = $aDb;
+
+		} catch (PDOException $e) {
+		    echo 'Database error! ' . $e->getMessage();
+		    die();
+		}
+	}
+
+	public static function instance() {
+		return self::$mInstance;
+	}
 }
+
+Database::init();
 
 ?>

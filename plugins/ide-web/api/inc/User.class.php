@@ -23,11 +23,32 @@
 */
 
 class User {
-	public function getById($theId, $theFull = false) {
-		global $gDb;
+	public static function getOrCreateByOAuthInfo($theInfo) {
+		$aProvider 		= $theInfo['provider'];
+		$aUid 			= $theInfo['uid'];
+		$aLocalUser 	= self::getByProviderId($aProvider, $aUid);
+		$aLocalUserId 	= null;
 
+		if($aLocalUser == null) {
+			// No local account has been found.
+			// Let's create one then.
+
+			$aDisk 			= Disk::create($aProvider . $aUid);
+			$aEmail 		= isset($theInfo['info']['email']) ? $theInfo['info']['email'] : '';
+			$aAuthUid 		= $aProvider . '/' . $aUid;
+
+			$aLocalUserId 	= self::create($aEmail, $aDisk, $aAuthUid, serialize($theInfo));
+
+		} else {
+			$aLocalUserId = $aLocalUser->id;
+		}
+
+		return $aLocalUserId;
+	}
+
+	public static function getById($theId, $theFull = false) {
 		$aRet = null;
-		$aQuery = $gDb->prepare("SELECT ".($theFull ? '*' : 'id, email, registration_date, disk')." FROM users WHERE id = ?");
+		$aQuery = Database::instance()->prepare("SELECT ".($theFull ? '*' : 'id, email, registration_date, disk')." FROM users WHERE id = ?");
 
 		if ($aQuery->execute(array($theId))) {
 			$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
@@ -36,11 +57,9 @@ class User {
 		return $aRet;
 	}
 
-	public function getByProviderId($theProvider, $theProviderUserUid) {
-		global $gDb;
-
+	public static function getByProviderId($theProvider, $theProviderUserUid) {
 		$aRet = null;
-		$aQuery = $gDb->prepare("SELECT id FROM users WHERE auth_uid = ?");
+		$aQuery = Database::instance()->prepare("SELECT id FROM users WHERE auth_uid = ?");
 
 		if ($aQuery->execute(array($theProvider . '/' . $theProviderUserUid))) {
 			$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
@@ -49,23 +68,19 @@ class User {
 		return $aRet;
 	}
 
-	public function create($theEmail, $theDisk, $theAuthUid, $theAuthRaw) {
-		global $gDb;
-
+	public static function create($theEmail, $theDisk, $theAuthUid, $theAuthRaw) {
 		$aRet = null;
-		$aQuery = $gDb->prepare("INSERT INTO users (id, email, registration_date, disk, auth_uid, auth_raw) VALUES (null, ?, ?, ?, ?, ?)");
+		$aQuery = Database::instance()->prepare("INSERT INTO users (id, email, registration_date, disk, auth_uid, auth_raw) VALUES (null, ?, ?, ?, ?, ?)");
 
 		$aQuery->execute(array($theEmail, time(), $theDisk, $theAuthUid, $theAuthRaw));
 
-		return $gDb->lastInsertId();
+		return Database::instance()->lastInsertId();
 	}
 
 
-	public function updatePreferences($theUserId, $theData) {
-		global $gDb;
-
+	public static function updatePreferences($theUserId, $theData) {
 		$aRet = array();
-		$aQuery = $gDb->prepare("UPDATE users SET preferences = ? WHERE id = ?");
+		$aQuery = Database::instance()->prepare("UPDATE users SET preferences = ? WHERE id = ?");
 
 		$aQuery->execute(array($theData, $theUserId));
 		return $aQuery->rowCount() != 0;
