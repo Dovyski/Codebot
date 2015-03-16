@@ -23,6 +23,10 @@
 */
 
 class Disk {
+	public static $contentType = array(
+		'read' => 'text/plain'
+	);
+
 	private function escapePath($thePath) {
 		return escapeshellcmd(str_replace('..', '', $thePath));
 	}
@@ -66,6 +70,17 @@ class Disk {
 			array('name' => 'cc.codebot.ide.web.dnd.js', 'title' => 'cc.codebot.ide.web.dnd.js', 'path' => './plugins/cc.codebot.ide.web.dnd.js'),
 			array('name' => 'cc.codebot.asset.finder.js', 'title' => 'cc.codebot.asset.finder.js', 'path' => './plugins/cc.codebot.asset.finder.js')
 		);
+	}
+
+	public function read($theMount, $thePath) {
+		if(empty($thePath)) {
+			throw new Exception('Empty path in Disk::read().');
+		}
+
+		$aPath = $this->path($theMount) . $this->escapePath($thePath);
+		$aOut = file_get_contents($aPath);
+
+		return $aOut;
 	}
 
 	public function mv($theMount, $theOldPath, $theNewPath) {
