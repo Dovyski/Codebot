@@ -55,7 +55,7 @@ class Disk {
 		return $aContent;
 	}
 
-	public function findActivePlugins() {
+	private function findActivePlugins() {
 		return array(
 			array('name' => 'cc.codebot.ide.web.js', 'title' => 'cc.codebot.ide.web.js', 'path' => './plugins/cc.codebot.ide.web.js'),
 			array('name' => 'cc.codebot.flash.tools.js', 'title' => 'cc.codebot.flash.tools.js', 'path' => './plugins/cc.codebot.flash.tools.js'),
@@ -80,7 +80,7 @@ class Disk {
 		return $aFiles;
 	}
 
-	public function LsCodebot($theDir) {
+	public function lsCodebot($theDir) {
 		$aFiles = array(
 			array(
 				'name' => 'Project',
@@ -94,7 +94,7 @@ class Disk {
 		);
 
 		if($theDir == './plugins') {
-			$aFiles[0]['children'] = webdiskFindActivePlugins();
+			$aFiles[0]['children'] = $this->findActivePlugins();
 		}
 
 		return $aFiles;
