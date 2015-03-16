@@ -77,6 +77,23 @@ class Disk {
 		return array('success' => true, 'msg' => '');
 	}
 
+	public function rm($theMount, $thePath) {
+		if(empty($thePath)) {
+			throw new Exception('Empty path in Disk::rm().');
+		}
+
+		$aPath = $this->path($theMount) . $this->escapePath($thePath);
+
+		if(is_dir($aPath)) {
+			rmdir($aPath);
+		} else {
+			echo $aPath;
+			unlink($aPath);
+		}
+
+		return array('success' => true, 'msg' => '');
+	}
+
 	public function ls($theDir) {
 		$aFiles = array(
 			array(
