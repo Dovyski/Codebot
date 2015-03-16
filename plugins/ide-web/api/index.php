@@ -66,6 +66,7 @@ if(!Auth::isUserAuthenticated()) {
 	$aRouter = new Router();
 
 	$aRouter->add('disk', 'Disk');
+	$aRouter->add('project', 'Project');
 
 	// Get the party started and running!
 	try {

@@ -23,10 +23,27 @@
 */
 
 class Project {
-	public function create($theUser, $theData) {
-		global $gDb;
+	public function create($theName, $theType, $theTemplate) {
+		$aData = array(
+			'name' 		=> $theName,
+			'type'		=> $theType,
+			'template'	=> $theTemplate,
+		);
 
-		$aQuery = $gDb->prepare("INSERT INTO projects (fk_user, name, type, path, creation_date) VALUES (?, ?, ?, ?, ?)");
+		$aUserId = Auth::getAuthenticatedUserId();
+		$aUser 	 = User::getById($aUserId);
+
+		if($aUser == null) {
+			throw new Exception('Invalid project owner');
+		}
+
+		$aProject = self::instantiate($aUser, $aData);
+
+		return array('success' => true, 'project' => $aProject, 'msg' => '');
+	}
+
+	private static function instantiate($theUser, $theData) {
+		$aQuery = Database::instance()->prepare("INSERT INTO projects (fk_user, name, type, path, creation_date) VALUES (?, ?, ?, ?, ?)");
 
 		$aFkUser 	= $theUser->id;
 		$aName 		= @$theData['name'];
@@ -45,12 +62,12 @@ class Project {
 		$aQuery->execute(array($aFkUser, $aName, $aType, $aPath, time()));
 
 		// Create physical folders and stuff
-		$aFileSystemPath = webdiskCreateProject($theUser->disk, $aPath);
-		projectInitBasedOnTemplate($aFileSystemPath, $aTemplate, $theData);
+		$aFileSystemPath = Disk::createProjectDir($theUser->disk, $aPath);
+		self::initBasedOnTemplate($aFileSystemPath, $aTemplate, $theData);
 
 		$aRet = new stdClass();
 
-		$aRet->id 		= $gDb->lastInsertId();
+		$aRet->id 		= Database::instance()->lastInsertId();
 		$aRet->fk_user 	= $aFkUser;
 		$aRet->name 	= $aName;
 		$aRet->type 	= $aType;
@@ -59,7 +76,7 @@ class Project {
 		return $aRet;
 	}
 
-	public function initBasedOnTemplate($theFileSystemPath, $theTemplate, $theData) {
+	private static function initBasedOnTemplate($theFileSystemPath, $theTemplate, $theData) {
 		$aTemplatePath = PROJECT_TEMPLATES_FOLDER . md5($theTemplate) . DIRECTORY_SEPARATOR;
 
 		if($theTemplate == 'git') {
@@ -80,21 +97,17 @@ class Project {
 		// TODO: implement this.
 	}
 
-	public function updateSettings($theProjectId, $theUserId, $theData) {
-		global $gDb;
-
+	public static function updateSettings($theProjectId, $theUserId, $theData) {
 		$aRet = array();
-		$aQuery = $gDb->prepare("UPDATE projects SET settings = ? WHERE id = ? AND fk_user = ?");
+		$aQuery = Database::instance()->prepare("UPDATE projects SET settings = ? WHERE id = ? AND fk_user = ?");
 
 		$aQuery->execute(array($theData, $theProjectId, $theUserId));
 		return $aQuery->rowCount() != 0;
 	}
 
-	public function findByUser($theUser) {
-		global $gDb;
-
+	public static function findByUser($theUser) {
 		$aRet = array();
-		$aQuery = $gDb->prepare("SELECT id, fk_user, name, type, path, creation_date, settings FROM projects WHERE fk_user = ?");
+		$aQuery = Database::instance()->prepare("SELECT id, fk_user, name, type, path, creation_date, settings FROM projects WHERE fk_user = ?");
 
 		if ($aQuery->execute(array($theUser->id))) {
 			while($aRow = $aQuery->fetch(PDO::FETCH_OBJ)) {
@@ -105,11 +118,9 @@ class Project {
 		return $aRet;
 	}
 
-	public function getById($theId, $theComplete = false) {
-		global $gDb;
-
+	public static function getById($theId, $theComplete = false) {
 		$aRet = null;
-		$aQuery = $gDb->prepare("SELECT ".($theComplete ? '*' : 'id, fk_user, name, type, path, creation_date')." FROM projects WHERE id = ?");
+		$aQuery = Database::instance()->prepare("SELECT ".($theComplete ? '*' : 'id, fk_user, name, type, path, creation_date')." FROM projects WHERE id = ?");
 
 		if ($aQuery->execute(array($theId))) {
 			$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
