@@ -72,6 +72,19 @@ class Disk {
 		);
 	}
 
+	public function write($theMount, $thePath, $theData = null) {
+		if(empty($thePath)) {
+			throw new Exception('Empty path in Disk::write().');
+		}
+
+		$aPath = $this->path($theMount) . $this->escapePath($thePath);
+		$aData = $theData != null ? $theData : file_get_contents($_FILES['file']['tmp_name']);
+
+		file_put_contents($aPath, $aData);
+
+		return array('success' => true, 'msg' => '');
+	}
+
 	public function read($theMount, $thePath) {
 		if(empty($thePath)) {
 			throw new Exception('Empty path in Disk::read().');
@@ -151,12 +164,14 @@ class Disk {
 		}
 	}
 
-	public function ReadCodebot($thePath, $theUserId) {
+	public function readCodebot($thePath, $theUserId) {
 		$aRet = '';
 
 		if($thePath == './data/prefs.default.json') {
-			$aUser = userGetById($theUserId, true);
-			$aRet = $aUser->preferences;
+			// TODO: get user info.
+			// TODO: find a better way of doing it.
+			//$aUser = userGetById($theUserId, true);
+			//$aRet = $aUser->preferences;
 		}
 
 		return $aRet;
