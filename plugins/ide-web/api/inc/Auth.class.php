@@ -49,7 +49,7 @@ class Auth {
     }
 
     public static function init() {
-        session_name(SID);
+        session_name(CODEBOT_SID);
         session_start();
     }
 

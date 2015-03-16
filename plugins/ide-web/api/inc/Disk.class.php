@@ -23,15 +23,18 @@
 */
 
 class Disk {
+	private function path($theMount) {
+		return CODEBOT_DISK_WORK_POOL . str_replace('..', '', $theMount) . DIRECTORY_SEPARATOR;
+	}
 
-	public function create($theUser) {
+	private function create($theUser) {
 	 	$aDisk = md5($theUser . time());
 		mkdir(WORK_POOL . '/' . $aDisk);
 
 		return $aDisk;
 	}
 
-	public function ListDirectory($theDir, $thePrettyDir = '') {
+	private function listDirectory($theDir, $thePrettyDir = '') {
 		$aContent = array();
 		foreach (scandir($theDir) as $aNode) {
 			if ($aNode == '.' || $aNode == '..') continue;
@@ -44,7 +47,7 @@ class Disk {
 			if (is_dir($theDir . '/' . $aNode)) {
 				$aObj->folder = true;
 				$aObj->key = $aObj->path;
-				$aObj->children = webdiskListDirectory($theDir . $aNode . '/', $thePrettyDir . $aNode . '/');
+				$aObj->children = $this->listDirectory($theDir . $aNode . '/', $thePrettyDir . $aNode . '/');
 			}
 
 			$aContent[] = $aObj;
@@ -61,7 +64,7 @@ class Disk {
 		);
 	}
 
-	public function Ls($theDir) {
+	public function ls($theDir) {
 		$aFiles = array(
 			array(
 				'name' => 'Project',
@@ -70,7 +73,7 @@ class Disk {
 				'folder' => true,
 				'key' => 'root',
 				'expanded' => true,
-				'children' => webdiskListDirectory($theDir)
+				'children' => $this->listDirectory($this->path($theDir))
 			)
 		);
 

@@ -45,7 +45,7 @@ require_once dirname(__FILE__).'/inc/FlashTools.class.php';
 // Catch all error messages and turn them into Exceptions, that way the API
 // will not break JSON communitation with ugly PHP html tags.
 // Idea from here: http://stackoverflow.com/a/1241751
-if(!DEBUG_MODE) {
+if(!CODEBOT_DEBUG_MODE) {
 	set_error_handler(array('Utils', 'errorToException'));
 }
 
