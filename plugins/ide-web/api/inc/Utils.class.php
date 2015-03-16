@@ -22,17 +22,15 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// Include all configuration files
-@include_once dirname(__FILE__).'/../config.local.php';
-include_once dirname(__FILE__).'/../config.php';
+class Utils {
+	public static function errorToException($theErrno, $theErrStr, $theErrfile, $theErrLine, array $theErrContext) {
+	    // error was suppressed with the @-operator
+	    if (error_reporting() == 0) {
+	        return false;
+	    }
 
-// Include all internal models.
-require_once dirname(__FILE__).'/Auth.class.php';
-require_once dirname(__FILE__).'/Database.class.php';
-require_once dirname(__FILE__).'/User.class.php';
-require_once dirname(__FILE__).'/Project.class.php';
-require_once dirname(__FILE__).'/Disk.class.php';
+	    throw new ErrorException($theErrStr, 0, $theErrno, $theErrfile, $theErrLine);
+	}
+}
 
-// Include available development tool-chains
-require_once dirname(__FILE__).'/FlashTools.class.php';
 ?>

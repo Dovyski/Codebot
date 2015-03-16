@@ -37,9 +37,17 @@ require_once dirname(__FILE__).'/inc/User.class.php';
 require_once dirname(__FILE__).'/inc/Project.class.php';
 require_once dirname(__FILE__).'/inc/Disk.class.php';
 require_once dirname(__FILE__).'/inc/Router.class.php';
+require_once dirname(__FILE__).'/inc/Utils.class.php';
 
 // Include available development tool-chains
 require_once dirname(__FILE__).'/inc/FlashTools.class.php';
+
+// Catch all error messages and turn them into Exceptions, that way the API
+// will not break JSON communitation with ugly PHP html tags.
+// Idea from here: http://stackoverflow.com/a/1241751
+if(!DEBUG_MODE) {
+	set_error_handler(array('Utils', 'errorToException'));
+}
 
 // By default, the mime-type is json.
 header('Content-Type: application/json');

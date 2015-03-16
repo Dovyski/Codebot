@@ -1,5 +1,8 @@
 <?php
 
+// System configuration
+@define('DEBUG_MODE',           true);
+
 // Database info
 @define('DB_DSN',           	'mysql:host=localhost;dbname=codebot');
 @define('DB_USER',				'root');
