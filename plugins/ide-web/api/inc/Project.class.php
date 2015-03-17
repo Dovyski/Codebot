@@ -42,6 +42,14 @@ class Project {
 		return array('success' => true, 'project' => $aProject, 'msg' => '');
 	}
 
+	public function search() {
+		$aUserId = Auth::getAuthenticatedUserId();
+		$aUser 	 = User::getById($aUserId);
+
+		$aProjects = self::findByUser($aUser);
+		return array('success' => true, 'msg' => '', 'projects' => $aProjects);
+	}
+
 	private static function instantiate($theUser, $theData) {
 		$aQuery = Database::instance()->prepare("INSERT INTO projects (fk_user, name, type, path, creation_date) VALUES (?, ?, ?, ?, ?)");
 
