@@ -23,16 +23,16 @@
 */
 
 class FlashTools {
-	public function builProject($theProjectId, $theUserId) {
-		$aReturn = array();
-		$aProject = projectGetById($theProjectId, true);
-		$aUser = null;
+	public function build($theProjectId, $theUserId) {
+		$aReturn 	= array();
+		$aProject 	= Project::getById($theProjectId, true);
+		$aUser 		= null;
 
 		if($aProject == null) {
 			throw new Exception('Unknown project with id ' . $theProjectId);
 		}
 
-		$aUser = userGetById($theUserId);
+		$aUser = User::getById($theUserId);
 
 		if($aUser == null) {
 			throw new Exception('Invalid user');
@@ -42,37 +42,44 @@ class FlashTools {
 			throw new Exception('Wrong project owner');
 		}
 
-		$aReturn = flashCompileProject($aProject, $aUser);
+		$aReturn = $this->compile($aProject, $aUser);
 
 		if($aReturn['success']) {
-			$aTestDir 		= md5($aReturn['mount'] . $aReturn['outDir'] . $aReturn['outFile']);
-			$aTestingPath 	= TESTING_POOL . $aTestDir;
-
-			@mkdir($aTestingPath);
-
-			$aTestingPath .= DIRECTORY_SEPARATOR . $aReturn['outDir'];
-			@mkdir($aTestingPath);
-
-			// Remove any slash from the end of the string, otherwise the
-			// 'cp' command will go nuts.
-			$aLastChar = $aTestingPath[strlen($aTestingPath) - 1];
-
-			if($aLastChar == '/' || $aLastChar == '\\') {
-				$aTestingPath = substr($aTestingPath, 0, -1);
-			}
-
-			exec('cp -R ' . $aReturn['mount'] . $aReturn['outDir'] . '* ' . $aTestingPath);
-
-			$aReturn['testingDirUrl'] = PUBLIC_TESTING_URL . $aTestDir;
-			$aReturn['testingFileUrl'] = PUBLIC_TESTING_URL . $aTestDir . DIRECTORY_SEPARATOR . $aReturn['outDir'] . $aReturn['outFile'];
+			$aReturn = array_merge($this->deployForTesting($aReturn));
 		}
 
 		return $aReturn;
 	}
 
-	public function compileProject($theProject, $theUser) {
+	private function deployForTesting($theCompilationInfo) {
+		$aReturn		= array();
+		$aTestDir 		= md5($theCompilationInfo['mount'] . $theCompilationInfo['outDir'] . $theCompilationInfo['outFile']);
+		$aTestingPath 	= CODEBOT_FLASH_TESTING_POOL . $aTestDir;
+
+		@mkdir($aTestingPath);
+
+		$aTestingPath .= DIRECTORY_SEPARATOR . $theCompilationInfo['outDir'];
+		@mkdir($aTestingPath);
+
+		// Remove any slash from the end of the string, otherwise the
+		// 'cp' command will go nuts.
+		$aLastChar = $aTestingPath[strlen($aTestingPath) - 1];
+
+		if($aLastChar == '/' || $aLastChar == '\\') {
+			$aTestingPath = substr($aTestingPath, 0, -1);
+		}
+
+		exec('cp -R ' . $theCompilationInfo['mount'] . $theCompilationInfo['outDir'] . '* ' . $aTestingPath);
+
+		$aReturn['testingDirUrl'] 	= CODEBOT_FLASH_PUBLIC_TESTING_URL . $aTestDir;
+		$aReturn['testingFileUrl'] 	= CODEBOT_FLASH_PUBLIC_TESTING_URL . $aTestDir . DIRECTORY_SEPARATOR . $theCompilationInfo['outDir'] . $theCompilationInfo['outFile'];
+
+		return $aReturn;
+	}
+
+	private function compile($theProject, $theUser) {
 		$aSettings 	= json_decode($theProject->settings);
-		$aSettings 	= $aSettings === false ? array() : $aSettings;
+		$aSettings 	= $aSettings === null || $aSettings === false ? new stdClass() : $aSettings;
 
 		$aWidth 	= property_exists($aSettings, 'width') 		? $aSettings->width 		: 640;
 		$aHeight 	= property_exists($aSettings, 'height') 	? $aSettings->height 		: 480;
@@ -83,9 +90,10 @@ class FlashTools {
 		$aOutDir 	= property_exists($aSettings, 'outDir') 	? $aSettings->outDir 		: '/bin/';
 		$aOutFile 	= property_exists($aSettings, 'outFile') 	? $aSettings->outFile 		: 'Mode.swf';
 
-		// TODO: get this from webdisk API
-		$aMount		= WORK_POOL . $theUser->disk . '/' . $theProject->path . '/';
-		$aCommand	= FLEX_SDK . 'mxmlc -default-size '.$aWidth.' '.$aHeight.' '.$aMount.$aDocClass.' -library-path+='.$aMount.$aLibs.' -swf-version='.$aSwf.' -debug='.$aDebug.' -static-link-runtime-shared-libraries=true -o '.$aMount.$aOutDir.$aOutFile.' '.OUTPUT_REPIPE;
+		// TODO: use config.xml to invoke mxmlc
+		$aDisk		= new Disk();
+		$aMount		= $aDisk->dirPath($theUser->disk, $theProject->path);
+		$aCommand	= CODEBOT_FLASH_FLEX_SDK . 'mxmlc -default-size '.$aWidth.' '.$aHeight.' '.$aMount.$aDocClass.' -library-path+='.$aMount.$aLibs.' -swf-version='.$aSwf.' -debug='.$aDebug.' -static-link-runtime-shared-libraries=true -o '.$aMount.$aOutDir.$aOutFile.' '.CODEBOT_FLASH_OUTPUT_REPIPE;
 
 		$aLogs = array();
 		exec($aCommand, $aLogs);

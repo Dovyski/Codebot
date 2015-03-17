@@ -67,6 +67,7 @@ if(!Auth::isUserAuthenticated()) {
 
 	$aRouter->add('disk', 'Disk');
 	$aRouter->add('project', 'Project');
+	$aRouter->add('flash', 'FlashTools');
 
 	// Get the party started and running!
 	try {

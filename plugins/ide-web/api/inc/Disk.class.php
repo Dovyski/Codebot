@@ -31,8 +31,8 @@ class Disk {
 		return escapeshellcmd(str_replace('..', '', $thePath));
 	}
 
-	private function path($theMount) {
-		return CODEBOT_DISK_WORK_POOL . $this->escapePath($theMount) . DIRECTORY_SEPARATOR;
+	private function realPath($theMount = '') {
+		return CODEBOT_DISK_WORK_POOL . $this->escapePath($theMount) . ($theMount != '' ? DIRECTORY_SEPARATOR : '');
 	}
 
 	private function listDirectory($theDir, $thePrettyDir = '') {
@@ -65,12 +65,24 @@ class Disk {
 		);
 	}
 
+	public function dirPath() {
+		$aNumArgs 	= func_num_args();
+		$aArgs 		= func_get_args();
+		$aRet		= $this->realPath();
+
+		for($i = 0; $i < $aNumArgs; $i++) {
+			$aRet .= $this->escapePath($aArgs[$i]) . DIRECTORY_SEPARATOR;
+		}
+
+		return $aRet;
+	}
+
 	public function mkdir($theMount, $thePath) {
 		if(empty($thePath)) {
 			throw new Exception('Empty path in Disk::mkdir().');
 		}
 
-		$aPath = $this->path($theMount) . $this->escapePath($thePath);
+		$aPath = $this->realPath($theMount) . $this->escapePath($thePath);
 
 		mkdir($aPath, 0755, true);
 
@@ -82,7 +94,7 @@ class Disk {
 			throw new Exception('Empty path in Disk::write().');
 		}
 
-		$aPath = $this->path($theMount) . $this->escapePath($thePath);
+		$aPath = $this->realPath($theMount) . $this->escapePath($thePath);
 		$aData = $theData != null ? $theData : file_get_contents($_FILES['file']['tmp_name']);
 
 		file_put_contents($aPath, $aData);
@@ -95,15 +107,15 @@ class Disk {
 			throw new Exception('Empty path in Disk::read().');
 		}
 
-		$aPath = $this->path($theMount) . $this->escapePath($thePath);
+		$aPath = $this->realPath($theMount) . $this->escapePath($thePath);
 		$aOut = file_get_contents($aPath);
 
 		return $aOut;
 	}
 
 	public function mv($theMount, $theOldPath, $theNewPath) {
-		$aOldPath = $this->path($theMount) . $this->escapePath($theOldPath);
-		$aNewPath = $this->path($theMount) . $this->escapePath($theNewPath);
+		$aOldPath = $this->realPath($theMount) . $this->escapePath($theOldPath);
+		$aNewPath = $this->realPath($theMount) . $this->escapePath($theNewPath);
 
 		rename($aOldPath, $aNewPath);
 
@@ -115,7 +127,7 @@ class Disk {
 			throw new Exception('Empty path in Disk::rm().');
 		}
 
-		$aPath = $this->path($theMount) . $this->escapePath($thePath);
+		$aPath = $this->realPath($theMount) . $this->escapePath($thePath);
 
 		if(is_dir($aPath)) {
 			rmdir($aPath);
@@ -136,7 +148,7 @@ class Disk {
 				'folder' => true,
 				'key' => 'root',
 				'expanded' => true,
-				'children' => $this->listDirectory($this->path($theDir))
+				'children' => $this->listDirectory($this->realPath($theDir))
 			)
 		);
 

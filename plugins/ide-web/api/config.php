@@ -25,9 +25,9 @@
 @define('CODEBOT_DISK_WORK_POOL',               '/tmp/');
 
 // Flash
-@define('CODEBOT_PUBLIC_TESTING_URL',           '/testing/');
-@define('CODEBOT_TESTING_POOL',                 '/var/www/testing/');
-@define('CODEBOT_OUTPUT_REPIPE',                '2>&1');
-@define('CODEBOT_FLEX_SDK',                     'C:/Users/Dovyski/AppData/Local/FlashDevelop/Apps/flexairsdk/4.6.0+15.0.0/bin/');
+@define('CODEBOT_FLASH_PUBLIC_TESTING_URL',      '/testing/');
+@define('CODEBOT_FLASH_TESTING_POOL',            '/var/www/testing/');
+@define('CODEBOT_FLASH_OUTPUT_REPIPE',           '2>&1');
+@define('CODEBOT_FLASH_FLEX_SDK',                'C:/Users/Dovyski/AppData/Local/FlashDevelop/Apps/flexairsdk/4.6.0+15.0.0/bin/');
 
 ?>
