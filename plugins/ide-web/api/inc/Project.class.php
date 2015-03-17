@@ -50,6 +50,14 @@ class Project {
 		return array('success' => true, 'msg' => '', 'projects' => $aProjects);
 	}
 
+	public function delete($theId) {
+		$aUserId = Auth::getAuthenticatedUserId();
+		$aUser 	 = User::getById($aUserId);
+
+		// TODO: implement this.
+		return array('success' => true, 'msg' => '');
+	}
+
 	private static function instantiate($theUser, $theData) {
 		$aQuery = Database::instance()->prepare("INSERT INTO projects (fk_user, name, type, path, creation_date) VALUES (?, ?, ?, ?, ?)");
 
@@ -99,10 +107,6 @@ class Project {
 		}
 
 		file_put_contents($theFileSystemPath . '/README.txt', "This is a test!\nA nice welcome message will be placed here.\n\nCheers,\nCodebot Team");
-	}
-
-	public function delete($theUser, $theId) {
-		// TODO: implement this.
 	}
 
 	public static function updateSettings($theProjectId, $theUserId, $theData) {
