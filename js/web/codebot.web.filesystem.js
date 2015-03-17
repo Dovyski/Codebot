@@ -134,6 +134,6 @@ var CodebotWebFilesystem = function() {
 	};
 
 	this.getAPIEndpoint = function() {
-		return API_URL + '?mount=' + mDisk + '/' + mProjectPath;
+		return API_URL + 'class=disk&mount=' + mDisk + '/' + mProjectPath;
 	};
 };
