@@ -45,7 +45,7 @@ var CodebotContextMenu = function() {
             content: 'Are you sure you want to delete this?',
             buttons: {
                 'Yes': {css: 'btn-info', dismiss: true, callback: function() {
-                    mCodebot.io.delete(theNode.data, function(e) {
+                    mCodebot.io.delete(theNode, function(e) {
                         if(e) {
                             console.log('Something went wrong when deleting file: ' + e);
                         } else {
@@ -60,7 +60,7 @@ var CodebotContextMenu = function() {
 
     var doNewFile = function(theNode) {
         var aName = prompt('File name');
-        mCodebot.io.createFile(aName, theNode.data, '', function(theInfo) {
+        mCodebot.io.createFile(aName, theNode, '', function(theInfo) {
             if(theInfo instanceof Error) {
                 console.error('Problem with createFile!' + theInfo);
             } else {
@@ -72,7 +72,7 @@ var CodebotContextMenu = function() {
 
     var doNewFolder = function(theNode) {
         var aName = prompt('Directory name');
-        mCodebot.io.createDirectory(aName, theNode.data, function(theInfo) {
+        mCodebot.io.createDirectory(aName, theNode, function(theInfo) {
             if(theInfo instanceof Error) {
                 console.error('Problem with createDirectory!' + theInfo);
             } else {
@@ -82,7 +82,7 @@ var CodebotContextMenu = function() {
     };
 
     var generateMenuItems = function(theNode) {
-        var aNode = theNode.data;
+        var aNode = theNode;
         var aMenu = {};
 
         for(var aKey in mItems) {
