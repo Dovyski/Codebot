@@ -35,7 +35,7 @@ class Disk {
 		return CODEBOT_DISK_WORK_POOL . $this->escapePath($theMount) . ($theMount != '' ? DIRECTORY_SEPARATOR : '');
 	}
 
-	private function listDirectory($theDir, $thePrettyDir = '') {
+	public function listDirectory($theDir, $thePrettyDir = '') {
 		$aContent = array();
 		foreach (scandir($theDir) as $aNode) {
 			if ($aNode == '.' || $aNode == '..') continue;
@@ -137,22 +137,6 @@ class Disk {
 		}
 
 		return array('success' => true, 'msg' => '');
-	}
-
-	public function ls($theDir) {
-		$aFiles = array(
-			array(
-				'name' => 'Project',
-				'title' => 'Project',
-				'path' => '/',
-				'folder' => true,
-				'key' => 'root',
-				'expanded' => true,
-				'children' => $this->listDirectory($this->realPath($theDir))
-			)
-		);
-
-		return $aFiles;
 	}
 
 	public function lsCodebot($theDir) {

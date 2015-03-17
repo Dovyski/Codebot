@@ -58,6 +58,49 @@ class Project {
 		return array('success' => true, 'msg' => '');
 	}
 
+	public function open($theId) {
+		$aUser = User::getById(Auth::getAuthenticatedUserId());
+
+		if($aUser == null) {
+			throw new Exception('Invalid project owner');
+		}
+
+		$aProject = Project::getById($theId);
+
+		if($aProject == null) {
+			throw new Exception('Unknown project with id ' . $theId);
+		}
+
+		if($aProject->fk_user != $aUser->id) {
+			throw new Exception('The user is not allowed to view the project');
+		}
+
+		$aDisk = new Disk();
+		$aPath = $aDisk->dirPath($aUser->disk, $aProject->path);
+
+		$aFiles = array(
+			array(
+				'name' 		=> $aProject->name,
+				'title' 	=> $aProject->name,
+				'path' 		=> '/',
+				'folder' 	=> true,
+				'key' 		=> 'root',
+				'expanded' 	=> true,
+				'children' 	=> $aDisk->listDirectory($aPath)
+			)
+		);
+
+		$aProject->files 	= $aFiles;
+		$aProject->settings = $this->readSettingsFile($aUser, $aProject);
+
+		return $aProject;
+	}
+
+	private function readSettingsFile($theUser, $theProject) {
+		// TODO: implement it.
+		return new stdClass();
+	}
+
 	private static function instantiate($theUser, $theData) {
 		$aQuery = Database::instance()->prepare("INSERT INTO projects (fk_user, name, type, path, creation_date) VALUES (?, ?, ?, ?, ?)");
 

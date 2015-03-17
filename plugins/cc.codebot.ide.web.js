@@ -26,11 +26,11 @@
  */
 var CoreIdePlugin = function() {
     // Constants
-    const API_URL       = 'plugins/ide-web/api.php';
+    const API_URL       = 'plugins/ide-web/api/';
 
     this.id             = 'cc.codebot.ide.web';
 
-    var mSelf           = null;
+    var mSelf           = this;
     var mContext        = null;
     var mProjects       = {};
     var mActiveProject  = null;
@@ -38,7 +38,7 @@ var CoreIdePlugin = function() {
     var runCommand = function(theParams, theCallback) {
         $.ajax({
             url: API_URL,
-            method: 'post',
+            method: 'get',
             data: theParams,
             dataType: 'json'
         }).done(function(theData) {
@@ -50,7 +50,7 @@ var CoreIdePlugin = function() {
     };
 
     var doCreateNewProject = function() {
-        var aData = $('#form-new-project').serialize() + '&method=create-project';
+        var aData = $('#form-new-project').serialize() + '&class=project&method=create';
 
         runCommand(aData, function(theData) {
             if(theData.success) {
@@ -89,7 +89,6 @@ var CoreIdePlugin = function() {
     this.init = function(theContext) {
         console.debug('CoreIdePlugin::init()');
 
-        mSelf = this;
         mContext = theContext;
 
         mContext.ui.addButton({ icon: '<i class="fa fa-plus-square"></i>', action: mSelf.newProject });
@@ -173,7 +172,7 @@ var CoreIdePlugin = function() {
 
         $('#container-list-projects').html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading the list, please wait.');
 
-        runCommand({method: 'list-projects'}, function(theData) {
+        runCommand({'class': 'project', method: 'search'}, function(theData) {
             var aInfo = '<select class="form-control" name="project-to-open" id="project-to-open">';
 
             // Save projects for future use.
