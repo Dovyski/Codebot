@@ -93,7 +93,7 @@ class Project {
 		$aProject->files 	= $aFiles;
 		$aProject->settings = $this->readSettingsFile($aUser, $aProject);
 
-		return $aProject;
+		return array('success' => true, 'msg' => '', 'project' => $aProject);
 	}
 
 	private function readSettingsFile($theUser, $theProject) {

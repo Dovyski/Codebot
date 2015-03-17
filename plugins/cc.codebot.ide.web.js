@@ -26,7 +26,7 @@
  */
 var CoreIdePlugin = function() {
     // Constants
-    const API_URL       = 'plugins/ide-web/api/';
+    const API_URL       = 'plugins/ide-web/api/?';
 
     this.id             = 'cc.codebot.ide.web';
 
@@ -35,24 +35,10 @@ var CoreIdePlugin = function() {
     var mProjects       = {};
     var mActiveProject  = null;
 
-    var runCommand = function(theParams, theCallback) {
-        $.ajax({
-            url: API_URL,
-            method: 'get',
-            data: theParams,
-            dataType: 'json'
-        }).done(function(theData) {
-            theCallback(theData);
-
-        }).fail(function(theJqXHR, theTextStatus, theError) {
-            console.error('Error: ' + theTextStatus + ', ' + theError);
-        });
-    };
-
     var doCreateNewProject = function() {
-        var aData = $('#form-new-project').serialize() + '&class=project&method=create';
+        var aData = $('#form-new-project').serialize();
 
-        runCommand(aData, function(theData) {
+        mSelf.api('project', 'create', aData, function(theData) {
             if(theData.success) {
                 mProjects[theData.project.id] = theData.project;
                 doOpenProject(theData.project.id);
@@ -64,18 +50,48 @@ var CoreIdePlugin = function() {
     };
 
     var doOpenProject = function(theProjectId) {
-        var aId      = theProjectId || $('#project-to-open').val();
-        var aProject = mProjects[aId];
+        var aId = theProjectId || $('#project-to-open').val();
+        var aProject;
 
-        console.debug('Opening project: ', aProject.path);
+        console.debug('Opening project with id=' + aId);
 
-        mContext.io.setProjectPath(aProject.path);
-        mActiveProject = aProject;
+        mSelf.api('project', 'open', {id: aId}, function(theData) {
+            if(theData.success) {
+                aProject = theData.project;
 
-        mSelf.refreshProjectFileList();
+                // Update internal references
+                mActiveProject = aProject;
+                mProjects[aProject.id] = aProject;
 
-        // Tell everybody about the newly opened project.
-        mContext.signals.projectOpened.dispatch([mActiveProject]);
+                // Tell the IO layer about the path that must be
+                // appended to all requests
+                mContext.io.setProjectPath(aProject.path);
+
+                // Populate the files panel with project files
+                mContext.ui.filesPanel.populateTree(mActiveProject.files);
+
+                // Tell everybody about the newly opened project.
+                mContext.signals.projectOpened.dispatch([mActiveProject]);
+
+            } else {
+                console.error('Failed to open project: ' + theData.msg);
+            }
+        });
+    };
+
+    this.api = function(theClass, theMethod, theParams, theCallback) {
+        $.ajax({
+            url: API_URL + 'class=' + theClass + '&method=' + theMethod,
+            method: 'get',
+            data: theParams,
+            dataType: 'json'
+        }).done(function(theData) {
+            console.debug('web API response', theData);
+            theCallback(theData);
+
+        }).fail(function(theJqXHR, theTextStatus, theError) {
+            console.error('web API error: ' + theTextStatus + ', ' + theError);
+        });
     };
 
     this.refreshProjectFileList = function() {
@@ -172,7 +188,7 @@ var CoreIdePlugin = function() {
 
         $('#container-list-projects').html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading the list, please wait.');
 
-        runCommand({'class': 'project', method: 'search'}, function(theData) {
+        mSelf.api('project', 'search', null, function(theData) {
             var aInfo = '<select class="form-control" name="project-to-open" id="project-to-open">';
 
             // Save projects for future use.
