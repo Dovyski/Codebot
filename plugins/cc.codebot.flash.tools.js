@@ -109,7 +109,7 @@ var FlashToolsPlugin = function() {
 
         } else {
             // TODO: make it support more than a single element
-            aLibs = mContext.preferences.get().flashTools.libs;
+            aLibs = mContext.preferences.get().flashTools ? mContext.preferences.get().flashTools.libs : '';
 
             if(theNode.path == aLibs) {
                 theNode.title = '<span style="color: #B0C5FF">' + theNode.name + '</span>';
