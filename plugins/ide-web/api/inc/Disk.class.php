@@ -95,7 +95,7 @@ class Disk {
 		}
 
 		$aPath = $this->realPath($theMount) . $this->escapePath($thePath);
-		$aData = $theData != null ? $theData : file_get_contents($_FILES['file']['tmp_name']);
+		$aData = $theData == null && isset($_FILES['file']) ? file_get_contents($_FILES['file']['tmp_name']) : $theData;
 
 		file_put_contents($aPath, $aData);
 
@@ -139,7 +139,7 @@ class Disk {
 		return array('success' => true, 'msg' => '');
 	}
 
-	public function lsCodebot($theDir) {
+	public function lsCodebot($theMount, $theDir) {
 		$aFiles = array(
 			array(
 				'name' => 'Project',
@@ -156,6 +156,22 @@ class Disk {
 			// TODO: improve this
 			$aFiles[0]['children'] = $this->findActivePlugins();
 		}
+
+		return $aFiles;
+	}
+
+	public function ls($theMount) {
+		$aFiles = array(
+			array(
+				'name' => 'Project',
+				'title' => 'Project',
+				'path' => '/',
+				'folder' => true,
+				'key' => 'root',
+				'expanded' => true,
+				'children' => $this->listDirectory($this->realPath($theMount))
+			)
+		);
 
 		return $aFiles;
 	}

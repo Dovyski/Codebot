@@ -23,7 +23,7 @@
 
 var CodebotWebFilesystem = function() {
 	// Constants
-	const API_URL = 'plugins/webdisk-filesystem/api.php';
+	const API_URL = 'plugins/ide-web/api/?';
 
 	// Public properties
 	this.driver = 'Web Disk FileSystem';
@@ -33,12 +33,12 @@ var CodebotWebFilesystem = function() {
 	var mProjectPath = '';
 
 	var runCommand = function(theParams, theDataType, theCallback) {
-		theParams.mount = mDisk + '/' + mProjectPath;
+		var aParams = $.extend({mount: mDisk + '/' + mProjectPath}, theParams);
 
 		$.ajax({
-			url: API_URL,
-			method: 'post',
-			data: theParams,
+			url: API_URL + 'class=disk',
+			method: 'get',
+			data: aParams,
 			dataType: theDataType
 		}).done(function(theData) {
 			theCallback(theData);
@@ -79,7 +79,7 @@ var CodebotWebFilesystem = function() {
 
     this.readDirectory = function(theNode, theCallback) {
 		if(theNode.path.indexOf('codebot://') != -1) {
-			runCommand({method: 'ls-codebot', path: theNode.path.replace(/codebot:\/\//, '')}, 'json', theCallback);
+			runCommand({method: 'lsCodebot', path: theNode.path.replace(/codebot:\/\//, '')}, 'json', theCallback);
 
 		} else {
 			runCommand({method: 'ls', path: theNode.path}, 'json', theCallback);
