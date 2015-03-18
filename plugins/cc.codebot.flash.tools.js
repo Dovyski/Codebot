@@ -47,20 +47,6 @@ var FlashToolsPlugin = function() {
     var mContext    = null;
     var mTestWindow = null;
 
-    var runRemoteBuild = function(theParams, theCallback) {
-        $.ajax({
-            url: API_URL,
-            method: 'post',
-            data: theParams,
-            dataType: 'json'
-        }).done(function(theData) {
-            theCallback(theData);
-
-        }).fail(function(theJqXHR, theTextStatus, theError) {
-            console.error('Flash tools problem: ' + theTextStatus + ', ' + theError);
-        });
-    };
-
     var saveProjectSettings = function(theData) {
         var aIdeWeb         = mContext.getPlugin('cc.codebot.ide.web');
         var aActiveProject  = aIdeWeb.getActiveProject();
