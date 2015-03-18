@@ -82,7 +82,7 @@ var CodebotContextMenu = function() {
     };
 
     var generateMenuItems = function(theNode) {
-        var aNode = theNode;
+        var aNode = theNode.data;
         var aMenu = {};
 
         for(var aKey in mItems) {

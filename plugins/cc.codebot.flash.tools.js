@@ -82,25 +82,34 @@ var FlashToolsPlugin = function() {
     };
 
     var addSwcToLib = function(theNode) {
-        var aPrefs = mContext.preferences.get().flashTools;
+        var aSettings = mContext.getPlugin('cc.codebot.ide.web').getActiveProject().settings;
+        var aIndex;
 
-        if(aPrefs.libs != theNode.path) {
+        aSettings.libs  = aSettings.libs.split(',');
+        aIndex          = aSettings.libs.indexOf(theNode.path);
+
+        if(aIndex == -1) {
             // New element added.
-            aPrefs.libs = theNode.path;
+            aSettings.libs.push(theNode.path);
             console.debug('Add ' + theNode.name + ' to library-path');
         } else {
             // Trying to add an element that is already
             // in the lib list. Let's remove it then.
-            aPrefs.libs = '';
+            aSettings.libs.splice(aIndex, 1);
             console.debug('Remove ' + theNode.name + ' from library-path');
         }
 
-        saveProjectSettings(aPrefs);
+        aSettings.libs  = aSettings.libs.join(',');
+
+        saveProjectSettings(aSettings);
         mContext.ui.filesPanel.refreshTree();
     };
 
     var highlightSwcsAddedToLib = function(theNode) {
-        var aLibs, i, aTotal;
+        var aLibs, i, aTotal, aSettings;
+
+        aSettings   = mContext.getPlugin('cc.codebot.ide.web').getActiveProject().settings;
+        aLibs       = aSettings.libs.split(',');
 
         if(theNode.folder) {
             for(i = 0, aTotal = theNode.children.length; i < aTotal; i++) {
@@ -108,10 +117,7 @@ var FlashToolsPlugin = function() {
             }
 
         } else {
-            // TODO: make it support more than a single element
-            aLibs = mContext.preferences.get().flashTools ? mContext.preferences.get().flashTools.libs : '';
-
-            if(theNode.path == aLibs) {
+            if(aLibs.indexOf(theNode.path) != -1) {
                 theNode.title = '<span style="color: #B0C5FF">' + theNode.name + '</span>';
             }
         }
