@@ -70,16 +70,18 @@ var CodebotSlidePanel = function() {
     };
 
     var restorePersistentPanelData = function(theContainerId) {
-        $('#' + theContainerId + ' form:not([data-persistent=""])').each(function(i, e) {
-            var aStore       = $(e).data('persistent');
-            var aPreferences = mCodebot.preferences.get();
-            var aData        = aPreferences[aStore];
+        $('#' + theContainerId + ' form:not([data-manager=""])').each(function(i, e) {
+            var aStore       = $(e).data('manager');
+            var aPlugin      = mCodebot.getPlugin(aStore);
+            var aData        = aPlugin && aPlugin.restorePanelData ? aPlugin.restorePanelData() : null;
 
-            for(var aProp in aData) {
-                $(this).find('[name=' + aProp + ']').val(aData[aProp]);
+            if(aData) {
+                for(var aProp in aData) {
+                    $(this).find('[name=' + aProp + ']').val(aData[aProp]);
+                }
+
+                console.debug('Data restored to panel', aStore, aData);
             }
-
-            console.debug('Data restored to panel', aStore, aData);
         });
     };
 
@@ -87,12 +89,13 @@ var CodebotSlidePanel = function() {
         var aContainerId = mStack[mStack.length - 1];
 
         if(aContainerId) {
-            $('#' + aContainerId + ' form:not([data-persistent=""])').each(function(i, e) {
-                var aStore = $(e).data('persistent');
-                var aData  = $(e).serializeObject();
+            $('#' + aContainerId + ' form:not([data-manager=""])').each(function(i, e) {
+                var aStore      = $(e).data('manager');
+                var aData       = $(e).serializeObject();
+                var aManager    = mCodebot.getPlugin(aStore);
 
-                if(aStore) {
-                    mCodebot.preferences.add(aStore, aData);
+                if(aManager && aManager.savePanelData) {
+                    aManager.savePanelData($(e).attr('id'), aData);
                 }
             });
         }

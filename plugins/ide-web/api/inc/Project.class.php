@@ -65,7 +65,7 @@ class Project {
 			throw new Exception('Invalid project owner');
 		}
 
-		$aProject = Project::getById($theId);
+		$aProject = Project::getById($theId, true);
 
 		if($aProject == null) {
 			throw new Exception('Unknown project with id ' . $theId);
@@ -91,14 +91,14 @@ class Project {
 		);
 
 		$aProject->files 	= $aFiles;
-		$aProject->settings = $this->readSettingsFile($aUser, $aProject);
+		$aProject->settings = $this->readSettingsFile($aProject, $aFiles);
 
 		return array('success' => true, 'msg' => '', 'project' => $aProject);
 	}
 
-	private function readSettingsFile($theUser, $theProject) {
+	private function readSettingsFile($theProject, $theFiles) {
 		// TODO: implement it.
-		return new stdClass();
+		return json_decode($theProject->settings);
 	}
 
 	private static function instantiate($theUser, $theData) {
@@ -152,11 +152,17 @@ class Project {
 		file_put_contents($theFileSystemPath . '/README.txt', "This is a test!\nA nice welcome message will be placed here.\n\nCheers,\nCodebot Team");
 	}
 
-	public static function updateSettings($theProjectId, $theUserId, $theData) {
-		$aRet = array();
+	public static function updateSettings($theProjectId, $theData) {
+		$aRet 	= array();
+		$aUser 	= User::getById(Auth::getAuthenticatedUserId());
+
+		if($aUser == null) {
+			throw new Exception('Invalid project owner');
+		}
+
 		$aQuery = Database::instance()->prepare("UPDATE projects SET settings = ? WHERE id = ? AND fk_user = ?");
 
-		$aQuery->execute(array($theData, $theProjectId, $theUserId));
+		$aQuery->execute(array($theData, $theProjectId, $aUser->id));
 		return $aQuery->rowCount() != 0;
 	}
 

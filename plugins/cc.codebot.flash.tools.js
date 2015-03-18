@@ -62,18 +62,19 @@ var FlashToolsPlugin = function() {
     };
 
     var saveProjectSettings = function(theData) {
-        var aIdeWeb = mContext.getPlugin('cc.codebot.ide.web');
+        var aIdeWeb         = mContext.getPlugin('cc.codebot.ide.web');
         var aActiveProject  = aIdeWeb.getActiveProject();
 
-        var aParams = {
-            method: 'save-settings',
-            project: aActiveProject.id,
-            data: JSON.stringify(theData)
-        };
+        console.debug('Saving project settings', theData);
 
-        console.log('Saving project settings');
+        aActiveProject.settings = theData;
 
         // TODO: save the content of project settings in a regular file.
+        aIdeWeb.api('project', 'updateSettings', {project: aActiveProject.id, data: JSON.stringify(theData)}, function(theReturn) {
+            if(theReturn.success) {
+                console.debug('Project settings saved successfuly!');
+            }
+        });
     };
 
     var createTestWindow = function(theSwfUrl, theWidth, theHeight) {
@@ -116,6 +117,21 @@ var FlashToolsPlugin = function() {
         }
     };
 
+    this.savePanelData = function(theContainerId, theData) {
+        console.debug('FlashTools::savePanelData()', theContainerId, theData);
+
+        if(theContainerId == 'flash-tools-settings') {
+            saveProjectSettings(theData);
+        }
+    };
+
+    this.restorePanelData = function(theContainerId) {
+        var aIdeWeb         = mContext.getPlugin('cc.codebot.ide.web');
+        var aActiveProject  = aIdeWeb.getActiveProject();
+
+        return aActiveProject ? aActiveProject.settings : null;
+    };
+
     this.init = function(theContext) {
         mSelf = this;
         mContext = theContext;
@@ -126,27 +142,6 @@ var FlashToolsPlugin = function() {
         // Register a context menu entry in the filesPanel for SWC files.
         mContext.ui.filesPanel.contextMenu.addItem('add-to-library', {regex: /.*\.swc/, name: 'Add to lib', icon: 'delete', action: addSwcToLib});
 
-        // Monitor changes made to the editor's preferences. All changes triggered
-        // by the project settings panel will be indexed as 'flashTools'.
-
-        mContext.signals.preferencesUpdated.add(function(theKey, theValue) {
-            if(theKey == 'flashTools') {
-                saveProjectSettings(theValue);
-
-                // Force the files panel to refresh so any highlighted elements
-                // (those added to the lib) can be updated according to the
-                // new preferences.
-                mContext.ui.filesPanel.refreshTree();
-            }
-        });
-
-        // Restore/create project settings locally every time a new project is opened.
-        mContext.signals.projectOpened.add(function(theProject) {
-            if(theProject.type == 'flash') {
-                mContext.preferences.add('flashTools', JSON.parse(theProject.settings));
-            }
-        });
-
         // Monitor files panel changes, so we can highlight nodes marked
         // to be included in the compilation process (like blue SWCs in FlashDevelop)
         mContext.signals.beforeFilesPanelRefresh.add(highlightSwcsAddedToLib);
@@ -156,7 +151,7 @@ var FlashToolsPlugin = function() {
         var aTab            = null;
         var aIde            = mContext.getPlugin('cc.codebot.ide.web');
         var aActiveProject  = aIde.getActiveProject();
-        var aSettings       = mContext.preferences.get().flashTools; // TODO: get project settings
+        var aSettings       = aActiveProject.settings;
 
         theButton.html('<i class="fa fa-refresh fa-spin"></i>');
 
@@ -208,7 +203,7 @@ var FlashToolsPlugin = function() {
         aFolder.add('Test', '<input type="text" name="test" value="/libs/" />');
         aFolder.add('Thing', '<select name="thing"><option value="800">Flash Player</option></select>');
 
-        aContent += '<form action="#" id="flash-tools-settings" data-persistent="flashTools">';
+        aContent += '<form action="#" id="flash-tools-settings" data-manager="' + mSelf.id + '">';
         aContent += aPanel.html();
         aContent += '</form>';
 
