@@ -23,7 +23,7 @@ if($aHaveParams) {
 		echo '
 			<style type="text/css">
 				body {
-					background: url(\'../site/img/hero.jpg\') center top #2D2D2D;
+					background: url(\'./img/hero.jpg\') center top #2D2D2D;
 					color: #efefef;
 					font-family: Arial;
 				}
@@ -58,9 +58,9 @@ if($aHaveParams) {
 				.warning {
 					width: 50%;
 					margin: 0 auto;
-					border: 1px solid #9D9D9D;
+					border: 1px solid #FF594F;
 					background: #3D3D3D;
-					color: #DDDDDD;
+					color: #FF594F;
 					padding: 20px;
 				}
 
