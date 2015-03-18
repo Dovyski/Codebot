@@ -62,7 +62,8 @@ var FlashToolsPlugin = function() {
     };
 
     var saveProjectSettings = function(theData) {
-        var aActiveProject  = mContext.getPlugin('cc.codebot.ide.web').getActiveProject();
+        var aIdeWeb = mContext.getPlugin('cc.codebot.ide.web');
+        var aActiveProject  = aIdeWeb.getActiveProject();
 
         var aParams = {
             method: 'save-settings',
@@ -72,9 +73,7 @@ var FlashToolsPlugin = function() {
 
         console.log('Saving project settings');
 
-        runRemoteBuild(aParams, function(theResponse) {
-            console.log('Project settings saved', theResponse.success);
-        });
+        // TODO: save the content of project settings in a regular file.
     };
 
     var createTestWindow = function(theSwfUrl, theWidth, theHeight) {
@@ -155,15 +154,15 @@ var FlashToolsPlugin = function() {
 
     this.build = function(theContext, theButton) {
         var aTab            = null;
-        var aActiveProject  = mContext.getPlugin('cc.codebot.ide.web').getActiveProject();
-        var aParams         = {method: 'build', project: aActiveProject.id};
-        var aSettings       = mContext.preferences.get().flashTools;
+        var aIde            = mContext.getPlugin('cc.codebot.ide.web');
+        var aActiveProject  = aIde.getActiveProject();
+        var aSettings       = mContext.preferences.get().flashTools; // TODO: get project settings
 
         theButton.html('<i class="fa fa-refresh fa-spin"></i>');
 
         console.log('Requesting remote build');
 
-        runRemoteBuild(aParams, function(theData) {
+        aIde.api('flash', 'build', {project: aActiveProject.id}, function(theData) {
             console.log('Remote build received!', theData);
 
             theButton.html('<i class="fa fa-play"></i>');
@@ -172,8 +171,6 @@ var FlashToolsPlugin = function() {
                 createTestWindow(theData.testingFileUrl, aSettings.width, aSettings.height);
 
             } else {
-
-
                 aTab = mContext.ui.tabs.add({
                     favicon: 'file-text-o', // TODO: dynamic icon?
                     title: 'Build',

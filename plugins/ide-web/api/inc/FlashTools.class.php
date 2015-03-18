@@ -23,7 +23,7 @@
 */
 
 class FlashTools {
-	public function build($theProjectId, $theUserId) {
+	public function build($theProjectId) {
 		$aReturn 	= array();
 		$aProject 	= Project::getById($theProjectId, true);
 		$aUser 		= null;
@@ -32,14 +32,10 @@ class FlashTools {
 			throw new Exception('Unknown project with id ' . $theProjectId);
 		}
 
-		$aUser = User::getById($theUserId);
+		$aUser = User::getById($aProject->fk_user);
 
 		if($aUser == null) {
 			throw new Exception('Invalid user');
-		}
-
-		if($aProject->fk_user != $theUserId) {
-			throw new Exception('Wrong project owner');
 		}
 
 		$aReturn = $this->compile($aProject, $aUser);
