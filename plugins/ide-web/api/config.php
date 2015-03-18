@@ -2,6 +2,8 @@
 
 // System configuration
 @define('CODEBOT_DEBUG_MODE',                   true);
+@define('CODEBOT_LOG_ENABLED',                  true);
+@define('CODEBOT_LOG_FILE',                     '/home/user/logs/app.log');
 
 // Database info
 @define('CODEBOT_DB_DSN',                       'mysql:host=localhost;dbname=codebot');

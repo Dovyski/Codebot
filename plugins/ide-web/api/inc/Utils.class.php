@@ -31,6 +31,12 @@ class Utils {
 
 	    throw new ErrorException($theErrStr, 0, $theErrno, $theErrfile, $theErrLine);
 	}
+
+	public static function log($theContent, $theLabel = 'CODEBOT') {
+		if(CODEBOT_LOG_ENABLED) {
+			file_put_contents(CODEBOT_LOG_FILE, date('Y-m-d h:i:s') . ' ['.$theLabel.'] ' . $theContent . "\n", FILE_APPEND);
+		}
+	}
 }
 
 ?>

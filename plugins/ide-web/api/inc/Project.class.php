@@ -135,6 +135,13 @@ class Project {
 		return $aRet;
 	}
 
+	private static function systemExec($theCmd) {
+		$aOut = array();
+
+		exec($theCmd, $aOut);
+		Utils::log($theCmd . ' ' . implode("\n", $aOut), __FILE__);
+	}
+
 	private static function initBasedOnTemplate($theFileSystemPath, $theTemplate, $theData) {
 		$aTemplatePath = PROJECT_TEMPLATES_FOLDER . md5($theTemplate) . DIRECTORY_SEPARATOR;
 
@@ -143,10 +150,10 @@ class Project {
 
 			if(!empty($aGitRepo)) {
 				// TODO: improve security here.
-				exec('git clone '. $aGitRepo . ' ' . $theFileSystemPath);
+				self::systemExec('git clone '. $aGitRepo . ' ' . $theFileSystemPath);
 			}
 		} else {
-			exec('cp -R '. $aTemplatePath . '* ' . $theFileSystemPath);
+			self::systemExec('cp -R '. $aTemplatePath . '* ' . $theFileSystemPath);
 		}
 
 		file_put_contents($theFileSystemPath . '/README.txt', "This is a test!\nA nice welcome message will be placed here.\n\nCheers,\nCodebot Team");
