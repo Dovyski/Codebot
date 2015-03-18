@@ -85,7 +85,7 @@ var FlashToolsPlugin = function() {
             console.debug('Remove ' + theNode.name + ' from library-path');
         }
 
-        aSettings.libs  = aSettings.libs.join(',');
+        aSettings.libs = aSettings.libs.join(',');
 
         saveProjectSettings(aSettings);
         mContext.ui.filesPanel.refreshTree();
@@ -94,15 +94,15 @@ var FlashToolsPlugin = function() {
     var highlightSwcsAddedToLib = function(theNode) {
         var aLibs, i, aTotal, aSettings;
 
-        aSettings   = mContext.getPlugin('cc.codebot.ide.web').getActiveProject().settings;
-        aLibs       = aSettings.libs.split(',');
-
         if(theNode.folder) {
             for(i = 0, aTotal = theNode.children.length; i < aTotal; i++) {
                 highlightSwcsAddedToLib(theNode.children[i]);
             }
 
         } else {
+            aSettings   = mContext.getPlugin('cc.codebot.ide.web').getActiveProject().settings;
+            aLibs       = aSettings.libs ? aSettings.libs.split(',') : [];
+
             if(aLibs.indexOf(theNode.path) != -1) {
                 theNode.title = '<span style="color: #B0C5FF">' + theNode.name + '</span>';
             }

@@ -63,6 +63,9 @@ var CoreIdePlugin = function() {
                 mActiveProject = aProject;
                 mProjects[aProject.id] = aProject;
 
+                // If the project has no settings, make it blank then.
+                aProject.settings = aProject.settings || {};
+
                 // Tell the IO layer about the path that must be
                 // appended to all requests
                 mContext.io.setProjectPath(aProject.path);
