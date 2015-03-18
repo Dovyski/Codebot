@@ -71,7 +71,7 @@ var FlashToolsPlugin = function() {
         var aSettings = mContext.getPlugin('cc.codebot.ide.web').getActiveProject().settings;
         var aIndex;
 
-        aSettings.libs  = aSettings.libs.split(',');
+        aSettings.libs  = aSettings.libs ? aSettings.libs.split(',') : [];
         aIndex          = aSettings.libs.indexOf(theNode.path);
 
         if(aIndex == -1) {

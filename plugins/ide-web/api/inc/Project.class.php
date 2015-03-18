@@ -23,11 +23,12 @@
 */
 
 class Project {
-	public function create($theName, $theType, $theTemplate) {
+	public function create($theName, $theType, $theTemplate, $theGitRepo = null) {
 		$aData = array(
 			'name' 		=> $theName,
 			'type'		=> $theType,
 			'template'	=> $theTemplate,
+			'git-repo'	=> $theGitRepo,
 		);
 
 		$aUserId = Auth::getAuthenticatedUserId();
