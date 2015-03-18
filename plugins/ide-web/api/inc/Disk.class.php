@@ -132,7 +132,6 @@ class Disk {
 		if(is_dir($aPath)) {
 			rmdir($aPath);
 		} else {
-			echo $aPath;
 			unlink($aPath);
 		}
 

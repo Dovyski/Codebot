@@ -41,7 +41,7 @@ class FlashTools {
 		$aReturn = $this->compile($aProject, $aUser);
 
 		if($aReturn['success']) {
-			$aReturn = array_merge($this->deployForTesting($aReturn));
+			$aReturn = array_merge($aReturn, $this->deployForTesting($aReturn));
 		}
 
 		return $aReturn;
