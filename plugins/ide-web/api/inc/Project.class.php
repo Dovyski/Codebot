@@ -144,7 +144,7 @@ class Project {
 	}
 
 	private static function initBasedOnTemplate($theFileSystemPath, $theTemplate, $theData) {
-		$aTemplatePath = PROJECT_TEMPLATES_FOLDER . md5($theTemplate) . DIRECTORY_SEPARATOR;
+		$aTemplatePath = CODEBOT_PROJECT_TEMPLATES_FOLDER . DIRECTORY_SEPARATOR . Utils::securePath($theTemplate) . DIRECTORY_SEPARATOR;
 
 		if($theTemplate == 'git') {
 			$aGitRepo = @$theData['git-repo'];

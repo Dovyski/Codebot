@@ -37,6 +37,13 @@ class Utils {
 			file_put_contents(CODEBOT_LOG_FILE, date('Y-m-d h:i:s') . ' ['.$theLabel.'] ' . $theContent . "\n", FILE_APPEND);
 		}
 	}
+
+	public static function securePath($thePath) {
+		$thePath = basename($thePath);
+		$thePath = str_replace(array('.', '..', ':', ';'), '', $thePath);
+
+		return escapeshellcmd($thePath);
+	}
 }
 
 ?>

@@ -139,13 +139,26 @@ var CoreIdePlugin = function() {
               '<div class="form-group">'+
                 '<label for="project-template">Template</label>'+
                 '<select class="form-control" name="template" id="project-template">'+
-                    '<option value="none">Empty project</option>'+
-                    '<option value=""></option>'+
-                    '<option value="git">Create from public git repository</option>'+
-                    '<option value=""></option>'+
-                    '<option value="flash">Flash/AS3</option>'+
-                    '<option value="haxe">Haxe (coming soon!)</option>'+
-                    '<option value="js">HTML5/Javascript (coming soon!)</option>'+
+                    '<optgroup label="Agnostic">'+
+                        '<option value="none">Empty project</option>'+
+                        '<option value="git">Create from public git repository</option>'+
+                    '</optgroup>'+
+
+                    '<optgroup label="Flash/AS3">'+
+                        '<option value="flash">Empty project</option>'+
+                        '<option value="flash-flixel-community">Flixel Community</option>'+
+                        '<option value="flash-starling">Starling</option>'+
+                    '</optgroup>'+
+
+                    '<optgroup label="Haxe (coming soon!)">'+
+                        '<option value="haxe">Empty project</option>'+
+                        '<option value="haxe-flixel">HaxeFlixel</option>'+
+                    '</optgroup>'+
+
+                    '<optgroup label="HTML5/Javascript (coming soon!)">'+
+                        '<option value="js">Empty project</option>'+
+                        '<option value="js-phaser">Phaser</option>'+
+                    '</optgroup>'+
                 '</select>'+
               '</div>'+
               '<div class="form-group" style="display:none;" id="project-git-repo-panel">'+
