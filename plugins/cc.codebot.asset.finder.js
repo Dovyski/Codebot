@@ -25,40 +25,58 @@
  * Search for assets from within Codebot.
  */
 var AssetFinderPlugin = function() {
-    // Constants
-    const API_URL       = 'plugins/asset-finder/api.php';
-
     this.id             = 'cc.codebot.asset.finder';
-
     var mSelf           = this;
     var mContext        = null;
 
-    var runCommand = function(theParams, theCallback) {
-        $.ajax({
-            url: API_URL,
-            method: 'post',
-            data: theParams,
-            dataType: 'json'
-        }).done(function(theData) {
-            theCallback(theData);
+    var showItemInfo = function(theItemId) {
+        var aIde, aPanel, aFolder, aContent;
 
-        }).fail(function(theJqXHR, theTextStatus, theError) {
-            console.error('Error: ' + theTextStatus + ', ' + theError);
+        aIde = mContext.getPlugin('cc.codebot.ide.web');
+
+        $('body').append('<div id="asset-info-item-description" style="position: absolute; top:0; right: 333px; width: 600px; height: 100%; background: #3d3d3d; overflow: hidden;">info '+theItemId+'</div>');
+
+        $('#asset-info-item-description').html('<i class="fa fa-circle-o-notch fa-spin"></i>');
+
+        aIde.api('assets', 'info', {item: theItemId}, function(theData) {
+            aPanel = new CodebotFancyPanel(theData.title);
+
+            aFolder = aPanel.addFolder('Preview', 'preview');
+            aFolder.add(null, '<img src="'+theData.preview[0]+'" style="width: 100%; height: auto;"/>', 'id', 'raw');
+
+            aFolder = aPanel.addFolder('Download', 'actions');
+            aFolder.add('Download to', '<select name="downloadTo"><option value="/assets">/assets</option><option value="/another">/another</option></select>');
+
+            aFolder = aPanel.addFolder('Details', 'details');
+            aFolder.add('Author', theData.author);
+            aFolder.add('License', theData.license);
+            aFolder.add('Channel', theData.channel);
+
+            aFolder = aPanel.addFolder('Description', 'description');
+            aFolder.add(null, theData.description, 'id', 'raw');
+
+            $('#asset-info-item-description').html(aPanel.html());
         });
     };
 
     var doSearch = function() {
-        var i, aContent = '';
+        var i, aContent = '', aIde;
+
+        aIde = mContext.getPlugin('cc.codebot.ide.web');
 
         $('#assets-finder-browse-area').html('<i class="fa fa-circle-o-notch fa-spin"></i>');
 
-        runCommand($('#asset-finder-main').serialize(), function(theData) {
+        aIde.api('assets', 'search', $('#asset-finder-main').serialize(), function(theData) {
             if(theData.success) {
                 for(i = 0; i < theData.items.length; i++) {
-                    aContent += '<img src="'+theData.items[i].thumbnail+'" alt="Preview">';
+                    aContent += '<a href="javascript:void(0)" data-item="'+theData.items[i].id+'"><img src="'+theData.items[i].thumbnail+'" alt="Preview"></a>';
 
                 }
                 $('#assets-finder-browse-area').html(aContent);
+
+                $('#assets-finder-browse-area a').click(function() {
+                    showItemInfo($(this).data('item'));
+                });
             }
         });
     }
@@ -84,7 +102,6 @@ var AssetFinderPlugin = function() {
         aFolder.add(null, '<div id="assets-finder-browse-area">Nothing to show yet.</div>', 'id', 'raw');
 
         aContent += '<form action="#" id="asset-finder-main">';
-        aContent += '<input type="hidden" name="method" value="search">';
         aContent += aPanel.html();
         aContent += '</form>';
 

@@ -42,6 +42,9 @@ require_once dirname(__FILE__).'/inc/Utils.class.php';
 // Include available development tool-chains
 require_once dirname(__FILE__).'/inc/FlashTools.class.php';
 
+// Include gamedev help tools
+require_once dirname(__FILE__).'/inc/asset-finder/AssetFinder.class.php';
+
 // Catch all error messages and turn them into Exceptions, that way the API
 // will not break JSON communitation with ugly PHP html tags.
 // Idea from here: http://stackoverflow.com/a/1241751
@@ -68,6 +71,7 @@ if(!Auth::isUserAuthenticated()) {
 	$aRouter->add('disk', 'Disk');
 	$aRouter->add('project', 'Project');
 	$aRouter->add('flash', 'FlashTools');
+	$aRouter->add('assets', 'AssetFinder');
 
 	// Get the party started and running!
 	try {
