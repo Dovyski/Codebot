@@ -28,15 +28,15 @@ var AssetFinderPlugin = function() {
     this.id             = 'cc.codebot.asset.finder';
     var mSelf           = this;
     var mContext        = null;
+    var mInfoPanel      = null;
 
     var showItemInfo = function(theItemId) {
         var aIde, aPanel, aFolder, aContent;
 
         aIde = mContext.getPlugin('cc.codebot.ide.web');
 
-        $('body').append('<div id="asset-info-item-description" style="position: absolute; top:0; right: 333px; width: 600px; height: 100%; background: #3d3d3d; overflow: hidden;">info '+theItemId+'</div>');
-
-        $('#asset-info-item-description').html('<i class="fa fa-circle-o-notch fa-spin"></i>');
+        mInfoPanel.html('<i class="fa fa-circle-o-notch fa-spin"></i>');
+        mInfoPanel.fadeIn();
 
         aIde.api('assets', 'info', {item: theItemId}, function(theData) {
             aPanel = new CodebotFancyPanel(theData.title);
@@ -55,7 +55,7 @@ var AssetFinderPlugin = function() {
             aFolder = aPanel.addFolder('Description', 'description');
             aFolder.add(null, theData.description, 'id', 'raw');
 
-            $('#asset-info-item-description').html(aPanel.html());
+            mInfoPanel.html(aPanel.html());
         });
     };
 
@@ -69,7 +69,7 @@ var AssetFinderPlugin = function() {
         aIde.api('assets', 'search', $('#asset-finder-main').serialize(), function(theData) {
             if(theData.success) {
                 for(i = 0; i < theData.items.length; i++) {
-                    aContent += '<a href="javascript:void(0)" data-item="'+theData.items[i].id+'"><img src="'+theData.items[i].thumbnail+'" alt="Preview"></a>';
+                    aContent += '<a href="javascript:void(0)" data-item="'+theData.items[i].id+'"><img src="'+theData.items[i].thumbnail+'" alt="Preview" style="width: 95px; height: 95px;"></a>';
 
                 }
                 $('#assets-finder-browse-area').html(aContent);
@@ -119,6 +119,13 @@ var AssetFinderPlugin = function() {
 
         mContext = theContext;
         mContext.ui.addButton({ icon: '<i class="fa fa-picture-o"></i>', panel: mSelf.mainPanel });
+
+        $('body').append('<div id="asset-info-item-description" style="display: none; position: absolute; top:0; right: 333px; width: 600px; height: 100%; background: #3d3d3d; overflow: hidden;"></div>');
+        mInfoPanel = $('#asset-info-item-description');
+
+        mContext.signals.beforeLastSlidePanelClose.add(function() {
+            mInfoPanel.fadeOut();
+        });
     };
 };
 

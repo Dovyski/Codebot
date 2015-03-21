@@ -28,7 +28,7 @@ class AssetFinder {
 			'success' => true,
 			'items'	=> array(
 				array(
-					'thumbnail' => 'http://opengameart.org/sites/default/files/styles/thumbnail/public/Green%20bot.png',
+					'thumbnail' => 'http://opengameart.org/sites/default/files/styles/medium/public/map_16.png',
 					'title' => 'Green robot',
 					'id' => 'green-robot'
 				),

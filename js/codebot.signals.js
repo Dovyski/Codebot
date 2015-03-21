@@ -45,5 +45,15 @@ var CodebotSignals = function() {
     /**
      * TODO: add docs.
      */
-    this.beforeFilesPanelRefresh = new CodebotSignal();    
+    this.beforeFilesPanelRefresh = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
+    this.beforeLastSlidePanelClose = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
+    this.lastSlidePanelClosed = new CodebotSignal();    
 };

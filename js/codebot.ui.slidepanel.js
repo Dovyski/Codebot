@@ -149,7 +149,13 @@ var CodebotSlidePanel = function() {
             mCurrentStateRender = mStack[mStack.length - 1];
         }
 
-        setTimeout(function() { $('#' + mStack.pop()).remove(); }, SLIDE_DURATION);
+        setTimeout(function() {
+            $('#' + mStack.pop()).remove();
+
+            if(mStack.length == 0) {
+                mCodebot.signals.lastSlidePanelClosed.dispatch();
+            }
+        }, SLIDE_DURATION);
     };
 
     this.open = function(theStateRender, theForce) {
@@ -176,6 +182,7 @@ var CodebotSlidePanel = function() {
 
         if(mStack.length == 1) {
             mCurrentStateRender = null;
+            mCodebot.signals.beforeLastSlidePanelClose.dispatch();
         }
     }
 
