@@ -24,41 +24,25 @@
 
 class AssetFinder {
 	public function search($theRequest) {
-		return array(
+		$aRet = array(
 			'success' => true,
-			'items'	=> array(
-				array(
-					'thumbnail' => 'http://opengameart.org/sites/default/files/styles/medium/public/map_16.png',
-					'title' => 'Green robot',
-					'id' => 'green-robot'
-				),
-				array(
-					'thumbnail' => 'http://opengameart.org/sites/default/files/styles/thumbnail/public/survivor-idle_shotgun_0.png',
-					'title' => 'Animated Top Down Survivor Player',
-					'id' => 'animated-top-down-survivor-player'
-				),
-				array(
-					'thumbnail' => 'http://opengameart.org/sites/default/files/styles/thumbnail/public/Green%20bot.png',
-					'title' => 'Green robot',
-					'id' => 'green-robot'
-				),
-				array(
-					'thumbnail' => 'http://opengameart.org/sites/default/files/styles/thumbnail/public/Green%20bot.png',
-					'title' => 'Green robot',
-					'id' => 'green-robot'
-				),
-				array(
-					'thumbnail' => 'http://opengameart.org/sites/default/files/styles/thumbnail/public/Green%20bot.png',
-					'title' => 'Green robot',
-					'id' => 'green-robot'
-				),
-			)
+			'items'	=> array()
 		);
+
+		for($i = 0; $i < 50; $i++) {
+			$aRet['items'][] = array(
+				'thumbnail' => 'http://opengameart.org/sites/default/files/styles/medium/public/map_16.png',
+				'title' => 'Green robot',
+				'id' => 'green-robot'
+			);
+		}
+
+		return $aRet;
 	}
 
 	public function info($theItemId) {
 		return array(
-			'title' => 'Green robot',
+			'title' => 'Green robot' . rand(),
 			'id' => 'green-robot',
 			'license' => 'CC-BY 3.0',
 			'author' => 'chipmunk',

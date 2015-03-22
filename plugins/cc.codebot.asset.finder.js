@@ -45,7 +45,7 @@ var AssetFinderPlugin = function() {
             aFolder.add(null, '<img src="'+theData.preview[0]+'" style="width: 100%; height: auto;"/>', 'id', 'raw');
 
             aFolder = aPanel.addFolder('Download', 'actions');
-            aFolder.add('Download to', '<select name="downloadTo"><option value="/assets">/assets</option><option value="/another">/another</option></select>');
+            aFolder.add('Save to', '<select name="downloadTo"><option value="/assets">/assets</option><option value="/another">/another</option></select> <a href=""><i class="fa fa-download"></i> DOWNLOAD</a>');
 
             aFolder = aPanel.addFolder('Details', 'details');
             aFolder.add('Author', theData.author);
@@ -69,7 +69,7 @@ var AssetFinderPlugin = function() {
         aIde.api('assets', 'search', $('#asset-finder-main').serialize(), function(theData) {
             if(theData.success) {
                 for(i = 0; i < theData.items.length; i++) {
-                    aContent += '<a href="javascript:void(0)" data-item="'+theData.items[i].id+'"><img src="'+theData.items[i].thumbnail+'" alt="Preview" style="width: 95px; height: 95px;"></a>';
+                    aContent += '<a href="javascript:void(0)" data-item="'+theData.items[i].id+'"><img src="'+theData.items[i].thumbnail+'" alt="Preview" style="width: 90px; height: 90px; padding: 2px;"></a>';
 
                 }
                 $('#assets-finder-browse-area').html(aContent);
@@ -80,6 +80,11 @@ var AssetFinderPlugin = function() {
             }
         });
     }
+
+    var loadMoreSearchResults = function() {
+        // TODO: implement this.
+        console.log('loadMoreSearchResults?');
+    };
 
     this.mainPanel = function(theContainer, theContext) {
         var aContent = '';
@@ -96,10 +101,8 @@ var AssetFinderPlugin = function() {
                 '<option value="6">GPL 3.0</option>' +
             '</select>');
 
-        aFolder.add('Download to', '<select name="downloadTo"><option value="/assets">/assets</option><option value="/another">/another</option></select>');
-
         var aFolder = aPanel.addFolder('Results', 'results');
-        aFolder.add(null, '<div id="assets-finder-browse-area">Nothing to show yet.</div>', 'id', 'raw');
+        aFolder.add(null, '<div id="assets-finder-browse-area" style="width: 100%; height: 635px; overflow: scroll;">Nothing to show yet.</div>', 'id', 'raw');
 
         aContent += '<form action="#" id="asset-finder-main">';
         aContent += aPanel.html();
@@ -111,6 +114,15 @@ var AssetFinderPlugin = function() {
             doSearch();
             theEvent.preventDefault();
             return false;
+        });
+
+        // TODO: improve this.
+        $("#assets-finder-browse-area").scroll(function() {
+            var aHasReachedBottom = $(this)[0].scrollHeight - $(this).scrollTop() <= $(this).outerHeight();
+
+            if(aHasReachedBottom) {
+                loadMoreSearchResults();
+            }
         });
     };
 
