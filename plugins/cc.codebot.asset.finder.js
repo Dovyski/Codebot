@@ -92,13 +92,13 @@ var AssetFinderPlugin = function() {
 
         var aFolder = aPanel.addFolder('Options', 'options');
 
-        aFolder.add('Search', '<input type="text" name="keys" value="" />');
+        aFolder.add('Search', '<input type="text" name="query" value="" />');
 
         aFolder.add('License',
-            '<select name="field_art_licenses_tid[]">' +
-                '<option value="2">CC-BY 3.0</option>' +
-                '<option value="3">CC-BY-SA 3.0</option>' +
-                '<option value="6">GPL 3.0</option>' +
+            '<select name="license">' +
+                '<option value="1">CC-BY 3.0</option>' +
+                '<option value="2">CC-BY-SA 3.0</option>' +
+                '<option value="4">GPL 3.0</option>' +
             '</select>');
 
         var aFolder = aPanel.addFolder('Results', 'results');
@@ -106,6 +106,8 @@ var AssetFinderPlugin = function() {
 
         aContent += '<form action="#" id="asset-finder-main">';
         aContent += aPanel.html();
+        aContent += '<input type="hidden" name="start" value="0">';
+        aContent += '<input type="hidden" name="limit" value="50">';
         aContent += '</form>';
 
         theContainer.append(aContent);

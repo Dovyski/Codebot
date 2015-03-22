@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 13, 2015 at 01:30 PM
+-- Generation Time: Mar 22, 2015 at 06:38 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -19,6 +19,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `codebot`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `assets`
+--
+
+CREATE TABLE IF NOT EXISTS `assets` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `author` varchar(80) NOT NULL,
+  `channel` varchar(255) NOT NULL,
+  `license` int(10) unsigned NOT NULL,
+  `thumbnail` varchar(255) NOT NULL,
+  `preview` text NOT NULL,
+  `files` text NOT NULL,
+  `description` text NOT NULL,
+  `attribution` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `license` (`license`),
+  KEY `title` (`title`),
+  KEY `license_2` (`license`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -51,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `disk` varchar(32) NOT NULL,
   `auth_uid` varchar(255) NOT NULL,
   `auth_raw` text NOT NULL,
+  `preferences` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `auth_uid` (`auth_uid`)

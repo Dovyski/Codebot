@@ -23,38 +23,41 @@
 */
 
 class AssetFinder {
-	public function search($theRequest) {
+	public function search($theQuery, $theLicenses, $theStart, $theLimit) {
+		$theStart = (int)$theStart;
+		$theLimit = (int)$theLimit;
+		$theQuery = '%' . $theQuery . '%';
+
 		$aRet = array(
 			'success' => true,
+			'start' => $theStart,
+			'limit' => $theLimit,
 			'items'	=> array()
 		);
 
-		for($i = 0; $i < 50; $i++) {
-			$aRet['items'][] = array(
-				'thumbnail' => 'http://opengameart.org/sites/default/files/styles/medium/public/map_16.png',
-				'title' => 'Green robot',
-				'id' => 'green-robot'
-			);
+		$aQuery = Database::instance()->prepare("SELECT id, title, thumbnail FROM assets WHERE title LIKE ? AND (license & ?) <> 0 LIMIT " . $theStart . "," . $theLimit);
+
+		if ($aQuery->execute(array($theQuery, $theLicenses))) {
+			while($aRow = $aQuery->fetch(PDO::FETCH_OBJ)) {
+				$aRet['items'][] = $aRow;
+			}
 		}
 
 		return $aRet;
 	}
 
 	public function info($theItemId) {
-		return array(
-			'title' => 'Green robot' . rand(),
-			'id' => 'green-robot',
-			'license' => 'CC-BY 3.0',
-			'author' => 'chipmunk',
-			'channel' => 'OpenGame Art',
-			'preview' => array(
-				'http://opengameart.org/sites/default/files/styles/medium/public/map_16.png'
-			),
-			'files' => array(
-				array('name' => 'metroid like.png', 'url' => 'http://opengameart.org/sites/default/files/metroid%20like.png')
-			),
-			'description' => 'A Metroid like tileset and character i did in 16 colors inspired from Metroid and various mockups. A credit would be nice if you use them.',
-		);
+		$aRet 	= null;
+		$aQuery = Database::instance()->prepare("SELECT * FROM assets WHERE id = ?");
+
+		if ($aQuery->execute(array($theItemId))) {
+			$aRet 			= $aQuery->fetch(PDO::FETCH_OBJ);
+
+			$aRet->preview 	= unserialize($aRet->preview);
+			$aRet->files 	= unserialize($aRet->files);
+		}
+
+		return $aRet;
 	}
 }
 ?>
