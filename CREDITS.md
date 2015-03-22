@@ -60,3 +60,8 @@ License: MIT
 Loading effect
 Author: codrops - https://github.com/codrops/ClickEffects
 License: Free (http://tympanus.net/codrops/licensing/)
+
+------------------------------------------------------------------------------------------
+querypath
+Author: Matt Butcher - https://github.com/technosophos/querypath
+License: MIT
