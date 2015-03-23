@@ -23,7 +23,7 @@ Some features Codebot will probably have:
 * Easily find and add extensions/libs to a project (slide a panel, search, click integrate, done!).
 
 
-Supported plataforms
+Supported platforms
 =======
 
 * MacOS (***working***)
