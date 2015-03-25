@@ -44,6 +44,10 @@ class Utils {
 
 		return escapeshellcmd($thePath);
 	}
+
+	public static function escapePath($thePath) {
+		return escapeshellcmd(str_replace('..', '', $thePath));
+	}
 }
 
 ?>
