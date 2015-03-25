@@ -23,6 +23,14 @@
 */
 
 class Project {
+	public $id 				= null;
+	public $fk_user 		= null;
+	public $name 			= '';
+	public $type 			= '';
+	public $path 			= '';
+	public $creation_date 	= 0;
+	public $settings 		= '{}';
+
 	public function create($theName, $theType, $theTemplate, $theGitRepo = null) {
 		$aData = array(
 			'name' 		=> $theName,
@@ -103,8 +111,6 @@ class Project {
 	}
 
 	private static function instantiate($theUser, $theData) {
-		$aQuery = Database::instance()->prepare("INSERT INTO projects (fk_user, name, type, path, creation_date) VALUES (?, ?, ?, ?, ?)");
-
 		$aFkUser 	= $theUser->id;
 		$aName 		= @$theData['name'];
 		$aType 		= @$theData['type'];
@@ -119,21 +125,19 @@ class Project {
 			throw new Exception('Invalid project type');
 		}
 
-		$aQuery->execute(array($aFkUser, $aName, $aType, $aPath, time()));
-
 		// Create physical folders and stuff
 		$aFileSystemPath = Disk::createProjectDir($theUser->disk, $aPath);
-		self::initBasedOnTemplate($aFileSystemPath, $aTemplate, $theData);
 
-		$aRet = new stdClass();
+		$aRet 					= new Project();
+		$aRet->id 				= null;
+		$aRet->fk_user 			= $aFkUser;
+		$aRet->name 			= $aName;
+		$aRet->type 			= $aType;
+		$aRet->path 			= $aPath;
+		$aRet->creation_date 	= time();
+		$aRet->settings 		= self::initBasedOnTemplate($aFileSystemPath, $aTemplate, $theData);
 
-		$aRet->id 		= Database::instance()->lastInsertId();
-		$aRet->fk_user 	= $aFkUser;
-		$aRet->name 	= $aName;
-		$aRet->type 	= $aType;
-		$aRet->path 	= $aPath;
-
-		return $aRet;
+		return self::update($aRet);
 	}
 
 	private static function systemExec($theCmd) {
@@ -144,7 +148,11 @@ class Project {
 	}
 
 	private static function initBasedOnTemplate($theFileSystemPath, $theTemplate, $theData) {
-		$aTemplatePath = CODEBOT_PROJECT_TEMPLATES_FOLDER . DIRECTORY_SEPARATOR . Utils::securePath($theTemplate) . DIRECTORY_SEPARATOR;
+		$aTemplatePath 			= CODEBOT_PROJECT_TEMPLATES_FOLDER . DIRECTORY_SEPARATOR . Utils::securePath($theTemplate) . DIRECTORY_SEPARATOR;
+		$aTemplateFilesPath		= $aTemplatePath . 'files' . DIRECTORY_SEPARATOR;
+		$aTemplateSettingsPath 	= $aTemplatePath . 'settings.json';
+
+		$aTemplateSettings 		= file_get_contents($aTemplateSettingsPath);
 
 		if($theTemplate == 'git') {
 			$aGitRepo = @$theData['git-repo'];
@@ -154,10 +162,33 @@ class Project {
 				self::systemExec('git clone '. $aGitRepo . ' ' . $theFileSystemPath);
 			}
 		} else {
-			self::systemExec('cp -R '. $aTemplatePath . '* ' . $theFileSystemPath);
+			self::systemExec('cp -R '. $aTemplateFilesPath . '* ' . $theFileSystemPath);
 		}
 
-		file_put_contents($theFileSystemPath . '/README.txt', "This is a test!\nA nice welcome message will be placed here.\n\nCheers,\nCodebot Team");
+		return $aTemplateSettings;
+	}
+
+	public static function update(Project $theProject) {
+		$aRet 	= null;
+		$aQuery = Database::instance()->prepare("
+			INSERT INTO
+				projects (id, fk_user, name, type, path, creation_date, settings)
+			 VALUES
+				(?, ?, ?, ?, ?, ?, ?)
+			 ON DUPLICATE KEY UPDATE
+				fk_user = ?, name = ?, type = ?, path = ?, creation_date = ?, settings = ?
+		");
+
+		$aQuery->execute(array(
+				$theProject->id, $theProject->fk_user, $theProject->name, $theProject->type, $theProject->path, $theProject->creation_date, $theProject->settings,
+				$theProject->fk_user, $theProject->name, $theProject->type, $theProject->path, $theProject->creation_date, $theProject->settings
+		));
+
+		if($theProject->id == null) {
+			$theProject->id = Database::instance()->lastInsertId();
+		}
+
+		return $theProject;
 	}
 
 	public static function updateSettings($theProjectId, $theData) {
@@ -192,7 +223,7 @@ class Project {
 		$aQuery = Database::instance()->prepare("SELECT ".($theComplete ? '*' : 'id, fk_user, name, type, path, creation_date')." FROM projects WHERE id = ?");
 
 		if ($aQuery->execute(array($theId))) {
-			$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
+			$aRet = $aQuery->fetchObject("Project");
 		}
 
 		return $aRet;
