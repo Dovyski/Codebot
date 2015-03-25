@@ -91,8 +91,7 @@ class FlashTools {
 		$aMount		= $aDisk->dirPath($theUser->disk, $theProject->path);
 		$aCommand	= CODEBOT_FLASH_FLEX_SDK . 'mxmlc -default-size '.$aWidth.' '.$aHeight.' '.$aMount.$aDocClass.' -library-path+='.$aMount.$aLibs.' -swf-version='.$aSwf.' -debug='.$aDebug.' -static-link-runtime-shared-libraries=true -o '.$aMount.$aOutDir.$aOutFile.' '.CODEBOT_FLASH_OUTPUT_REPIPE;
 
-		$aLogs = array();
-		exec($aCommand, $aLogs);
+		$aLogs = Utils::systemExec($aCommand, __FILE__, __LINE__);
 
 		array_shift($aLogs);
 

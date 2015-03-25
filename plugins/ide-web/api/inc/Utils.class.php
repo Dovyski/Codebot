@@ -54,6 +54,8 @@ class Utils {
 
 		exec($theCmd, $aOut);
 		Utils::log($theCmd . ' ' . implode("\n", $aOut), $theFile, $theLine);
+
+		return $aOut;
 	}
 }
 
