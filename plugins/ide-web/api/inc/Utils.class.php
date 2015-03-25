@@ -32,9 +32,9 @@ class Utils {
 	    throw new ErrorException($theErrStr, 0, $theErrno, $theErrfile, $theErrLine);
 	}
 
-	public static function log($theContent, $theLabel = 'CODEBOT') {
+	public static function log($theContent, $theLabel = 'CODEBOT', $theLine = '') {
 		if(CODEBOT_LOG_ENABLED) {
-			file_put_contents(CODEBOT_LOG_FILE, date('Y-m-d h:i:s') . ' ['.$theLabel.'] ' . $theContent . "\n", FILE_APPEND);
+			file_put_contents(CODEBOT_LOG_FILE, date('Y-m-d h:i:s') . ' ['.$theLabel.':'.$theLine.'] ' . $theContent . "\n", FILE_APPEND);
 		}
 	}
 
@@ -47,6 +47,13 @@ class Utils {
 
 	public static function escapePath($thePath) {
 		return escapeshellcmd(str_replace('..', '', $thePath));
+	}
+
+	public static function systemExec($theCmd, $theFile = '', $theLine = '') {
+		$aOut = array();
+
+		exec($theCmd, $aOut);
+		Utils::log($theCmd . ' ' . implode("\n", $aOut), $theFile, $theLine);
 	}
 }
 

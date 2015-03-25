@@ -134,17 +134,10 @@ class Project {
 		$aRet->name 			= $aName;
 		$aRet->type 			= $aType;
 		$aRet->path 			= $aPath;
-		$aRet->creation_date 	= time();
+		$aRet->creation_time 	= time();
 		$aRet->settings 		= self::initBasedOnTemplate($aFileSystemPath, $aTemplate, $theData);
 
 		return self::update($aRet);
-	}
-
-	private static function systemExec($theCmd) {
-		$aOut = array();
-
-		exec($theCmd, $aOut);
-		Utils::log($theCmd . ' ' . implode("\n", $aOut), __FILE__);
 	}
 
 	private static function initBasedOnTemplate($theFileSystemPath, $theTemplate, $theData) {
@@ -159,10 +152,10 @@ class Project {
 
 			if(!empty($aGitRepo)) {
 				// TODO: improve security here.
-				self::systemExec('git clone '. $aGitRepo . ' ' . $theFileSystemPath);
+				Utils::systemExec('git clone '. $aGitRepo . ' ' . $theFileSystemPath, __FILE__, __LINE__);
 			}
 		} else {
-			self::systemExec('cp -R '. $aTemplateFilesPath . '* ' . $theFileSystemPath);
+			Utils::systemExec('cp -R '. $aTemplateFilesPath . '* ' . $theFileSystemPath, __FILE__, __LINE__);
 		}
 
 		return $aTemplateSettings;
