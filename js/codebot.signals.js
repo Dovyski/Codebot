@@ -71,4 +71,14 @@ var CodebotSignals = function() {
      * TODO: add docs.
      */
     this.tabFocused = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
+    this.filesPanelItemClicked = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
+    this.filesPanelItemDoubleClicked = new CodebotSignal();
 };

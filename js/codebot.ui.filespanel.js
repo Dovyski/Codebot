@@ -42,13 +42,13 @@ var CodebotFilesPanel = function() {
             mFoldersState[theItem.node.key] = !theItem.node.expanded;
         }
 
-        console.debug('FilesPanel.click() ', theEvent, theItem);
+        mCodebot.signals.filesPanelItemClicked.dispatch([theItem]);
 	};
 
 	var onDoubleClick = function(theEvent, theItem) {
 		var aNode = theItem.node;
 
-		console.debug('File panel double click: ' + theEvent + ' , folder: ' + aNode.folder);
+        mCodebot.signals.filesPanelItemDoubleClicked.dispatch([theItem]);
 
 		if(!aNode.folder) {
             mCodebot.ui.tabs.openNode(aNode);
