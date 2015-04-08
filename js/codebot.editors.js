@@ -34,16 +34,20 @@ var CodebotEditors = function() {
      * @param {function} theEditorFactory - function invoked by Codebot to create an editor. The function signature is <code>func(theContainer, theContent, theNode)</code>, the <code>theContainer</code> is the id of a div where the editor will be placed, <code>theContent</code> is the file content and <code>theNode</code> is a filesystem node describing the file.
      */
     this.register = function(theFileExtension, theEditorFactory) {
+        var aExt = '';
+
         if(theFileExtension instanceof Array) {
             for(var i = 0; i < theFileExtension.length; i++) {
-                mExtensionsMap[theFileExtension[i].replace('.', '')] = theEditorFactory;
+                aExt = theFileExtension[i].replace('.', '');
+                mExtensionsMap[aExt] = theEditorFactory;
             }
 
         } else {
-            mExtensionsMap[theFileExtension.replace('.', '')] = theEditorFactory;
+            aExt = theFileExtension.replace('.', '');
+            mExtensionsMap[aExt] = theEditorFactory;
         }
 
-        console.log('CODEBOT [editors] Available editors by extension: ', mExtensionsMap);
+        console.log('CODEBOT [editor added]', theFileExtension);
     };
 
     /**
@@ -74,7 +78,7 @@ var CodebotEditors = function() {
         mSelf = this;
         mCodebot = theCodebot;
 
-        mSelf.register('png', CodebotEditorGraphic.create);
+        mSelf.register(['png', 'jpeg'], CodebotEditorGraphic.create);
         mSelf.register('*', CodebotEditorAce.create);
     };
 };
