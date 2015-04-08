@@ -55,5 +55,20 @@ var CodebotSignals = function() {
     /**
      * TODO: add docs.
      */
-    this.lastSlidePanelClosed = new CodebotSignal();    
+    this.lastSlidePanelClosed = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
+    this.tabClosed = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
+    this.tabLostFocus = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
+    this.tabFocused = new CodebotSignal();
 };

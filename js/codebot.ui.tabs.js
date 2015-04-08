@@ -33,13 +33,14 @@ var CodebotTabs = function() {
         $('#' + aData.container).remove();
 		aData.editor = null;
 
-		console.debug('onTabClose', aData);
+        mCodebot.signals.tabClosed.dispatch([aData]);
 	};
 
 	var onTabBlur = function(theTab) {
         var aData = theTab.data('tabData').data;
         $('#' + aData.container).hide();
-        console.debug('onTabBlur', aData);
+
+        mCodebot.signals.tabLostFocus.dispatch([aData]);
 	};
 
 	var onTabFocus = function(theTab) {
@@ -47,7 +48,7 @@ var CodebotTabs = function() {
 		$('#' + aData.container).show();
         mActiveTab = theTab;
 
-        console.debug('onTabFocus', aData);
+        mCodebot.signals.tabFocused.dispatch([aData]);
 	};
 
     /**
