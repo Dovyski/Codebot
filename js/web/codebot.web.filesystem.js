@@ -32,6 +32,28 @@ var CodebotWebFilesystem = function() {
 	var mDisk = '';
 	var mProjectPath = '';
 
+	// From here: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Sending_and_Receiving_Binary_Data
+	var readBinary = function(thePath, theCallback) {
+		var aReq = new XMLHttpRequest();
+		var aUrl = API_URL +
+				   'class=disk&method=read&mount=' + encodeURI(mDisk + '/' + mProjectPath) +
+				   '&path=' + thePath;
+
+		aReq.open('GET', aUrl, true);
+		aReq.responseType = 'blob';
+
+		aReq.onload = function(theEvent) {
+			var aBlob = aReq.response;
+			theCallback(aBlob);
+		};
+
+		aReq.onreadystatechange = function() {
+			//console.log(aReq);
+		};
+
+		aReq.send();
+	};
+
 	var runCommand = function(theParams, theDataType, theCallback) {
 		var aParams = $.extend({mount: mDisk + '/' + mProjectPath}, theParams);
 
@@ -95,7 +117,7 @@ var CodebotWebFilesystem = function() {
 			runCommand({method: 'read-codebot', path: theNode.path.replace(/codebot:\/\//, '')}, 'text', theCallback);
 
 		} else {
-			runCommand({method: 'read', path: theNode.path}, 'text', theCallback);
+			readBinary(theNode.path, theCallback);
 		}
 	};
 

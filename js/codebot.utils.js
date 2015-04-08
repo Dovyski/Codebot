@@ -71,4 +71,14 @@ CODEBOT.utils = new function() {
             aResults = aRegex.exec(location.search);
         return aResults === null ? "" : decodeURIComponent(aResults[1].replace(/\+/g, " "));
     };
+
+    this.objectToUrlParams = function(theObject) {
+        var aRet = [];
+
+        for(var i in theObject) {
+            aRet.push(i + '=' + encodeURI(theObject[i]));
+        }
+
+        return aRet.join('&');
+    };
 };

@@ -135,7 +135,7 @@ class Disk {
 		return array('success' => true, 'msg' => '');
 	}
 
-	public function lsCodebot($theMount, $theDir) {
+	public function lsCodebot($theDir) {
 		$aFiles = array(
 			array(
 				'name' => 'Project',
@@ -148,10 +148,8 @@ class Disk {
 			)
 		);
 
-		if($theDir == './plugins') {
-			// TODO: improve this
-			$aFiles[0]['children'] = $this->findActivePlugins();
-		}
+		// TODO: improve this
+		$aFiles[0]['children'] = $this->findActivePlugins();
 
 		return $aFiles;
 	}

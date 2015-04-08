@@ -33,20 +33,31 @@
 
 var CodebotEditorAce = new function() {
     this.create = function(theTab, theContent, theNode) {
-        var aEditor = null;
+        var aEditor = null, aReader;
 
         aEditor = ace.edit(theTab.container);
         aEditor.setTheme("ace/theme/tomorrow_night_eighties"); // TODO: get theme from Codebot?
         aEditor.getSession().setMode("ace/mode/javascript"); // TODO: choose mode based on file extension.
-        aEditor.setValue(theContent);
-        
-        aEditor.session.selection.clearSelection();
+
+        if(theContent instanceof Blob) {
+            aReader = new FileReader();
+			aReader.readAsText(theContent);
+
+            aReader.onloadend = function() {
+                aEditor.setValue(aReader.result);
+                aEditor.session.selection.clearSelection();
+                theTab.setDirty(false);
+			};
+        } else {
+            aEditor.setValue(theContent);
+            aEditor.session.selection.clearSelection();
+        }
 
         // TODO: remove this CODEBOT singleton call.
         for(var i in CODEBOT.preferences.get().editor) {
             aEditor.setOption(i, CODEBOT.preferences.get().editor[i]);
         }
-        
+
         aEditor.getSession().on('change', function(e) {
             theTab.setDirty(true);
         });
