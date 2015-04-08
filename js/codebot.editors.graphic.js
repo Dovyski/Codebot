@@ -23,21 +23,17 @@
 var SimpleGraphicViewer = function(theContainer) {
     var mContainer = theContainer;
 
-    this.renderSWFByURL = function(theURL, theWidth, theHeight) {
-        $('#' + mContainer).html(
-            '<object type="application/x-shockwave-flash" data="'+theURL+'" width="'+(theWidth || '640')+'" height="'+(theHeight || '480')+'">' +
-                '<param name="movie" value="'+theURL+'" />' +
-                '<param name="quality" value="high" />' +
-            '</object>'
-        );
-    };
+    this.renderImg = function(theURL) {
+        $('#' + mContainer).css({
+            'height': '100%',
+            'width': '100%',
+            'background-color': '#1c1c1c',
+            'background-image': 'linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black)',
+            'background-size': '60px 60px',
+            'background-position': '0 0, 30px 30px'
+        });
 
-    this.showMessage = function(theText) {
-        $('#' + mContainer).html(theText);
-    }
-
-    this.showLoading = function() {
-        $('#' + mContainer).html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading...');
+        $('#' + mContainer).html('<img src="'+theURL+'" />');
     };
 };
 
@@ -45,7 +41,13 @@ var CodebotEditorGraphic = new function() {
     this.create = function(theTab, theContent, theNode) {
         var aEditor = new SimpleGraphicViewer(theTab.container);
 
-        aEditor.showLoading();
+        if(theContent instanceof Blob) {
+            var aUrlCreator = window.URL || window.webkitURL;
+            var aImageUrl = aUrlCreator.createObjectURL(theContent);
+
+            aEditor.renderImg(aImageUrl);
+        }
+
         return aEditor;
     };
 };

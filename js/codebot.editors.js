@@ -74,7 +74,7 @@ var CodebotEditors = function() {
         mSelf = this;
         mCodebot = theCodebot;
 
-        mSelf.register('swf', CodebotEditorGraphic.create);
+        mSelf.register('png', CodebotEditorGraphic.create);
         mSelf.register('*', CodebotEditorAce.create);
     };
 };
