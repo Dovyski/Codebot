@@ -38,6 +38,7 @@ var CodebotEditorAce = new function() {
         aEditor = ace.edit(theTab.container);
         aEditor.setTheme("ace/theme/tomorrow_night_eighties"); // TODO: get theme from Codebot?
         aEditor.getSession().setMode("ace/mode/javascript"); // TODO: choose mode based on file extension.
+        aEditor.getSession().setOption("useWorker", false);
 
         if(theContent instanceof Blob) {
             aReader = new FileReader();
