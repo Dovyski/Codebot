@@ -145,7 +145,7 @@ class Project {
 		$aTemplateFilesPath		= $aTemplatePath . 'files' . DIRECTORY_SEPARATOR;
 		$aTemplateSettingsPath 	= $aTemplatePath . 'settings.json';
 
-		$aTemplateSettings 		= file_get_contents($aTemplateSettingsPath);
+		$aTemplateSettings 		= '{}';
 
 		if($theTemplate == 'git') {
 			$aGitRepo = @$theData['git-repo'];
@@ -155,6 +155,7 @@ class Project {
 				Utils::systemExec('git clone '. $aGitRepo . ' ' . $theFileSystemPath, __FILE__, __LINE__);
 			}
 		} else {
+			$aTemplateSettings = file_get_contents($aTemplateSettingsPath);
 			Utils::systemExec('cp -R '. $aTemplateFilesPath . '* ' . $theFileSystemPath, __FILE__, __LINE__);
 		}
 

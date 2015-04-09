@@ -38,6 +38,8 @@ var CoreIdePlugin = function() {
     var doCreateNewProject = function() {
         var aData = $('#form-new-project').serialize();
 
+        // TODO: close active slide panel.
+
         mSelf.api('project', 'create', aData, function(theData) {
             if(theData.success) {
                 mProjects[theData.project.id] = theData.project;
@@ -82,6 +84,32 @@ var CoreIdePlugin = function() {
         });
     };
 
+    var generateTemplatesList = function(theType) {
+        var aContent = '';
+
+        // TODO: get this info from a real source.
+        // TODO: improve CSS and stuff here.
+
+        aContent +=
+            '<a href="javascript:void(0)" data-template="git">' +
+                '<div style="width: 90px; padding: 2px; float: left;">' +
+                    '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview" style="width: 80px; height: auto;"><br />' +
+                    'Git' +
+                '</div>' +
+            '</a>';
+
+        aContent +=
+            '<a href="javascript:void(0)" data-template="flash">' +
+                '<div style="width: 90px; padding: 2px; float: left;">' +
+                    '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview" style="width: 80px; height: auto;"><br />' +
+                    'Starling ' + theType +
+                '</div>' +
+            '</a>';
+
+
+        return aContent;
+    };
+
     this.api = function(theClass, theMethod, theParams, theCallback) {
         $.ajax({
             url: API_URL + 'class=' + theClass + '&method=' + theMethod,
@@ -110,7 +138,7 @@ var CoreIdePlugin = function() {
 
         mContext = theContext;
 
-        mContext.ui.addButton({ icon: '<i class="fa fa-plus-square"></i>', action: mSelf.newProject });
+        mContext.ui.addButton({ icon: '<i class="fa fa-plus-square"></i>', panel: mSelf.newProject });
         mContext.ui.addButton({ icon: '<i class="fa fa-folder-open"></i>', action: mSelf.openProject });
         mContext.ui.addButton({ icon: '<i class="fa fa-floppy-o"></i>', action: mSelf.save });
 
@@ -121,69 +149,53 @@ var CoreIdePlugin = function() {
         }
     };
 
-    this.newProject = function(theContext, theButton) {
-        var aForm =
-            '<form id="form-new-project">'+
-              '<div class="form-group">'+
-                '<label for="project-name">Name</label>'+
-                '<input type="text" class="form-control" name="name" id="project-name" placeholder="Project name">'+
-              '</div>'+
-              '<div class="form-group">'+
-                '<label for="project-type">Type</label>'+
-                '<select class="form-control" name="type" name="project-type">'+
-                    '<option value="flash">Flash/AS3</option>'+
-                    '<option value="haxe">Haxe (coming soon!)</option>'+
-                    '<option value="flash">Javascript (coming soon!)</option>'+
-                '</select>'+
-              '</div>'+
-              '<div class="form-group">'+
-                '<label for="project-template">Template</label>'+
-                '<select class="form-control" name="template" id="project-template">'+
-                    '<optgroup label="Agnostic">'+
-                        '<option value="none">Empty project</option>'+
-                        '<option value="git">Create from public git repository</option>'+
-                    '</optgroup>'+
+    this.newProject = function(theContainer, theContext) {
+        var aContent = '',
+            aPanel,
+            aFolder;
 
-                    '<optgroup label="Flash/AS3">'+
-                        '<option value="flash">Empty project</option>'+
-                        '<option value="flash-flixel-community">Flixel Community</option>'+
-                        '<option value="flash-starling">Starling</option>'+
-                    '</optgroup>'+
+        aPanel  = new CodebotFancyPanel('New project');
+        aFolder = aPanel.addFolder();
 
-                    '<optgroup label="Haxe (coming soon!)">'+
-                        '<option value="haxe">Empty project</option>'+
-                        '<option value="haxe-flixel">HaxeFlixel</option>'+
-                    '</optgroup>'+
+        aFolder.add('Name', '<input type="text" name="name" id="project-name" />');
+        aFolder.add('Type', '<select name="type" id="project-type"><option value="flash">Flash/AS3</option><option value="js">Javascript/HTML5</option></select>');
+        aFolder.add(null, '<button type="submit" value="Create" />');
 
-                    '<optgroup label="HTML5/Javascript (coming soon!)">'+
-                        '<option value="js">Empty project</option>'+
-                        '<option value="js-phaser">Phaser</option>'+
-                    '</optgroup>'+
-                '</select>'+
-              '</div>'+
-              '<div class="form-group" style="display:none;" id="project-git-repo-panel">'+
-                '<label for="git-repo">Git repo</label>'+
-                '<input type="text" class="form-control" name="git-repo" id="project-git-repo" placeholder="https://github.com/User/proj.git">'+
-              '</div>'+
-            '</form>';
+        aFolder = aPanel.addFolder('Template', 'output');
 
-        mContext.ui.showDialog({
-            keyboard: true,
-            title: 'Create project',
-            content: aForm,
-            buttons: {
-                'Create': {css: 'btn-primary', dismiss: true, callback: doCreateNewProject }
-            }
-        });
+        aFolder.add(null, '<div id="project-templates" style="width: 100%; height: 700px; overflow: none;"></div><input type="hidden" name="template" id="project-template" value="none" />', 'id', 'raw');
+        aFolder.add(null, '<div id="project-git-repo-panel" style="width: 100%; display: none;"><input type="text" name="git-repo" id="project-git-repo" placeholder="https://github.com/User/proj.git"></div>', 'id', 'raw');
 
-        $('#form-new-project select#project-template').change(function(theEvent) {
-            if(theEvent.target.value == 'git') {
+        aContent += '<form action="javascript:void(0)" id="form-new-project">';
+        aContent += aPanel.html();
+        aContent += '</form>';
+
+        theContainer.css('background', '#3d3d3d');
+        theContainer.append(aContent);
+
+        $('#form-new-project').submit(doCreateNewProject);
+
+        // Populate the templates list
+        $('#project-templates').html(generateTemplatesList($('#project-type').val()));
+
+        // Handle clicks on template options
+        $('#project-templates a').click(function(theEvent) {
+            var aTemplate = $(this).data('template');
+
+            $('#form-new-project input#project-template').val(aTemplate);
+
+            if(aTemplate == 'git') {
                 $('#project-git-repo-panel').slideDown();
-
             } else {
                 $('#project-git-repo-panel').fadeOut('fast');
             }
-        })
+        });
+
+        // Change the templates list content everytime the
+        // projects type changes.
+        $('#form-new-project select#project-type').change(function(theEvent) {
+            $('#project-templates').html(generateTemplatesList(theEvent.target.value));
+        });
     };
 
     this.openProject = function(theContext, theButton) {
