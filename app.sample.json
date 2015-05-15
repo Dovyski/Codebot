@@ -1,0 +1,5 @@
+{
+    "codebot": {
+        "bootstrap": "./js/web/codebot.bootstrap.web.js"
+    }
+}
