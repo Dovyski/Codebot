@@ -34,7 +34,7 @@ function codebotBootstrap(theAppConfig) {
 
     console.log('CODEBOT [bootstrap] App configuration file (app.json):', theAppConfig);
 
-    if(theAppConfig.bootstrap) {
+    if(theAppConfig && theAppConfig.bootstrap) {
         // App config file tells us to use a custom-made bootstrapper.
         // So be it!
         console.log('CODEBOT [bootstrap] Firing up custom bootstrapper: ' + theAppConfig.bootstrap);
