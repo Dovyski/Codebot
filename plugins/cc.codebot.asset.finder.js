@@ -45,7 +45,7 @@ var AssetFinderPlugin = function() {
             aFolder.add(null, '<img src="'+theData.preview[0]+'" style="width: 100%; height: auto;"/>', 'id', 'raw');
 
             aFolder = aPanel.addFolder('Download', 'actions');
-            aFolder.add('Save to', '<select name="downloadTo"><option value="/assets">/assets</option><option value="/another">/another</option></select> <a href=""><i class="fa fa-download"></i> DOWNLOAD</a>');
+            aFolder.add('Save to', '<select id="assetDestinationDir"><option value="/assets">/assets</option><option value="/another">/another</option></select> <a href="javascript:void(0)" id="assetDownloadLink"><i class="fa fa-download"></i> DOWNLOAD</a>');
 
             aFolder = aPanel.addFolder('Details', 'details');
             aFolder.add('Author', theData.author);
@@ -56,6 +56,12 @@ var AssetFinderPlugin = function() {
             aFolder.add(null, theData.description, 'id', 'raw');
 
             mInfoPanel.html(aPanel.html());
+
+            mInfoPanel.find('a#assetDownloadLink').click(function() {
+                aIde.api('assets', 'fetch', {item: theItemId, destination: mInfoPanel.find('select#assetDestinationDir').val()}, function(theData) {
+                    console.log('Fetch response!', theData);
+                });
+            });
         });
     };
 

@@ -59,5 +59,62 @@ class AssetFinder {
 
 		return $aRet;
 	}
+
+	private function doDownload($theUrl) {
+		$aCh = curl_init();
+
+		curl_setopt($aCh, CURLOPT_URL, $theUrl);
+		curl_setopt($aCh, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($aCh, CURLOPT_SSL_VERIFYPEER, false);
+
+		$aData 	= curl_exec($aCh);
+		$aError = curl_error($aCh);
+
+		curl_close($aCh);
+
+		if($aError != '') {
+			throw new Exception($aError);
+		}
+
+		return $aData;
+	}
+
+	public function fetch($theItemId, $theDestinationPath) {
+		$aRet 	= array();
+		$aItem	= $this->info($theItemId);
+
+		if($aItem != null) {
+			if(count($aItem->files) > 0) {
+				$aRet['downloaded'] = array();
+
+				foreach($aItem->files as $aFile) {
+					// TODO: use some sort of pipe to avoid loading the file to the memory.
+					$aData 			= $this->doDownload($aFile['url']);
+					$aDestination 	= 'C:\wamp\www\tmp\\' . $aFile['name']; // TODO: correctly get file system path
+
+					Utils::log('Downloaded "'.$aFile['url'].'" to "'.$aDestination.'"', $theLabel = 'AssetFinder', __LINE__);
+
+					$aLocalFile = fopen($aDestination, 'w+');
+					fputs($aLocalFile, $aData);
+					fclose($aLocalFile);
+
+					$aRet['downloaded'][] = array(
+						'name' => $aFile['name'],
+						'path' => $theDestinationPath . DIRECTORY_SEPARATOR . $aFile['name']
+					);
+				}
+				$aRet['success'] = true;
+
+			} else {
+				$aRet['error'] = true;
+				$aRet['message'] = 'Item has no files to download.';
+			}
+		} else {
+			$aRet['error'] = true;
+			$aRet['message'] = 'Item does not exist.';
+		}
+
+		return $aRet;
+	}
 }
 ?>
