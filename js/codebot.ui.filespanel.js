@@ -236,4 +236,5 @@ var CodebotFilesPanel = function() {
     };
 
     this.__defineGetter__("contextMenu", function(){ return mContextMenu; });
+    this.__defineGetter__("tree", function(){ return mTree.rootNode.children[0]; });
 };

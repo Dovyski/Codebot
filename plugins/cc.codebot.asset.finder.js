@@ -30,8 +30,22 @@ var AssetFinderPlugin = function() {
     var mContext        = null;
     var mInfoPanel      = null;
 
+    var findProjectTopFolders = function() {
+        var aRoot = mContext.ui.filesPanel.tree,
+            aRet = [];
+            i = 0;
+
+        for(i = 0; i < aRoot.children.length; i++) {
+            if(aRoot.children[i].folder) {
+                aRet.push(aRoot.children[i].data);
+            }
+        }
+
+        return aRet;
+    };
+
     var showItemInfo = function(theItemId) {
-        var aIde, aPanel, aFolder, aContent;
+        var aIde, aPanel, aFolder, aContent, aProjectFolders, aFoldersText = '';
 
         aIde = mContext.getPlugin('cc.codebot.ide.web');
 
@@ -44,8 +58,12 @@ var AssetFinderPlugin = function() {
             aFolder = aPanel.addFolder('Preview', 'preview');
             aFolder.add(null, '<img src="'+theData.preview[0]+'" style="width: 100%; height: auto;"/>', 'id', 'raw');
 
+            aProjectFolders = findProjectTopFolders();
+            for(var i = 0, aTotal = aProjectFolders.length; i < aTotal; i++) {
+                aFoldersText += '<option value="' + aProjectFolders[i].path + '">/' + aProjectFolders[i].name + '</option>';
+            }
             aFolder = aPanel.addFolder('Download', 'actions');
-            aFolder.add('Save to', '<select id="assetDestinationDir"><option value="/assets">/assets</option><option value="/another">/another</option></select> <a href="javascript:void(0)" id="assetDownloadLink"><i class="fa fa-download"></i> DOWNLOAD</a>');
+            aFolder.add('Save to', '<select id="assetDestinationDir"><option value="/">/</option>'+aFoldersText+'</select> <a href="javascript:void(0)" id="assetDownloadLink"><i class="fa fa-download"></i> DOWNLOAD</a>');
 
             aFolder = aPanel.addFolder('Details', 'details');
             aFolder.add('Author', theData.author);
