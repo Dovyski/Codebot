@@ -127,20 +127,19 @@ class AssetFinder {
 					$aLocalFile = @fopen($aDestination, 'w+');
 
 					if($aLocalFile !== false && @fwrite($aLocalFile, $aData) !== false) {
+						$aRet['success'] = true;
 						$aRet['downloaded'][] = array(
 							'name' => $aFile['name'],
 							'path' => $theDestinationPath . DIRECTORY_SEPARATOR . $aFile['name']
 						);
 
 						fclose($aLocalFile);
-						
+
 					} else {
 						$aRet['error'] = true;
 						$aRet['message'] = 'Unable to write to file in folder ' . $theDestinationPath;
 					}
 				}
-				$aRet['success'] = true;
-
 			} else {
 				$aRet['error'] = true;
 				$aRet['message'] = 'Item has no files to download.';
