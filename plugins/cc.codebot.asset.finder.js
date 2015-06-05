@@ -58,8 +58,16 @@ var AssetFinderPlugin = function() {
             mInfoPanel.html(aPanel.html());
 
             mInfoPanel.find('a#assetDownloadLink').click(function() {
-                aIde.api('assets', 'fetch', {item: theItemId, destination: mInfoPanel.find('select#assetDestinationDir').val()}, function(theData) {
-                    console.log('Fetch response!', theData);
+                aIde.api('assets', 'fetch', {item: theItemId, project: aIde.getActiveProject().id, destination: mInfoPanel.find('select#assetDestinationDir').val()}, function(theData) {
+                    console.debug('Fetch response!', theData);
+
+                    if(theData.success) {
+                        aIde.refreshProjectFileList();
+
+                    } else {
+                        // TODO: show the error somewhere.
+                        console.error(theData.message);
+                    }
                 });
             });
         });

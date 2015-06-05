@@ -110,6 +110,7 @@ var CoreIdePlugin = function() {
         return aContent;
     };
 
+    // TODO: transform it into an object, e.g. api.disk.method().
     this.api = function(theClass, theMethod, theParams, theCallback) {
         $.ajax({
             url: API_URL + 'class=' + theClass + '&method=' + theMethod,

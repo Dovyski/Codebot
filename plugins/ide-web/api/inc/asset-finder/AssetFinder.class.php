@@ -79,29 +79,65 @@ class AssetFinder {
 		return $aData;
 	}
 
-	public function fetch($theItemId, $theDestinationPath) {
+	private function resolveFileSystemPath($theProjectId, $theFolder) {
+		$aUser = User::getById(Auth::getAuthenticatedUserId());
+
+		if($aUser == null) {
+			throw new Exception('Invalid project owner');
+		}
+
+		$aProject = Project::getById($theProjectId, true);
+
+		if($aProject == null) {
+			throw new Exception('Unknown project with id ' . $theProjectId);
+		}
+
+		if($aProject->fk_user != $aUser->id) {
+			throw new Exception('The user is not allowed to view the project');
+		}
+
+		// Remove any / or \ at the begining of the destination folder.
+		if($theFolder[0] == '/' || $theFolder[0] == '\\') {
+			$theFolder = substr($theFolder, 1);
+		}
+
+		$aDisk = new Disk();
+		$aPath = $aDisk->dirPath($aUser->disk, $aProject->path, $theFolder);
+
+		return $aPath;
+	}
+
+	public function fetch($theItemId, $theProjectId, $theDestinationPath) {
 		$aRet 	= array();
 		$aItem	= $this->info($theItemId);
 
 		if($aItem != null) {
+			$aRealPath = $this->resolveFileSystemPath($theProjectId, $theDestinationPath);
+
 			if(count($aItem->files) > 0) {
 				$aRet['downloaded'] = array();
 
 				foreach($aItem->files as $aFile) {
 					// TODO: use some sort of pipe to avoid loading the file to the memory.
 					$aData 			= $this->doDownload($aFile['url']);
-					$aDestination 	= 'C:\wamp\www\tmp\\' . $aFile['name']; // TODO: correctly get file system path
+					$aDestination 	= $aRealPath . $aFile['name'];
 
 					Utils::log('Downloaded "'.$aFile['url'].'" to "'.$aDestination.'"', $theLabel = 'AssetFinder', __LINE__);
 
-					$aLocalFile = fopen($aDestination, 'w+');
-					fputs($aLocalFile, $aData);
-					fclose($aLocalFile);
+					$aLocalFile = @fopen($aDestination, 'w+');
 
-					$aRet['downloaded'][] = array(
-						'name' => $aFile['name'],
-						'path' => $theDestinationPath . DIRECTORY_SEPARATOR . $aFile['name']
-					);
+					if($aLocalFile !== false && @fwrite($aLocalFile, $aData) !== false) {
+						$aRet['downloaded'][] = array(
+							'name' => $aFile['name'],
+							'path' => $theDestinationPath . DIRECTORY_SEPARATOR . $aFile['name']
+						);
+
+						fclose($aLocalFile);
+						
+					} else {
+						$aRet['error'] = true;
+						$aRet['message'] = 'Unable to write to file in folder ' . $theDestinationPath;
+					}
 				}
 				$aRet['success'] = true;
 
