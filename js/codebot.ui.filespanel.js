@@ -29,6 +29,7 @@ var CodebotFilesPanel = function() {
     var mTree = null;
     var mContextMenu = null;
     var mFoldersState = {};
+    var mPendingActivities = {};
 
     var onClick = function(theEvent, theItem) {
         // If the currently focused node has the rename form active,
@@ -163,6 +164,43 @@ var CodebotFilesPanel = function() {
         }
     };
 
+    var refreshPendingActivitiesBadge = function() {
+        var aText = '', aActivity;
+
+        for(var aKey in mPendingActivities) {
+            aActivity = mPendingActivities[aKey];
+
+            if(aActivity != null) {
+                aText += '<li><strong>' + mPendingActivities[aKey].name + '</strong> ' + mPendingActivities[aKey].description + '</li>';
+            }
+        }
+
+        if(aText != '') {
+            $('#files-panel-pending-activities div ul').html(aText);
+            $('#files-panel-pending-activities a').show();
+        } else {
+            $('#files-panel-pending-activities a').hide();
+        }
+    };
+
+    var initPendingActivitiesBadge = function() {
+        $('#files-panel').append(
+            '<div id="files-panel-pending-activities">' +
+                '<a href="javascript:void(0);"><i class="fa fa-circle-o-notch fa-spin"></i></a>' +
+                '<div><ul></ul></div>' +
+            '</div>'
+        );
+
+        $('#files-panel-pending-activities a').hover(
+            function() {
+                $('#files-panel-pending-activities div').show();
+            },
+            function() {
+                $('#files-panel-pending-activities div').hide();
+            }
+        );
+    }
+
     var initTree = function() {
         $("#folders").fancytree({
             extensions: ['dnd', 'edit', 'awesome', 'contextMenu'],
@@ -226,6 +264,7 @@ var CodebotFilesPanel = function() {
         mContextMenu = new CodebotContextMenu();
 
         mContextMenu.init(mCodebot);
+        initPendingActivitiesBadge();
         initTree();
 
         // If a new project is open, clear the folder status cache.
@@ -234,6 +273,19 @@ var CodebotFilesPanel = function() {
             mFoldersState = {};
         });
     };
+
+    this.addPendingActivity = function(theKey, theName, theDescription) {
+        mPendingActivities[theKey] = {
+            name: theName, description: theDescription
+        };
+
+        refreshPendingActivitiesBadge();
+    };
+
+    this.removePendingActivity = function(theKey) {
+        mPendingActivities[theKey] = null;
+        refreshPendingActivitiesBadge();
+    }
 
     this.__defineGetter__("contextMenu", function(){ return mContextMenu; });
     this.__defineGetter__("tree", function(){ return mTree.rootNode.children[0]; });

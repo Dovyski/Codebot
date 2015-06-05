@@ -125,6 +125,25 @@ Files panel
     border-left: 1px solid #000;
 }
 
+#files-panel-pending-activities {
+    position: absolute;
+    top: 3px;
+    right: 35px;
+}
+
+#files-panel-pending-activities div {
+    position: absolute;
+    top: 3px;
+    right: 45px;
+    width: 200px;
+    height: auto;
+}
+
+#files-panel-pending-activities div,
+#files-panel-pending-activities a {
+    display: none;;
+}
+
 ul.fancytree-container {
   background-color: transparent;
   border: none;

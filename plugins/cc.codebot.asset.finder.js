@@ -76,8 +76,11 @@ var AssetFinderPlugin = function() {
             mInfoPanel.html(aPanel.html());
 
             mInfoPanel.find('a#assetDownloadLink').click(function() {
+                mInfoPanel.fadeOut();
+                mContext.ui.filesPanel.addPendingActivity('downloading' + theItemId, 'Downloading asset', 'Fetching item to "' + mInfoPanel.find('select#assetDestinationDir').val() + '"');
+
                 aIde.api('assets', 'fetch', {item: theItemId, project: aIde.getActiveProject().id, destination: mInfoPanel.find('select#assetDestinationDir').val()}, function(theData) {
-                    console.debug('Fetch response!', theData);
+                    mContext.ui.filesPanel.removePendingActivity('downloading' + theItemId);
 
                     if(theData.success) {
                         aIde.refreshProjectFileList();
