@@ -22,11 +22,22 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+
+/**
+ * This script indexes different assets provider websites (e.g. OpenGameArt)
+ * in order to create a searchable database of entries available to the
+ * assets finder plugin.
+ */
+
 @include_once dirname(__FILE__).'/../../config.local.php';
 include_once dirname(__FILE__).'/../../config.php';
 
 require_once dirname(__FILE__).'/../Database.class.php';
+require_once dirname(__FILE__).'/../Utils.class.php';
 require_once dirname(__FILE__) . '/3rdparty/querypath/qp.php';
+
+$aInfo		= parse_url($_REQUEST['url']);
+$aChannel	= $aInfo['host'];
 
 $aQp 		= htmlqp($_REQUEST['url']);
 
@@ -54,7 +65,36 @@ $aQp->find('div.field-name-field-art-files div.field-item a')->each(function($th
 	$aFiles[] = array('name' => $theElement->textContent, 'url' => $theElement->getAttribute('href'));
 });
 
+$aTitleId 			= str_replace(array(' ', '.', '/', '\\', '[', ']', '(', ')', ':', ';', ','), '-', $aTitle);
+$aChannelFolder 	= CODEBOT_ASSET_FINDER_MIRROR_FOLDER . $aChannel . DIRECTORY_SEPARATOR;
+$aAssetFolder		= $aTitleId . DIRECTORY_SEPARATOR;
+$aPreviewFolder		= $aAssetFolder . 'preview' . DIRECTORY_SEPARATOR;
+
+if(!file_exists($aAssetFolder)) {
+	@mkdir($aChannelFolder . $aAssetFolder, 0755, true);
+	@mkdir($aChannelFolder . $aPreviewFolder, 0755, true);
+}
+
+// Download asset preview images to local mirror
+foreach($aPreviews as $aIndex => $aPreview) {
+	$aInfo 	 = parse_url($aPreview);
+	$aNewUrl = $aPreviewFolder . basename($aInfo['path']);
+
+	file_put_contents($aChannelFolder . $aNewUrl, Utils::downloadFile($aPreview));
+	$aPreviews[$aIndex] = str_replace('\\', '/', $aNewUrl);
+}
+
+// Download asset files to local mirror
+foreach($aFiles as $aIndex => $aFile) {
+	$aInfo 	 = parse_url($aFile['url']);
+	$aNewUrl = $aAssetFolder . basename($aInfo['path']);
+
+	file_put_contents($aChannelFolder . $aNewUrl, Utils::downloadFile($aFile['url']));
+	$aFiles[$aIndex]['url'] = str_replace('\\', '/', $aNewUrl);
+}
+
+// TODO: check for duplicates before inserting anything.
 $aQuery = Database::instance()->prepare("INSERT INTO assets (title, author, channel, license, thumbnail, preview, files, description, attribution) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$aQuery->execute(array($aTitle, $aAuthor, 'http://opengameart.org', 1, $aPreviews[0], serialize($aPreviews), serialize($aFiles), $aDescription, 'Atrribution: '));
+$aQuery->execute(array($aTitle, $aAuthor, $aChannel, 1, $aPreviews[0], serialize($aPreviews), serialize($aFiles), $aDescription, 'Atrribution: '));
 
 ?>

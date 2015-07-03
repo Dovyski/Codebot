@@ -60,25 +60,6 @@ class AssetFinder {
 		return $aRet;
 	}
 
-	private function doDownload($theUrl) {
-		$aCh = curl_init();
-
-		curl_setopt($aCh, CURLOPT_URL, $theUrl);
-		curl_setopt($aCh, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($aCh, CURLOPT_SSL_VERIFYPEER, false);
-
-		$aData 	= curl_exec($aCh);
-		$aError = curl_error($aCh);
-
-		curl_close($aCh);
-
-		if($aError != '') {
-			throw new Exception($aError);
-		}
-
-		return $aData;
-	}
-
 	private function resolveFileSystemPath($theProjectId, $theFolder) {
 		$aUser = User::getById(Auth::getAuthenticatedUserId());
 
@@ -119,7 +100,7 @@ class AssetFinder {
 
 				foreach($aItem->files as $aFile) {
 					// TODO: use some sort of pipe to avoid loading the file to the memory.
-					$aData 			= $this->doDownload($aFile['url']);
+					$aData 			= Utils::downloadFile($aFile['url']);
 					$aDestination 	= $aRealPath . $aFile['name'];
 
 					Utils::log('Downloaded "'.$aFile['url'].'" to "'.$aDestination.'"', $theLabel = 'AssetFinder', __LINE__);

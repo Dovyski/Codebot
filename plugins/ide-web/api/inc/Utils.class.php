@@ -57,6 +57,25 @@ class Utils {
 
 		return $aOut;
 	}
+
+	public static function downloadFile($theUrl) {
+		$aCh = curl_init();
+
+		curl_setopt($aCh, CURLOPT_URL, $theUrl);
+		curl_setopt($aCh, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($aCh, CURLOPT_SSL_VERIFYPEER, false);
+
+		$aData 	= curl_exec($aCh);
+		$aError = curl_error($aCh);
+
+		curl_close($aCh);
+
+		if($aError != '') {
+			throw new Exception($aError);
+		}
+
+		return $aData;
+	}
 }
 
 ?>

@@ -32,4 +32,7 @@
 @define('CODEBOT_FLASH_OUTPUT_REPIPE',           '2>&1');
 @define('CODEBOT_FLASH_FLEX_SDK',                'C:/Users/Dovyski/AppData/Local/FlashDevelop/Apps/flexairsdk/4.6.0+15.0.0/bin/');
 
+// Assets finder
+@define('CODEBOT_ASSET_FINDER_MIRROR_FOLDER',	 '/var/www/assets/');
+
 ?>
