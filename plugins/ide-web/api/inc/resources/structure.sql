@@ -39,8 +39,7 @@ CREATE TABLE IF NOT EXISTS `assets` (
   `attribution` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `license` (`license`),
-  KEY `title` (`title`),
-  KEY `license_2` (`license`)
+  KEY `title` (`title`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
