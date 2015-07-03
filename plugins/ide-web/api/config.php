@@ -34,5 +34,6 @@
 
 // Assets finder
 @define('CODEBOT_ASSET_FINDER_MIRROR_FOLDER',	 '/var/www/assets/');
+@define('CODEBOT_ASSET_FINDER_MIRROR_URL',	 	 'http://cdn.domain.com/assets/');
 
 ?>

@@ -23,6 +23,26 @@
 */
 
 class AssetFinder {
+	private function expandItemURLs($theAssetObject) {
+		if(property_exists($theAssetObject, 'thumbnail')) {
+			$theAssetObject->thumbnail = CODEBOT_ASSET_FINDER_MIRROR_URL . $theAssetObject->thumbnail;
+		}
+
+		if(property_exists($theAssetObject, 'preview')) {
+			foreach($theAssetObject->preview as $aIndex => $aPreview) {
+				$theAssetObject->preview[$aIndex] = CODEBOT_ASSET_FINDER_MIRROR_URL . $aPreview;
+			}
+		}
+
+		if(property_exists($theAssetObject, 'files')) {
+			foreach($theAssetObject->files as $aIndex => $aFile) {
+				$theAssetObject->files[$aIndex]['url'] = CODEBOT_ASSET_FINDER_MIRROR_URL . $aFile['url'];
+			}
+		}
+
+		return $theAssetObject;
+	}
+
 	public function search($theQuery, $theLicenses, $theStart, $theLimit) {
 		$theStart = (int)$theStart;
 		$theLimit = (int)$theLimit;
@@ -39,7 +59,7 @@ class AssetFinder {
 
 		if ($aQuery->execute(array($theQuery, $theLicenses))) {
 			while($aRow = $aQuery->fetch(PDO::FETCH_OBJ)) {
-				$aRet['items'][] = $aRow;
+				$aRet['items'][] = $this->expandItemURLs($aRow);
 			}
 		}
 
@@ -56,6 +76,8 @@ class AssetFinder {
 			$aRet->preview 	= unserialize($aRet->preview);
 			$aRet->files 	= unserialize($aRet->files);
 		}
+
+		$this->expandItemURLs($aRet);
 
 		return $aRet;
 	}

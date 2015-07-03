@@ -81,7 +81,7 @@ foreach($aPreviews as $aIndex => $aPreview) {
 	$aNewUrl = $aPreviewFolder . basename($aInfo['path']);
 
 	file_put_contents($aChannelFolder . $aNewUrl, Utils::downloadFile($aPreview));
-	$aPreviews[$aIndex] = str_replace('\\', '/', $aNewUrl);
+	$aPreviews[$aIndex] = $aChannel . '/' . str_replace('\\', '/', $aNewUrl);
 }
 
 // Download asset files to local mirror
@@ -90,7 +90,7 @@ foreach($aFiles as $aIndex => $aFile) {
 	$aNewUrl = $aAssetFolder . basename($aInfo['path']);
 
 	file_put_contents($aChannelFolder . $aNewUrl, Utils::downloadFile($aFile['url']));
-	$aFiles[$aIndex]['url'] = str_replace('\\', '/', $aNewUrl);
+	$aFiles[$aIndex]['url'] = $aChannel . '/' . str_replace('\\', '/', $aNewUrl);
 }
 
 // TODO: check for duplicates before inserting anything.
