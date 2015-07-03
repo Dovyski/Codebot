@@ -77,7 +77,9 @@ class AssetFinder {
 			$aRet->files 	= unserialize($aRet->files);
 		}
 
-		$this->expandItemURLs($aRet);
+		if($aRet != null) {
+			$this->expandItemURLs($aRet);
+		}
 
 		return $aRet;
 	}
