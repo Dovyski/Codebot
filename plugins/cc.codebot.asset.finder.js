@@ -56,22 +56,22 @@ var AssetFinderPlugin = function() {
             aPanel = new CodebotFancyPanel(theData.title);
 
             aFolder = aPanel.addFolder('Preview', 'preview');
-            aFolder.add(null, '<img src="'+theData.preview[0]+'" style="width: 100%; height: auto;"/>', 'id', 'raw');
+            aFolder.add('<img src="'+theData.preview[0]+'" style="width: 100%; height: auto;"/>', 'id', 'raw');
 
             aProjectFolders = findProjectTopFolders();
             for(var i = 0, aTotal = aProjectFolders.length; i < aTotal; i++) {
                 aFoldersText += '<option value="' + aProjectFolders[i].path + '">/' + aProjectFolders[i].name + '</option>';
             }
             aFolder = aPanel.addFolder('Download', 'actions');
-            aFolder.add('Save to', '<select id="assetDestinationDir"><option value="/">/</option>'+aFoldersText+'</select> <a href="javascript:void(0)" id="assetDownloadLink"><i class="fa fa-download"></i> DOWNLOAD</a>');
+            aFolder.add('<select id="assetDestinationDir"><option value="/">/</option>'+aFoldersText+'</select> <a href="javascript:void(0)" id="assetDownloadLink"><i class="fa fa-download"></i> DOWNLOAD</a>', 'Save to');
 
             aFolder = aPanel.addFolder('Details', 'details');
-            aFolder.add('Author', theData.author);
-            aFolder.add('License', theData.license);
-            aFolder.add('Channel', theData.channel);
+            aFolder.add(theData.author, 'Author');
+            aFolder.add(theData.license, 'License');
+            aFolder.add(theData.channel, 'Channel');
 
             aFolder = aPanel.addFolder('Description', 'description');
-            aFolder.add(null, theData.description, 'id', 'raw');
+            aFolder.add(theData.description);
 
             mInfoPanel.html(aPanel.html());
 
@@ -127,17 +127,19 @@ var AssetFinderPlugin = function() {
 
         var aFolder = aPanel.addFolder('Options', 'options');
 
-        aFolder.add('Search', '<input type="text" name="query" value="" />');
+        aFolder.add('<input type="text" name="query" value="" />', 'Search');
 
-        aFolder.add('License',
+        aFolder.add(
             '<select name="license">' +
                 '<option value="1">CC-BY 3.0</option>' +
                 '<option value="2">CC-BY-SA 3.0</option>' +
                 '<option value="4">GPL 3.0</option>' +
-            '</select>');
+            '</select>',
+            'License'
+        );
 
         var aFolder = aPanel.addFolder('Results', 'results');
-        aFolder.add(null, '<div id="assets-finder-browse-area" style="width: 100%; height: 635px; overflow: scroll;">Nothing to show yet.</div>', 'id', 'raw');
+        aFolder.add('<div id="assets-finder-browse-area" style="width: 100%; height: 635px; overflow: scroll;">Nothing to show yet.</div>');
 
         aContent += '<form action="#" id="asset-finder-main">';
         aContent += aPanel.html();

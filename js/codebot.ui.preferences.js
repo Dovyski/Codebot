@@ -259,7 +259,7 @@ var CodebotPreferencesUI = function() {
         var aFolder = aPanel.addFolder('', 'preferences');
 
         for(var aId in mSections) {
-            aFolder.add(mSections[aId].title, '', aId, 'function');
+            aFolder.add('', mSections[aId].title, aId, 'function');
         }
 
         aContent += aPanel.html();

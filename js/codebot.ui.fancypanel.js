@@ -21,20 +21,46 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+/**
+ * Represents a folder in the fancy panel. A folder can contain several
+ * elements, all placed placed below each other.
+ *
+ * @param  {string} theTitle The folder title (label displayed at the top of the folder)
+ * @param  {string} theId    A string representing the DOM id that the folder will receive. It's useful to directly access the folder's DOM element.
+ */
 var CodebotFancyPanelFolder = function(theTitle, theId) {
 	this.title   = theTitle;
 	this.id      = theId;
 
 	var mItens   = [];
 
-	this.add = function(theLabel, theContent, theId, theBehavior) {
+	/**
+	 * Adds a new element to the folder. A new element is always displayed below the
+	 * elements that were already added.
+	 *
+	 * @param  {string} theContent  The content of the element.
+	 * @param  {string} theLabel    A text to be displayed close to the element's content.
+	 * @param  {string} theId       A string representing the DOM id that the element will receive. It's useful to directly access the elemenbts's DOM element. Default it <code>''</code>.
+	 * @param  {string} theBehavior What sort of behavior the element should have. Values are <code>number</code> (default), <code>boolean</code>, <code>function</code> and <code>raw</code>.
+	 */
+	this.add = function(theContent, theLabel, theId, theBehavior) {
 		mItens.push({
-			label: theLabel,
+			label: theLabel || null,
 			content: theContent,
 			id: theId || '',
 			behavior: theBehavior || 'number'
 		});
 	};
+
+	/**
+	 * Adds a new element to the folder without organizing it as a (labe => content) pair.
+	 *
+	 * @param  {string} theContent  The content of the element.
+	 * @param  {string} theId       A string representing the DOM id that the element will receive. It's useful to directly access the elemenbts's DOM element. Default it <code>''</code>.
+	 */
+	this.addRaw = function(theContent, theId) {
+		this.add(theContent || '', null, theId, 'raw');
+	}
 
 	this.open = function() {
 		// TODO: implement
@@ -52,6 +78,13 @@ var CodebotFancyPanel = function(theTitle) {
 	var mFolders = [];
 	var mTitle = theTitle;
 
+	/**
+	 * Adds a new folder to the fancy panel.
+	 *
+	 * @param  {string} theTitle 			A text to be displayed at the top of the folder.
+	 * @param  {string} theId    			A string representing the DOM id of the folder being added. It's useful to find the container that contains the folder itself.
+	 * @return {CodebotFancyPanelFolder}    A reference to the folder that was just created and added to the panel.
+	 */
 	this.addFolder = function(theTitle, theId) {
 		var aFolder = new CodebotFancyPanelFolder(theTitle, theId);
 		mFolders.push(aFolder);
@@ -59,6 +92,12 @@ var CodebotFancyPanel = function(theTitle) {
 		return aFolder;
 	};
 
+	/**
+	 * Renders the whole panel as an HTML string. This string can be
+	 * attached to the DOM, for instance.
+	 *
+	 * @return {string} A text containing the HTML representation of the panel.
+	 */
 	this.html = function() {
 		var aContent = '';
 

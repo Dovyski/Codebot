@@ -179,21 +179,21 @@ var FlashToolsPlugin = function() {
 
         var aFolder = aPanel.addFolder('Output', 'output');
 
-        aFolder.add('Output dir', '<input type="text" name="outDir" value="/bin/" />');
-        aFolder.add('Output file', '<input type="text" name="outFile" value="Mode.swf" />');
-        aFolder.add('Doc class', '<input type="text" name="docClass" value="src/Main.as" />');
-        aFolder.add('Width', '<input type="text" name="width" value="800" />');
-        aFolder.add('Height', '<input type="text" name="height" value="600" />');
+        aFolder.add('<input type="text" name="outDir" value="/bin/" />', 'Output dir');
+        aFolder.add('<input type="text" name="outFile" value="Mode.swf" />', 'Output file');
+        aFolder.add('<input type="text" name="docClass" value="src/Main.as" />', 'Doc class');
+        aFolder.add('<input type="text" name="width" value="800" />', 'Width');
+        aFolder.add('<input type="text" name="height" value="600" />', 'Height');
 
         var aFolder = aPanel.addFolder('Classpath', 'output');
-        aFolder.add('Libs', '<input type="text" name="libs" value="/libs/" />');
+        aFolder.add('<input type="text" name="libs" value="/libs/" />', 'Libs');
 
         aFolder = aPanel.addFolder('SDK and Compiler', 'sdk');
-        aFolder.add('Platform', '<select name="platform"><option value="player">Flash Player</option><option value="air">AIR</option></select>');
-        aFolder.add('Version', '<input type="text" name="swf" value="22" />');
-        aFolder.add('Other', '<input type="text" name="other" value="/libs/" />');
-        aFolder.add('Test', '<input type="text" name="test" value="/libs/" />');
-        aFolder.add('Thing', '<select name="thing"><option value="800">Flash Player</option></select>');
+        aFolder.add('<select name="platform"><option value="player">Flash Player</option><option value="air">AIR</option></select>', 'Platform');
+        aFolder.add('<input type="text" name="swf" value="22" />', 'Version');
+        aFolder.add('<input type="text" name="other" value="/libs/" />', 'Other');
+        aFolder.add('<input type="text" name="test" value="/libs/" />', 'Test');
+        aFolder.add('<select name="thing"><option value="800">Flash Player</option></select>', 'Thing');
 
         aContent += '<form action="#" id="flash-tools-settings" data-manager="' + mSelf.id + '">';
         aContent += aPanel.html();
