@@ -590,6 +590,11 @@ div#project-templates div.project-template {
     float: left;
 }
 
+div#project-templates div.project-template img {
+    width: 80px;
+    height: auto;
+}
+
 div#project-templates a.selected div.project-template {
     background: red;
 }

@@ -51,6 +51,29 @@ class Project {
 		return array('success' => true, 'project' => $aProject, 'msg' => '');
 	}
 
+	public function findTypesAndTemplates() {
+		// TODO: get this from a real source, e.g. each platform handler register its own type and templates.
+		return array(
+			'success' => true,
+			'types' => array(
+				'flash' => array(
+	                'name' => 'Flash/AS3',
+	                'templates' => array(
+	                    'empty' 	=> array('name' => 'Empty', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
+	                    'starling' 	=> array('name' => 'Starling', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
+	                )
+	            ),
+				'js' => array(
+	                'name' => 'HTML5/Javascript',
+	                'templates' => array(
+						'empty' 	=> array('name' => 'Empty', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
+	                    'phaser' 	=> array('name' => 'Phaser', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
+	                )
+	            )
+			)
+		);
+	}
+
 	public function search() {
 		$aUserId = Auth::getAuthenticatedUserId();
 		$aUser 	 = User::getById($aUserId);

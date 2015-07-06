@@ -26,14 +26,15 @@
  */
 var CoreIdePlugin = function() {
     // Constants
-    const API_URL       = 'plugins/ide-web/api/?';
+    const API_URL           = 'plugins/ide-web/api/?';
 
-    this.id             = 'cc.codebot.ide.web';
+    this.id                 = 'cc.codebot.ide.web';
 
-    var mSelf           = this;
-    var mContext        = null;
-    var mProjects       = {};
-    var mActiveProject  = null;
+    var mSelf               = this;
+    var mContext            = null;
+    var mProjects           = {};
+    var mActiveProject      = null;
+    var mProjectFactory     = null;
 
     var doCreateNewProject = function() {
         var aData = $('#form-new-project').serialize();
@@ -85,29 +86,70 @@ var CoreIdePlugin = function() {
     };
 
     var generateTemplatesList = function(theType) {
-        var aContent = '';
+        var aContent = '',
+            aTemplate,
+            aInfo;
 
-        // TODO: get this info from a real source.
-        // TODO: improve CSS and stuff here.
+        if(mProjectFactory) {
+            for(aTemplate in mProjectFactory[theType].templates) {
+                aInfo = mProjectFactory[theType].templates[aTemplate];
 
-        aContent +=
+                aContent +=
+                    '<a href="javascript:void(0)" data-template="' + theType + '">' +
+                        '<div class="project-template">' +
+                            '<img src="' + aInfo.icon + '" alt="Preview"><br />' +
+                            aInfo.name +
+                        '</div>' +
+                    '</a>';
+            }
+        }
+
+        // All types have a bult-in git template.
+        aContent =
             '<a href="javascript:void(0)" data-template="git">' +
                 '<div class="project-template">' +
                     '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview" style="width: 80px; height: auto;"><br />' +
                     'Git' +
                 '</div>' +
-            '</a>';
-
-        aContent +=
-            '<a href="javascript:void(0)" data-template="flash">' +
-                '<div class="project-template">' +
-                    '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview" style="width: 80px; height: auto;"><br />' +
-                    'Starling ' + theType +
-                '</div>' +
-            '</a>';
-
+            '</a>' +
+            aContent;
 
         return aContent;
+    };
+
+    var renderTemplatesList = function(theType) {
+        var aTemplate;
+
+        // Populate the templates list
+        $('#project-templates').html(generateTemplatesList(theType));
+
+        // Handle clicks on template options
+        $('#project-templates a').click(function(theEvent) {
+            aTemplate = $(this).data('template');
+
+            $('#project-templates a').removeClass('selected');
+            $(this).addClass('selected');
+
+            $('#form-new-project input#project-template').val(aTemplate);
+
+            if(aTemplate == 'git') {
+                $('#project-git-repo-panel').slideDown();
+            } else {
+                $('#project-git-repo-panel').fadeOut('fast');
+            }
+        });
+    };
+
+    var initProjectFactory = function() {
+        mSelf.api('project', 'findTypesAndTemplates', null, function(theData) {
+            if(theData.success) {
+                mProjectFactory = theData.types;
+                console.debug('Project factory received: ', mProjectFactory);
+
+            } else {
+                console.error('Failed to get project factory: ' + theData.msg);
+            }
+        });
     };
 
     // TODO: transform it into an object, e.g. api.disk.method().
@@ -142,6 +184,8 @@ var CoreIdePlugin = function() {
         mContext.ui.addButton({ icon: '<i class="fa fa-plus-square"></i>', panel: mSelf.newProject });
         mContext.ui.addButton({ icon: '<i class="fa fa-folder-open"></i>', action: mSelf.openProject });
         mContext.ui.addButton({ icon: '<i class="fa fa-floppy-o"></i>', action: mSelf.save });
+
+        initProjectFactory();
 
         var aProject = CODEBOT.utils.getURLParamByName('project');
 
@@ -181,29 +225,12 @@ var CoreIdePlugin = function() {
 
         $('#form-new-project').submit(doCreateNewProject);
 
-        // Populate the templates list
-        $('#project-templates').html(generateTemplatesList($('#project-type').val()));
-
-        // Handle clicks on template options
-        $('#project-templates a').click(function(theEvent) {
-            var aTemplate = $(this).data('template');
-
-            $('#project-templates a').removeClass('selected');
-            $(this).addClass('selected');
-
-            $('#form-new-project input#project-template').val(aTemplate);
-
-            if(aTemplate == 'git') {
-                $('#project-git-repo-panel').slideDown();
-            } else {
-                $('#project-git-repo-panel').fadeOut('fast');
-            }
-        });
+        renderTemplatesList($('#project-type').val());
 
         // Change the templates list content everytime the
         // projects type changes.
         $('#form-new-project select#project-type').change(function(theEvent) {
-            $('#project-templates').html(generateTemplatesList(theEvent.target.value));
+            renderTemplatesList(theEvent.target.value);
         });
     };
 
