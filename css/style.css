@@ -591,6 +591,7 @@ div#project-templates div.project-template {
     float: left;
     margin-left: 5px;
     color: #aaa;
+    line-height: normal;
 }
 
 div#project-templates div.project-template img {

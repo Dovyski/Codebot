@@ -39,9 +39,12 @@ var CoreIdePlugin = function() {
     var doCreateNewProject = function() {
         var aData = $('#form-new-project').serialize();
 
-        // TODO: close active slide panel.
+        mContext.ui.slidePanel.close();
+        mContext.ui.filesPanel.addPendingActivity('new-project', 'Creating project', 'Project XYZ is being created.');
 
         mSelf.api('project', 'create', aData, function(theData) {
+            mContext.ui.filesPanel.removePendingActivity('new-project');
+
             if(theData.success) {
                 mProjects[theData.project.id] = theData.project;
                 doOpenProject(theData.project.id);
@@ -95,7 +98,7 @@ var CoreIdePlugin = function() {
                 aInfo = mProjectFactory[theType].templates[aTemplate];
 
                 aContent +=
-                    '<a href="javascript:void(0)" data-template="' + theType + '">' +
+                    '<a href="javascript:void(0)" data-template="' + aTemplate + '">' +
                         '<div class="project-template">' +
                             '<img src="' + aInfo.icon + '" alt="Preview"><br />' +
                             aInfo.name +

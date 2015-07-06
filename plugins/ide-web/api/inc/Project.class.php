@@ -31,7 +31,7 @@ class Project {
 	public $creation_date 	= 0;
 	public $settings 		= '{}';
 
-	public function create($theName, $theType, $theTemplate, $theGitRepo = null) {
+	public function create($theType, $theGitRepo, $theTemplate, $theName, $theVisibility) {
 		$aData = array(
 			'name' 		=> $theName,
 			'type'		=> $theType,
@@ -59,15 +59,15 @@ class Project {
 				'flash' => array(
 	                'name' => 'Flash/AS3',
 	                'templates' => array(
-	                    'empty' 	=> array('name' => 'Empty', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
-	                    'starling' 	=> array('name' => 'Starling', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
+	                    'flash-empty' 				=> array('name' => 'Empty', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
+	                    'flash-flixel-community' 	=> array('name' => 'Flixel Community', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
 	                )
 	            ),
 				'js' => array(
 	                'name' => 'HTML5/Javascript',
 	                'templates' => array(
-						'empty' 	=> array('name' => 'Empty', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
-	                    'phaser' 	=> array('name' => 'Phaser', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
+						'js-empty' 		=> array('name' => 'Empty', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
+	                    'js-phaser' 	=> array('name' => 'Phaser (bare minimum)', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
 	                )
 	            )
 			)
