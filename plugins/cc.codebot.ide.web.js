@@ -92,7 +92,7 @@ var CoreIdePlugin = function() {
 
         aContent +=
             '<a href="javascript:void(0)" data-template="git">' +
-                '<div style="width: 90px; padding: 2px; float: left;">' +
+                '<div class="project-template">' +
                     '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview" style="width: 80px; height: auto;"><br />' +
                     'Git' +
                 '</div>' +
@@ -100,7 +100,7 @@ var CoreIdePlugin = function() {
 
         aContent +=
             '<a href="javascript:void(0)" data-template="flash">' +
-                '<div style="width: 90px; padding: 2px; float: left;">' +
+                '<div class="project-template">' +
                     '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview" style="width: 80px; height: auto;"><br />' +
                     'Starling ' + theType +
                 '</div>' +
@@ -158,14 +158,19 @@ var CoreIdePlugin = function() {
         aPanel  = new CodebotFancyPanel('New project');
         aFolder = aPanel.addFolder();
 
-        aFolder.add('Name', '<input type="text" name="name" id="project-name" />');
         aFolder.add('Type', '<select name="type" id="project-type"><option value="flash">Flash/AS3</option><option value="js">Javascript/HTML5</option></select>');
-        aFolder.add(null, '<button type="submit" value="Create" />');
 
         aFolder = aPanel.addFolder('Template', 'output');
 
-        aFolder.add(null, '<div id="project-templates" style="width: 100%; height: 700px; overflow: none;"></div><input type="hidden" name="template" id="project-template" value="none" />', 'id', 'raw');
+        aFolder.add(null, '<div id="project-templates"></div><input type="hidden" name="template" id="project-template" value="none" />', 'id', 'raw');
         aFolder.add(null, '<div id="project-git-repo-panel" style="width: 100%; display: none;"><input type="text" name="git-repo" id="project-git-repo" placeholder="https://github.com/User/proj.git"></div>', 'id', 'raw');
+
+        aFolder = aPanel.addFolder('Settings', 'settings');
+
+        aFolder.add('Name', '<input type="text" name="name" id="project-name" placeholder="Projet name"/>');
+        aFolder.add('Visibility', '<select name="visibility"><option value="public">Public</option><option value="private">Private (not available yet)</option></select>');
+        aFolder.add(null, '');
+        aFolder.add(null, '<div style="text-align: center;"><button type="submit">Create project</button></div>');
 
         aContent += '<form action="javascript:void(0)" id="form-new-project">';
         aContent += aPanel.html();
@@ -182,6 +187,9 @@ var CoreIdePlugin = function() {
         // Handle clicks on template options
         $('#project-templates a').click(function(theEvent) {
             var aTemplate = $(this).data('template');
+
+            $('#project-templates a').removeClass('selected');
+            $(this).addClass('selected');
 
             $('#form-new-project input#project-template').val(aTemplate);
 
