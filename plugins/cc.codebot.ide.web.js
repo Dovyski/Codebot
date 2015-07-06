@@ -106,10 +106,13 @@ var CoreIdePlugin = function() {
 
         // All types have a bult-in git template.
         aContent =
+            '<div id="project-git-repo-panel" class="c">' +
+                '<i class="fa fa-code-fork fa-2x"></i> <input type="text" name="git-repo" id="project-git-repo" placeholder="https://github.com/User/proj.git">' +
+            '</div>'+
             '<a href="javascript:void(0)" data-template="git">' +
                 '<div class="project-template">' +
-                    '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview" style="width: 80px; height: auto;"><br />' +
-                    'Git' +
+                    '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview"><br />' +
+                    'Clone from Git' +
                 '</div>' +
             '</a>' +
             aContent;
@@ -135,7 +138,7 @@ var CoreIdePlugin = function() {
             if(aTemplate == 'git') {
                 $('#project-git-repo-panel').slideDown();
             } else {
-                $('#project-git-repo-panel').fadeOut('fast');
+                $('#project-git-repo-panel').slideUp();
             }
         });
     };
@@ -207,9 +210,8 @@ var CoreIdePlugin = function() {
         aFolder = aPanel.addFolder('Template', 'output');
 
         aFolder.addRaw('<div id="project-templates"></div><input type="hidden" name="template" id="project-template" value="none" />');
-        aFolder.addRaw('<div id="project-git-repo-panel" style="width: 100%; display: none;"><input type="text" name="git-repo" id="project-git-repo" placeholder="https://github.com/User/proj.git"></div>');
 
-        aFolder = aPanel.addFolder('Settings', 'settings');
+        aFolder = aPanel.addFolder('Project settings', 'settings');
 
         aFolder.add('<input type="text" name="name" id="project-name" placeholder="Projet name"/>', 'Name');
         aFolder.add('<select name="visibility"><option value="public">Public</option><option value="private">Private (not available yet)</option></select>', 'Visibility');
