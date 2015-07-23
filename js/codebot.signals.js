@@ -75,6 +75,11 @@ var CodebotSignals = function() {
     /**
      * TODO: add docs.
      */
+    this.tabOpened = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
     this.filesPanelItemClicked = new CodebotSignal();
 
     /**

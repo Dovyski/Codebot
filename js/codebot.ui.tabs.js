@@ -25,6 +25,7 @@ var CodebotTabs = function() {
     var mSelf           = null;
     var mTabController  = null;
     var mActiveTab      = null;
+    var mOpenTabs       = [];
     var mCodebot        = null;
     var mIds            = 0;
 
@@ -116,7 +117,10 @@ var CodebotTabs = function() {
      * @returns {object} an object describing the newly created tab.
      */
     this.add = function(theConfig) {
-        var aTab = {
+        var aJustAddedTab,
+            aTab;
+
+        aTab = {
             favicon: 'file-text-o',
             title: 'Unknown',
             editor: null,
@@ -148,9 +152,16 @@ var CodebotTabs = function() {
             data: aTab
         });
 
+        aJustAddedTab = getTabDataById(mIds);
         mIds++;
 
-        return getTabDataById(mIds - 1);
+        // Add the tab to the list of open tabs
+        mOpenTabs.push(aJustAddedTab);
+
+        // Tell everybody that a new tab has been opened.
+        mCodebot.signals.tabOpened.dispatch([aJustAddedTab]);
+
+        return aJustAddedTab;
 	};
 
     this.remove = function(theTabId) {
@@ -205,10 +216,14 @@ var CodebotTabs = function() {
     };
 
     // Getters and setters
-
-    this.__defineGetter__("active", function(){
-        return mActiveTab ? mActiveTab.data('tabData').data : null;
-    });
+    /**
+     * @return {CodebotTab}  Returns a reference to the currently active (selected) tab.
+     */
+    this.__defineGetter__("active", function() { return mActiveTab ? mActiveTab.data('tabData').data : null; });
+    /**
+     * @return {Object}  A list containing all currently open tabs.
+     */
+    this.__defineGetter__("opened", function() { return mOpenTabs; });
 };
 
 

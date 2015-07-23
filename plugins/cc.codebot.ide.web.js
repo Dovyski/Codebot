@@ -35,6 +35,7 @@ var CoreIdePlugin = function() {
     var mProjects           = {};
     var mActiveProject      = null;
     var mProjectFactory     = null;
+    var mAutoSaveProject    = null;
 
     var doCreateNewProject = function() {
         var aData = $('#form-new-project').serialize();
@@ -158,6 +159,36 @@ var CoreIdePlugin = function() {
         });
     };
 
+    /**
+     * Saves the content of all currently open tabs.
+     *
+     * @param  {Function} theCallback A callback that will be invoked after the content of all tabs has been saved.
+     */
+    this.saveAllCurrentlyOpenTabs = function(theCallback) {
+        var aTotal = mContext.ui.tabs.opened.length,
+            i,
+            aDirty = 0;
+
+        if(mActiveProject && aTotal > 0) {
+            for(i = 0; i < aTotal; i++) {
+                if(mContext.ui.tabs.opened[i].dirty) {
+                    console.debug('Tab content auto-saved', mContext.ui.tabs.opened[i].node.name);
+                    mContext.writeTabToDisk(mContext.ui.tabs.opened[i]);
+                    aDirty++;
+                }
+            }
+        }
+
+        if(aDirty == 0) {
+            console.debug('callback!');
+        }
+
+        if(aDirty == 0 && theCallback) {
+            theCallback();
+            console.debug('callback!');
+        }
+    };
+
     // TODO: transform it into an object, e.g. api.disk.method().
     this.api = function(theClass, theMethod, theParams, theCallback) {
         $.ajax({
@@ -198,6 +229,9 @@ var CoreIdePlugin = function() {
         if(aProject) {
             doOpenProject(aProject);
         }
+
+        // TODO: make a setting optio to enable/disable auto-saving.
+        mAutoSaveProject = setInterval(mSelf.saveAllCurrentlyOpenTabs, 5000);
     };
 
     this.newProject = function(theContainer, theContext) {
