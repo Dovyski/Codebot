@@ -194,6 +194,10 @@ var CoreIdePlugin = function() {
         }
     };
 
+    var initUIAfterProjectOpened = function(theProjectInfo) {
+        mContext.ui.addButton(mSelf.id + 'save', {icon: '<i class="fa fa-floppy-o"></i>', action: mSelf.save });
+    };
+
     /**
      * Saves the content of all currently open tabs.
      *
@@ -232,9 +236,12 @@ var CoreIdePlugin = function() {
 
         mContext = theContext;
 
-        mContext.ui.addButton({ icon: '<i class="fa fa-plus-square"></i>', panel: mSelf.newProject });
-        mContext.ui.addButton({ icon: '<i class="fa fa-folder-open"></i>', action: mSelf.openProject });
-        mContext.ui.addButton({ icon: '<i class="fa fa-floppy-o"></i>', action: mSelf.save });
+        mContext.ui.addButton('newProject', {icon: '<i class="fa fa-plus-square"></i>', panel: mSelf.newProject });
+        mContext.ui.addButton(mSelf.id + 'openProject', {icon: '<i class="fa fa-folder-open"></i>', action: mSelf.openProject });
+
+        // Schedule the rest of the UI initialization to happen only
+        // after a project has been opened.
+        mContext.signals.projectOpened.add(initUIAfterProjectOpened);
 
         initProjectFactory();
 

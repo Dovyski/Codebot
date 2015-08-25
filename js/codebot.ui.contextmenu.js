@@ -86,7 +86,7 @@ var CodebotContextMenu = function() {
         var aMenu = {};
 
         for(var aKey in mItems) {
-            if(!mItems[aKey].hide && (!mItems[aKey].regex || mItems[aKey].regex.test(aNode.name))) {
+            if(mItems[aKey] && !mItems[aKey].hide && (!mItems[aKey].regex || mItems[aKey].regex.test(aNode.name))) {
                 // A registered item has interest on this node.
                 // Add the registered item to the menu then.
                 aMenu[aKey] = mItems[aKey];
@@ -105,6 +105,21 @@ var CodebotContextMenu = function() {
                 mItems[aKey] = theOptions.items[aKey];
                 mItems[aKey].hide = true;
             }
+        }
+    };
+
+    this.removeItem = function(theKey) {
+        var aKey;
+
+        if(mItems[theKey]) {
+            // Remove subitems if they exist.
+            if(mItems[theKey].items) {
+                for(aKey in mItems[theKey].items) {
+                    mItems[aKey] = null;
+                }
+            }
+            // Remove the item itself
+            mItems[theKey] = null;
         }
     };
 

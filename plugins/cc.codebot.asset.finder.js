@@ -169,7 +169,7 @@ var AssetFinderPlugin = function() {
         console.debug('AssetFinderPlugin:init()');
 
         mContext = theContext;
-        mContext.ui.addButton({ icon: '<i class="fa fa-picture-o"></i>', panel: mSelf.mainPanel });
+        mContext.ui.addButton(mSelf.id + 'mainPanel', { icon: '<i class="fa fa-picture-o"></i>', panel: mSelf.mainPanel });
 
         $('body').append('<div id="asset-info-item-description" style="display: none; position: absolute; top:0; right: 333px; width: 600px; height: 100%; background: #3d3d3d; overflow: hidden;"></div>');
         mInfoPanel = $('#asset-info-item-description');

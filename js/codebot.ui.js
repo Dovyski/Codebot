@@ -29,7 +29,6 @@ var CodebotUI = function() {
 	var mPreferences        = null;
 	var mCodebot            = null;
     var mButtons            = {};
-    var mButtonsIds         = 0;
     var mSelf               = null;
 
     var adjustButtonsPosition = function() {
@@ -39,6 +38,11 @@ var CodebotUI = function() {
 		    $(this).css('bottom', aHeight + (aHeight > 0 ? 'px' : ''));
 		    aHeight += $(this).height();
 		});
+	};
+
+	// Prevent funky key names, e.g. 'my.key', which don't work in DOM ids.
+	var sanitizeButtonId = function(theId) {
+		return theId.replace(/[^a-zA-Z0-9-]+/g, '-');
 	};
 
     // TODO: implement a pretty confirm dialog/panel
@@ -59,39 +63,68 @@ var CodebotUI = function() {
 
     /**
     {
-        panel: function,
+		panel: function,
         icon: string,
         action: function (func(context, button_as_jquery_obj))
         position: string ('top' or 'bottom')
     }
      */
-	this.addButton = function(theOptions) {
-        var aId = mButtonsIds++;
-        var aIcon = '';
+	this.addButton = function(theId, theOptions) {
+        var aId = theId,
+        	aIcon = '',
+			aRet = false;
 
-        mButtons[aId] = theOptions;
-        aIcon = theOptions.icon || '<i class="fa fa-question"></i>';
+		if(!aId) {
+			throw new TypeError('Unable to add new button with invalid id.');
+		}
 
-		$('#config-bar').append('<a href="#" id="config-bar-button-'+ aId +'" data-button-id="'+ aId +'" class="'+(theOptions.position || 'top')+'">' + aIcon + '</a>');
+		if(!theOptions) {
+			throw new TypeError('Invalid config options of new button.');
+		}
 
-		$('#config-bar-button-' + aId).click(function() {
-			var aIndex = $(this).data('button-id');
+		aId = sanitizeButtonId(aId);
 
-            if('action' in mButtons[aIndex]) {
-                mButtons[aIndex].action(mCodebot, $(this));
+		// Does the button already exist?
+		if(!mButtons[aId]) {
+			// Nope, first time being created.
+			mButtons[aId] = theOptions;
+	        aIcon = theOptions.icon || '<i class="fa fa-question"></i>';
 
-            } else if('panel' in mButtons[aIndex]) {
-                mSlidePanel.open(mButtons[aIndex].panel);
-            }
-		});
+			$('#config-bar').append('<a href="#" id="config-bar-button-'+ aId +'" data-button-id="'+ aId +'" class="'+(theOptions.position || 'top')+'">' + aIcon + '</a>');
 
-		adjustButtonsPosition();
+			$('#config-bar-button-' + aId).click(function() {
+				var aIndex = $(this).data('button-id');
+
+	            if('action' in mButtons[aIndex]) {
+	                mButtons[aIndex].action(mCodebot, $(this));
+
+	            } else if('panel' in mButtons[aIndex]) {
+	                mSlidePanel.open(mButtons[aIndex].panel);
+	            }
+			});
+
+			adjustButtonsPosition();
+			aRet = true;
+		}
+
+		return aRet;
 	};
 
-    this.removeButton = function(theCallback) {
-        // TODO: implement
-        adjustButtonsPosition();
-    }
+	/**
+	 * Removes a button from the UI.
+	 *
+	 * @param  {string} theId The id of that button. The id is informed when the button is added by <code>addButton()</code>.
+	 */
+    this.removeButton = function(theId) {
+		theId = sanitizeButtonId(theId);
+
+        if(mButtons[theId]) {
+			$('#config-bar-button-' + theId).off().remove();
+			mButtons[theId] = null;
+
+        	adjustButtonsPosition();
+		}
+    };
 
     /**
      * Shows a dialog in the screen.
@@ -152,7 +185,7 @@ var CodebotUI = function() {
         mPreferences.init(mCodebot);
 
         // Add Codebot button at the bottom of the sliding bar.
-        mSelf.addButton({ icon: '<i class="fa fa-cog"></i>', position: 'bottom', panel: mPreferences.main});
+        mSelf.addButton('cc.codebot.ui.preferences', {icon: '<i class="fa fa-cog"></i>', position: 'bottom', panel: mPreferences.main});
 
         // TODO: read data from disk, using last open directory.
 

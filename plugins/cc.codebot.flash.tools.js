@@ -109,6 +109,29 @@ var FlashToolsPlugin = function() {
         }
     };
 
+    var initAfterProjectOpened = function(theProjectInfo) {
+        // Remove all Flash stuff from the UI.
+        mContext.ui.removeButton(mSelf.id + 'build');
+        mContext.ui.removeButton(mSelf.id + 'settings');
+        mContext.ui.filesPanel.contextMenu.removeItem(mSelf.id + 'add-to-library');
+        mContext.signals.beforeFilesPanelRefresh.remove(highlightSwcsAddedToLib);
+
+        // If the newly opened project is a Flash one,
+        // add all the Flash UI back.
+        if(theProjectInfo.type == "flash") {
+            // Add build and settings buttons.
+            mContext.ui.addButton(mSelf.id + 'build', { icon: '<i class="fa fa-play"></i>', action: mSelf.build });
+            mContext.ui.addButton(mSelf.id + 'settings', { icon: '<i class="fa fa-wrench"></i>', panel: mSelf.settings });
+
+            // Register a context menu entry in the filesPanel for SWC files.
+            mContext.ui.filesPanel.contextMenu.addItem(mSelf.id + 'add-to-library', {regex: /.*\.swc/, name: 'Add to lib', icon: 'delete', action: addSwcToLib});
+
+            // Monitor files panel changes, so we can highlight nodes marked
+            // to be included in the compilation process (like blue SWCs in FlashDevelop)
+            mContext.signals.beforeFilesPanelRefresh.add(highlightSwcsAddedToLib);
+        }
+    };
+
     this.savePanelData = function(theContainerId, theData) {
         console.debug('FlashTools::savePanelData()', theContainerId, theData);
 
@@ -128,15 +151,8 @@ var FlashToolsPlugin = function() {
         mSelf = this;
         mContext = theContext;
 
-        mContext.ui.addButton({ icon: '<i class="fa fa-play"></i>', action: mSelf.build });
-        mContext.ui.addButton({ icon: '<i class="fa fa-wrench"></i>', panel: mSelf.settings });
-
-        // Register a context menu entry in the filesPanel for SWC files.
-        mContext.ui.filesPanel.contextMenu.addItem('add-to-library', {regex: /.*\.swc/, name: 'Add to lib', icon: 'delete', action: addSwcToLib});
-
-        // Monitor files panel changes, so we can highlight nodes marked
-        // to be included in the compilation process (like blue SWCs in FlashDevelop)
-        mContext.signals.beforeFilesPanelRefresh.add(highlightSwcsAddedToLib);
+        // Init everything only when a new (Flash) project is opened.
+        mContext.signals.projectOpened.add(initAfterProjectOpened);
     };
 
     this.build = function(theContext, theButton) {
