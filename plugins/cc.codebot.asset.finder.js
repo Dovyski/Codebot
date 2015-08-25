@@ -121,6 +121,10 @@ var AssetFinderPlugin = function() {
         console.log('loadMoreSearchResults?');
     };
 
+    var initUIAfterProjectOpened = function(theProjectInfo) {
+        mContext.ui.addButton(mSelf.id + 'mainPanel', { icon: '<i class="fa fa-picture-o"></i>', panel: mSelf.mainPanel });
+    };
+
     this.mainPanel = function(theContainer, theContext) {
         var aContent = '';
         var aPanel = new CodebotFancyPanel('Asset Finder');
@@ -169,7 +173,6 @@ var AssetFinderPlugin = function() {
         console.debug('AssetFinderPlugin:init()');
 
         mContext = theContext;
-        mContext.ui.addButton(mSelf.id + 'mainPanel', { icon: '<i class="fa fa-picture-o"></i>', panel: mSelf.mainPanel });
 
         $('body').append('<div id="asset-info-item-description" style="display: none; position: absolute; top:0; right: 333px; width: 600px; height: 100%; background: #3d3d3d; overflow: hidden;"></div>');
         mInfoPanel = $('#asset-info-item-description');
@@ -177,6 +180,8 @@ var AssetFinderPlugin = function() {
         mContext.signals.beforeLastSlidePanelClose.add(function() {
             mInfoPanel.fadeOut();
         });
+
+        mContext.signals.projectOpened.add(initUIAfterProjectOpened);
     };
 };
 
