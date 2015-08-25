@@ -41,6 +41,7 @@ require_once dirname(__FILE__).'/inc/Utils.class.php';
 
 // Include available development tool-chains
 require_once dirname(__FILE__).'/inc/FlashTools.class.php';
+require_once dirname(__FILE__).'/inc/JavascriptTools.class.php';
 
 // Include gamedev help tools
 require_once dirname(__FILE__).'/inc/asset-finder/AssetFinder.class.php';
@@ -71,6 +72,7 @@ if(!Auth::isUserAuthenticated()) {
 	$aRouter->add('disk', 'Disk');
 	$aRouter->add('project', 'Project');
 	$aRouter->add('flash', 'FlashTools');
+	$aRouter->add('javascript', 'JavascriptTools');
 	$aRouter->add('assets', 'AssetFinder');
 
 	// Get the party started and running!
