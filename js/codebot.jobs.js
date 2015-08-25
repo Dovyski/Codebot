@@ -36,6 +36,23 @@ var CodebotJobs = function() {
         return !Date.now ? (new Date().getTime()) : Date.now();
     }
 
+    var getJobByFunction = function(theFunction) {
+        var aId,
+            aJob,
+            aRet = null;
+
+        for(aId in mJobs) {
+            aJob = mJobs[aId];
+
+            if(aJob && aJob.callback == theFunction) {
+                aRet = aJob;
+                break;
+            }
+        }
+
+        return aRet;
+    };
+
     var functionRunner = function() {
         var aId,
             aCurrentTime = currentTime(),
@@ -63,22 +80,26 @@ var CodebotJobs = function() {
      * @param  {Number} theInterval The amount of time in milliseconds the scheduler should wait between every call to the specified function. The default is <code>500</code> milliseconds.
      * @param  {Object} thePayload  An object that will be passed as a parameter <code>theFunction</code>. This parameter will never be destroyed, so it can be used to create some sort of function context.
      * @param  {Number} theDuration For how long the scheduler will continue to call the specified function. The default value is <code>Number.MAX_VALUE</code>.
-     * @return {int}             The id of the newly created job. It can be used to remove the job.
+     * @return {boolean}             Returns <code>true</code> if the job was adde, or <code>false</code> otherwise (e.g. the job already existed).
      */
     this.add = function(theFunction, theInterval, thePayload, theDuration) {
         var aCurrentTime = currentTime(),
+            aId = 0;
+
+        if(getJobByFunction(theFunction) == null) {
             aId = mIds++;
 
-        mJobs[aId] = {
-            callback: theFunction,
-            startTime: aCurrentTime,
-            interval: theInterval || 500,
-            duration: theDuration || Number.MAX_VALUE,
-            nextRunTime: 0,
-            payload: thePayload
-        };
+            mJobs[aId] = {
+                callback: theFunction,
+                startTime: aCurrentTime,
+                interval: theInterval || 500,
+                duration: theDuration || Number.MAX_VALUE,
+                nextRunTime: 0,
+                payload: thePayload
+            };
+        }
 
-        return aId;
+        return aId != 0;
     };
 
     /**
@@ -88,17 +109,6 @@ var CodebotJobs = function() {
      * @return {Boolean}             Returns <code>true</code> if the job existed and was removed, or <code>false</code> otherwise.
      */
     this.remove = function(theFunction) {
-
-    };
-
-    /**
-     * Removes a job from the list using its id as a search criteria. This method is is much
-     * faster than <code>remove()</code>;
-     *
-     * @param  {Function} theFunction The function that is invoked for the job being removed.
-     * @return {Boolean}             Returns <code>true</code> if the job existed and was removed, or <code>false</code> otherwise.
-     */
-    this.removeById = function() {
 
     };
 

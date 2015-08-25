@@ -35,7 +35,6 @@ var CoreIdePlugin = function() {
     var mProjects           = {};
     var mActiveProject      = null;
     var mProjectFactory     = null;
-    var mAutoSaveProject    = null;
 
     var doCreateNewProject = function() {
         var aData = $('#form-new-project').serialize();
@@ -159,34 +158,49 @@ var CoreIdePlugin = function() {
         });
     };
 
+    var checkAndSaveDirtyTabs = function(theData) {
+        var aTotal = mContext.ui.tabs.opened.length,
+            i,
+            aNotDirty = 0,
+            aTab = null;
+
+        if(mActiveProject && aTotal > 0) {
+            for(i = 0; i < aTotal; i++) {
+                aTab = mContext.ui.tabs.opened[i];
+
+                // Was this tab already saved?
+                if(!theData.alreadySaved[aTab.id]) {
+                    // Nope, first time saving it.
+                    theData.alreadySaved[aTab.id] = true;
+
+                    // Does it need saving?
+                    if(aTab.dirty) {
+                        console.debug('Tab content auto-save requested', aTab.node.name);
+                        mContext.writeTabToDisk(aTab);
+                    }
+                }
+
+                if(!aTab.dirty) {
+                    aNotDirty++;
+                }
+            }
+        }
+
+        if(aNotDirty == aTotal) {
+            if(theData.callback) {
+                theData.callback();
+            }
+            return true; // tell the job scheduler to remove this job from the list.
+        }
+    };
+
     /**
      * Saves the content of all currently open tabs.
      *
      * @param  {Function} theCallback A callback that will be invoked after the content of all tabs has been saved.
      */
     this.saveAllCurrentlyOpenTabs = function(theCallback) {
-        var aTotal = mContext.ui.tabs.opened.length,
-            i,
-            aDirty = 0;
-
-        if(mActiveProject && aTotal > 0) {
-            for(i = 0; i < aTotal; i++) {
-                if(mContext.ui.tabs.opened[i].dirty) {
-                    console.debug('Tab content auto-saved', mContext.ui.tabs.opened[i].node.name);
-                    mContext.writeTabToDisk(mContext.ui.tabs.opened[i]);
-                    aDirty++;
-                }
-            }
-        }
-
-        if(aDirty == 0) {
-            console.debug('callback!');
-        }
-
-        if(aDirty == 0 && theCallback) {
-            theCallback();
-            console.debug('callback!');
-        }
+        mContext.jobs.add(checkAndSaveDirtyTabs, 500, {alreadySaved: {}, callback: theCallback});
     };
 
     // TODO: transform it into an object, e.g. api.disk.method().
@@ -229,9 +243,6 @@ var CoreIdePlugin = function() {
         if(aProject) {
             doOpenProject(aProject);
         }
-
-        // TODO: make a setting optio to enable/disable auto-saving.
-        mAutoSaveProject = setInterval(mSelf.saveAllCurrentlyOpenTabs, 5000);
     };
 
     this.newProject = function(theContainer, theContext) {
