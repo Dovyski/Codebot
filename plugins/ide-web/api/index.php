@@ -56,8 +56,9 @@ if(!CODEBOT_DEBUG_MODE) {
 // By default, the mime-type is json.
 header('Content-Type: application/json');
 
-// Initialize session stuff
+// Init stuff
 Auth::init();
+Database::init();
 
 $aOut = '';
 

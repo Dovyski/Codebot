@@ -4,10 +4,54 @@
  * configure it to your needs.
  */
 
+// Include the bare minimum to make the instalation process
+ require_once dirname(__FILE__).'/../api/inc/Auth.class.php';
+ require_once dirname(__FILE__).'/../api/inc/Database.class.php';
+
 // Include all configuration files
 @include_once dirname(__FILE__).'/../api/config.local.php';
 include_once dirname(__FILE__).'/../api/config.php';
 
+// The instalation steps
+$aSteps = array();
+$aSteps[0] = array('name' => 'Preparation');
+$aSteps[1] = array('name' => 'Database');
+$aSteps[2] = array('name' => 'Configuration');
+$aSteps[3] = array('name' => 'Have a cake!');
+
+// Get the current step
+$aStep 	= isset($_REQUEST['step']) ? (int)$_REQUEST['step'] : 0;
+$aError = '';
+
+// Init the session
+Auth::init();
+
+if($aStep == 0) {
+	// TODO: check dependencies, writable dirs, files, etc.
+}
+
+if($aStep == 1 && isset($_REQUEST['check_db'])) {
+	$aConfig = array(
+		'host' => isset($_REQUEST['host']) ? $_REQUEST['host'] : '',
+		'name' => isset($_REQUEST['name']) ? $_REQUEST['name'] : '',
+		'user' => isset($_REQUEST['user']) ? $_REQUEST['user'] : '',
+		'password' => isset($_REQUEST['password']) ? $_REQUEST['password'] : ''
+	);
+
+	try {
+		Database::connect($aConfig);
+		$aStep++;
+
+	} catch(PDOException $e) {
+		$aError = $e->getMessage();
+	}
+}
+
+if($aStep == 2 && isset($_REQUEST['write_config'])) {
+
+}
+
+// Render the whole thing up
 echo '<html>';
 echo '<head>';
 	echo '<meta charset="utf-8">';
@@ -24,28 +68,70 @@ echo '<body>';
 
 	echo '<div class="panel">';
 		echo '<h2>Progress</h2>';
-		echo '<ul>';
-			echo '<li>Hey</li>';
-			echo '<li>ss</li>';
-		echo '</ul>';
+		echo '<ol>';
+			foreach($aSteps as $aNumber => $aInfo) {
+				echo '<li><strong>' . ($aNumber + 1) . '</strong> '. $aInfo['name'] .'</li>';
+			}
+		echo '</ol>';
 	echo '</div>';
 
+	if(!empty($aError)) {
+		echo '<div class="warning"><strong>Something went wrong:</strong><br />'. $aError .'</div>';
+	}
+
 	echo '<div class="panel">';
-		echo '<h2>Database</h2>';
-		echo '
-		<form>
-		  <div class="form-group">
-		    <label for="exampleInputEmail1">Email address</label>
-		    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
-		  </div>
-		  <div class="form-group">
-		    <label for="exampleInputPassword1">Password</label>
-		    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-		  </div>
-		</form>
-		';
+		// TODO: get rid of this switch by fetching content from a dynamic dictionry or something
+		switch($aStep) {
+			case 2:
+				echo '<h2>'.$aSteps[$aStep]['name'].'</h2>';
+				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.$aStep.'" method="post">';
+					echo '<div class="form-group">';
+						echo '<label for="inputUser">DB User</label>';
+						echo '<input type="input" class="form-control" name="user" id="inputUser" placeholder="E.g. codebot">';
+					echo '</div>';
+
+					echo '<input type="hidden" name="write_config" value="1">';
+					echo '<button type="submit" class="btn btn-info">Next</button>';
+				echo '</form>';
+			break;
+
+			case 1:
+				echo '<h2>'.$aSteps[$aStep]['name'].'</h2>';
+				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.$aStep.'" method="post">';
+					echo '<div class="form-group">';
+						echo '<label for="inputUser">DB User</label>';
+						echo '<input type="input" class="form-control" name="user" id="inputUser" placeholder="E.g. codebot">';
+					echo '</div>';
+					echo '<div class="form-group">';
+						echo '<label for="inputPassword">DB Password</label>';
+						echo '<input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password">';
+					echo '</div>';
+					echo '<div class="form-group">';
+						echo '<label for="inputName">DB name</label>';
+						echo '<input type="text" class="form-control" name="name" id="inputName" placeholder="E.g. codebot_db">';
+					echo '</div>';
+					echo '<div class="form-group">';
+						echo '<label for="inputHost">DB host</label>';
+						echo '<input type="text" class="form-control" name="host" id="inputHost" placeholder="E.g. localhost">';
+					echo '</div>';
+
+					echo '<input type="hidden" name="check_db" value="1">';
+					echo '<button type="submit" class="btn btn-info">Next</button>';
+				echo '</form>';
+			break;
+
+			case 0:
+			default:
+				echo '<h2>'.$aSteps[$aStep]['name'].'</h2>';
+				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.($aStep + 1).'" method="post">';
+					echo '<div class="form-group">';
+						echo 'TODO: display preparation data.';
+					echo '</div>';
+					echo '<button type="submit" class="btn btn-info">Next</button>';
+				echo '</form>';
+			break;
+		}
 	echo '</div>';
-	echo '<div class="warning">Codebot is in <strong>closed alpha</strong>. In order to participate, you need an invite. If you want one, just ping <a href="https://twitter.com/As3GameGears" target="_blank">@As3GameGears</a> on twitter.</div>';
 
 	echo '<footer>Developed by <a href="http://twitter.com/As3GameGears" target="_blank">@As3GameGears</a><br />Icon made by <a href="http://www.simpleicon.com" title="SimpleIcon">SimpleIcon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></footer>';
 echo '</body>';

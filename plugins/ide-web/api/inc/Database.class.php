@@ -27,22 +27,31 @@ class Database {
 
 	public static function init() {
 		try {
-		    $aDb = new PDO(CODEBOT_DB_DSN, CODEBOT_DB_USER, CODEBOT_DB_PASSWORD, array(PDO::ATTR_PERSISTENT => true));
-			$aDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-			self::$mInstance = $aDb;
-
+			self::connect(array(
+				'dsn' => CODEBOT_DB_DSN,
+				'host' => '',
+				'name' => '',
+				'user' => CODEBOT_DB_USER,
+				'password' => CODEBOT_DB_PASSWORD
+			));
 		} catch (PDOException $e) {
 		    echo 'Database error! ' . $e->getMessage();
 		    die();
 		}
 	}
 
+	public static function connect($theConfig) {
+		$aDsn = isset($theConfig['dsn']) ? $theConfig['dsn'] : ('mysql:host=' . $theConfig['host'] . ';dbname=' . $theConfig['name']);
+
+	    $aDb = new PDO($aDsn, $theConfig['user'], $theConfig['password'], array(PDO::ATTR_PERSISTENT => true));
+		$aDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		self::$mInstance = $aDb;
+	}
+
 	public static function instance() {
 		return self::$mInstance;
 	}
 }
-
-Database::init();
 
 ?>
