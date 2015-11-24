@@ -41,12 +41,32 @@ class Database {
 	}
 
 	public static function connect($theConfig) {
-		$aDsn = isset($theConfig['dsn']) ? $theConfig['dsn'] : ('mysql:host=' . $theConfig['host'] . ';dbname=' . $theConfig['name']);
+		$aDsn = '';
+		if(isset($theConfig['dsn'])) {
+			$aDsn = $theConfig['dsn'];
+		} else {
+			$aDsn = 'mysql:host=' . $theConfig['host'] . (isset($theConfig['name']) ? ';dbname=' . $theConfig['name'] : '');
+		}
 
 	    $aDb = new PDO($aDsn, $theConfig['user'], $theConfig['password'], array(PDO::ATTR_PERSISTENT => true));
 		$aDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		self::$mInstance = $aDb;
+	}
+
+	public static function runSqlFileContent(array $theLines) {
+		$aBuffer = '';
+
+		foreach($theLines as $aLine) {
+			if(!empty($aLine)) {
+				$aBuffer .= $aLine;
+
+				if(strpos($aLine, ';') !== false) {
+					self::instance()->query($aBuffer);
+					$aBuffer = '';
+				}
+			}
+		}
 	}
 
 	public static function instance() {

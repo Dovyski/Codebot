@@ -31,16 +31,36 @@ if($aStep == 0) {
 }
 
 if($aStep == 1 && isset($_REQUEST['check_db'])) {
+	$aName = isset($_REQUEST['name']) ? $_REQUEST['name'] : '';
+
 	$aConfig = array(
 		'host' => isset($_REQUEST['host']) ? $_REQUEST['host'] : '',
-		'name' => isset($_REQUEST['name']) ? $_REQUEST['name'] : '',
 		'user' => isset($_REQUEST['user']) ? $_REQUEST['user'] : '',
 		'password' => isset($_REQUEST['password']) ? $_REQUEST['password'] : ''
 	);
 
 	try {
 		Database::connect($aConfig);
-		$aStep++;
+
+		// Prepare the database name
+		$aName = str_replace(array('"', "'"), '', $aName);
+
+		// Create the database
+		Database::instance()->query('CREATE DATABASE IF NOT EXISTS ' . $aName);
+
+		// Use this database from now one
+		Database::instance()->query('USE ' . $aName);
+
+		// Create Codebot tables
+		$aFile = file(dirname(__FILE__) . '/../api/inc/resources/structure.sql');
+
+		if($aFile !== false) {
+			Database::runSqlFileContent($aFile);
+			$aStep++;
+
+		} else {
+			$aError = 'Unable to read structure.sql';
+		}
 
 	} catch(PDOException $e) {
 		$aError = $e->getMessage();
