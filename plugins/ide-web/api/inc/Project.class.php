@@ -178,8 +178,10 @@ class Project {
 				Utils::systemExec('git clone '. $aGitRepo . ' ' . $theFileSystemPath, __FILE__, __LINE__);
 			}
 		} else {
-			$aTemplateSettings = file_get_contents($aTemplateSettingsPath);
+			$aSettings = @file_get_contents($aTemplateSettingsPath);
 			Utils::systemExec('cp -R '. $aTemplateFilesPath . '* ' . $theFileSystemPath, __FILE__, __LINE__);
+
+			$aTemplateSettings = $aSettings !== false ? $aSettings : $aTemplateSettings;
 		}
 
 		return $aTemplateSettings;

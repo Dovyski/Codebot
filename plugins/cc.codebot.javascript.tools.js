@@ -64,6 +64,9 @@ var JavascriptToolsPlugin = function() {
     };
 
     var createTestWindow = function(theUrl, theWidth, theHeight) {
+        if(mTestWindow) {
+            mTestWindow.close();
+        }
         mTestWindow = window.open(theUrl, 'Test', 'menubar=no,location=no,resizable=yes,scrollbars=no,status=no,width='+theWidth+',height=' + theHeight);
     };
 

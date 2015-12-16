@@ -79,26 +79,17 @@ class JavascriptTools {
 
 		$aWidth 	= property_exists($aSettings, 'width') 		? $aSettings->width 		: 640;
 		$aHeight 	= property_exists($aSettings, 'height') 	? $aSettings->height 		: 480;
-		$aSwf 		= property_exists($aSettings, 'swf') 		? $aSettings->swf 			: 22;
-		$aDebug 	= property_exists($aSettings, 'debug') 		? $aSettings->debug 		: 'true';
-		$aLibs 		= property_exists($aSettings, 'libs') 		? $aSettings->libs 			: '/lib/';
-		$aDocClass 	= property_exists($aSettings, 'docClass') 	? $aSettings->docClass 		: '/src/Mode.as';
 		$aOutDir 	= property_exists($aSettings, 'outDir') 	? $aSettings->outDir 		: '/';
 		$aOutFile 	= property_exists($aSettings, 'outFile') 	? $aSettings->outFile 		: 'Mode.swf';
 
-		// TODO: use config.xml to invoke mxmlc
 		$aDisk		= new Disk();
 		$aMount		= $aDisk->dirPath($theUser->disk, $theProject->path);
-		//$aCommand	= CODEBOT_FLASH_FLEX_SDK . 'mxmlc -default-size '.$aWidth.' '.$aHeight.' '.$aMount.$aDocClass.' -library-path+='.$aMount.$aLibs.' -swf-version='.$aSwf.' -debug='.$aDebug.' -static-link-runtime-shared-libraries=true -o '.$aMount.$aOutDir.$aOutFile.' '.CODEBOT_FLASH_OUTPUT_REPIPE;
-
-		//$aLogs = Utils::systemExec($aCommand, __FILE__, __LINE__);
 
 		$aReturn = array(
-			'success' 	=> true,//count($aLogs) == 1,
+			'success' 	=> true,
 			'mount' 	=> $aMount,
 			'outDir' 	=> $aOutDir,
-			'outFile' 	=> $aOutFile,
-			'log' 		=> $aLogs
+			'outFile' 	=> $aOutFile
 		);
 
 		return $aReturn;

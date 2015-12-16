@@ -36,6 +36,8 @@ require_once dirname(__FILE__).'/../Database.class.php';
 require_once dirname(__FILE__).'/../Utils.class.php';
 require_once dirname(__FILE__) . '/3rdparty/querypath/qp.php';
 
+Database::init();
+
 $aInfo		= parse_url($_REQUEST['url']);
 $aChannel	= $aInfo['host'];
 
