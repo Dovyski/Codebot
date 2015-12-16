@@ -3,6 +3,8 @@
 // System configuration
 @define('CODEBOT_DEBUG_MODE',                   true);
 @define('CODEBOT_DEV_MODE',                   	false); // ***WARNING*** If this directive is true in production, your server/users might be at risk!
+@define('CODEBOT_DEV_SIMULATE_SLOW',            false); // Set it to true to force frontend calls to wait before responding (simulation of slow connection)
+@define('CODEBOT_DEV_SLOW_AMOUNT',            	2); // Time, in seconds, to wait before responding frontend calls. It's only effective if both CODEBOT_DEV_MODE and CODEBOT_DEV_SIMULATE_SLOW are true.
 @define('CODEBOT_LOG_ENABLED',                  true);
 @define('CODEBOT_LOG_FILE',                     '/home/user/logs/app.log');
 

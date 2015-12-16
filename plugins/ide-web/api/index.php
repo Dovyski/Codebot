@@ -60,6 +60,14 @@ header('Content-Type: application/json');
 Auth::init();
 Database::init();
 
+// Check if Codebot is running in development mode
+// and it is programmed to simulate slow connections
+if(CODEBOT_DEV_MODE && CODEBOT_DEV_SIMULATE_SLOW) {
+	// Yes, someone is testing how Codebot behaves in
+	// a slow connection. Let's make'm wait.
+	sleep(CODEBOT_DEV_SLOW_AMOUNT);
+}
+
 $aOut = '';
 
 if(!Auth::isUserAuthenticated()) {
