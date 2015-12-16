@@ -14,8 +14,9 @@ require_once dirname(__FILE__).'/../../api/inc/Disk.class.php';
 require_once dirname(__FILE__).'/../../api/inc/Database.class.php';
 require_once dirname(__FILE__).'/../../api/inc/User.class.php';
 
-// Initialize session stuff
+// Initialize stuff
 Auth::init();
+Database::init();
 
 // Initialize all OpAuth stuff
 $aConfigFile 	= dirname(__FILE__).'/config.opauth.php';
@@ -27,9 +28,5 @@ if (!file_exists($aConfigFile)) {
 }
 require $aConfigFile;
 require $aOpAuthLibDir.'Opauth.php';
-
-// From this point on, Opauth can be
-// instantiated as:
-// $aOpauth = new Opauth( $config );
 
 ?>
