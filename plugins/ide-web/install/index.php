@@ -19,6 +19,9 @@ $aSteps[1] = array('name' => 'Database');
 $aSteps[2] = array('name' => 'Configuration');
 $aSteps[3] = array('name' => 'Have a cake!');
 
+// Available Codebot configuration constants (see api/config.php)
+$aConfigConstants = array();
+
 // Get the current step
 $aStep 	= isset($_REQUEST['step']) ? (int)$_REQUEST['step'] : 0;
 $aError = '';
@@ -51,6 +54,7 @@ if($aStep == 1 && isset($_REQUEST['check_db'])) {
 		// Use this database from now one
 		Database::instance()->query('USE ' . $aName);
 
+        // TODO: check if tables already exists, otherwise create them
 		// Create Codebot tables
 		$aFile = file(dirname(__FILE__) . '/../api/inc/resources/structure.sql');
 
@@ -67,8 +71,53 @@ if($aStep == 1 && isset($_REQUEST['check_db'])) {
 	}
 }
 
-if($aStep == 2 && isset($_REQUEST['write_config'])) {
+// If we are in configuration step, we need the configuration
+// constants used by Codebot.
+if($aStep == 2) {
+    $aConstants = get_defined_constants(true);
 
+    foreach($aConstants['user'] as $aName => $aValue) {
+        // Is this a Codebot constant?
+        if(strpos($aName, 'CODEBOT_') !== false) {
+            // Yeah, it is
+            $aConfigConstants[$aName] = $aValue;
+        }
+    }
+}
+
+// Is it time to write the config file?
+if($aStep == 2 && isset($_REQUEST['write_config'])) {
+    // Ugly hack to get expection when writing the config file
+    // Link: http://stackoverflow.com/a/3406181/29827
+    set_error_handler(
+        create_function(
+            '$severity, $message, $file, $line',
+            'throw new ErrorException($message, $severity, $severity, $file, $line);'
+        )
+    );
+
+    try {
+        $aConfigContent = "<?php\n";
+
+        foreach($aConfigConstants as $aName => $aValue) {
+            // Is the user specified value different from the one in the config file?
+            // TODO: add database info here
+            if($_REQUEST[$aName] != constant($aName)) {
+                // Yeah, it is. Let's write that constant to the local config file then
+                $aConfigContent .= "define('".$aName."', '".$_REQUEST[$aName]."');\n";
+            }
+        }
+        $aConfigContent .= "?>";
+
+        $aConfigFile = dirname(__FILE__) . '/../api/config.local.new.php'; // TODO: write to the right file.
+        file_put_contents($aConfigFile, $aConfigContent);
+
+    } catch(Exception $e) {
+        $aError = $e->getMessage();
+    }
+
+    // Undo ugly hack.
+    restore_error_handler();
 }
 
 // Render the whole thing up
@@ -105,10 +154,12 @@ echo '<body>';
 			case 2:
 				echo '<h2>'.$aSteps[$aStep]['name'].'</h2>';
 				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.$aStep.'" method="post">';
-					echo '<div class="form-group">';
-						echo '<label for="inputUser">DB User</label>';
-						echo '<input type="input" class="form-control" name="user" id="inputUser" placeholder="E.g. codebot">';
-					echo '</div>';
+                    foreach($aConfigConstants as $aParam => $aValue) {
+                        echo '<div class="form-group">';
+    						echo '<label for="'.$aParam.'">'.$aParam.'</label>';
+    						echo '<input type="input" class="form-control" name="'.$aParam.'" id="'.$aParam.'" value="'.$aValue.'">';
+    					echo '</div>';
+                    }
 
 					echo '<input type="hidden" name="write_config" value="1">';
 					echo '<button type="submit" class="btn btn-info">Next</button>';
