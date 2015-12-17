@@ -197,6 +197,11 @@ var CoreIdePlugin = function() {
         mContext.ui.addButton(mSelf.id + 'save', {icon: '<i class="fa fa-floppy-o"></i>', action: mSelf.save });
     };
 
+    var handleBeforeFilesPanelRefresh = function(theRootNode) {
+        theRootNode.name = mActiveProject.name;
+        theRootNode.title = mActiveProject.name;
+    };
+
     /**
      * Saves the content of all currently open tabs.
      *
@@ -241,6 +246,10 @@ var CoreIdePlugin = function() {
         // Schedule the rest of the UI initialization to happen only
         // after a project has been opened.
         mContext.signals.projectOpened.add(initUIAfterProjectOpened);
+
+        // Monitor files panel changes, so we can change the name of the top
+        // level folder to reflect the project name.
+        mContext.signals.beforeFilesPanelRefresh.add(handleBeforeFilesPanelRefresh);
 
         initProjectFactory();
 
