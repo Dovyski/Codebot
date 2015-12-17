@@ -56,12 +56,11 @@ var CoreIdePlugin = function() {
     };
 
     var doOpenProject = function(theProjectId) {
-        var aId = theProjectId || $('#project-to-open').val();
         var aProject;
 
-        console.debug('Opening project with id=' + aId);
+        console.debug('Opening project with id=' + theProjectId);
 
-        mSelf.api('project', 'open', {id: aId}, function(theData) {
+        mSelf.api('project', 'open', {id: theProjectId}, function(theData) {
             if(theData.success) {
                 aProject = theData.project;
 
@@ -237,7 +236,7 @@ var CoreIdePlugin = function() {
         mContext = theContext;
 
         mContext.ui.addButton('newProject', {icon: '<i class="fa fa-plus-square"></i>', panel: mSelf.newProject });
-        mContext.ui.addButton(mSelf.id + 'openProject', {icon: '<i class="fa fa-folder-open"></i>', action: mSelf.openProject });
+        mContext.ui.addButton('openProject', {icon: '<i class="fa fa-folder-open"></i>', panel: mSelf.openProject });
 
         // Schedule the rest of the UI initialization to happen only
         // after a project has been opened.
@@ -291,37 +290,38 @@ var CoreIdePlugin = function() {
         });
     };
 
-    this.openProject = function(theContext, theButton) {
-        var aForm =
-            '<form id="form-open-project">'+
-              '<div class="form-group" id="container-list-projects">'+
-              '</div>'+
-            '</form>';
+    this.openProject = function(theContainer, theContext) {
+        var aContent = '',
+            aPanel,
+            aFolder;
 
-        mContext.ui.showDialog({
-            keyboard: true,
-            title: 'Open project',
-            content: aForm,
-            buttons: {
-                'Open': {css: 'btn-primary', dismiss: true, callback: doOpenProject }
-            }
-        });
+        aPanel  = new CodebotFancyPanel('Open project');
+        aFolder = aPanel.addFolder();
+        aFolder.addRaw('<div id="container-list-projects"></div>');
+
+        aContent += aPanel.html();
+
+        theContainer.css('background', '#3d3d3d');
+        theContainer.append(aContent);
 
         $('#container-list-projects').html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading the list, please wait.');
 
         mSelf.api('project', 'search', null, function(theData) {
-            var aInfo = '<select class="form-control" name="project-to-open" id="project-to-open">';
+            var aInfo = '';
 
             // Save projects for future use.
             mProjects = theData.projects;
 
             for(var i in theData.projects) {
-                aInfo += '<option value="'+theData.projects[i].id+'">'+theData.projects[i].name+' ('+theData.projects[i].type+')</option>';
+                aInfo += '<a href="javascript:void(0);" data-project-id="'+theData.projects[i].id+'"><div style="clear: both; padding: 5px; margin-bottom: 10px;"><img style="float: left; width: 50px; height: 50px;" src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview"><p>'+theData.projects[i].name+' ('+theData.projects[i].type+')</p></div></a>';
             }
 
-            aInfo += '</select>';
-
             $('#container-list-projects').html(aInfo);
+
+            $('#container-list-projects a').click(function() {
+                doOpenProject($(this).data('project-id'));
+                theContext.ui.slidePanel.close();
+            });
         });
     };
 
