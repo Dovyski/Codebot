@@ -622,6 +622,28 @@ div#project-templates div#project-git-repo-panel input {
     float: left;
 }
 
+div#projects-list {
+}
+
+div#projects-list a:hover {
+    background: red;
+}
+
+div#projects-list div {
+    color: #aaa;
+    border-bottom: 1px solid #505050;
+    clear: both;
+    padding: 5px 5px 20px 5px;
+    margin-bottom: 10px;
+}
+
+div#projects-list div img {
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
 /*
 -----------------------------------------------------
 Tabs

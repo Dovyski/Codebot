@@ -297,14 +297,14 @@ var CoreIdePlugin = function() {
 
         aPanel  = new CodebotFancyPanel('Open project');
         aFolder = aPanel.addFolder();
-        aFolder.addRaw('<div id="container-list-projects"></div>');
+        aFolder.addRaw('<div id="projects-list"></div>');
 
         aContent += aPanel.html();
 
         theContainer.css('background', '#3d3d3d');
         theContainer.append(aContent);
 
-        $('#container-list-projects').html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading the list, please wait.');
+        $('#projects-list').html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading the list, please wait.');
 
         mSelf.api('project', 'search', null, function(theData) {
             var aInfo = '';
@@ -313,12 +313,18 @@ var CoreIdePlugin = function() {
             mProjects = theData.projects;
 
             for(var i in theData.projects) {
-                aInfo += '<a href="javascript:void(0);" data-project-id="'+theData.projects[i].id+'"><div style="clear: both; padding: 5px; margin-bottom: 10px;"><img style="float: left; width: 50px; height: 50px;" src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview"><p>'+theData.projects[i].name+' ('+theData.projects[i].type+')</p></div></a>';
+                aInfo +=
+                    '<a href="javascript:void(0);" data-project-id="'+theData.projects[i].id+'">' +
+                        '<div>' +
+                            '<img src="" alt="'+theData.projects[i].type+'" />' +
+                            '<p>'+theData.projects[i].name+'</p>' +
+                        '</div>' +
+                    '</a>';
             }
 
-            $('#container-list-projects').html(aInfo);
+            $('#projects-list').html(aInfo);
 
-            $('#container-list-projects a').click(function() {
+            $('#projects-list a').click(function() {
                 doOpenProject($(this).data('project-id'));
                 theContext.ui.slidePanel.close();
             });
