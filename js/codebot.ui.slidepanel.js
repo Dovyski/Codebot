@@ -28,7 +28,7 @@ var CodebotSlidePanel = function() {
     var mSelf = null;
     var mIds = 0;
     var mStack = [];
-    var mCurrentStateRender = null;
+    var mCurrentPanel = null;
 
     var transform3d = function(theElementId, theX, theY, theZ) {
 		document.getElementById(theElementId).style.WebkitTransform = 'translate3d('+ theX +','+ theY +','+ theZ +')';
@@ -54,23 +54,24 @@ var CodebotSlidePanel = function() {
         return $('#config-dialog').width();
     };
 
-    var runStateRender = function(theStateRender, theContainerId) {
-        theStateRender($('#' + theContainerId), mCodebot);
+    var runPanelRender = function(thePanelInstance) {
+        thePanelInstance.render();
+        thePanelInstance.container.html(thePanelInstance.html());
 
         // Walk the just rendered content looking for
         // actionable code, such as buttons, etc.
 
-        $('#' + theContainerId + ' [data-action="close"]').each(function(i, e) {
+        thePanelInstance.container.find('[data-action="close"]').each(function(i, e) {
             $(e).click(function() {
                 mSelf.popState();
             });
         });
 
-        restorePersistentPanelData(theContainerId);
+        restorePersistentPanelData(thePanelInstance.container);
     };
 
-    var restorePersistentPanelData = function(theContainerId) {
-        $('#' + theContainerId + ' form:not([data-manager=""])').each(function(i, e) {
+    var restorePersistentPanelData = function(theContainer) {
+        theContainer.find('form:not([data-manager=""])').each(function(i, e) {
             var aStore       = $(e).data('manager');
             var aPlugin      = mCodebot.getPlugin(aStore);
             var aData        = aPlugin && aPlugin.restorePanelData ? aPlugin.restorePanelData() : null;
@@ -101,11 +102,11 @@ var CodebotSlidePanel = function() {
         }
     };
 
-    this.pushState = function(theStateRender) {
+    this.pushState = function(thePanelInstance) {
         var aPanelWidth = getSliderPanelWidth();
 
-        if(!theStateRender || typeof(theStateRender) != 'function') {
-            console.error('Unable to push slide panel state. The provided state render is invalid: it should be a function, e.g. func(jQueryNode).');
+        if(!thePanelInstance || !(thePanelInstance instanceof Codebot.Panel)) {
+            console.error('Unable to push slide panel. The provided argument is invalid: it should be an instance of Codebot.Panel.');
             return;
         }
 
@@ -116,14 +117,16 @@ var CodebotSlidePanel = function() {
         var aId = mIds++;
         var aContainerId = 'panel-content-' + aId;
 
-        $('#config-dialog').append('<div id="' + aContainerId + '" class="content-slide-panel"></div>');
+        $('#config-dialog').append('<div id="' + aContainerId + '" class="content-slide-panel"></div>')
+
+        thePanelInstance.container = $('#' + aContainerId);
 
         $('#' + aContainerId).css('left', aPanelWidth + 'px');
-        runStateRender(theStateRender, aContainerId);
+        runPanelRender(thePanelInstance);
 
         mStack.push(aContainerId);
 
-        mCurrentStateRender = theStateRender;
+        mCurrentPanel = thePanelInstance;
 
         setTimeout(function() {
             slideElement(aContainerId, -aPanelWidth, mStack.length != 1 ? SLIDE_DURATION : 1);
@@ -146,7 +149,7 @@ var CodebotSlidePanel = function() {
                 }
             }
 
-            mCurrentStateRender = mStack[mStack.length - 1];
+            mCurrentPanel = mStack[mStack.length - 1];
         }
 
         setTimeout(function() {
@@ -158,9 +161,22 @@ var CodebotSlidePanel = function() {
         }, SLIDE_DURATION);
     };
 
-    this.open = function(theStateRender, theForce) {
+    this.instantiatePanelObject = function(thePanelClass) {
+        var aInstance;
+
+        aInstance = new thePanelClass();
+        aInstance.init(this);
+
+        return aInstance;
+    };
+
+    this.open = function(thePanelClass, theForce) {
+        var aInstance;
+
+        aInstance = this.instantiatePanelObject(thePanelClass);
+
         if(!theForce) {
-            if(mCurrentStateRender == theStateRender) {
+            if(mCurrentPanel == aInstance) {
                 // Trying to open an already open panel. Let's close it then.
                 mSelf.close();
                 return;
@@ -168,7 +184,7 @@ var CodebotSlidePanel = function() {
         }
 
         clearStates();
-        mSelf.pushState(theStateRender);
+        mSelf.pushState(aInstance);
 
         slideElement('content', -getSliderPanelWidth());
         slideElement('config-dialog', -getSliderPanelWidth());
@@ -181,7 +197,7 @@ var CodebotSlidePanel = function() {
         slideElement('config-dialog', 0);
 
         if(mStack.length == 1) {
-            mCurrentStateRender = null;
+            mCurrentPanel = null;
             mCodebot.signals.beforeLastSlidePanelClose.dispatch();
         }
     }

@@ -21,46 +21,17 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+var Codebot = Codebot || {};
+
 /**
- * A signal used by the signals system.
+ * This is the base class that all plugins should extend
+ * in order to work in Codebot.
  */
+Codebot.Plugin = function() {
+    this.id         = 'cc.codebot.plugin';      // a unique strings that identifies the plugin
+    this.context    = null;                     // a reference to codebot's itself
+};
 
-var CodebotSignal = function() {
-    var mCallbacks = [];
-
-    this.add = function(theCallback, theThis) {
-        var aRet = false;
-
-        if(mCallbacks.indexOf(theCallback) == -1) {
-            mCallbacks.push({callback: theCallback, context: theThis});
-            aRet = true;
-        }
-
-        return aRet;
-    };
-
-    this.remove = function(theCallback) {
-        var aFound = false,
-            i;
-
-        for(i = 0; i < mCallbacks.length; i++) {
-            if(mCallbacks[i].callback == theCallback) {
-                mCallbacks.slice(i, 1);
-                i--;
-                aFound = true;
-            }
-        }
-
-        return aFound;
-    };
-
-    this.removeAll = function() {
-        mCallbacks.slice(0);
-    };
-
-    this.dispatch = function(theArgs) {
-        for(var c in mCallbacks) {
-            mCallbacks[c].callback.apply(mCallbacks[c].context || this, theArgs);
-        }
-    };
+Codebot.Plugin.prototype.init = function(theContext) {
+    this.context = theContext;
 };

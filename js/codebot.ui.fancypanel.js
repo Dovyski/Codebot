@@ -31,9 +31,19 @@ var Codebot = Codebot || {};
  * @param  {string} theId    A string representing the DOM id that the folder will receive. It's useful to directly access the folder's DOM element.
  */
 Codebot.Panel = function(theTitle, theId) {
-	this.title   = theTitle;
-	this.id      = theId;
-	this.mItens  = [{'type': 'title', 'title': theTitle, 'id': theId}];
+	this.title   	= theTitle;
+	this.id      	= theId;
+	this.mItens  	= [];
+	this.manager 	= null;
+	this.containter = null;	// a reference to the DOM element that is housing the content of this panel
+
+	if(theTitle) {
+		this.mItens.push({'type': 'title', 'title': theTitle, 'id': theId});
+	}
+};
+
+Codebot.Panel.prototype.init = function(theManager) {
+	this.manager = theManager;
 };
 
 /**
@@ -116,6 +126,18 @@ Codebot.Panel.prototype.html = function() {
 
 	return aContent;
 };
+
+Codebot.Panel.prototype.render = function() {
+};
+
+Codebot.Panel.prototype.close = function() {
+};
+
+Codebot.Panel.prototype.push = function() {
+};
+
+Codebot.Panel.prototype.pop = function() {
+}
 
 
 /**
