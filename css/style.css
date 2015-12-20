@@ -53,7 +53,7 @@ Config panel
 	z-index: 1;
 	width: 300px;
 	height: 100%;
-	background: #666;
+	background: #3D3D3D;
 	color: #fff;
 	overflow: auto;
 
@@ -85,21 +85,6 @@ Config panel
 	bottom: 0;
 	height: 25px;
     left: 8px;
-}
-
-.content-slide-panel {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    color: #000;
-    padding: 0;
-}
-
-.content-slide-panel a,
-.content-slide-panel a:active,
-.content-slide-panel a:visited,
-.content-slide-panel a:hover {
-    color: #000;
 }
 
 /*
@@ -530,16 +515,105 @@ body .dg.a {
 
 /*
 -----------------------------------------------------
-Fancy panels
+Sliding panel and panels content
 -----------------------------------------------------
 */
 
-.fancypanel-close-button {
+.panel-close-button {
     padding-right: 10px;
 }
 
-.fancypanel-close-button i {
+.panel-close-button i {
     color: #75BFFF;
+}
+
+.content-slide-panel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: #a9a9a9;
+    font-size: 15px;
+    background: #3D3D3D;
+    padding: 0;
+}
+
+.content-slide-panel i {
+    margin-right: 8px;
+}
+
+.content-slide-panel input,
+.content-slide-panel select {
+    background: #333333;
+    border: 0;
+    height: 27px;
+    width: 100%;
+}
+
+.content-slide-panel a,
+.content-slide-panel a:active,
+.content-slide-panel a:visited,
+.content-slide-panel a:hover {
+    color: #000;
+}
+
+.panel-title,
+.panel-section,
+.panel-label,
+.panel-content {
+    font-family: 'Lucida Grande', sans-serif;
+    font-size: 13px;
+    padding: 0 0 0 10px;
+    line-height: 25px;
+}
+
+.panel-title,
+.panel-section {
+    font-weight: bold;
+    border-bottom: 1px solid #555555;
+    border-top: 1px solid #555555;
+}
+
+.panel-title {
+    background: #333333;
+}
+
+.panel-section {
+    background: #444444;
+}
+
+.panel-content {
+    padding: 5px;
+}
+
+.panel-raw {
+}
+
+.panel-label {
+    position: relative;
+    width: 100%;
+    overflow: auto;
+    margin: 3px 0 5px 0;
+}
+
+.panel-label-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #2FA1D6;
+    width: 3px;
+    height: 100%;
+}
+
+.panel-label-text {
+    width: 50%;
+    float: left;
+    margin-top: 3px;
+}
+
+.panel-label-content {
+    width: 45%;
+    float: right;
+    margin-right: 5px;
 }
 
 /*

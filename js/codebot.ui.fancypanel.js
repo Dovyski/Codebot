@@ -21,6 +21,103 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+var Codebot = Codebot || {};
+
+/**
+ * Represents a folder in the panel. A folder can contain several
+ * elements, all placed below each other.
+ *
+ * @param  {string} theTitle The folder title (label displayed at the top of the folder)
+ * @param  {string} theId    A string representing the DOM id that the folder will receive. It's useful to directly access the folder's DOM element.
+ */
+Codebot.Panel = function(theTitle, theId) {
+	this.title   = theTitle;
+	this.id      = theId;
+	this.mItens  = [{'type': 'title', 'title': theTitle, 'id': theId}];
+};
+
+/**
+ * Adds a new section to the panel.
+ *
+ * @param  {string} theTitle  The title of the section
+ */
+Codebot.Panel.prototype.addSection = function(theTitle) {
+	this.mItens.push({
+		type: 'section',
+		title: theTitle
+	});
+};
+
+/**
+ *
+ */
+Codebot.Panel.prototype.addContent = function(theContent) {
+	this.mItens.push({
+		type: 'content',
+		content: theContent
+	});
+};
+
+/**
+ *
+ */
+Codebot.Panel.prototype.addRawContent = function(theContent) {
+	this.mItens.push({
+		type: 'raw',
+		content: theContent
+	});
+};
+
+/**
+ *
+ * @param  {string} theContent  The content of the element.
+ * @param  {string} theLabel    A text to be displayed close to the element's content. This parameter is optional.
+ * @param  {object} theOpts     Options to customize this panel.
+ */
+Codebot.Panel.prototype.addLabelContent = function(theLabel, theContent, theOpts) {
+	this.mItens.push({
+		type: 'label',
+		label: theLabel || '',
+		content: theContent,
+		opts: theOpts || {}
+	});
+};
+
+/**
+ *
+ */
+Codebot.Panel.prototype.html = function() {
+	var aContent = '',
+		i,
+		aItem;
+
+	for(i = 0; i < this.mItens.length; i++) {
+		aItem = this.mItens[i];
+
+		aContent += '<div class="panel-'+ aItem.type +'">';
+
+		if(aItem.type == 'label') {
+			aContent += '<div class="panel-label-icon"></div>';
+			aContent += '<div class="panel-label-text">' + aItem.label + '</div>';
+			aContent += '<div class="panel-label-content">' + aItem.content + '</div>';
+
+		} else if (aItem.type == 'section' || aItem.type == 'title') {
+			aContent += '<i class="fa fa-caret-down"></i> ' + aItem.title;
+
+			if(aItem.type == 'title') {
+				aContent += '<a href="javascript:void(0);" class="panel-close-button pull-right" data-action="close"><i class="fa fa-close"></i></a>';
+			}
+		} else {
+			aContent += aItem.content;
+		}
+
+		aContent += '</div>';
+	}
+
+	return aContent;
+};
+
+
 /**
  * Represents a folder in the fancy panel. A folder can contain several
  * elements, all placed placed below each other.
