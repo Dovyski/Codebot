@@ -30,10 +30,11 @@ var Codebot = Codebot || {};
  * @param  {string} theTitle The folder title (label displayed at the top of the folder)
   */
 Codebot.Panel = function(theTitle) {
-	this.title   		= theTitle;
-	this.manager 		= null;
-	this.containerId 	= null;	// the id of the DOM element that is housing the content of this panel
-	this.container 		= null;	// a jQuery object representing the DOM element that is housing the content of the panel
+	this.title   			= theTitle;
+	this.panelManager 		= null;
+	this.containerId 		= null;	// the id of the DOM element that is housing the content of this panel
+	this.container 			= null;	// a jQuery object representing the DOM element that is housing the content of the panel
+	this.dataManager 		= null; // a string with the id of a plugin that will handle all the data management for this panel.
 };
 
 /**
@@ -78,7 +79,11 @@ Codebot.Panel.prototype.addLabelValueRow = function(theLabel, theContent) {
 };
 
 /**
- * Transforms
+ * Converts an abstract content representation into HTML elements and inserts
+ * them into the DOM. The data is inserted in the div that is housing the content
+ * of this panel.
+ *
+ * @param  {object} theItem Item descriting the DOM element.
  */
 Codebot.Panel.prototype.addToDom = function(theItem) {
 	var aContent = '';
@@ -107,7 +112,9 @@ Codebot.Panel.prototype.addToDom = function(theItem) {
 };
 
 /**
- * [function description]
+ * Invoked by the panel manager when the content of this particular
+ * panel should be created. Subclasses should override this
+ * method to create personlized content for new panels.
  */
 Codebot.Panel.prototype.render = function() {
 	// The first thing to render is the title, if we have one
@@ -120,28 +127,76 @@ Codebot.Panel.prototype.render = function() {
 };
 
 /**
- * [function description]
+ * Closes the panel. If it is stacked with another panel, it
+ * is popped out of the stack and the subsequent panel becomes active.
  */
 Codebot.Panel.prototype.close = function() {
+	// TODO: implement.
 };
 
 /**
- * [function description]
+ * Stacks a new panel on top of this panel. It is useful to create
+ * nested panels.
+ *
+ * @param  {Function} thePanelClass A reference to the panel class that must be instantiated for this new panel. The class must be an instance of <code>Codebot.Panel</code>.
  */
-Codebot.Panel.prototype.push = function(thePanelClass) {
+Codebot.Panel.prototype.open = function(thePanelClass) {
+	// TODO: implement.
 };
 
 /**
- * [function description]
- */
-Codebot.Panel.prototype.pop = function() {
-}
-
-/**
- * [function description]
+ * Invoked by the panel manager when this panel is about to be destroyed.
+ * This is a last oportunity to perform clean up tasks.
  */
 Codebot.Panel.prototype.destroy = function() {
 }
+
+/**
+ * Obtains the data from all form elements in the panel and returns
+ * them in the format <code>name=value&name2=value2...</code>
+ *
+ * @return {string} A serialization of all form elements in the panel in format <code>name=value&name2=value2...</code>.
+ */
+Codebot.Panel.prototype.serialize = function() {
+	return this.container.find(':input').serialize();
+}
+
+/**
+ * Obtains the data from all form elements in the panel and returns
+ * them in object format <code>{name: value, name2: value2, ...}</code>.
+ *
+ * @return {object} An object containing data from all form elements in the panel in format <code>{name: value, name2: value2, ...}</code>.
+ */
+Codebot.Panel.prototype.getData = function() {
+	return this.container.find(':input').serializeObject();
+}
+
+/**
+ * Defines a plugin to be the data manager for this panel. When a panel
+ * has a data manager, all form elements within the panel content (e.g. inputs, selects, etc)
+ * have their values stored in the informed plugin. This is useful to persist panel
+ * data, e.g. settings.
+ *
+ * @param  {string} thePluginId The unique string id that identifies the plugin to be used as the data manager. E.g. <code>cc.codebot.asset.finder</code>.
+ */
+Codebot.Panel.prototype.setDataManager = function(thePluginId) {
+	this.dataManager = thePluginId;
+};
+
+/**
+ * Restores data into the panel content. The data is placed on each of the form
+ * elements (e.g. inputs, selects, etc) that the panel has. This method is
+ * automatically invoked by the panel manager when data has to be restored to this panel.
+ *
+ * @param  {object} theData An object containing data to be restored to form elements in the panel, in the format <code>{name: value, name2: value2, ...}</code>.
+ */
+Codebot.Panel.prototype.restore = function(theData) {
+	var aProp;
+
+	for(aProp in theData) {
+		this.container.find('[name=' + aProp + ']').val(theData[aProp]);
+	}
+};
 
 /**
  * Represents a folder in the fancy panel. A folder can contain several

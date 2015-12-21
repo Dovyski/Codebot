@@ -67,39 +67,58 @@ var CodebotSlidePanel = function() {
             });
         });
 
-        restorePersistentPanelData(thePanel.container);
+        restorePersistentPanelData(thePanel);
     };
 
-    // TODO: improve this panel data thing
-    var restorePersistentPanelData = function(theContainer) {
-        theContainer.find('form:not([data-manager=""])').each(function(i, e) {
-            var aStore       = $(e).data('manager');
-            var aPlugin      = mCodebot.getPlugin(aStore);
-            var aData        = aPlugin && aPlugin.restorePanelData ? aPlugin.restorePanelData() : null;
+    var restorePersistentPanelData = function(thePanel) {
+        var aPlugin,
+            aData,
+            aProp;
 
+        // Has the panel asked for persistent data handling?
+        if(thePanel && thePanel.dataManager) {
+            // Yep! Let's get the plugin that is storing the
+            // data for this panel, get the data from it and
+            // restore everything.
+            aPlugin = mCodebot.getPlugin(thePanel.dataManager);
+            aData   = aPlugin && aPlugin.getPanelData ? aPlugin.getPanelData(thePanel) : null;
+
+            // Do we have any data to restore?
             if(aData) {
-                for(var aProp in aData) {
-                    $(this).find('[name=' + aProp + ']').val(aData[aProp]);
-                }
+                thePanel.restore(aData);
 
-                console.debug('Data restored to panel', aStore, aData);
+                // Emit some debug message so it's easier to track what is going on
+                console.debug('Data restored to panel ' + thePanel.title + ' from plugin ' + thePanel.dataManager, aData);
+
+            } else {
+                console.debug('No data to be restored to panel ' + thePanel.title + ' from plugin ' + thePanel.dataManager);
             }
-        });
+        }
     };
 
     var savePersistentPanelData = function() {
-        var aContainer = mStack[mStack.length - 1].container;
+        var aPanel,
+            aPlugin;
 
-        if(aContainer) {
-            aContainer.find('form:not([data-manager=""])').each(function(i, e) {
-                var aStore      = $(e).data('manager');
-                var aData       = $(e).serializeObject();
-                var aManager    = mCodebot.getPlugin(aStore);
+        aPanel = mStack[mStack.length - 1];
 
-                if(aManager && aManager.savePanelData) {
-                    aManager.savePanelData($(e).attr('id'), aData);
-                }
-            });
+        // Has the panel asked for persistent data handling?
+        if(aPanel && aPanel.dataManager) {
+            // Yep, so let's save it! First fetch the plugin that will
+            // handle the data for this panel
+            aPlugin = mCodebot.getPlugin(aPanel.dataManager);
+
+            // If the plugin exists and is ok to receive the data,
+            // send the package away.
+            if(aPlugin && aPlugin.savePanelData) {
+                aPlugin.savePanelData(aPanel, aPanel.getData());
+
+                // Emit some debug message so it's easier to track what is going on
+                console.debug('Panel ' + aPanel.title + ' just persisted data to plugin ' + aPanel.dataManager, aPanel.getData());
+
+            } else {
+                console.debug('Panel ' + aPanel.title + ' asked to persist data, but plugin ' + aPanel.dataManager + ' has no savePanelData() method.');
+            }
         }
     };
 
@@ -170,7 +189,7 @@ var CodebotSlidePanel = function() {
         var aInstance;
 
         aInstance = new thePanelClass();
-        aInstance.manager = this;
+        aInstance.panelManager = this;
 
         return aInstance;
     };
