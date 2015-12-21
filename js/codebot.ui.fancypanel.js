@@ -32,8 +32,8 @@ var Codebot = Codebot || {};
 Codebot.Panel = function(theTitle) {
 	this.title   		= theTitle;
 	this.manager 		= null;
-	this.containterId 	= null;	// the id of the DOM element that is housing the content of this panel
-	this.containter 	= null;	// a jQuery object representing the DOM element that is housing the content of the panel
+	this.containerId 	= null;	// the id of the DOM element that is housing the content of this panel
+	this.container 		= null;	// a jQuery object representing the DOM element that is housing the content of the panel
 };
 
 /**
@@ -128,7 +128,7 @@ Codebot.Panel.prototype.close = function() {
 /**
  * [function description]
  */
-Codebot.Panel.prototype.push = function() {
+Codebot.Panel.prototype.push = function(thePanelClass) {
 };
 
 /**
@@ -137,6 +137,11 @@ Codebot.Panel.prototype.push = function() {
 Codebot.Panel.prototype.pop = function() {
 }
 
+/**
+ * [function description]
+ */
+Codebot.Panel.prototype.destroy = function() {
+}
 
 /**
  * Represents a folder in the fancy panel. A folder can contain several
