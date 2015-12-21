@@ -24,119 +24,116 @@
 var Codebot = Codebot || {};
 
 /**
- * Represents a folder in the panel. A folder can contain several
- * elements, all placed below each other.
+ * Describes a panel in the application. A panel is an rectangular are containing
+ * content that can be slided in and out of the screen.
  *
  * @param  {string} theTitle The folder title (label displayed at the top of the folder)
- * @param  {string} theId    A string representing the DOM id that the folder will receive. It's useful to directly access the folder's DOM element.
- */
-Codebot.Panel = function(theTitle, theId) {
+  */
+Codebot.Panel = function(theTitle) {
 	this.title   		= theTitle;
-	this.id      		= theId;
-	this.itens  		= [];
 	this.manager 		= null;
 	this.containterId 	= null;	// the id of the DOM element that is housing the content of this panel
 	this.containter 	= null;	// a jQuery object representing the DOM element that is housing the content of the panel
-
-	if(theTitle) {
-		this.itens.push({'type': 'title', 'title': theTitle, 'id': theId});
-	}
-};
-
-Codebot.Panel.prototype.init = function(theManager) {
-	this.manager = theManager;
 };
 
 /**
- * Adds a new section to the panel.
+ * Adds a new divider to the panel. A divider is line with a
+ * title, pretty much like the heading of a panel.
  *
  * @param  {string} theTitle  The title of the section
  */
-Codebot.Panel.prototype.addSection = function(theTitle) {
-	this.itens.push({
+Codebot.Panel.prototype.addDivider = function(theTitle) {
+	this.addToDom({
 		type: 'section',
 		title: theTitle
 	});
 };
 
 /**
+ * Adds a new row of content to the panel.
  *
+ * @param  {string} theContent          The text to the used as the content for the new row.
+ * @param  {boolean} theIgnoreFormatting If <code>true</code> (default) the content is placed in the panel following the formatting margins; if <code>false</code>, the content is placed without any CSS rule, so it will fill out the panel horizontally.
  */
-Codebot.Panel.prototype.addContent = function(theContent) {
-	this.itens.push({
-		type: 'content',
+Codebot.Panel.prototype.addRow = function(theContent, theUseMargins) {
+	this.addToDom({
+		type: theUseMargins == undefined || theUseMargins ? 'content' : 'raw',
 		content: theContent
 	});
 };
 
 /**
+ * Adds a new row made of two parts: a label and a value.
+ * Each area occupies half the space available for the panel.
  *
+ * @param  {string} theLabel    A text to be displayed to the left of the panel content area.
+ * @param  {string} theContent  A text to be displayed to the right of the panel content area.
  */
-Codebot.Panel.prototype.addRawContent = function(theContent) {
-	this.itens.push({
-		type: 'raw',
-		content: theContent
-	});
-};
-
-/**
- *
- * @param  {string} theContent  The content of the element.
- * @param  {string} theLabel    A text to be displayed close to the element's content. This parameter is optional.
- * @param  {object} theOpts     Options to customize this panel.
- */
-Codebot.Panel.prototype.addLabelContent = function(theLabel, theContent, theOpts) {
-	this.itens.push({
+Codebot.Panel.prototype.addLabelValueRow = function(theLabel, theContent) {
+	this.addToDom({
 		type: 'label',
 		label: theLabel || '',
-		content: theContent,
-		opts: theOpts || {}
+		content: theContent
 	});
 };
 
 /**
- *
+ * Transforms
  */
-Codebot.Panel.prototype.html = function() {
-	var aContent = '',
-		i,
-		aItem;
+Codebot.Panel.prototype.addToDom = function(theItem) {
+	var aContent = '';
 
-	for(i = 0; i < this.itens.length; i++) {
-		aItem = this.itens[i];
+	aContent += '<div class="panel-'+ theItem.type +'" ' + ( theItem.id ? 'id="' + theItem.id + '"' : '' ) + '>';
 
-		aContent += '<div class="panel-'+ aItem.type +'">';
+	if(theItem.type == 'label') {
+		aContent += '<div class="panel-label-icon"></div>';
+		aContent += '<div class="panel-label-text">' + theItem.label + '</div>';
+		aContent += '<div class="panel-label-content">' + theItem.content + '</div>';
 
-		if(aItem.type == 'label') {
-			aContent += '<div class="panel-label-icon"></div>';
-			aContent += '<div class="panel-label-text">' + aItem.label + '</div>';
-			aContent += '<div class="panel-label-content">' + aItem.content + '</div>';
+	} else if (theItem.type == 'section' || theItem.type == 'title') {
+		aContent += '<i class="fa fa-caret-down"></i> ' + theItem.title;
 
-		} else if (aItem.type == 'section' || aItem.type == 'title') {
-			aContent += '<i class="fa fa-caret-down"></i> ' + aItem.title;
-
-			if(aItem.type == 'title') {
-				aContent += '<a href="javascript:void(0);" class="panel-close-button pull-right" data-action="close"><i class="fa fa-close"></i></a>';
-			}
-		} else {
-			aContent += aItem.content;
+		if(theItem.type == 'title') {
+			aContent += '<a href="javascript:void(0);" class="panel-close-button pull-right" data-action="close"><i class="fa fa-close"></i></a>';
 		}
-
-		aContent += '</div>';
+	} else {
+		aContent += theItem.content;
 	}
 
-	return aContent;
+	aContent += '</div>';
+
+	// Add the content to the DOM
+	this.container.append(aContent);
 };
 
+/**
+ * [function description]
+ */
 Codebot.Panel.prototype.render = function() {
+	// The first thing to render is the title, if we have one
+	if(this.title) {
+		this.addToDom({'type': 'title', 'title': this.title});
+	}
+
+	// From this point on, subclasses should add their own
+	// content to the panel.
 };
 
+/**
+ * [function description]
+ */
 Codebot.Panel.prototype.close = function() {
 };
 
+/**
+ * [function description]
+ */
 Codebot.Panel.prototype.push = function() {
 };
 
+/**
+ * [function description]
+ */
 Codebot.Panel.prototype.pop = function() {
 }
 

@@ -56,7 +56,6 @@ var CodebotSlidePanel = function() {
 
     var runPanelRender = function(thePanelInstance) {
         thePanelInstance.render();
-        thePanelInstance.container.html(thePanelInstance.html());
 
         // Walk the just rendered content looking for
         // actionable code, such as buttons, etc.
@@ -166,7 +165,7 @@ var CodebotSlidePanel = function() {
         var aInstance;
 
         aInstance = new thePanelClass();
-        aInstance.init(this);
+        aInstance.manager = this;
 
         return aInstance;
     };

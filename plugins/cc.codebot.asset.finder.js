@@ -42,10 +42,10 @@ AssetFinder.MainPanel.prototype.constructor = AssetFinder.MainPanel;
 AssetFinder.MainPanel.prototype.render = function() {
     Codebot.Panel.prototype.render.call(this);
 
-    this.addSection('Options');
+    this.addDivider('Options');
 
-    this.addLabelContent('Search', '<form action="#" id="asset-finder-main"><input type="text" name="query" value="" />');
-    this.addLabelContent(
+    this.addLabelValueRow('Search', '<form action="#" id="asset-finder-main"><input type="text" name="query" value="" />');
+    this.addLabelValueRow(
         'License',
         '<select name="license">' +
             '<option value="1">CC-BY 3.0</option>' +
@@ -57,8 +57,8 @@ AssetFinder.MainPanel.prototype.render = function() {
         '</form>'
     );
 
-    this.addSection('Results');
-    this.addRawContent('<div id="assets-finder-browse-area" style="width: 100%; height: 100%; overflow: scroll;">Nothing to show yet.</div>');
+    this.addDivider('Results');
+    this.addRow('<div id="assets-finder-browse-area" style="width: 100%; height: 100%; overflow: scroll;">Nothing to show yet.</div>', false);
 
     $('#asset-finder-main').submit(function(theEvent) {
         doSearch();
