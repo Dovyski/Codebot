@@ -119,6 +119,7 @@ var CodebotSlidePanel = function() {
 
         $('#config-dialog').append('<div id="' + aContainerId + '" class="content-slide-panel"></div>')
 
+        thePanelInstance.containerId = aContainerId;
         thePanelInstance.container = $('#' + aContainerId);
 
         $('#' + aContainerId).css('left', aPanelWidth + 'px');

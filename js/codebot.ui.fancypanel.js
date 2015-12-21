@@ -31,14 +31,15 @@ var Codebot = Codebot || {};
  * @param  {string} theId    A string representing the DOM id that the folder will receive. It's useful to directly access the folder's DOM element.
  */
 Codebot.Panel = function(theTitle, theId) {
-	this.title   	= theTitle;
-	this.id      	= theId;
-	this.mItens  	= [];
-	this.manager 	= null;
-	this.containter = null;	// a reference to the DOM element that is housing the content of this panel
+	this.title   		= theTitle;
+	this.id      		= theId;
+	this.itens  		= [];
+	this.manager 		= null;
+	this.containterId 	= null;	// the id of the DOM element that is housing the content of this panel
+	this.containter 	= null;	// a jQuery object representing the DOM element that is housing the content of the panel
 
 	if(theTitle) {
-		this.mItens.push({'type': 'title', 'title': theTitle, 'id': theId});
+		this.itens.push({'type': 'title', 'title': theTitle, 'id': theId});
 	}
 };
 
@@ -52,7 +53,7 @@ Codebot.Panel.prototype.init = function(theManager) {
  * @param  {string} theTitle  The title of the section
  */
 Codebot.Panel.prototype.addSection = function(theTitle) {
-	this.mItens.push({
+	this.itens.push({
 		type: 'section',
 		title: theTitle
 	});
@@ -62,7 +63,7 @@ Codebot.Panel.prototype.addSection = function(theTitle) {
  *
  */
 Codebot.Panel.prototype.addContent = function(theContent) {
-	this.mItens.push({
+	this.itens.push({
 		type: 'content',
 		content: theContent
 	});
@@ -72,7 +73,7 @@ Codebot.Panel.prototype.addContent = function(theContent) {
  *
  */
 Codebot.Panel.prototype.addRawContent = function(theContent) {
-	this.mItens.push({
+	this.itens.push({
 		type: 'raw',
 		content: theContent
 	});
@@ -85,7 +86,7 @@ Codebot.Panel.prototype.addRawContent = function(theContent) {
  * @param  {object} theOpts     Options to customize this panel.
  */
 Codebot.Panel.prototype.addLabelContent = function(theLabel, theContent, theOpts) {
-	this.mItens.push({
+	this.itens.push({
 		type: 'label',
 		label: theLabel || '',
 		content: theContent,
@@ -101,8 +102,8 @@ Codebot.Panel.prototype.html = function() {
 		i,
 		aItem;
 
-	for(i = 0; i < this.mItens.length; i++) {
-		aItem = this.mItens[i];
+	for(i = 0; i < this.itens.length; i++) {
+		aItem = this.itens[i];
 
 		aContent += '<div class="panel-'+ aItem.type +'">';
 
