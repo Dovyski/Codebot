@@ -34,7 +34,12 @@ AssetFinder.MainPanel = function() {
     // Call constructor of base class
     Codebot.Panel.call(this, 'Asset Finder');
 
+    // Set a data manager for this panel. A data manager will save and restore
+    // data to any form element in this panel.
     this.setDataManager('cc.codebot.asset.finder');
+
+    // Get a reference to the div that will be used to display
+    // more info of a clicked asset.
     this.infoPanel = $('#asset-info-item-description');
 };
 
@@ -92,35 +97,45 @@ AssetFinder.MainPanel.prototype.findProjectTopFolders = function() {
 };
 
 AssetFinder.MainPanel.prototype.showItemInfo = function(theItemId) {
-    var aIde, aPanel, aFolder, aContent, aProjectFolders, aFoldersText = '';
+    var i,
+        aIde,
+        aPanel,
+        aFolder,
+        aContent,
+        aProjectFolders,
+        aFoldersText = '';
 
+    // Get a reference to the web ID plugin.
     aIde = this.context.getPlugin('cc.codebot.ide.web');
 
     this.infoPanel.html('<i class="fa fa-circle-o-notch fa-spin"></i>');
     this.infoPanel.fadeIn();
 
     aIde.api('assets', 'info', {item: theItemId}, function(theData) {
-        aPanel = new CodebotFancyPanel(theData.title);
+        // Clear the content of the info panel
+        this.infoPanel.html('');
 
-        aFolder = aPanel.addFolder('Preview', 'preview');
-        aFolder.add('<img src="'+theData.preview[0]+'" style="width: 100%; height: auto;"/>', 'id', 'raw');
+        // Create a cool panel and render its content in the info panel div.
+        aPanel = new Codebot.Panel(theData.title, this.infoPanel.attr('id'));
 
-        aProjectFolders = findProjectTopFolders();
-        for(var i = 0, aTotal = aProjectFolders.length; i < aTotal; i++) {
+        aPanel.divider('Preview');
+        aPanel.row('<img src="'+theData.preview[0]+'" style="width: 100%; height: 50px;"/>');
+
+        aProjectFolders = this.findProjectTopFolders();
+
+        for(i = 0, aTotal = aProjectFolders.length; i < aTotal; i++) {
             aFoldersText += '<option value="' + aProjectFolders[i].path + '">/' + aProjectFolders[i].name + '</option>';
         }
-        aFolder = aPanel.addFolder('Download', 'actions');
-        aFolder.add('<select id="assetDestinationDir"><option value="/">/</option>'+aFoldersText+'</select> <a href="javascript:void(0)" id="assetDownloadLink"><i class="fa fa-download"></i> DOWNLOAD</a>', 'Save to');
+        aPanel.divider('Download');
+        aPanel.pair('Save to', '<select id="assetDestinationDir"><option value="/">/</option>'+aFoldersText+'</select> <a href="javascript:void(0)" id="assetDownloadLink"><i class="fa fa-download"></i> DOWNLOAD</a>');
 
-        aFolder = aPanel.addFolder('Details', 'details');
-        aFolder.add(theData.author, 'Author');
-        aFolder.add(theData.license, 'License');
-        aFolder.add(theData.channel, 'Channel');
+        aPanel.divider('Details');
+        aPanel.pair('Author', theData.author);
+        aPanel.pair('License', theData.license);
+        aPanel.pair('Channel', theData.channel);
 
-        aFolder = aPanel.addFolder('Description', 'description');
-        aFolder.add(theData.description);
-
-        this.infoPanel.html(aPanel.html());
+        aPanel.divider('Description');
+        aPanel.row(theData.description);
 
         this.infoPanel.find('a#assetDownloadLink').click(function() {
             this.infoPanel.fadeOut();
@@ -138,7 +153,7 @@ AssetFinder.MainPanel.prototype.showItemInfo = function(theItemId) {
                 }
             });
         });
-    });
+    }, this);
 };
 
 AssetFinder.MainPanel.prototype.doSearch = function() {
@@ -190,7 +205,7 @@ AssetFinder.Plugin.prototype.savePanelData = function(thePanel, theData) {
 };
 
 AssetFinder.Plugin.prototype.getPanelData = function(thePanel) {
-    return {query: 'This is a test', license: '2'};
+    return null;
 };
 
 AssetFinder.Plugin.prototype.initUIAfterProjectOpened = function(theProjectInfo) {

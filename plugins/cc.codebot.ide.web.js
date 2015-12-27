@@ -212,7 +212,8 @@ var CoreIdePlugin = function() {
     };
 
     // TODO: transform it into an object, e.g. api.disk.method().
-    this.api = function(theClass, theMethod, theParams, theCallback) {
+    // TODO: specify context (this) for callback call.
+    this.api = function(theClass, theMethod, theParams, theCallback, theCallbackContext) {
         $.ajax({
             url: API_URL + 'class=' + theClass + '&method=' + theMethod,
             method: 'get',
@@ -220,7 +221,7 @@ var CoreIdePlugin = function() {
             dataType: 'json'
         }).done(function(theData) {
             console.debug('web API response', theData);
-            theCallback(theData);
+            theCallback.call(theCallbackContext || this, theData);
 
         }).fail(function(theJqXHR, theTextStatus, theError) {
             console.error('web API error: ' + theTextStatus + ', ' + theError);
