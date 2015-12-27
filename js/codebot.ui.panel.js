@@ -23,19 +23,40 @@
 
 var Codebot = Codebot || {};
 
+// TODO: make all properties private
+
 /**
  * Describes a panel in the application. A panel is an rectangular are containing
  * content that can be slided in and out of the screen.
  *
  * @param  {string} theTitle The folder title (label displayed at the top of the folder)
-  */
-Codebot.Panel = function(theTitle) {
+ * @param  {string} theContainerId Id of the DOM element that will house the content of this panel. If
+ */
+Codebot.Panel = function(theTitle, theContainerId) {
 	this.title   			= theTitle;
-	this.panelManager 		= null;
+	this.panelManager 		= null; // A reference to the manager that is handling this panel.
 	this.containerId 		= null;	// the id of the DOM element that is housing the content of this panel
 	this.container 			= null;	// a jQuery object representing the DOM element that is housing the content of the panel
 	this.dataManager 		= null; // a string with the id of a plugin that will handle all the data management for this panel.
 	this.context 			= null; // a reference to Codebot singleton.
+
+	if(theContainerId) {
+		this.setContainer(theContainerId);
+	}
+};
+
+/**
+ * Specify a DOM element to house the content of this panel.
+ *
+ * @param  {string} theContainerId Id of the DOM element that will house the content of this panel.
+ */
+Codebot.Panel.prototype.setContainer = function(theContainerId) {
+	this.containerId = theContainerId;
+
+	if(this.containerId) {
+		this.container = $('#' + theContainerId);
+		this.container.addClass('panel-content');
+	}
 };
 
 /**
@@ -46,7 +67,7 @@ Codebot.Panel = function(theTitle) {
  */
 Codebot.Panel.prototype.divider = function(theTitle) {
 	this.addToDom({
-		type: 'section',
+		type: 'divider',
 		title: theTitle
 	});
 };
@@ -59,7 +80,7 @@ Codebot.Panel.prototype.divider = function(theTitle) {
  */
 Codebot.Panel.prototype.row = function(theContent, theUseMargins) {
 	this.addToDom({
-		type: theUseMargins == undefined || theUseMargins ? 'content' : 'raw',
+		type: theUseMargins == undefined || theUseMargins ? 'row' : 'raw',
 		content: theContent
 	});
 };
@@ -73,7 +94,7 @@ Codebot.Panel.prototype.row = function(theContent, theUseMargins) {
  */
 Codebot.Panel.prototype.pair = function(theLabel, theContent) {
 	this.addToDom({
-		type: 'label',
+		type: 'pair',
 		label: theLabel || '',
 		content: theContent
 	});
@@ -91,12 +112,12 @@ Codebot.Panel.prototype.addToDom = function(theItem) {
 
 	aContent += '<div class="panel-'+ theItem.type +'" ' + ( theItem.id ? 'id="' + theItem.id + '"' : '' ) + '>';
 
-	if(theItem.type == 'label') {
-		aContent += '<div class="panel-label-icon"></div>';
-		aContent += '<div class="panel-label-text">' + theItem.label + '</div>';
-		aContent += '<div class="panel-label-content">' + theItem.content + '</div>';
+	if(theItem.type == 'pair') {
+		aContent += '<div class="panel-pair-icon"></div>';
+		aContent += '<div class="panel-pair-text">' + theItem.label + '</div>';
+		aContent += '<div class="panel-pair-content">' + theItem.content + '</div>';
 
-	} else if (theItem.type == 'section' || theItem.type == 'title') {
+	} else if (theItem.type == 'divider' || theItem.type == 'title') {
 		aContent += '<i class="fa fa-caret-down"></i> ' + theItem.title;
 
 		if(theItem.type == 'title') {

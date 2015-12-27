@@ -527,7 +527,7 @@ Sliding panel and panels content
     color: #75BFFF;
 }
 
-.content-slide-panel {
+.panel-content {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -537,29 +537,29 @@ Sliding panel and panels content
     padding: 0;
 }
 
-.content-slide-panel i {
+.panel-content i {
     margin-right: 8px;
 }
 
-.content-slide-panel input,
-.content-slide-panel select {
+.panel-content input,
+.panel-content select {
     background: #333333;
     border: 0;
     height: 27px;
     width: 100%;
 }
 
-.content-slide-panel a,
-.content-slide-panel a:active,
-.content-slide-panel a:visited,
-.content-slide-panel a:hover {
+.panel-content a,
+.panel-content a:active,
+.panel-content a:visited,
+.panel-content a:hover {
     color: #000;
 }
 
 .panel-title,
-.panel-section,
-.panel-label,
-.panel-content {
+.panel-divider,
+.panel-pair,
+.panel-row {
     font-family: 'Lucida Grande', sans-serif;
     font-size: 13px;
     padding: 0 0 0 10px;
@@ -567,7 +567,7 @@ Sliding panel and panels content
 }
 
 .panel-title,
-.panel-section {
+.panel-divider {
     font-weight: bold;
     border-bottom: 1px solid #555555;
     border-top: 1px solid #555555;
@@ -577,25 +577,25 @@ Sliding panel and panels content
     background: #333333;
 }
 
-.panel-section {
+.panel-divider {
     background: #444444;
 }
 
-.panel-content {
+.panel-row {
     padding: 5px;
 }
 
 .panel-raw {
 }
 
-.panel-label {
+.panel-pair {
     position: relative;
     width: 100%;
     overflow: auto;
     margin: 3px 0 5px 0;
 }
 
-.panel-label-icon {
+.panel-pair-icon {
     position: absolute;
     left: 0;
     top: 0;
@@ -604,13 +604,13 @@ Sliding panel and panels content
     height: 100%;
 }
 
-.panel-label-text {
+.panel-pair-text {
     width: 50%;
     float: left;
     margin-top: 3px;
 }
 
-.panel-label-content {
+.panel-pair-content {
     width: 45%;
     float: right;
     margin-right: 5px;

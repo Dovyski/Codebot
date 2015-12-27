@@ -137,16 +137,14 @@ var CodebotSlidePanel = function() {
         var aId = mIds++;
         var aContainerId = 'slide-panel-' + aId;
 
-        $('#config-dialog').append('<div id="' + aContainerId + '" class="content-slide-panel"></div>')
+        $('#config-dialog').append('<div id="' + aContainerId + '" class="panel-content"></div>')
 
-        thePanel.containerId = aContainerId;
-        thePanel.container = $('#' + aContainerId);
+        thePanel.setContainer(aContainerId);
 
         $('#' + aContainerId).css('left', aPanelWidth + 'px');
         renderPanel(thePanel);
 
         mStack.push(thePanel);
-
         mCurrentPanel = thePanel;
 
         setTimeout(function() {
