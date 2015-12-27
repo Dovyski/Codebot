@@ -35,6 +35,7 @@ Codebot.Panel = function(theTitle) {
 	this.containerId 		= null;	// the id of the DOM element that is housing the content of this panel
 	this.container 			= null;	// a jQuery object representing the DOM element that is housing the content of the panel
 	this.dataManager 		= null; // a string with the id of a plugin that will handle all the data management for this panel.
+	this.context 			= null; // a reference to Codebot singleton.
 };
 
 /**
@@ -43,7 +44,7 @@ Codebot.Panel = function(theTitle) {
  *
  * @param  {string} theTitle  The title of the section
  */
-Codebot.Panel.prototype.addDivider = function(theTitle) {
+Codebot.Panel.prototype.divider = function(theTitle) {
 	this.addToDom({
 		type: 'section',
 		title: theTitle
@@ -56,7 +57,7 @@ Codebot.Panel.prototype.addDivider = function(theTitle) {
  * @param  {string} theContent          The text to the used as the content for the new row.
  * @param  {boolean} theIgnoreFormatting If <code>true</code> (default) the content is placed in the panel following the formatting margins; if <code>false</code>, the content is placed without any CSS rule, so it will fill out the panel horizontally.
  */
-Codebot.Panel.prototype.addRow = function(theContent, theUseMargins) {
+Codebot.Panel.prototype.row = function(theContent, theUseMargins) {
 	this.addToDom({
 		type: theUseMargins == undefined || theUseMargins ? 'content' : 'raw',
 		content: theContent
@@ -70,7 +71,7 @@ Codebot.Panel.prototype.addRow = function(theContent, theUseMargins) {
  * @param  {string} theLabel    A text to be displayed to the left of the panel content area.
  * @param  {string} theContent  A text to be displayed to the right of the panel content area.
  */
-Codebot.Panel.prototype.addLabelValueRow = function(theLabel, theContent) {
+Codebot.Panel.prototype.pair = function(theLabel, theContent) {
 	this.addToDom({
 		type: 'label',
 		label: theLabel || '',
@@ -149,7 +150,7 @@ Codebot.Panel.prototype.open = function(thePanelClass) {
  * This is a last oportunity to perform clean up tasks.
  */
 Codebot.Panel.prototype.destroy = function() {
-}
+};
 
 /**
  * Obtains the data from all form elements in the panel and returns
@@ -159,7 +160,7 @@ Codebot.Panel.prototype.destroy = function() {
  */
 Codebot.Panel.prototype.serialize = function() {
 	return this.container.find(':input').serialize();
-}
+};
 
 /**
  * Obtains the data from all form elements in the panel and returns
@@ -169,7 +170,7 @@ Codebot.Panel.prototype.serialize = function() {
  */
 Codebot.Panel.prototype.getData = function() {
 	return this.container.find(':input').serializeObject();
-}
+};
 
 /**
  * Defines a plugin to be the data manager for this panel. When a panel
