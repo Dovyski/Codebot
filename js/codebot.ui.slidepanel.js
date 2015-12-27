@@ -190,6 +190,7 @@ var CodebotSlidePanel = function() {
 
         aInstance = new thePanelClass();
         aInstance.panelManager = this;
+        aInstance.context = mCodebot;
 
         return aInstance;
     };

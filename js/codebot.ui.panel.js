@@ -173,6 +173,15 @@ Codebot.Panel.prototype.getData = function() {
 };
 
 /**
+ * Obtains a reference to Codebot's singleton.
+ *
+ * @return {Object} A reference to Codebot's singleton.
+ */
+Codebot.Panel.prototype.getContext = function() {
+	return this.context;
+};
+
+/**
  * Defines a plugin to be the data manager for this panel. When a panel
  * has a data manager, all form elements within the panel content (e.g. inputs, selects, etc)
  * have their values stored in the informed plugin. This is useful to persist panel

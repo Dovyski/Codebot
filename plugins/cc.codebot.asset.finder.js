@@ -33,6 +33,9 @@ var AssetFinder = AssetFinder || {};
 AssetFinder.MainPanel = function() {
     // Call constructor of base class
     Codebot.Panel.call(this, 'Asset Finder');
+
+    this.setDataManager('cc.codebot.asset.finder');
+    this.infoPanel = $('#asset-info-item-description');
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
@@ -40,12 +43,14 @@ AssetFinder.MainPanel.prototype = Object.create(Codebot.Panel.prototype);
 AssetFinder.MainPanel.prototype.constructor = AssetFinder.MainPanel;
 
 AssetFinder.MainPanel.prototype.render = function() {
+    var aSelf = this;
+
     Codebot.Panel.prototype.render.call(this);
 
-    this.addDivider('Options');
+    this.divider('Options');
 
-    this.addLabelValueRow('Search', '<form action="#" id="asset-finder-main"><input type="text" name="query" value="" />');
-    this.addLabelValueRow(
+    this.pair('Search', '<input type="text" name="query" value="" />');
+    this.pair(
         'License',
         '<select name="license">' +
             '<option value="1">CC-BY 3.0</option>' +
@@ -53,18 +58,14 @@ AssetFinder.MainPanel.prototype.render = function() {
             '<option value="4">GPL 3.0</option>' +
         '</select>' +
         '<input type="hidden" name="start" value="0">' +
-        '<input type="hidden" name="limit" value="50">' +
-        '</form>'
+        '<input type="hidden" name="limit" value="50">'
     );
+    this.pair('', '<button id="af-search">Search</button>');
 
-    this.addDivider('Results');
-    this.addRow('<div id="assets-finder-browse-area" style="width: 100%; height: 100%; overflow: scroll;">Nothing to show yet.</div>', false);
+    this.divider('Results');
+    this.row('<div id="assets-finder-browse-area" style="width: 100%; height: 100%; overflow: scroll;">Nothing to show yet.</div>', false);
 
-    $('#asset-finder-main').submit(function(theEvent) {
-        doSearch();
-        theEvent.preventDefault();
-        return false;
-    });
+    $('#af-search').click(function() { aSelf.doSearch(); });
 
     // TODO: improve this.
     $("#assets-finder-browse-area").scroll(function() {
@@ -76,25 +77,7 @@ AssetFinder.MainPanel.prototype.render = function() {
     });
 };
 
-
-/**
- * Search for assets on the interwebs.
- */
-AssetFinder.Plugin = function() {
-    // Call constructor of base class
-    Codebot.Plugin.call(this);
-
-    // Initialize personal stuff
-    this.id         = 'cc.codebot.asset.finder';
-    this.infoPanel  = null;
-};
-
-// Lovely pants-in-the-head javascript boilerplate for OOP.
-AssetFinder.Plugin.prototype = Object.create(Codebot.Plugin.prototype);
-AssetFinder.Plugin.prototype.constructor = AssetFinder.Plugin;
-
-
-AssetFinder.Plugin.prototype.findProjectTopFolders = function() {
+AssetFinder.MainPanel.prototype.findProjectTopFolders = function() {
     var aRoot = this.context.ui.filesPanel.tree,
         aRet = [];
         i = 0;
@@ -108,13 +91,13 @@ AssetFinder.Plugin.prototype.findProjectTopFolders = function() {
     return aRet;
 };
 
-AssetFinder.Plugin.prototype.showItemInfo = function(theItemId) {
+AssetFinder.MainPanel.prototype.showItemInfo = function(theItemId) {
     var aIde, aPanel, aFolder, aContent, aProjectFolders, aFoldersText = '';
 
     aIde = this.context.getPlugin('cc.codebot.ide.web');
 
-    mInfoPanel.html('<i class="fa fa-circle-o-notch fa-spin"></i>');
-    mInfoPanel.fadeIn();
+    this.infoPanel.html('<i class="fa fa-circle-o-notch fa-spin"></i>');
+    this.infoPanel.fadeIn();
 
     aIde.api('assets', 'info', {item: theItemId}, function(theData) {
         aPanel = new CodebotFancyPanel(theData.title);
@@ -137,13 +120,13 @@ AssetFinder.Plugin.prototype.showItemInfo = function(theItemId) {
         aFolder = aPanel.addFolder('Description', 'description');
         aFolder.add(theData.description);
 
-        mInfoPanel.html(aPanel.html());
+        this.infoPanel.html(aPanel.html());
 
-        mInfoPanel.find('a#assetDownloadLink').click(function() {
-            mInfoPanel.fadeOut();
-            this.context.ui.filesPanel.addPendingActivity('downloading' + theItemId, 'Downloading asset', 'Fetching item to "' + mInfoPanel.find('select#assetDestinationDir').val() + '"');
+        this.infoPanel.find('a#assetDownloadLink').click(function() {
+            this.infoPanel.fadeOut();
+            this.context.ui.filesPanel.addPendingActivity('downloading' + theItemId, 'Downloading asset', 'Fetching item to "' + this.infoPanel.find('select#assetDestinationDir').val() + '"');
 
-            aIde.api('assets', 'fetch', {item: theItemId, project: aIde.getActiveProject().id, destination: mInfoPanel.find('select#assetDestinationDir').val()}, function(theData) {
+            aIde.api('assets', 'fetch', {item: theItemId, project: aIde.getActiveProject().id, destination: this.infoPanel.find('select#assetDestinationDir').val()}, function(theData) {
                 this.context.ui.filesPanel.removePendingActivity('downloading' + theItemId);
 
                 if(theData.success) {
@@ -158,14 +141,14 @@ AssetFinder.Plugin.prototype.showItemInfo = function(theItemId) {
     });
 };
 
-AssetFinder.Plugin.prototype.doSearch = function() {
-    var i, aContent = '', aIde;
+AssetFinder.MainPanel.prototype.doSearch = function() {
+    var i, aContent = '', aIde, aSelf = this;
 
-    aIde = this.context.getPlugin('cc.codebot.ide.web');
+    aIde = this.getContext().getPlugin('cc.codebot.ide.web');
 
     $('#assets-finder-browse-area').html('<i class="fa fa-circle-o-notch fa-spin"></i>');
 
-    aIde.api('assets', 'search', $('#asset-finder-main').serialize(), function(theData) {
+    aIde.api('assets', 'search', this.serialize(), function(theData) {
         if(theData.success) {
             for(i = 0; i < theData.items.length; i++) {
                 aContent += '<a href="javascript:void(0)" data-item="'+theData.items[i].id+'"><img src="'+theData.items[i].thumbnail+'" alt="Preview"></a>';
@@ -174,15 +157,40 @@ AssetFinder.Plugin.prototype.doSearch = function() {
             $('#assets-finder-browse-area').html(aContent);
 
             $('#assets-finder-browse-area a').click(function() {
-                showItemInfo($(this).data('item'));
+                aSelf.showItemInfo($(this).data('item'));
             });
         }
     });
 }
 
-AssetFinder.Plugin.prototype.loadMoreSearchResults = function() {
+AssetFinder.MainPanel.prototype.loadMoreSearchResults = function() {
     // TODO: implement this.
     console.log('loadMoreSearchResults?');
+};
+
+
+/**
+ * Search for assets on the interwebs.
+ */
+AssetFinder.Plugin = function() {
+    // Call constructor of base class
+    Codebot.Plugin.call(this);
+
+    // Initialize personal stuff
+    this.id         = 'cc.codebot.asset.finder';
+    this.infoPanel  = null;
+};
+
+// Lovely pants-in-the-head javascript boilerplate for OOP.
+AssetFinder.Plugin.prototype = Object.create(Codebot.Plugin.prototype);
+AssetFinder.Plugin.prototype.constructor = AssetFinder.Plugin;
+
+AssetFinder.Plugin.prototype.savePanelData = function(thePanel, theData) {
+    console.debug('AssetFinder::savePanelData', thePanel, theData);
+};
+
+AssetFinder.Plugin.prototype.getPanelData = function(thePanel) {
+    return {query: 'This is a test', license: '2'};
 };
 
 AssetFinder.Plugin.prototype.initUIAfterProjectOpened = function(theProjectInfo) {
