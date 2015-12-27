@@ -57,16 +57,6 @@ var CodebotSlidePanel = function() {
 
     var renderPanel = function(thePanel) {
         thePanel.render();
-
-        // Walk the just rendered content looking for
-        // actionable code, such as buttons, etc.
-
-        thePanel.container.find('[data-action="close"]').each(function(i, e) {
-            $(e).click(function() {
-                mSelf.popState();
-            });
-        });
-
         restorePersistentPanelData(thePanel);
     };
 
@@ -223,7 +213,22 @@ var CodebotSlidePanel = function() {
             mCurrentPanel = null;
             mCodebot.signals.beforeLastSlidePanelClose.dispatch();
         }
-    }
+    };
+
+    /**
+     * Invoked by any panel that wants to close itself but
+     * is managed by this slide panel.
+     *
+     * @param  {Codebot.Panel} thePanel The panel that wants to close itself.
+     */
+    this.closeChild = function(thePanel) {
+        if(mCurrentPanel == thePanel) {
+            this.popState();
+
+        } else {
+            // TODO: remove element from stack, remove from DOM, etc
+        }
+    };
 
     this.init = function(theCodebot) {
         mSelf = this;

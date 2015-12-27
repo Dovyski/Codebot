@@ -56,6 +56,11 @@ Codebot.Panel.prototype.setContainer = function(theContainerId) {
 	if(this.containerId) {
 		this.container = $('#' + theContainerId);
 		this.container.addClass('panel-content');
+
+		// If we have a title, add it to the container already
+		if(this.title) {
+			this.addToDom({'type': 'title', 'title': this.title});
+		}
 	}
 };
 
@@ -108,7 +113,8 @@ Codebot.Panel.prototype.pair = function(theLabel, theContent) {
  * @param  {object} theItem Item descriting the DOM element.
  */
 Codebot.Panel.prototype.addToDom = function(theItem) {
-	var aContent = '';
+	var aContent = '',
+		aJustAdded;
 
 	aContent += '<div class="panel-'+ theItem.type +'" ' + ( theItem.id ? 'id="' + theItem.id + '"' : '' ) + '>';
 
@@ -129,8 +135,28 @@ Codebot.Panel.prototype.addToDom = function(theItem) {
 
 	aContent += '</div>';
 
-	// Add the content to the DOM
-	this.container.append(aContent);
+	// Do we have a DOM element to append the content to?
+	if(this.container) {
+		// Yep! Add the content to the DOM then
+		aJustAdded = this.container.append(aContent);
+		// Enhance the content (make button clickable, etc)
+		this.enhance(aJustAdded);
+ 	}
+};
+
+/**
+ * Enhance the element, adding action to buttons, etc.
+ *
+ * @param  {jQuery} theElement Object describing an element that was just added to the panel
+ */
+Codebot.Panel.prototype.enhance = function(theElement) {
+	var aSelf = this;
+
+	theElement.find('[data-action="close"]').each(function(i, e) {
+		$(e).click(function() {
+			aSelf.close();
+		});
+	});
 };
 
 /**
@@ -139,11 +165,6 @@ Codebot.Panel.prototype.addToDom = function(theItem) {
  * method to create personlized content for new panels.
  */
 Codebot.Panel.prototype.render = function() {
-	// The first thing to render is the title, if we have one
-	if(this.title) {
-		this.addToDom({'type': 'title', 'title': this.title});
-	}
-
 	// From this point on, subclasses should add their own
 	// content to the panel.
 };
@@ -153,7 +174,17 @@ Codebot.Panel.prototype.render = function() {
  * is popped out of the stack and the subsequent panel becomes active.
  */
 Codebot.Panel.prototype.close = function() {
-	// TODO: implement.
+	// Do we have a panel manager?
+	if(this.panelManager) {
+		// Yep, let it handle the closing
+		// process and do what is appropriate.
+		this.panelManager.closeChild(this);
+
+	} else if (this.container) {
+		// We have no panel manager, so let's just
+		// hide this panel.
+		this.container.fadeOut('fast');
+	}
 };
 
 /**
@@ -171,6 +202,9 @@ Codebot.Panel.prototype.open = function(thePanelClass) {
  * This is a last oportunity to perform clean up tasks.
  */
 Codebot.Panel.prototype.destroy = function() {
+	if(this.container) {
+		this.container.remove();
+	}
 };
 
 /**
