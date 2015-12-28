@@ -21,10 +21,13 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// Namespace for the web IDE
+var IdeWeb = IdeWeb || {};
+
 /**
  * The bare minimum to use codebot as a IDE (save buttons, etc)
  */
-var CoreIdePlugin = function() {
+IdeWeb.Plugin = function() {
     // Constants
     const API_URL           = 'plugins/ide-web/api/?';
 
@@ -51,38 +54,6 @@ var CoreIdePlugin = function() {
 
             } else {
                 console.error('Failed to create project: ' + theData.msg);
-            }
-        });
-    };
-
-    var doOpenProject = function(theProjectId) {
-        var aProject;
-
-        console.debug('Opening project with id=' + theProjectId);
-
-        mSelf.api('project', 'open', {id: theProjectId}, function(theData) {
-            if(theData.success) {
-                aProject = theData.project;
-
-                // Update internal references
-                mActiveProject = aProject;
-                mProjects[aProject.id] = aProject;
-
-                // If the project has no settings, make it blank then.
-                aProject.settings = aProject.settings || {};
-
-                // Tell the IO layer about the path that must be
-                // appended to all requests
-                mContext.io.setProjectPath(aProject.path);
-
-                // Populate the files panel with project files
-                mContext.ui.filesPanel.populateTree(mActiveProject.files);
-
-                // Tell everybody about the newly opened project.
-                mContext.signals.projectOpened.dispatch([mActiveProject]);
-
-            } else {
-                console.error('Failed to open project: ' + theData.msg);
             }
         });
     };
@@ -203,6 +174,56 @@ var CoreIdePlugin = function() {
     };
 
     /**
+     * Obtains a list of all existing projects.
+     *
+     * @param  {Function} theCallback      Callback that will be invoked when the projects list has been loaded. The callback will receive a list of project as an argument.
+     * @param  {Object} theCallbackContext Context that will be used when the callback is invoked.
+     */
+    this.findProjects = function(theCallback, theCallbackContext) {
+        mSelf.api('project', 'search', null, function(theData) {
+            mProjects = theData.projects;
+            theCallback.call(theCallbackContext || this, mProjects);
+        });
+    };
+
+    /**
+     * Open an specific project.
+     *
+     * @param  {int} theProjectId Id of the project to be opened.
+     */
+    this.openProject = function(theProjectId) {
+        var aProject;
+
+        console.log('CODEBOT [ide] Opening project with id=' + theProjectId);
+
+        mSelf.api('project', 'open', {id: theProjectId}, function(theData) {
+            if(theData.success) {
+                aProject = theData.project;
+
+                // Update internal references
+                mActiveProject = aProject;
+                mProjects[aProject.id] = aProject;
+
+                // If the project has no settings, make it blank then.
+                aProject.settings = aProject.settings || {};
+
+                // Tell the IO layer about the path that must be
+                // appended to all requests
+                mContext.io.setProjectPath(aProject.path);
+
+                // Populate the files panel with project files
+                mContext.ui.filesPanel.populateTree(mActiveProject.files);
+
+                // Tell everybody about the newly opened project.
+                mContext.signals.projectOpened.dispatch([mActiveProject]);
+
+            } else {
+                console.error('Failed to open project: ' + theData.msg);
+            }
+        });
+    };
+
+    /**
      * Saves the content of all currently open tabs.
      *
      * @param  {Function} theCallback A callback that will be invoked after the content of all tabs has been saved.
@@ -241,8 +262,11 @@ var CoreIdePlugin = function() {
 
         mContext = theContext;
 
+        // Load all required scripts
+        mContext.loadScript('./plugins/ide-web/js/panel.openproject.js');
+
         mContext.ui.addButton('newProject', {icon: '<i class="fa fa-plus-square"></i>', panel: mSelf.newProject });
-        mContext.ui.addButton('openProject', {icon: '<i class="fa fa-folder-open"></i>', panel: mSelf.openProject });
+        mContext.ui.addButton('openProject', {icon: '<i class="fa fa-folder-open"></i>', panel: IdeWeb.Panel.OpenProject });
 
         // Schedule the rest of the UI initialization to happen only
         // after a project has been opened.
@@ -300,47 +324,6 @@ var CoreIdePlugin = function() {
         });
     };
 
-    this.openProject = function(theContainer, theContext) {
-        var aContent = '',
-            aPanel,
-            aFolder;
-
-        aPanel  = new CodebotFancyPanel('Open project');
-        aFolder = aPanel.addFolder();
-        aFolder.addRaw('<div id="projects-list"></div>');
-
-        aContent += aPanel.html();
-
-        theContainer.css('background', '#3d3d3d');
-        theContainer.append(aContent);
-
-        $('#projects-list').html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading the list, please wait.');
-
-        mSelf.api('project', 'search', null, function(theData) {
-            var aInfo = '';
-
-            // Save projects for future use.
-            mProjects = theData.projects;
-
-            for(var i in theData.projects) {
-                aInfo +=
-                    '<a href="javascript:void(0);" data-project-id="'+theData.projects[i].id+'">' +
-                        '<div>' +
-                            '<img src="" alt="'+theData.projects[i].type+'" />' +
-                            '<p>'+theData.projects[i].name+'</p>' +
-                        '</div>' +
-                    '</a>';
-            }
-
-            $('#projects-list').html(aInfo);
-
-            $('#projects-list a').click(function() {
-                doOpenProject($(this).data('project-id'));
-                theContext.ui.slidePanel.close();
-            });
-        });
-    };
-
     this.save = function(theContext, theButton) {
         var aTab = mContext.ui.tabs.active;
 
@@ -350,4 +333,4 @@ var CoreIdePlugin = function() {
     };
 };
 
-CODEBOT.addPlugin(new CoreIdePlugin());
+CODEBOT.addPlugin(new IdeWeb.Plugin());

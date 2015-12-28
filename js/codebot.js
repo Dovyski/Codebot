@@ -53,6 +53,16 @@ var CODEBOT = new function() {
 		return false;
 	};
 
+	this.loadScript = function(thePath) {
+		console.log('CODEBOT [core] Loading script: ' + thePath);
+		$('body').append('<script type="text/javascript" src="' + thePath + '"></script>');
+	};
+
+	this.loadStyle = function(thePath) {
+		console.log('CODEBOT [core] Loading style: ' + thePath);
+		$('body').append('<link href="' + thePath + '" rel="stylesheet" type="text/css">');
+	};
+
     this.writeTabToDisk = function(theTab) {
 		var aEditor = theTab.editor;
 
