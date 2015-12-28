@@ -127,7 +127,7 @@ AssetFinder.MainPanel.prototype.showItemInfo = function(theItemId) {
             aFoldersText += '<option value="' + aProjectFolders[i].path + '">/' + aProjectFolders[i].name + '</option>';
         }
         aPanel.divider('Download');
-        aPanel.pair('Save to', '<select id="assetDestinationDir"><option value="/">/</option>'+aFoldersText+'</select> <a href="javascript:void(0)" id="assetDownloadLink"><i class="fa fa-download"></i> DOWNLOAD</a>');
+        aPanel.pair('Save to', '<i class="fa fa-folder-open"></i> <select id="assetDestinationDir" style="width: 90%;"><option value="/">/</option>'+aFoldersText+'</select> <a href="javascript:void(0)" id="assetDownloadLink"><i class="fa fa-download"></i> DOWNLOAD</a>');
 
         aPanel.divider('Details');
         aPanel.pair('Author', theData.author);
@@ -139,6 +139,7 @@ AssetFinder.MainPanel.prototype.showItemInfo = function(theItemId) {
 
         this.infoPanel.find('a#assetDownloadLink').click(function() {
             this.infoPanel.fadeOut();
+            // TODO: make pending activity a global Codebot thing with categories (e.g. filesPanel)
             this.context.ui.filesPanel.addPendingActivity('downloading' + theItemId, 'Downloading asset', 'Fetching item to "' + this.infoPanel.find('select#assetDestinationDir').val() + '"');
 
             aIde.api('assets', 'fetch', {item: theItemId, project: aIde.getActiveProject().id, destination: this.infoPanel.find('select#assetDestinationDir').val()}, function(theData) {

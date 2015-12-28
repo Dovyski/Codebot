@@ -605,13 +605,13 @@ Sliding panel and panels content
 }
 
 .panel-pair-text {
-    width: 50%;
+    width: 40%;
     float: left;
     margin-top: 3px;
 }
 
 .panel-pair-content {
-    width: 45%;
+    width: 50%;
     float: right;
     margin-right: 5px;
 }
