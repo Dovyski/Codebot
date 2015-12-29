@@ -53,9 +53,9 @@ SoundCentral.Plugin.prototype.init = function(theContext) {
     console.debug('SoundCentral.Plugin:init()');
 
     // Load all required scripts
-    this.context.loadScript('./plugins/sound-central/js/panel.main.js');
     this.context.loadScript('./plugins/sound-central/js/jsfxr/riffwave.js');
     this.context.loadScript('./plugins/sound-central/js/jsfxr/sfxr.js');
+    this.context.loadScript('./plugins/sound-central/js/panel.main.js');
 
     // Add sound central button only after a project has been loaded
     this.context.signals.projectOpened.add(function(theProjectInfo) {

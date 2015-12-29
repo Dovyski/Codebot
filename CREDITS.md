@@ -65,3 +65,13 @@ License: Free (http://tympanus.net/codrops/licensing/)
 querypath
 Author: Matt Butcher - https://github.com/technosophos/querypath
 License: MIT
+
+------------------------------------------------------------------------------------------
+riffwave.js
+Author: Pedro Ladaria <pedro.ladaria at Gmail dot com> - https://gist.github.com/hackNightly/3776503
+License: Public Domain
+
+------------------------------------------------------------------------------------------
+jsfxr
+Author: Eric Fredricksen - https://github.com/grumdrig/jsfxr
+License: Public Domain
