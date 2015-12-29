@@ -59,7 +59,8 @@ class Disk {
 			array('name' => 'cc.codebot.flash.tools.js', 'title' => 'cc.codebot.flash.tools.js', 'path' => './plugins/cc.codebot.flash.tools.js'),
 			array('name' => 'cc.codebot.javascript.tools.js', 'title' => 'cc.codebot.javascript.tools.js', 'path' => './plugins/cc.codebot.javascript.tools.js'),
 			array('name' => 'cc.codebot.ide.web.dnd.js', 'title' => 'cc.codebot.ide.web.dnd.js', 'path' => './plugins/cc.codebot.ide.web.dnd.js'),
-			array('name' => 'cc.codebot.asset.finder.js', 'title' => 'cc.codebot.asset.finder.js', 'path' => './plugins/cc.codebot.asset.finder.js')
+			array('name' => 'cc.codebot.asset.finder.js', 'title' => 'cc.codebot.asset.finder.js', 'path' => './plugins/cc.codebot.asset.finder.js'),
+			array('name' => 'cc.codebot.sounder.central.js', 'title' => 'cc.codebot.sound.central.js', 'path' => './plugins/cc.codebot.sound.central.js')
 		);
 	}
 

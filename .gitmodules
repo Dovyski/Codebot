@@ -1,3 +1,6 @@
 [submodule "js/3rdparty/ace"]
 	path = js/3rdparty/ace
 	url = https://github.com/ajaxorg/ace-builds.git
+[submodule "plugins/sound-central/js/jsfxr"]
+	path = plugins/sound-central/js/jsfxr
+	url = https://github.com/grumdrig/jsfxr.git
