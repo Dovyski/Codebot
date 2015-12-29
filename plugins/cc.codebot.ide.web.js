@@ -39,83 +39,6 @@ IdeWeb.Plugin = function() {
     var mActiveProject      = null;
     var mProjectFactory     = null;
 
-    var doCreateNewProject = function() {
-        var aData = $('#form-new-project').serialize();
-
-        mContext.ui.slidePanel.close();
-        mContext.ui.filesPanel.addPendingActivity('new-project', 'Creating project', 'Project XYZ is being created.');
-
-        mSelf.api('project', 'create', aData, function(theData) {
-            mContext.ui.filesPanel.removePendingActivity('new-project');
-
-            if(theData.success) {
-                mProjects[theData.project.id] = theData.project;
-                doOpenProject(theData.project.id);
-
-            } else {
-                console.error('Failed to create project: ' + theData.msg);
-            }
-        });
-    };
-
-    var generateTemplatesList = function(theType) {
-        var aContent = '',
-            aTemplate,
-            aInfo;
-
-        if(mProjectFactory) {
-            for(aTemplate in mProjectFactory[theType].templates) {
-                aInfo = mProjectFactory[theType].templates[aTemplate];
-
-                aContent +=
-                    '<a href="javascript:void(0)" data-template="' + aTemplate + '">' +
-                        '<div class="project-template">' +
-                            '<img src="' + aInfo.icon + '" alt="Preview"><br />' +
-                            aInfo.name +
-                        '</div>' +
-                    '</a>';
-            }
-        }
-
-        // All types have a bult-in git template.
-        aContent =
-            '<div id="project-git-repo-panel" class="c">' +
-                '<i class="fa fa-code-fork fa-2x"></i> <input type="text" name="git-repo" id="project-git-repo" placeholder="https://github.com/User/proj.git">' +
-            '</div>'+
-            '<a href="javascript:void(0)" data-template="git">' +
-                '<div class="project-template">' +
-                    '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview"><br />' +
-                    'Clone from Git' +
-                '</div>' +
-            '</a>' +
-            aContent;
-
-        return aContent;
-    };
-
-    var renderTemplatesList = function(theType) {
-        var aTemplate;
-
-        // Populate the templates list
-        $('#project-templates').html(generateTemplatesList(theType));
-
-        // Handle clicks on template options
-        $('#project-templates a').click(function(theEvent) {
-            aTemplate = $(this).data('template');
-
-            $('#project-templates a').removeClass('selected');
-            $(this).addClass('selected');
-
-            $('#form-new-project input#project-template').val(aTemplate);
-
-            if(aTemplate == 'git') {
-                $('#project-git-repo-panel').slideDown();
-            } else {
-                $('#project-git-repo-panel').slideUp();
-            }
-        });
-    };
-
     var initProjectFactory = function() {
         mSelf.api('project', 'findTypesAndTemplates', null, function(theData) {
             if(theData.success) {
@@ -224,6 +147,28 @@ IdeWeb.Plugin = function() {
     };
 
     /**
+     * Creates a new project.
+     *
+     * @param  {Object} theData Object containing the project data.
+     */
+    this.createProject = function(theData) {
+        mContext.ui.slidePanel.close();
+        mContext.ui.filesPanel.addPendingActivity('new-project', 'Creating project', 'Project XYZ is being created.'); // \TODO: change to global background running tasks approach.
+
+        mSelf.api('project', 'create', theData, function(theResponse) {
+            mContext.ui.filesPanel.removePendingActivity('new-project');
+
+            if(theResponse.success) {
+                mProjects[theResponse.project.id] = theResponse.project;
+                this.openProject(theResponse.project.id);
+
+            } else {
+                console.error('Failed to create project: ' + theResponse.msg);
+            }
+        }, this);
+    };
+
+    /**
      * Saves the content of all currently open tabs.
      *
      * @param  {Function} theCallback A callback that will be invoked after the content of all tabs has been saved.
@@ -264,8 +209,9 @@ IdeWeb.Plugin = function() {
 
         // Load all required scripts
         mContext.loadScript('./plugins/ide-web/js/panel.openproject.js');
+        mContext.loadScript('./plugins/ide-web/js/panel.createproject.js');
 
-        mContext.ui.addButton('newProject', {icon: '<i class="fa fa-plus-square"></i>', panel: mSelf.newProject });
+        mContext.ui.addButton('newProject', {icon: '<i class="fa fa-plus-square"></i>', panel: IdeWeb.Panel.CreateProject });
         mContext.ui.addButton('openProject', {icon: '<i class="fa fa-folder-open"></i>', panel: IdeWeb.Panel.OpenProject });
 
         // Schedule the rest of the UI initialization to happen only
@@ -281,47 +227,8 @@ IdeWeb.Plugin = function() {
         var aProject = CODEBOT.utils.getURLParamByName('project');
 
         if(aProject) {
-            doOpenProject(aProject);
+            this.openProject(aProject);
         }
-    };
-
-    this.newProject = function(theContainer, theContext) {
-        var aContent = '',
-            aPanel,
-            aFolder;
-
-        aPanel  = new CodebotFancyPanel('New project');
-        aFolder = aPanel.addFolder();
-
-        aFolder.add('<select name="type" id="project-type"><option value="flash">Flash/AS3</option><option value="js">Javascript/HTML5</option></select>', 'Type');
-
-        aFolder = aPanel.addFolder('Template', 'output');
-
-        aFolder.addRaw('<div id="project-templates"></div><input type="hidden" name="template" id="project-template" value="none" />');
-
-        aFolder = aPanel.addFolder('Project settings', 'settings');
-
-        aFolder.add('<input type="text" name="name" id="project-name" placeholder="Projet name"/>', 'Name');
-        aFolder.add('<select name="visibility"><option value="public">Public</option><option value="private">Private (not available yet)</option></select>', 'Visibility');
-        aFolder.addRaw('<br />');
-        aFolder.add('<div style="text-align: center;"><button type="submit">Create project</button></div>');
-
-        aContent += '<form action="javascript:void(0)" id="form-new-project">';
-        aContent += aPanel.html();
-        aContent += '</form>';
-
-        theContainer.css('background', '#3d3d3d');
-        theContainer.append(aContent);
-
-        $('#form-new-project').submit(doCreateNewProject);
-
-        renderTemplatesList($('#project-type').val());
-
-        // Change the templates list content everytime the
-        // projects type changes.
-        $('#form-new-project select#project-type').change(function(theEvent) {
-            renderTemplatesList(theEvent.target.value);
-        });
     };
 
     this.save = function(theContext, theButton) {
@@ -330,6 +237,10 @@ IdeWeb.Plugin = function() {
         if(aTab) {
             mContext.writeTabToDisk(aTab);
         }
+    };
+
+    this.getProjectFactory = function() {
+        return mProjectFactory;
     };
 };
 
