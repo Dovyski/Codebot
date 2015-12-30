@@ -69,11 +69,13 @@ Codebot.Panel.prototype.setContainer = function(theContainerId) {
  * title, pretty much like the heading of a panel.
  *
  * @param  {string} theTitle  The title of the section
+ * @param  {Object} theOptions	A set of options to customize the divider. Available values are: <code>icon</code>.
  */
-Codebot.Panel.prototype.divider = function(theTitle) {
+Codebot.Panel.prototype.divider = function(theTitle, theOptions) {
 	this.addToDom({
 		type: 'divider',
-		title: theTitle
+		title: theTitle,
+		options: theOptions || {}
 	});
 };
 
@@ -114,8 +116,10 @@ Codebot.Panel.prototype.pair = function(theLabel, theContent) {
  */
 Codebot.Panel.prototype.addToDom = function(theItem) {
 	var aContent = '',
-		aJustAdded;
+		aJustAdded,
+		aOptions;
 
+	aOptions = theItem.options || {};
 	aContent += '<div class="panel-'+ theItem.type +'" ' + ( theItem.id ? 'id="' + theItem.id + '"' : '' ) + '>';
 
 	if(theItem.type == 'pair') {
@@ -124,7 +128,7 @@ Codebot.Panel.prototype.addToDom = function(theItem) {
 		aContent += '<div class="panel-pair-content">' + theItem.content + '</div>';
 
 	} else if (theItem.type == 'divider' || theItem.type == 'title') {
-		aContent += '<i class="fa fa-caret-down"></i> ' + theItem.title;
+		aContent += '<i class="fa fa-'+(aOptions.icon || 'caret-down') + '"></i> ' + theItem.title;
 
 		if(theItem.type == 'title') {
 			aContent += '<a href="javascript:void(0);" class="panel-close-button pull-right" data-action="close"><i class="fa fa-close"></i></a>';

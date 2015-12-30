@@ -334,6 +334,12 @@ Sliding panel and panels content
     margin-right: 8px;
 }
 
+.panel-content hr {
+    background: #404040;
+    border-top: solid 2px #272727;
+    height: 2px;
+}
+
 .panel-content a,
 .panel-content a:active,
 .panel-content a:visited,
@@ -369,12 +375,19 @@ Sliding panel and panels content
 
 .panel-divider {
     background: #3d3d3d;
-    margin-top: 5px;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+}
+
+.panel-divider i {
+    text-shadow: 1px 1px 2px #2b2b2b;
+    color: #aaa;
 }
 
 .panel-row {
     padding: 5px;
     display: inline-block;
+    width: 100%;
 }
 
 .panel-raw {
@@ -448,6 +461,45 @@ Sliding panel and panels content
     outline: 1px solid #212121;
 }
 
+.panel-content input[type=checkbox] {
+    -webkit-appearance: none;
+    appearance: none;
+	background-color: #292929;
+	border: 1px solid #171717;
+    outline: 1px solid #636363;
+	display: inline-block;
+	position: relative;
+    width: 15px !important;
+    height: 15px !important;
+    margin-top: 3px;
+}
+
+.panel-content input[type=checkbox]:active,
+.panel-content input[type=checkbox]:checked:active {
+    background-color: #292929;
+	border: 1px solid #171717;
+    outline: 1px solid #636363;
+}
+
+.panel-content input[type=checkbox]:checked {
+    background-color: #292929;
+	border: 1px solid #171717;
+    outline: 1px solid #636363;
+	color: #99a1a7;
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.panel-content input[type=checkbox]:checked:after {
+	content: 'X';
+	font-size: 10px;
+	position: absolute;
+	top: 2px;
+	left: -2px;
+	color: #99a1a7;
+    padding: 0;
+}
+
 /* Special UI elements */
 
 .panel-content button.square {
@@ -455,8 +507,8 @@ Sliding panel and panels content
     height: 55px;
     position: relative;
     text-align: center;
-    margin-bottom: 20px;
-    margin-right: 0;
+    margin-bottom: 30px;
+    margin-right: 10px;
 }
 
 .panel-content button.square i {
