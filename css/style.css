@@ -369,10 +369,12 @@ Sliding panel and panels content
 
 .panel-divider {
     background: #3d3d3d;
+    margin-top: 5px;
 }
 
 .panel-row {
     padding: 5px;
+    display: inline-block;
 }
 
 .panel-raw {
@@ -444,6 +446,36 @@ Sliding panel and panels content
     background: #323232;
     border: solid 1px #000;
     outline: 1px solid #212121;
+}
+
+/* Special UI elements */
+
+.panel-content button.square {
+    width: 60px;
+    height: 55px;
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-right: 0;
+}
+
+.panel-content button.square i {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 60px;
+    text-align: center;
+    font-size: 35px;
+    color: #b1b1b1;
+    font-weight: normal;
+}
+
+.panel-content button.square label {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 60px;
+    text-align: center;
 }
 
 /* Style placeholders - https://css-tricks.com/snippets/css/style-placeholder-text/ */
