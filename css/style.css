@@ -45,7 +45,7 @@ Config panel
 	top: 0;
 	width: 30px;
 	height: 100%;
-	background: #3f3f3f;
+	background: #333;
 }
 
 #config-dialog {
@@ -53,7 +53,9 @@ Config panel
 	z-index: 1;
 	width: 300px;
 	height: 100%;
-	background: #3D3D3D;
+    background: #333;
+    border-left: 1px solid #424242;
+	outline: 1px solid #000;
 	color: #fff;
 	overflow: auto;
 
@@ -67,7 +69,8 @@ Config panel
 	width: 30px;
 	height: 100%;
 	background: #555;
-    border-left: 1px solid #3D3D3D;
+    border-left: 1px solid #424242;
+	outline: 1px solid #000;
 }
 
 #config-bar a {
@@ -99,6 +102,8 @@ Files panel
 	width: 20%;
 	height: 100%;
 	color: #AAA;
+    border-left: 1px solid #424242;
+	outline: 1px solid #000;
 }
 
 #folders {
@@ -321,20 +326,12 @@ Sliding panel and panels content
     height: 100%;
     color: #a9a9a9;
     font-size: 15px;
-    background: #3D3D3D;
+    background: #333;
     padding: 0;
 }
 
 .panel-content i {
     margin-right: 8px;
-}
-
-.panel-content input,
-.panel-content select {
-    background: #333333;
-    border: 0;
-    height: 27px;
-    width: 100%;
 }
 
 .panel-content a,
@@ -351,22 +348,27 @@ Sliding panel and panels content
     font-family: 'Lucida Grande', sans-serif;
     font-size: 13px;
     padding: 0 0 0 10px;
-    line-height: 25px;
 }
 
 .panel-title,
 .panel-divider {
-    font-weight: bold;
-    border-bottom: 1px solid #555555;
-    border-top: 1px solid #555555;
+    font-weight: 700;
+    font-size: 12px;
+    border-bottom: 1px solid #494949;
+    border-top: 1px solid #494949;
+    outline: 1px solid #272727;
+    color: #bdbdbd;
+    text-transform: uppercase;
+    height: 30px;
+    padding-top: 8px;
 }
 
 .panel-title {
-    background: #333333;
+    background: #242424;
 }
 
 .panel-divider {
-    background: #444444;
+    background: #3d3d3d;
 }
 
 .panel-row {
@@ -403,6 +405,64 @@ Sliding panel and panels content
     float: right;
     margin-right: 5px;
 }
+
+/* Form elements within a panel - CSS from http://devgrow.com/dark-button-navigation-using-css3/ */
+.panel-content input,
+.panel-content select {
+    background: #292929;
+    border: solid 1px #171717;
+    outline: 1px solid #454545;
+    height: 27px;
+    width: 100%;
+}
+
+.panel-content input {
+    background: #292929;
+    width: 100%;
+    text-indent: 5px;
+}
+
+.panel-content select {
+    background: #2e2e2e;
+}
+
+.panel-content button {
+    background: #424242;
+    border: solid 1px #515151;
+    border-top: solid 1px #5d5d5d;
+    outline: 1px solid #212121;
+    cursor: pointer;
+    height: 25px;
+    min-width: 40px;
+}
+
+.panel-content button:hover {
+    background: #525252;
+}
+
+.panel-content button:active {
+    background: #323232;
+    border: solid 1px #000;
+    outline: 1px solid #212121;
+}
+
+/* Style placeholders - https://css-tricks.com/snippets/css/style-placeholder-text/ */
+.panel-content ::-webkit-input-placeholder {
+   color: #6d6d6d;
+}
+
+.panel-content :-moz-placeholder { /* Firefox 18- */
+   color: #6d6d6d;
+}
+
+.panel-content ::-moz-placeholder {  /* Firefox 19+ */
+   color: #6d6d6d;
+}
+
+.panel-content :-ms-input-placeholder {
+   color: #6d6d6d;
+}
+
 
 /*
 -----------------------------------------------------
