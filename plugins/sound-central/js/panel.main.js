@@ -258,7 +258,7 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
 
   this.gen("pickupCoin");
 
-  $('#generators  button').click(function() {
+  $('#sound-central-generators button').click(function() {
         aSelf.gen($(this).data('generator'));
   });
 };
@@ -281,31 +281,38 @@ SoundCentral.Panel.Main.prototype.render = function() {
     Codebot.Panel.prototype.render.call(this);
 
     this.divider('Save to project');
-    this.row('buttons');
+    this.row('buttons <hr> more more');
+    this.row('end end');
+    this.row('<input type="radio" name="shape"/> Ab <input type="radio" name="shape"/> B');
+    this.row('end end');
+    this.row('<input type="checkbox" name="shape"/> Ab <input type="checkbox" name="shape"/> B');
 
     this.divider('Generators');
-    this.row('buttons');
+    this.row(
+        '<button class="square"><i class="fa fa-rocket"></i><label>Pickup / coin</label></button>' +
+        '<button class="square"><i class="fa fa-money"></i><label>Rocket</label></button>' +
+        '<button class="square"><i class="fa fa-envelope"></i><label>Rocket</label></button>' +
+        '<button class="square"><i class="fa fa-user"></i><label>Rocket</label></button>' +
+        '<button class="square"><i class="fa fa-figure"></i><label>Rocket</label></button>' +
+        '<button class="square"><i class="fa fa-bitcoin"></i><label>Rocket</label></button>'
+    );
 
-    this.divider('Manual settings');
-    this.row('buttons');
+    this.divider('Manual settings', {icon: 'wrench'});
+    this.row(
+        '<div id="sound-central-generators">' +
+          '<button data-generator="pickupCoin">Pickup/coin</button> ' +
+          '<button data-generator="laserShoot">Laser/shoot</button>' +
+          '<button data-generator="explosion">Explosion</button> ' +
+          '<button data-generator="powerUp">Powerup</button> ' +
+          '<button data-generator="hitHurt">Hit/hurt</button> ' +
+          '<button data-generator="jump">Jump</button> ' +
+          '<button data-generator="blipSelect">Blip/select</button> ' +
+          '<button data-generator="random">Random</button> ' +
+          '<button data-generator="tone">Tone</button> ' +
+        '</div>'
+    );
 
     this.row(
-    '<div id="generators">' +
-      '<button data-generator="pickupCoin">Pickup/coin</button> <br/>' +
-      '<button data-generator="laserShoot">Laser/shoot</button> <br/>' +
-      '<button data-generator="explosion">Explosion</button> <br/>' +
-      '<button data-generator="powerUp">Powerup</button> <br/>' +
-      '<button data-generator="hitHurt">Hit/hurt</button> <br/>' +
-      '<button data-generator="jump">Jump</button> <br/>' +
-      '<button data-generator="blipSelect">Blip/select</button> <br/>' +
-      '<button data-generator="random">Random</button> <br/>' +
-      '<button data-generator="tone">Tone</button> <br/>' +
-      '<br/>' +
-      '<br/>' +
-      '<br/>' +
-      '<button onclick="mut()">Mutate</button> <br/>' +
-    '</div>' +
-
     '<div class="demo">' +
     '<h2>Manual Settings</h2>' +
     '<form>' +
