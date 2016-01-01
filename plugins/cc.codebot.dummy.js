@@ -24,26 +24,28 @@
 /**
  * This is a boilerplate for plugin creation.
  */
-var DummyPlugin = function() {
-    this.id         = 'cc.codebot.dummy';
-    
-    var mSelf       = null;
-    var mContext    = null;
-    
-    this.init = function(theContext) {
-        console.debug('DummyPlugin::init()');
+DummyPlugin = function() {
+    // Call constructor of base class
+    Codebot.Plugin.call(this);
+};
 
-        mSelf = this;
-        mContext = theContext;
+// Lovely pants-in-the-head javascript boilerplate for OOP.
+DummyPlugin.prototype = Object.create(Codebot.prototype);
+DummyPlugin.prototype.constructor = Codebot.Plugin;
 
-        mContext.ui.addButton({
-            icon: 'puzzle-piece',
-            customIcon: 'R',
-            //action: mSelf.anotherMethod,
-            panel: mSelf.renderPanel
-        });
-    };
-    
+this.init = function(theContext) {
+    Codebot.Plugin.prototype.init.call(this, theContext);
+
+    console.debug('DummyPlugin::init()');
+
+    this.context.ui.addButton({
+        icon: 'puzzle-piece',
+        customIcon: 'R',
+        //action: mSelf.anotherMethod,
+        panel: mSelf.renderPanel
+    });
+};
+
     this.anotherMethod = function() {
         mContext.ui.showDialog({
             title: 'Dialog',
@@ -53,46 +55,46 @@ var DummyPlugin = function() {
             }
         });
     };
-        
-    this.renderPanel = function(theContainer) {        
+
+    this.renderPanel = function(theContainer) {
         theContainer.append('<a href="#" id="myLink">pushState()<a/>');
         theContainer.append('<a href="#" id="myAnotherPopHere">popState()<a/>');
         theContainer.css('background', '#ff0000');
         theContainer.css('width', '100%');
         theContainer.css('height', '100%');
-        
+
         $('#myLink').click(function() {
             console.log('HERE!', mContext);
             mContext.ui.slidePanel.pushState(mSelf.renderAnotherPanel);
         });
-        
+
         $('#myAnotherPopHere').click(function() {
             mContext.ui.slidePanel.popState();
         });
     };
-    
+
     this.renderAnotherPanel = function(theContainer) {
         theContainer.css('background', '#00ff00');
         //theContainer.css('width', '100%');
         //theContainer.css('height', '100%');
         theContainer.append('<a href="#" id="myAnother">pushState()<a/>');
         theContainer.append('<a href="#" id="myAnotherPop">popState()<a/>');
-        
+
         $('#myAnother').click(function() {
             console.log('HERE!', mContext);
             mContext.ui.slidePanel.pushState(mSelf.renderAnotherNewPanel);
         });
-        
+
         $('#myAnotherPop').click(function() {
             console.log('HERE!', mContext);
             mContext.ui.slidePanel.popState();
         });
     };
-    
+
     this.renderAnotherNewPanel = function(theContainer) {
         theContainer.css('background', '#0d00cf');
         theContainer.html('<a href="#" id="myAnotherNew">popState()<a/>');
-        
+
         $('#myAnotherNew').click(function() {
             console.log('HERE!', mContext);
             mContext.ui.slidePanel.popState();
