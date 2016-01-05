@@ -332,6 +332,8 @@ Sliding panel and panels content
 
 .panel-content i {
     margin-right: 8px;
+    text-shadow: 1px 1px 2px #2b2b2b;
+    color: #aaa;
 }
 
 .panel-content hr {
@@ -419,6 +421,23 @@ Sliding panel and panels content
     width: 50%;
     float: right;
     margin-right: 5px;
+}
+
+.panel-content li {
+    background: #353535 url('../img/ui/slide-panel-li-drag.png') no-repeat left;
+    border: solid 1px #171717;
+    outline: solid 1px #454545;
+    list-style: none;
+    height: 30px;
+    margin: 0 0 5px -40px;
+    padding: 5px 0 0 20px;
+    color: #bdbdbd;
+}
+
+.panel-content li sub {
+    color: #707070;
+    font-size: 12px;
+    padding-bottom: 40px;
 }
 
 /* Form elements within a panel - CSS from http://devgrow.com/dark-button-navigation-using-css3/ */
