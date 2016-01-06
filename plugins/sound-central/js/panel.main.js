@@ -33,6 +33,12 @@ SoundCentral.Panel = SoundCentral.Panel || {};
 SoundCentral.Panel.Main = function() {
     // Call constructor of base class
     Codebot.Panel.call(this, 'SFX and Music');
+
+    this.mParameters = {
+        g_envelope: {group: 'Envelope'},
+        p_env_attack: {label: 'Attack time', unit: function (v) { return (v / 44100).toPrecision(4) + ' s' }, convert: function (v) { return v * v * 100000.0 }},
+        p_env_sustain: {label: 'Sustain time', unit: function (v) { return (v / 44100).toPrecision(4) + ' s' }, convert: function (v) { return v * v * 100000.0 }},
+    }
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
@@ -108,8 +114,8 @@ SoundCentral.Panel.Main.prototype.updateUi = function() {
         prop('checked', true).button("refresh");
     } else {
       var id = "#" + param;
-      $(id).slider("value", 1000 * value);
-      $(id).each(function(){this.convert(this, PARAMS[this.id]);});
+      //$(id).slider("value", 1000 * value);
+      //$(id).each(function(){this.convert(this, PARAMS[this.id]);});
     }
   });
   this.disenable();
@@ -152,11 +158,24 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
   $(".slider").filter(".signed").
     slider("option", "min", -1000).
     slider("value", 0);
-  $('.slider').each(function () {
+    $('.slider').each(function () {
       var is = this.id;
       if (!$('label[for="' + is + '"]').length)
         $(this).parent().parent().find('th').append($('<label>',
                                                       {for: is}));
+    });
+
+    $('input[type=range]').each(function (theIndex, theElement) {
+        //$(theElement).parent().append($('<label for="' + this.id + '">test</label>'));
+
+        $(theElement).on('input change', function(theEvent) {
+            PARAMS[theEvent.target.id] = $(this).val() / 1000.0;
+            aSelf.convert(theEvent.target, PARAMS[theEvent.target.id]);
+
+            if(theEvent.type == 'change') {
+                aSelf.play();
+            }
+        });
     });
 
   var UNITS = {
@@ -283,9 +302,13 @@ SoundCentral.Panel.Main.prototype.render = function() {
     this.divider('Save to project');
     this.row('buttons <hr> more more');
     this.row('end end');
+    this.row('Input <input type="text" name="hej"/>');
     this.row('<input type="radio" name="shape"/> Ab <input type="radio" name="shape"/> B');
     this.row('end end');
-    this.row('<input type="checkbox" name="shape"/> Ab <input type="checkbox" name="shape"/> B');
+    this.row('<input type="checkbox" id="checkbox2" checked><label for="checkbox2">here is the label</label>');
+
+    this.pair('Here', '<div class="switch"><input type="checkbox" id="checkbox1" checked><label for="checkbox1"></label></div>');
+    this.row('<ul><li><i class="fa fa-rocket"></i> this is a test</li><li>this is another <sub>100ms</sub></li></ul>');
 
     this.divider('Generators');
     this.row(
@@ -312,9 +335,12 @@ SoundCentral.Panel.Main.prototype.render = function() {
         '</div>'
     );
 
+    var aParam, aItem, aContent = '';
+
+    this.divider('Manual adjustments');
+
     this.row(
     '<div class="demo">' +
-    '<h2>Manual Settings</h2>' +
     '<form>' +
       '<div id="shape">' +
         '<input type="radio" id="square" value=0 name="shape" />' +
@@ -326,14 +352,41 @@ SoundCentral.Panel.Main.prototype.render = function() {
         '<input type="radio" id="noise" value=3 name="shape" />' +
           '<label for="noise">Noise</label>' +
       '</div>' +
-    '</form>' +
+    '</form>');
 
-    '<br/>' +
+    for(aParam in this.mParameters) {
+        aItem = this.mParameters[aParam];
 
+        // If we find a group entry, add a new line
+        if(aItem.group) {
+            this.pair(aItem.group, '');
+
+            // If we already have content for the current group, render it now
+            if(aContent != '') {
+                this.row(aContent);
+                aContent = '';
+            }
+        } else {
+            // Otherwise continue adding UI for the current group
+            // TODO: remove in-line style?
+            aContent +=
+                '<ul>' +
+                    '<li style="position: relative;">' +
+                        '<p style="float: left; width: 35%;">' + aItem.label + '</p>' +
+                        '<div style="float: left; width: 30%; margin: -10px 5px 0 5px;"><input type="range" id="' + aParam + '" min="0" max="1000" /></div>' +
+                        '<label for="' + aParam + '" style="float: left; width: 30%; text-align: right;">0.000s</label>' +
+                    '</li>' +
+                '</ul>';
+        }
+    }
+
+    // Render the group
+    this.row(aContent);
+
+    this.row(
     '<table>' +
       '<tr><th colspan=2>Envelope' +
-      '<tr><td><div class="slider" id="p_env_attack"></div> <th>Attack time' +
-      '<tr><td><div class="slider" id="p_env_sustain"></div> <th>Sustain time' +
+      '<tr><td> <th>Attack time' +
       '<tr><td><div class="slider" id="p_env_punch"></div> <th>Sustain punch' +
       '<tr><td><div class="slider" id="p_env_decay"></div> <th>Decay time' +
       '<tr><th colspan=2>Frequency' +
