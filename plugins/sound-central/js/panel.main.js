@@ -38,6 +38,18 @@ SoundCentral.Panel.Main = function() {
         g_envelope: {group: 'Envelope'},
         p_env_attack: {label: 'Attack time', unit: function (v) { return (v / 44100).toPrecision(4) + ' s' }, convert: function (v) { return v * v * 100000.0 }},
         p_env_sustain: {label: 'Sustain time', unit: function (v) { return (v / 44100).toPrecision(4) + ' s' }, convert: function (v) { return v * v * 100000.0 }},
+        p_env_punch: {label: 'Sustain punch', unit: function (v) { return '+' + (v * 100).toPrecision(4) + '%'}, convert: function (v) { return v }},
+        p_env_decay: {label: 'Decay time', unit: function (v) { return (v / 44100).toPrecision(4) + ' s' }, convert: function (v) { return v }},
+
+        g_frequency: {group: 'Frequency'},
+        p_base_freq: {label: 'Start', unit: 'Hz', convert: function (v) { return 8 * 44100 * (v * v + 0.001) / 100 }},
+        p_freq_limit: {label: 'Min cutoff', unit: 'Hz', convert: function (v) { return 8 * 44100 * (v * v + 0.001) / 100 }},
+        p_freq_ramp: {label: 'Slide', unit: function (v) { return (44100*Math.log(v)/Math.log(0.5)).toPrecision(4) + ' 8va/s'; }, convert: function (v) { return 1.0 - Math.pow(v, 3.0) * 0.01 }, signed: true},
+        p_freq_dramp: {label: 'Delta slide', unit: function (v) { return (v*44100 / Math.pow(2, -44101./44100)).toPrecision(4) +' 8va/s&sup2;'; }, convert: function (v) { return -Math.pow(v, 3.0) * 0.000001 }, signed: true},
+
+        g_vibrato: {group: 'Vibrato'},
+        p_vib_strength: {label: 'Depth', unit: function (v) { return v === 0 ? 'OFF' : '&plusmn; ' + (v*100).toPrecision(4) + '%' }, convert: function (v) { return v * 0.5 }},
+        p_vib_speed: {label: 'Speed', unit: function (v) { return v === 0 ? 'OFF' : (441000/64. * v).toPrecision(4) + ' Hz'}, convert: function (v) { return Math.pow(v, 2.0) * 0.01 }},
     }
 };
 
@@ -359,13 +371,14 @@ SoundCentral.Panel.Main.prototype.render = function() {
 
         // If we find a group entry, add a new line
         if(aItem.group) {
-            this.pair(aItem.group, '');
-
             // If we already have content for the current group, render it now
             if(aContent != '') {
                 this.row(aContent);
                 aContent = '';
             }
+            // Render the title of the next group
+            this.pair(aItem.group, '');
+
         } else {
             // Otherwise continue adding UI for the current group
             // TODO: remove in-line style?
@@ -386,17 +399,17 @@ SoundCentral.Panel.Main.prototype.render = function() {
     this.row(
     '<table>' +
       '<tr><th colspan=2>Envelope' +
-      '<tr><td> <th>Attack time' +
-      '<tr><td><div class="slider" id="p_env_punch"></div> <th>Sustain punch' +
-      '<tr><td><div class="slider" id="p_env_decay"></div> <th>Decay time' +
+      //'<tr><td> <th>Attack time' +
+      //'<tr><td><div class="slider" id="p_env_punch"></div> <th>Sustain punch' +
+      //'<tr><td><div class="slider" id="p_env_decay"></div> <th>Decay time' +
       '<tr><th colspan=2>Frequency' +
-      '<tr><td><div class="slider" id="p_base_freq"></div> <th>Start frequency' +
-      '<tr><td><div class="slider" id="p_freq_limit"></div> <th>Min freq. cutoff' +
-      '<tr><td><div class="signed slider" id="p_freq_ramp"></div> <th>Slide' +
-      '<tr><td><div class="signed slider" id="p_freq_dramp"></div> <th>Delta slide' +
+      //'<tr><td><div class="slider" id="p_base_freq"></div> <th>Start frequency' +
+      //'<tr><td><div class="slider" id="p_freq_limit"></div> <th>Min freq. cutoff' +
+      //'<tr><td><div class="signed slider" id="p_freq_ramp"></div> <th>Slide' +
+      //'<tr><td><div class="signed slider" id="p_freq_dramp"></div> <th>Delta slide' +
       '<tr><th colspan=2>Vibrato' +
-      '<tr><td><div class="slider" id="p_vib_strength"></div> <th>Depth' +
-      '<tr><td><div class="slider" id="p_vib_speed"></div> <th>Speed' +
+      //'<tr><td><div class="slider" id="p_vib_strength"></div> <th>Depth' +
+      //'<tr><td><div class="slider" id="p_vib_speed"></div> <th>Speed' +
       '<tr><th colspan=2>Arpeggiation' +
       '<tr><td><div class="signed slider" id="p_arp_mod"></div> <th>Frequency mult' +
       '<tr><td><div class="slider" id="p_arp_speed"></div> <th>Change speed' +
