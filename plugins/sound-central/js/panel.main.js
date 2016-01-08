@@ -50,6 +50,33 @@ SoundCentral.Panel.Main = function() {
         g_vibrato: {group: 'Vibrato'},
         p_vib_strength: {label: 'Depth', unit: function (v) { return v === 0 ? 'OFF' : '&plusmn; ' + (v*100).toPrecision(4) + '%' }, convert: function (v) { return v * 0.5 }},
         p_vib_speed: {label: 'Speed', unit: function (v) { return v === 0 ? 'OFF' : (441000/64. * v).toPrecision(4) + ' Hz'}, convert: function (v) { return Math.pow(v, 2.0) * 0.01 }},
+
+        g_arpeggiation: {group: 'Arpeggiation'},
+        p_arp_mod: {label: 'Freq. mult', unit: function (v) { return ((v === 1) ? 'OFF' : 'x ' + (1./v).toPrecision(4)) }, convert: function (v) { return v >= 0 ? (1.0 - Math.pow(v, 2) * 0.9) : (1.0 + Math.pow(v, 2) * 10); }, signed: true},
+        p_arp_speed: {label: 'Change speed', unit: function (v) { return (v === 0 ? 'OFF' : (v / 44100).toPrecision(4) +' s') }, convert: function (v) { return (v === 1.0) ? 0 : Math.floor(Math.pow(1.0 - v, 2.0) * 20000 +32)}},
+
+        g_duty_cycle: {group: 'Duty Cycle'},
+        p_duty: {label: 'Duty cycle', unit: function (v) { return (100 * v).toPrecision(4) + '%'; }, convert: function (v) { return 0.5 - v * 0.5; }},
+        p_duty_ramp: {label: 'Sweep', unit: function (v) { return (8 * 44100 * v).toPrecision(4) +'%/s'}, convert: function (v) { return -v * 0.00005 }, signed: true},
+
+        g_retrigger: {group: 'Retrigger'},
+        p_repeat_speed: {label: 'Rate', unit: function (v) { return v === 0 ? 'OFF' : (44100/v).toPrecision(4) + ' Hz' }, convert: function (v) { return (v === 0) ? 0 : Math.floor(Math.pow(1-v, 2) * 20000) + 32 }},
+
+        g_flanger: {group: 'Flanger'},
+        p_pha_ramp: {label: 'Sweep', unit: function (v) { return v === 0 ? 'OFF' : (1000*v).toPrecision(4) + ' ms/s' }, convert: function (v) { return (v < 0 ? -1 : 1) * Math.pow(v,2) }},
+
+        g_low_pass_filter: {group: 'Low-Pass Filter'},
+        p_pha_offset: {label: 'Offset', unit: function (v) { return v === 0 ? 'OFF' : (1000*v/44100).toPrecision(4) + ' ms' } , convert: function (v) { return (v < 0 ? -1 : 1) * Math.pow(v,2)*1020 }, signed: true},
+        p_lpf_freq: {label: 'Cutoff freq.', unit: function (v) { return (v === .1) ? 'OFF' : Math.round(8 * 44100 * v / (1-v)) + ' Hz'; }, convert: function (v) { return Math.pow(v, 3) * 0.1 }, signed: true},
+        p_lpf_ramp: {label: 'Cutoff sweep', unit: function (v) {  if (v === 1) return 'OFF'; return Math.pow(v, 44100).toPrecision(4) + ' ^s'; }, convert: function (v) { return 1.0 + v * 0.0001 }, signed: true},
+        p_lpf_resonance: {label: 'Resonance', unit: function (v) { return (100*(1-v*.11)).toPrecision(4)+'%';}, convert: function (v) { return 5.0 / (1.0 + Math.pow(v, 2) * 20) }},
+
+        g_high_pass_filter: {group: 'High-Pass Filter'},
+        p_hpf_freq: {label: 'Cutoff freq.', unit: function (v) { return (v === 0) ? 'OFF' : Math.round(8 * 44100 * v / (1-v)) + ' Hz'; }, convert: function (v) { return Math.pow(v, 2) * 0.1 }},
+        p_hpf_ramp: {label: 'Cutoff sweep', unit: function (v) {  if (v === 1) return 'OFF'; return Math.pow(v, 44100).toPrecision(4) + ' ^sec'; }, convert: function (v) { return 1.0 + v * 0.0003 }, signed: true},
+
+        g_volume: {group: 'Volume'},
+        p_label: {label: 'Value', unit: function (v) { v = 10 * Math.log(v*v) / Math.log(10); var sign = v >= 0 ? '+' : ''; return sign + v.toPrecision(4) + ' dB'; }, convert: function (v) { return Math.exp(v) - 1; }}
     }
 };
 
