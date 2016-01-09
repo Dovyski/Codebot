@@ -136,8 +136,8 @@ SoundCentral.Panel.Main.prototype.play = function(noregen) {
 
 SoundCentral.Panel.Main.prototype.disenable = function() {
   var duty = PARAMS.wave_type == SQUARE || PARAMS.wave_type == SAWTOOTH;
-  $("#p_duty").slider("option", "disabled", !duty);
-  $("#p_duty_ramp").slider("option", "disabled", !duty);
+  //$("#p_duty").slider("option", "disabled", !duty);
+  //$("#p_duty_ramp").slider("option", "disabled", !duty);
 }
 
 SoundCentral.Panel.Main.prototype.updateUi = function() {
@@ -334,140 +334,34 @@ SoundCentral.Panel.Main.prototype.convert = function(control, v) {
 };
 
 SoundCentral.Panel.Main.prototype.render = function() {
-    var aSelf = this;
+    var aSelf = this,
+        aParam,
+        aItem,
+        aContent = '';
 
     Codebot.Panel.prototype.render.call(this);
 
-    this.divider('Save to project');
-    this.row('buttons <hr> more more');
-    this.row('end end');
-    this.row('Input <input type="text" name="hej"/>');
-    this.row('<input type="radio" name="shape"/> Ab <input type="radio" name="shape"/> B');
-    this.row('end end');
-    this.row('<input type="checkbox" id="checkbox2" checked><label for="checkbox2">here is the label</label>');
-
-    this.pair('Here', '<div class="switch"><input type="checkbox" id="checkbox1" checked><label for="checkbox1"></label></div>');
-    this.row('<ul><li><i class="fa fa-rocket"></i> this is a test</li><li>this is another <sub>100ms</sub></li></ul>');
-
     this.divider('Generators');
     this.row(
-        '<button class="square"><i class="fa fa-rocket"></i><label>Pickup / coin</label></button>' +
-        '<button class="square"><i class="fa fa-money"></i><label>Rocket</label></button>' +
-        '<button class="square"><i class="fa fa-envelope"></i><label>Rocket</label></button>' +
-        '<button class="square"><i class="fa fa-user"></i><label>Rocket</label></button>' +
-        '<button class="square"><i class="fa fa-figure"></i><label>Rocket</label></button>' +
-        '<button class="square"><i class="fa fa-bitcoin"></i><label>Rocket</label></button>'
-    );
-
-    this.divider('Manual settings', {icon: 'wrench'});
-    this.row(
         '<div id="sound-central-generators">' +
-          '<button data-generator="pickupCoin">Pickup/coin</button> ' +
-          '<button data-generator="laserShoot">Laser/shoot</button>' +
-          '<button data-generator="explosion">Explosion</button> ' +
-          '<button data-generator="powerUp">Powerup</button> ' +
-          '<button data-generator="hitHurt">Hit/hurt</button> ' +
-          '<button data-generator="jump">Jump</button> ' +
-          '<button data-generator="blipSelect">Blip/select</button> ' +
-          '<button data-generator="random">Random</button> ' +
-          '<button data-generator="tone">Tone</button> ' +
+            '<button class="square" data-generator="pickupCoin"><i class="fa fa-star"></i><label>Pickup</label></button>' +
+            '<button class="square" data-generator="laserShoot"><i class="fa fa-fire"></i><label>Shoot</label></button>' +
+            '<button class="square" data-generator="explosion"><i class="fa fa-bomb"></i><label>Explosion</label></button>' +
+            '<button class="square" data-generator="powerUp"><i class="fa fa-bolt"></i><label>PowerUp</label></button>' +
+            '<button class="square" data-generator="hitHurt"><i class="fa fa-legal"></i><label>Hit</label></button>' +
+            '<button class="square" data-generator="jump"><i class="fa fa-level-up"></i><label>Jump</label></button>' +
+            '<button class="square" data-generator="blipSelect"><i class="fa fa-bell"></i><label>Blip</label></button>' +
+            '<button class="square" data-generator="random"><i class="fa fa-magic"></i><label>Random</label></button>' +
+            '<button class="square" data-generator="tone"><i class="fa fa-phone"></i><label>Tone</label></button>' +
         '</div>'
     );
 
-    var aParam, aItem, aContent = '';
-
-    this.divider('Manual adjustments');
+    this.divider('Sound', {icon: 'play-circle'});
 
     this.row(
-    '<div class="demo">' +
-    '<form>' +
-      '<div id="shape">' +
-        '<input type="radio" id="square" value=0 name="shape" />' +
-          '<label for="square">Square</label>' +
-        '<input type="radio" id="sawtooth" value=1 name="shape" checked="checked" />' +
-          '<label for="sawtooth">Sawtooth</label>' +
-        '<input type="radio" id="sine" value=2 name="shape" />' +
-          '<label for="sine">Sine</label>' +
-        '<input type="radio" id="noise" value=3 name="shape" />' +
-          '<label for="noise">Noise</label>' +
-      '</div>' +
-    '</form>');
-
-    for(aParam in this.mParameters) {
-        aItem = this.mParameters[aParam];
-
-        // If we find a group entry, add a new line
-        if(aItem.group) {
-            // If we already have content for the current group, render it now
-            if(aContent != '') {
-                this.row(aContent);
-                aContent = '';
-            }
-            // Render the title of the next group
-            this.pair(aItem.group, '');
-
-        } else {
-            // Otherwise continue adding UI for the current group
-            // TODO: remove in-line style?
-            aContent +=
-                '<ul>' +
-                    '<li style="position: relative;">' +
-                        '<p style="float: left; width: 35%;">' + aItem.label + '</p>' +
-                        '<div style="float: left; width: 30%; margin: -10px 5px 0 5px;"><input type="range" id="' + aParam + '" min="0" max="1000" /></div>' +
-                        '<label for="' + aParam + '" style="float: left; width: 30%; text-align: right;">0.000s</label>' +
-                    '</li>' +
-                '</ul>';
-        }
-    }
-
-    // Render the group
-    this.row(aContent);
-
-    this.row(
-    '<table>' +
-      '<tr><th colspan=2>Envelope' +
-      //'<tr><td> <th>Attack time' +
-      //'<tr><td><div class="slider" id="p_env_punch"></div> <th>Sustain punch' +
-      //'<tr><td><div class="slider" id="p_env_decay"></div> <th>Decay time' +
-      '<tr><th colspan=2>Frequency' +
-      //'<tr><td><div class="slider" id="p_base_freq"></div> <th>Start frequency' +
-      //'<tr><td><div class="slider" id="p_freq_limit"></div> <th>Min freq. cutoff' +
-      //'<tr><td><div class="signed slider" id="p_freq_ramp"></div> <th>Slide' +
-      //'<tr><td><div class="signed slider" id="p_freq_dramp"></div> <th>Delta slide' +
-      '<tr><th colspan=2>Vibrato' +
-      //'<tr><td><div class="slider" id="p_vib_strength"></div> <th>Depth' +
-      //'<tr><td><div class="slider" id="p_vib_speed"></div> <th>Speed' +
-      '<tr><th colspan=2>Arpeggiation' +
-      '<tr><td><div class="signed slider" id="p_arp_mod"></div> <th>Frequency mult' +
-      '<tr><td><div class="slider" id="p_arp_speed"></div> <th>Change speed' +
-      '<tr><th colspan=2>Duty Cycle' +
-      '<tr><td><div class="slider" id="p_duty"></div> <th>Duty cycle' +
-      '<tr><td><div class="signed slider" id="p_duty_ramp"></div> <th>Sweep' +
-      '<tr><th colspan=2>Retrigger' +
-      '<tr><td><div class="slider" id="p_repeat_speed"></div> <th>Rate' +
-      '<tr><th colspan=2>Flanger' +
-      '<tr><td><div class="signed slider" id="p_pha_ramp"></div> <th>Sweep' +
-      '<tr><th colspan=2>Low-Pass Filter' +
-      '<tr><td><div class="signed slider" id="p_pha_offset"></div> <th>Offset' +
-      '<tr><td><div class="slider" id="p_lpf_freq"></div> <th>Cutoff frequency' +
-      '<tr><td><div class="signed slider" id="p_lpf_ramp"></div> <th>Cutoff sweep' +
-      '<tr><td><div class="slider" id="p_lpf_resonance"></div> <th>Resonance' +
-      '<tr><th colspan=2>High-Pass Filter' +
-      '<tr><td><div class="slider" id="p_hpf_freq"></div> <th>Cutoff frequency' +
-      '<tr><td><div class="signed slider" id="p_hpf_ramp"></div> <th>Cutoff sweep' +
-    '</table>' +
-
-
-    '</div>' +
-
     '<div>' +
-      '<h2>Sound</h2>' +
       '<button onclick="play(true)">Play</button> <br/>' +
 
-      '<p>' +
-    'To save the sound, right- or control-click the following link, select' +
-    '"Save As..." and choose a name with a ".wav" extension. <br/>' +
-      '<br/>' +
       '<a id="wav">sfx.wav</a> <br/>' +
 
       '<table id="stats">' +
@@ -506,6 +400,46 @@ SoundCentral.Panel.Main.prototype.render = function() {
       '</div>' +
     '</form>' +
     '</div>');
+
+    this.divider('Manual adjustments', {icon: 'sliders'});
+
+    this.pair('Shape',
+        '<select name="shape" id="shape">' +
+            '<option id="square" value="0">Square</option>' +
+            '<option id="sawtooth" value="1" selected="selected">Sawtooth</option>' +
+            '<option id="sine" value="2">Sine</option>' +
+            '<option id="noise" value="3">Noise</option>' +
+        '</select>');
+
+    for(aParam in this.mParameters) {
+        aItem = this.mParameters[aParam];
+
+        // If we find a group entry, add a new line
+        if(aItem.group) {
+            // If we already have content for the current group, render it now
+            if(aContent != '') {
+                this.row(aContent);
+                aContent = '';
+            }
+            // Render the title of the next group
+            this.row(aItem.group);
+
+        } else {
+            // Otherwise continue adding UI for the current group
+            // TODO: remove in-line style?
+            aContent +=
+                '<ul>' +
+                    '<li style="position: relative;">' +
+                        '<p style="float: left; width: 35%;">' + aItem.label + '</p>' +
+                        '<div style="float: left; width: 30%; margin: -10px 5px 0 5px;"><input type="range" id="' + aParam + '" min="0" max="1000" /></div>' +
+                        '<label for="' + aParam + '" style="float: left; width: 30%; text-align: right;">0.000s</label>' +
+                    '</li>' +
+                '</ul>';
+        }
+    }
+
+    // Render the group
+    this.row(aContent);
 
     this.initUI();
 };
