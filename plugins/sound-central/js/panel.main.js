@@ -35,6 +35,8 @@ SoundCentral.Panel.Main = function() {
     Codebot.Panel.call(this, 'SFX and Music');
 
     this.mParameters = {
+        sound_vol: {label: 'Volume', unit: function (v) { v = 10 * Math.log(v*v) / Math.log(10); var sign = v >= 0 ? '+' : ''; return sign + v.toPrecision(4) + ' dB'; }, convert: function (v) { return Math.exp(v) - 1; }},
+
         g_envelope: {group: 'Envelope'},
         p_env_attack: {label: 'Attack time', unit: function (v) { return (v / 44100).toPrecision(4) + ' s' }, convert: function (v) { return v * v * 100000.0 }},
         p_env_sustain: {label: 'Sustain time', unit: function (v) { return (v / 44100).toPrecision(4) + ' s' }, convert: function (v) { return v * v * 100000.0 }},
@@ -73,10 +75,7 @@ SoundCentral.Panel.Main = function() {
 
         g_high_pass_filter: {group: 'High-Pass Filter'},
         p_hpf_freq: {label: 'Cutoff freq.', unit: function (v) { return (v === 0) ? 'OFF' : Math.round(8 * 44100 * v / (1-v)) + ' Hz'; }, convert: function (v) { return Math.pow(v, 2) * 0.1 }},
-        p_hpf_ramp: {label: 'Cutoff sweep', unit: function (v) {  if (v === 1) return 'OFF'; return Math.pow(v, 44100).toPrecision(4) + ' ^sec'; }, convert: function (v) { return 1.0 + v * 0.0003 }, signed: true},
-
-        g_volume: {group: 'Volume'},
-        p_label: {label: 'Value', unit: function (v) { v = 10 * Math.log(v*v) / Math.log(10); var sign = v >= 0 ? '+' : ''; return sign + v.toPrecision(4) + ' dB'; }, convert: function (v) { return Math.exp(v) - 1; }}
+        p_hpf_ramp: {label: 'Cutoff sweep', unit: function (v) {  if (v === 1) return 'OFF'; return Math.pow(v, 44100).toPrecision(4) + ' ^sec'; }, convert: function (v) { return 1.0 + v * 0.0003 }, signed: true}
     }
 };
 
@@ -359,56 +358,40 @@ SoundCentral.Panel.Main.prototype.render = function() {
     this.divider('Sound', {icon: 'play-circle'});
 
     this.row(
-    '<div>' +
-      '<button onclick="play(true)">Play</button> <br/>' +
+        '<select id="sfx-selector" style="width: 70%; float: left;">' +
+            '<option value="0" selected="selected">Explosion 2</option>' +
+            '<option value="1">Hit 1</option>' +
+            '<option value="2">Explosion 1</option>' +
+            '<option value="3">Pikcup 1</option>' +
+        '</select>' +
+        '<button id="btn-play" style="float: left; width: 30%;"><i class="fa fa-play"></i> Play</button>');
 
-      '<a id="wav">sfx.wav</a> <br/>' +
-
-      '<table id="stats">' +
-      '<tr><th>File size:<td id="file_size">' +
-      '<tr><th>Samples:<td id="num_samples">' +
-      '<tr><th>Clipped:<td id="clipping">' +
-      '</table>' +
-      '</p>' +
-
-    '<form>' +
-      'Gain <label for="sound_vol"></label><br/>' +
-      '<div class="slider" id="sound_vol"></div> <br/>' +
-      '<br/>' +
-
-      'Sample Rate (Hz) <br/>' +
-      '<div id="hz">' +
-        '<input type="radio" id="44100" value=44100 name="hz" checked="checked"/>' +
-          '<label for="44100">44k</label>' +
-        '<input type="radio" id="22050" value=22050 name="hz" />' +
-          '<label for="22050">22k</label>' +
-        '<input type="radio" id="11025" value=11025 name="hz" />' +
-          '<label for="11025">11k</label>' +
-        '<input type="radio" id="5512" value=5512 name="hz" />' +
-          '<label for="5512">6k</label>' +
-      '</div>' +
-
-      '<br/>' +
-      '<br/>' +
-      'Sample size' +
-      '<br/>' +
-      '<div id="bits">' +
-        '<input type="radio" id="16" value=16 name="bits"/>' +
-          '<label for="16">16 bit</label>' +
-        '<input type="radio" id="8" value=8 name="bits" checked="checked"/>' +
-          '<label for="8">8 bit</label>' +
-      '</div>' +
-    '</form>' +
-    '</div>');
+    this.pair('File size', '<p id="file_size"></p>');
+    this.pair('Samples', '<p id="num_samples"></p>');
+    this.pair('Clipped', '<p id="clipping"></p>');
 
     this.divider('Manual adjustments', {icon: 'sliders'});
 
+    this.pair('Sample rate',
+        '<select name="hz" id="hz">' +
+            '<option value="44100" selected="selected">44k Hz</option>' +
+            '<option value="22050">22k Hz</option>' +
+            '<option value="11025">11k Hz</option>' +
+            '<option value="5512">6K Hz</option>' +
+        '</select>');
+
+    this.pair('Sample size',
+        '<select name="bits" id="bits">' +
+            '<option value="16">16 bits</option>' +
+            '<option value="8" selected="selected">8 bits</option>' +
+        '</select>');
+
     this.pair('Shape',
         '<select name="shape" id="shape">' +
-            '<option id="square" value="0">Square</option>' +
-            '<option id="sawtooth" value="1" selected="selected">Sawtooth</option>' +
-            '<option id="sine" value="2">Sine</option>' +
-            '<option id="noise" value="3">Noise</option>' +
+            '<option value="0">Square</option>' +
+            '<option value="1" selected="selected">Sawtooth</option>' +
+            '<option value="2">Sine</option>' +
+            '<option value="3">Noise</option>' +
         '</select>');
 
     for(aParam in this.mParameters) {

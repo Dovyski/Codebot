@@ -398,7 +398,7 @@ Sliding panel and panels content
 .panel-pair {
     position: relative;
     width: 100%;
-    overflow: auto;
+    overflow: hidden;
     margin: 3px 0 5px 0;
 }
 
