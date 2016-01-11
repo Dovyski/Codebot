@@ -355,20 +355,41 @@ SoundCentral.Panel.Main.prototype.render = function() {
         '</div>'
     );
 
-    this.divider('Sound', {icon: 'play-circle'});
-
     this.row(
-        '<select id="sfx-selector" style="width: 70%; float: left;">' +
+        'Recently generated' +
+        '<select id="sfx-selector" style="width: 100%;>' +
             '<option value="0" selected="selected">Explosion 2</option>' +
             '<option value="1">Hit 1</option>' +
             '<option value="2">Explosion 1</option>' +
             '<option value="3">Pikcup 1</option>' +
-        '</select>' +
-        '<button id="btn-play" style="float: left; width: 30%;"><i class="fa fa-play"></i> Play</button>');
+        '</select>');
 
-    this.pair('File size', '<p id="file_size"></p>');
-    this.pair('Samples', '<p id="num_samples"></p>');
-    this.pair('Clipped', '<p id="clipping"></p>');
+    this.divider('Result', {icon: 'play-circle'});
+
+    this.row('<img src="http://0d47eeef2abf05521f71-1e80f65b3c6327b7cb4b0619fd21f75b.r59.cf2.rackcdn.com/b975a7830746af52689442fb2dc39eab.jpeg" style="width: 100%; height: 50px;" />', true);
+
+    this.row(
+        '<div style="width: 24%; float: left; margin-right: 2px;">' +
+            '<button id="btn-play" class="square"><i class="fa fa-play"></i></button>' +
+        '</div>' +
+        '<div style="width: 75%; float: right;">' +
+            '<strong>Explosion1.wav</strong>' +
+            '<p><span id="file_size"></span>, <span id="num_samples"></span> samples, clipped <span id="clipping"></span>.</p>' +
+        '</div>' +
+
+        '<div style="width: 100%; clear: both;">' +
+
+        '<div style="width: 70%; float: left;">' +
+            '<i class="fa fa-folder-open"></i>' +
+            '<select id="sfx-selector" style="width: 80%;">' +
+                '<option value="0" selected="selected">/assets</option>' +
+                '<option value="1">/</option>' +
+            '</select>' +
+        '</div>' +
+        '<div style="width: 30%; float: left;">' +
+            '<button id="btn-play" style="width: 100%;"><i class="fa fa-download"></i> Add</button>' +
+        '</div>'
+    );
 
     this.divider('Manual adjustments', {icon: 'sliders'});
 
