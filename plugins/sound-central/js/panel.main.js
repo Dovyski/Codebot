@@ -79,7 +79,7 @@ SoundCentral.Panel.Main = function() {
     };
 
     this.mSfxr = new Params(); // Params is defined in "jsfxr/sfxr.js".
-
+    this.mCounters = {};
 
     // Init everything
     this.mSfxr.sound_vol = 0.25;
@@ -92,17 +92,22 @@ SoundCentral.Panel.Main.prototype = Object.create(Codebot.Panel.prototype);
 SoundCentral.Panel.Main.prototype.constructor = SoundCentral.Panel.Main;
 
 SoundCentral.Panel.Main.prototype.gen = function(fx) {
-  this.mSfxr[fx]();
+    this.mSfxr[fx]();
 
-  $("#wav").text(fx + ".wav");
-  this.updateUi();
-  this.play();
+    if(!this.mCounters[fx]) {
+      this.mCounters[fx] = 0;
+    }
+
+    $('#sndc-file-name').text(fx + (this.mCounters[fx]++) + '.wav');
+
+    this.updateUi();
+    this.play();
 };
 
-SoundCentral.Panel.Main.prototype.mut = function() {
-  this.mSfxr.mutate();
-  this.updateUi();
-  this.play();
+SoundCentral.Panel.Main.prototype.mutate = function() {
+    this.mSfxr.mutate();
+    this.updateUi();
+    this.play();
 };
 
 SoundCentral.Panel.Main.prototype.play = function() {
@@ -286,7 +291,7 @@ SoundCentral.Panel.Main.prototype.render = function() {
             '<button id="sndc-btn-play" class="square"><i class="fa fa-play"></i></button>' +
         '</div>' +
         '<div style="width: 75%; float: right;">' +
-            '<strong>Explosion1.wav</strong>' +
+            '<strong id="sndc-file-name">Explosion1.wav</strong>' +
             '<p><span id="file_size"></span>, <span id="num_samples"></span> samples, clipped <span id="clipping"></span>.</p>' +
         '</div>' +
 
