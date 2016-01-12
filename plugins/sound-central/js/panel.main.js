@@ -76,7 +76,7 @@ SoundCentral.Panel.Main = function() {
         g_high_pass_filter: {group: 'High-Pass Filter'},
         p_hpf_freq: {label: 'Cutoff freq.', unit: function (v) { return (v === 0) ? 'OFF' : Math.round(8 * 44100 * v / (1-v)) + ' Hz'; }, convert: function (v) { return Math.pow(v, 2) * 0.1 }},
         p_hpf_ramp: {label: 'Cutoff sweep', unit: function (v) {  if (v === 1) return 'OFF'; return Math.pow(v, 44100).toPrecision(4) + ' ^sec'; }, convert: function (v) { return 1.0 + v * 0.0003 }, signed: true}
-    }
+    };
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
@@ -105,6 +105,7 @@ SoundCentral.Panel.Main.prototype.gen = function(fx) {
   PARAMS.sample_rate = SAMPLE_RATE;
   PARAMS.sample_size = SAMPLE_SIZE;
   PARAMS[fx]();
+
   $("#wav").text(fx + ".wav");
   this.updateUi();
   this.play();
@@ -116,22 +117,24 @@ SoundCentral.Panel.Main.prototype.mut = function() {
   this.play();
 };
 
-SoundCentral.Panel.Main.prototype.play = function(noregen) {
-  setTimeout(function () {
-    var audio = new Audio();
-    if (!noregen) {
-      SOUND = new SoundEffect(PARAMS).generate();
-      $("#file_size").text(Math.round(SOUND.wav.length / 1024) + "kB");
-      $("#num_samples").text(SOUND.header.subChunk2Size /
-                             (SOUND.header.bitsPerSample >> 3));
-      $("#clipping").text(SOUND.clipping);
-    }
-    audio.src = SOUND.dataURI;
-    $("#wav").attr("href", SOUND.dataURI);
-    $("#sfx").attr("href", "sfx.wav?" + PARAMS.query());
-    audio.play();
-  }, 0);
-}
+SoundCentral.Panel.Main.prototype.play = function() {
+    var aAudio,
+        aData;
+
+    aData = new SoundEffect(PARAMS).generate();
+
+    $("#file_size").text(Math.round(aData.wav.length / 1024) + "kB");
+    $("#num_samples").text(aData.header.subChunk2Size / (aData.header.bitsPerSample >> 3));
+    $("#clipping").text(aData.clipping);
+
+    aAudio = new Audio();
+    aAudio.onloadeddata = function(theEvent) {
+        this.play();
+    };
+
+    // Load the sound
+    aAudio.src = aData.dataURI;
+};
 
 SoundCentral.Panel.Main.prototype.disenable = function() {
   var duty = PARAMS.wave_type == SQUARE || PARAMS.wave_type == SAWTOOTH;
@@ -160,7 +163,22 @@ SoundCentral.Panel.Main.prototype.updateUi = function() {
 };
 
 SoundCentral.Panel.Main.prototype.initUI = function() {
-    var aSelf = this;
+    var aSelf = this,
+        aControl,
+        aParam,
+        p;
+
+    // Init all UI elements with convertion and unit functions.
+    for (p in this.mParameters) {
+        aParam = this.mParameters[p];
+
+        if(!aParam.group) {
+            aControl = $('#' + p)[0];
+            aControl.convert = aParam.convert;
+            aControl.units = aParam.unit;
+        }
+    }
+
   $("#shape").buttonset();
   $("#hz").buttonset();
   $("#bits").buttonset();
@@ -216,107 +234,14 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
         });
     });
 
-  var UNITS = {
-    p_env_attack:  function (v) { return (v / 44100).toPrecision(4) + ' sec' },
-    p_env_sustain: function (v) { return (v / 44100).toPrecision(4) + ' sec' },
-    p_env_punch:   function (v) { return '+' + (v * 100).toPrecision(4) + '%'},
-    p_env_decay:   function (v) { return (v / 44100).toPrecision(4) + ' sec' },
-
-    p_base_freq:  'Hz',
-    p_freq_limit: 'Hz',
-    p_freq_ramp:  function (v) {
-      return (44100*Math.log(v)/Math.log(0.5)).toPrecision(4) + ' 8va/sec'; },
-    p_freq_dramp: function (v) {
-      return (v*44100 / Math.pow(2, -44101./44100)).toPrecision(4) +
-        ' 8va/sec^2?'; },
-
-    p_vib_speed:    function (v) { return v === 0 ? 'OFF' :
-                                   (441000/64. * v).toPrecision(4) + ' Hz'},
-    p_vib_strength: function (v) { return v === 0 ? 'OFF' :
-                                   '&plusmn; ' + (v*100).toPrecision(4) + '%' },
-
-    p_arp_mod:   function (v) { return ((v === 1) ? 'OFF' :
-                                        'x ' + (1./v).toPrecision(4)) },
-    p_arp_speed: function (v) { return (v === 0 ? 'OFF' :
-                                        (v / 44100).toPrecision(4) +' sec') },
-
-    p_duty:      function (v) { return (100 * v).toPrecision(4) + '%'; },
-    p_duty_ramp: function (v) { return (8 * 44100 * v).toPrecision(4) +'%/sec'},
-
-    p_repeat_speed: function (v) { return v === 0 ? 'OFF' :
-                                   (44100/v).toPrecision(4) + ' Hz' },
-
-    p_pha_offset: function (v) { return v === 0 ? 'OFF' :
-                                 (1000*v/44100).toPrecision(4) + ' msec' },
-    // Not so sure about this:
-    p_pha_ramp:   function (v) { return v === 0 ? 'OFF' :
-                 (1000*v).toPrecision(4) + ' msec/sec' },
-
-    p_lpf_freq:   function (v) {
-      return (v === .1) ? 'OFF' : Math.round(8 * 44100 * v / (1-v)) + ' Hz'; },
-    p_lpf_ramp:  function (v) {  if (v === 1) return 'OFF';
-      return Math.pow(v, 44100).toPrecision(4) + ' ^sec'; },
-    p_lpf_resonance: function (v) { return (100*(1-v*.11)).toPrecision(4)+'%';},
-
-    p_hpf_freq:   function (v) {
-      return (v === 0) ? 'OFF' : Math.round(8 * 44100 * v / (1-v)) + ' Hz'; },
-    p_hpf_ramp: function (v) {  if (v === 1) return 'OFF';
-      return Math.pow(v, 44100).toPrecision(4) + ' ^sec'; },
-
-    sound_vol: function (v) {
-      v = 10 * Math.log(v*v) / Math.log(10);
-      var sign = v >= 0 ? '+' : '';
-      return sign + v.toPrecision(4) + ' dB';
-    }
-  };
-
-  var CONVERSIONS = {
-    p_env_attack:  function (v) { return v * v * 100000.0 },
-    p_env_sustain: function (v) { return v * v * 100000.0 },
-    p_env_punch:   function (v) { return v },
-    p_env_decay:   function (v) { return v * v * 100000.0 },
-
-    p_base_freq:  function (v) { return 8 * 44100 * (v * v + 0.001) / 100 },
-    p_freq_limit: function (v) { return 8 * 44100 * (v * v + 0.001) / 100 },
-    p_freq_ramp:  function (v) { return 1.0 - Math.pow(v, 3.0) * 0.01 },
-    p_freq_dramp: function (v) { return -Math.pow(v, 3.0) * 0.000001 },
-
-    p_vib_speed:    function (v) { return Math.pow(v, 2.0) * 0.01 },
-    p_vib_strength: function (v) { return v * 0.5 },
-
-    p_arp_mod:   function (v) {
-      return v >= 0 ? 1.0 - Math.pow(v, 2) * 0.9 : 1.0 + Math.pow(v, 2) * 10; },
-    p_arp_speed: function (v) { return (v === 1.0) ? 0 :
-                                Math.floor(Math.pow(1.0 - v, 2.0) * 20000 +32)},
-
-    p_duty:      function (v) { return 0.5 - v * 0.5; },
-    p_duty_ramp: function (v) { return -v * 0.00005 },
-
-    p_repeat_speed: function (v) { return (v === 0) ? 0 :
-                                   Math.floor(Math.pow(1-v, 2) * 20000) + 32 },
-
-    p_pha_offset: function (v) { return (v < 0 ? -1 : 1) * Math.pow(v,2)*1020 },
-    p_pha_ramp:   function (v) { return (v < 0 ? -1 : 1) * Math.pow(v,2) },
-
-    p_lpf_freq:   function (v) { return Math.pow(v, 3) * 0.1 },
-    p_lpf_ramp:   function (v) { return 1.0 + v * 0.0001 },
-    p_lpf_resonance: function (v) { return 5.0 / (1.0 + Math.pow(v, 2) * 20) }, // * (0.01 + fltw);
-
-    p_hpf_freq: function (v) { return Math.pow(v, 2) * 0.1 },
-    p_hpf_ramp: function (v) { return 1.0 + v * 0.0003 },
-
-    sound_vol: function (v) { return Math.exp(v) - 1; }
-  };
-  for (var p in CONVERSIONS) {
-    var control = $('#' + p)[0];
-    control.convert = CONVERSIONS[p];
-    control.units = UNITS[p];
-  }
-
   this.gen("pickupCoin");
 
   $('#sound-central-generators button').click(function() {
-        aSelf.gen($(this).data('generator'));
+      aSelf.gen($(this).data('generator'));
+  });
+
+  $('#sndc-btn-play').click(function() {
+      aSelf.play();
   });
 };
 
@@ -370,7 +295,7 @@ SoundCentral.Panel.Main.prototype.render = function() {
 
     this.row(
         '<div style="width: 24%; float: left; margin-right: 2px;">' +
-            '<button id="btn-play" class="square"><i class="fa fa-play"></i></button>' +
+            '<button id="sndc-btn-play" class="square"><i class="fa fa-play"></i></button>' +
         '</div>' +
         '<div style="width: 75%; float: right;">' +
             '<strong>Explosion1.wav</strong>' +
