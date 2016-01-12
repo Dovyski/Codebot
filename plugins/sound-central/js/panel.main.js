@@ -77,34 +77,22 @@ SoundCentral.Panel.Main = function() {
         p_hpf_freq: {label: 'Cutoff freq.', unit: function (v) { return (v === 0) ? 'OFF' : Math.round(8 * 44100 * v / (1-v)) + ' Hz'; }, convert: function (v) { return Math.pow(v, 2) * 0.1 }},
         p_hpf_ramp: {label: 'Cutoff sweep', unit: function (v) {  if (v === 1) return 'OFF'; return Math.pow(v, 44100).toPrecision(4) + ' ^sec'; }, convert: function (v) { return 1.0 + v * 0.0003 }, signed: true}
     };
+
+    this.mSfxr = new Params(); // Params is defined in "jsfxr/sfxr.js".
+
+
+    // Init everything
+    this.mSfxr.sound_vol = 0.25;
+    this.mSfxr.sample_rate = 44100;
+    this.mSfxr.sample_size = 8;
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
 SoundCentral.Panel.Main.prototype = Object.create(Codebot.Panel.prototype);
 SoundCentral.Panel.Main.prototype.constructor = SoundCentral.Panel.Main;
 
-Params.prototype.query = function() {
-  var result = "";
-  var that = this;
-  $.each(this, function (key,value) {
-    if (that.hasOwnProperty(key))
-      result += "&" + key + "=" + value;
-  });
-  return result.substring(1);
-};
-
-var PARAMS;
-var SOUND;
-var SOUND_VOL = 0.25;
-var SAMPLE_RATE = 44100;
-var SAMPLE_SIZE = 8;
-
 SoundCentral.Panel.Main.prototype.gen = function(fx) {
-  PARAMS = new Params();
-  PARAMS.sound_vol = SOUND_VOL;
-  PARAMS.sample_rate = SAMPLE_RATE;
-  PARAMS.sample_size = SAMPLE_SIZE;
-  PARAMS[fx]();
+  this.mSfxr[fx]();
 
   $("#wav").text(fx + ".wav");
   this.updateUi();
@@ -112,7 +100,7 @@ SoundCentral.Panel.Main.prototype.gen = function(fx) {
 };
 
 SoundCentral.Panel.Main.prototype.mut = function() {
-  PARAMS.mutate();
+  this.mSfxr.mutate();
   this.updateUi();
   this.play();
 };
@@ -121,7 +109,7 @@ SoundCentral.Panel.Main.prototype.play = function() {
     var aAudio,
         aData;
 
-    aData = new SoundEffect(PARAMS).generate();
+    aData = new SoundEffect(this.mSfxr).generate();
 
     $("#file_size").text(Math.round(aData.wav.length / 1024) + "kB");
     $("#num_samples").text(aData.header.subChunk2Size / (aData.header.bitsPerSample >> 3));
@@ -137,13 +125,13 @@ SoundCentral.Panel.Main.prototype.play = function() {
 };
 
 SoundCentral.Panel.Main.prototype.disenable = function() {
-  var duty = PARAMS.wave_type == SQUARE || PARAMS.wave_type == SAWTOOTH;
+  var duty = this.mSfxr.wave_type == SQUARE || this.mSfxr.wave_type == SAWTOOTH;
   //$("#p_duty").slider("option", "disabled", !duty);
   //$("#p_duty_ramp").slider("option", "disabled", !duty);
 }
 
 SoundCentral.Panel.Main.prototype.updateUi = function() {
-  $.each(PARAMS, function (param, value) {
+  $.each(this.mSfxr, function (param, value) {
     if (param == "wave_type") {
       $("#shape input:radio[value=" + value + "]").
         prop('checked', true).button("refresh");
@@ -183,16 +171,16 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
   $("#hz").buttonset();
   $("#bits").buttonset();
   $("#shape input:radio").change(function (event) {
-    PARAMS.wave_type = parseInt(event.target.value);
+    this.mSfxr.wave_type = parseInt(event.target.value);
     aSelf.disenable();
     aSelf.play();
   });
   $("#hz input:radio").change(function (event) {
-    SAMPLE_RATE = PARAMS.sample_rate = parseInt(event.target.value);
+    this.mSfxr.sample_rate = parseInt(event.target.value);
     aSelf.play();
   });
   $("#bits input:radio").change(function (event) {
-    SAMPLE_SIZE = PARAMS.sample_size = parseInt(event.target.value);
+    this.mSfxr.sample_size = parseInt(event.target.value);
     aSelf.play();
   });
   $("button").button();
@@ -205,8 +193,8 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
     },
     change: function(event, ui) {
       if (event.originalEvent) {
-        PARAMS[event.target.id] = ui.value / 1000.0;
-        aSelf.convert(event.target, PARAMS[event.target.id]);
+        this.mSfxr[event.target.id] = ui.value / 1000.0;
+        aSelf.convert(event.target, this.mSfxr[event.target.id]);
         aSelf.play();
       }
     }
@@ -225,8 +213,8 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
         //$(theElement).parent().append($('<label for="' + this.id + '">test</label>'));
 
         $(theElement).on('input change', function(theEvent) {
-            PARAMS[theEvent.target.id] = $(this).val() / 1000.0;
-            aSelf.convert(theEvent.target, PARAMS[theEvent.target.id]);
+            this.mSfxr[theEvent.target.id] = $(this).val() / 1000.0;
+            aSelf.convert(theEvent.target, this.mSfxr[theEvent.target.id]);
 
             if(theEvent.type == 'change') {
                 aSelf.play();
