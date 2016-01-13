@@ -127,6 +127,9 @@ SoundCentral.Panel.Main.prototype.play = function() {
 
     // Load the sound
     aAudio.src = aData.dataURI;
+
+    // TODO: move this to the callback of "Add to project" button.
+    this.addFileToProject(aData.dataURI);
 };
 
 SoundCentral.Panel.Main.prototype.disenable = function() {
@@ -236,6 +239,40 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
   $('#sndc-btn-play').click(function() {
       aSelf.play();
   });
+
+  $('#sndc-btn-download').click(function() {
+      aSelf.play();
+  });
+};
+
+// From: http://stackoverflow.com/a/30407840/29827
+SoundCentral.Panel.Main.prototype.dataURItoBlob = function(dataurl) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type:mime});
+}
+
+SoundCentral.Panel.Main.prototype.addFileToProject = function(theDataURI) {
+    var aFormData = new FormData();
+    var aBlob = this.dataURItoBlob(theDataURI);
+    var aXmlHttpRequest = new XMLHttpRequest();
+
+    aFormData.append('path', 'again.wav');
+    aFormData.append('method', 'write');
+    aFormData.append('file', aBlob);
+
+    aXmlHttpRequest.upload.addEventListener("progress", function() { console.log('PROGRESS!'); }, false);
+    aXmlHttpRequest.upload.addEventListener("load", function() { console.log('load!'); }, false);
+    aXmlHttpRequest.upload.addEventListener("error", function() { console.log('error!'); }, false);
+    aXmlHttpRequest.upload.addEventListener("abort", function() { console.log('abort'); }, false);
+
+    aXmlHttpRequest.open("POST", this.getContext().io.getAPIEndpoint(), true);
+    aXmlHttpRequest.send(aFormData);
+
+    console.debug('Sending file to server');
 };
 
 SoundCentral.Panel.Main.prototype.convert = function(control, v) {
@@ -305,7 +342,7 @@ SoundCentral.Panel.Main.prototype.render = function() {
             '</select>' +
         '</div>' +
         '<div style="width: 30%; float: left;">' +
-            '<button id="btn-play" style="width: 100%;"><i class="fa fa-download"></i> Add</button>' +
+            '<button id="sndc-btn-download" style="width: 100%;"><i class="fa fa-download"></i> Add</button>' +
         '</div>'
     );
 
