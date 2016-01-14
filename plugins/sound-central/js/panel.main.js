@@ -78,27 +78,42 @@ SoundCentral.Panel.Main = function() {
         p_hpf_ramp: {label: 'Cutoff sweep', unit: function (v) {  if (v === 1) return 'OFF'; return Math.pow(v, 44100).toPrecision(4) + ' ^sec'; }, convert: function (v) { return 1.0 + v * 0.0003 }, signed: true}
     };
 
-    this.mSfxr = new Params(); // Params is defined in "jsfxr/sfxr.js".
+    this.mSfxr = new Params();      // Params is defined in "jsfxr/sfxr.js".
     this.mCounters = {};
+    this.mSfxData = null;           // Generated data (wav) of the last generated sfx
+    this.mSfxLabel = '';            // Name (e.g. 'explosion') of the last generated sfx
+    this.mAudio = new Audio();      // The HTML5 audio element that plays all generated sfx.
 
     // Init everything
-    this.mSfxr.sound_vol = 0.25;
-    this.mSfxr.sample_rate = 44100;
-    this.mSfxr.sample_size = 8;
+    this.init();
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
 SoundCentral.Panel.Main.prototype = Object.create(Codebot.Panel.prototype);
 SoundCentral.Panel.Main.prototype.constructor = SoundCentral.Panel.Main;
 
-SoundCentral.Panel.Main.prototype.gen = function(fx) {
-    this.mSfxr[fx]();
+SoundCentral.Panel.Main.prototype.init = function() {
+    var aSelf = this;
 
-    if(!this.mCounters[fx]) {
-      this.mCounters[fx] = 0;
+    // Set defaults for JSFXR
+    this.mSfxr.sound_vol = 0.25;
+    this.mSfxr.sample_rate = 44100;
+    this.mSfxr.sample_size = 8;
+
+    this.mAudio.onloadeddata = function(theEvent) {
+        this.play();
+    };
+};
+
+SoundCentral.Panel.Main.prototype.generate = function(theFx) {
+    this.mSfxLabel = theFx;
+    this.mSfxr[theFx]();
+
+    if(!this.mCounters[theFx]) {
+      this.mCounters[theFx] = 0;
     }
 
-    $('#sndc-file-name').text(fx + (this.mCounters[fx]++) + '.wav');
+    this.mSfxData = new SoundEffect(this.mSfxr).generate();
 
     this.updateUi();
     this.play();
@@ -111,25 +126,8 @@ SoundCentral.Panel.Main.prototype.mutate = function() {
 };
 
 SoundCentral.Panel.Main.prototype.play = function() {
-    var aAudio,
-        aData;
-
-    aData = new SoundEffect(this.mSfxr).generate();
-
-    $("#file_size").text(Math.round(aData.wav.length / 1024) + "kB");
-    $("#num_samples").text(aData.header.subChunk2Size / (aData.header.bitsPerSample >> 3));
-    $("#clipping").text(aData.clipping);
-
-    aAudio = new Audio();
-    aAudio.onloadeddata = function(theEvent) {
-        this.play();
-    };
-
-    // Load the sound
-    aAudio.src = aData.dataURI;
-
-    // TODO: move this to the callback of "Add to project" button.
-    this.addFileToProject(aData.dataURI);
+    // Load the wav data into the audio player
+    this.mAudio.src = this.mSfxData.dataURI;
 };
 
 SoundCentral.Panel.Main.prototype.disenable = function() {
@@ -139,6 +137,12 @@ SoundCentral.Panel.Main.prototype.disenable = function() {
 }
 
 SoundCentral.Panel.Main.prototype.updateUi = function() {
+    $('#sndc-file-name').text(this.mSfxLabel + this.mCounters[this.mSfxLabel] + '.wav');
+
+    $("#file_size").text(Math.round(this.mSfxData.wav.length / 1024) + "kB");
+    $("#num_samples").text(this.mSfxData.header.subChunk2Size / (this.mSfxData.header.bitsPerSample >> 3));
+    $("#clipping").text(this.mSfxData.clipping);
+
   $.each(this.mSfxr, function (param, value) {
     if (param == "wave_type") {
       $("#shape input:radio[value=" + value + "]").
@@ -230,10 +234,8 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
         });
     });
 
-  this.gen("pickupCoin");
-
   $('#sound-central-generators button').click(function() {
-      aSelf.gen($(this).data('generator'));
+      aSelf.generate($(this).data('generator'));
   });
 
   $('#sndc-btn-play').click(function() {
@@ -241,7 +243,7 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
   });
 
   $('#sndc-btn-download').click(function() {
-      aSelf.play();
+      aSelf.addSfxToProject();
   });
 };
 
@@ -255,9 +257,9 @@ SoundCentral.Panel.Main.prototype.dataURItoBlob = function(dataurl) {
     return new Blob([u8arr], {type:mime});
 }
 
-SoundCentral.Panel.Main.prototype.addFileToProject = function(theDataURI) {
+SoundCentral.Panel.Main.prototype.addSfxToProject = function() {
     var aFormData = new FormData();
-    var aBlob = this.dataURItoBlob(theDataURI);
+    var aBlob = this.dataURItoBlob(this.mSfxData.dataURI);
     var aXmlHttpRequest = new XMLHttpRequest();
 
     aFormData.append('path', 'again.wav');
