@@ -75,3 +75,8 @@ License: Public Domain
 jsfxr
 Author: Eric Fredricksen - https://github.com/grumdrig/jsfxr
 License: Public Domain
+
+------------------------------------------------------------------------------------------
+wavesurfer
+Author: Alex Khokhulin - https://github.com/katspaugh/wavesurfer.js
+License: Creative Commons Attribution 3.0 Unported License

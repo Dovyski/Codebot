@@ -78,7 +78,9 @@ var CodebotEditors = function() {
         mSelf = this;
         mCodebot = theCodebot;
 
-        mSelf.register(['png', 'jpeg'], CodebotEditorGraphic.create);
+        // Register a few default editor for common file types
+        mSelf.register(['png', 'jpeg', 'jpg', 'gif'], CodebotEditorGraphic.create);
+        mSelf.register(['wav', 'mp3', 'ogg'], Codebot.Editor.Audio.create);
         mSelf.register('*', CodebotEditorAce.create);
     };
 };

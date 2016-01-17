@@ -4,3 +4,6 @@
 [submodule "plugins/sound-central/js/jsfxr"]
 	path = plugins/sound-central/js/jsfxr
 	url = https://github.com/grumdrig/jsfxr.git
+[submodule "js/3rdparty/wavesurfer"]
+	path = js/3rdparty/wavesurfer
+	url = https://github.com/katspaugh/wavesurfer.js
