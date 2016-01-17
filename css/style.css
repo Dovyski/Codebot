@@ -467,17 +467,18 @@ Sliding panel and panels content
     outline: 1px solid #212121;
     cursor: pointer;
     height: 25px;
-    min-width: 40px;
 }
 
 .panel-content button:hover {
     background: #525252;
 }
 
-.panel-content button:active {
+.panel-content button:active,
+.panel-content button.active
+{
     background: #323232;
-    border: solid 1px #000;
-    outline: 1px solid #212121;
+    border: solid 1px #515151;
+    outline: 2px solid #212121;
 }
 
 .panel-content input[type=checkbox] + label {
@@ -733,13 +734,13 @@ Editors
     float: left;
     border-right: 1px solid #424242;
 	outline: 1px solid #000;
+    text-align: center;
 }
 
 .codebot-editor div.working-area {
     width: 97%;
     height: 100%;
     float: right;
-    background: blue;
 }
 
 /*

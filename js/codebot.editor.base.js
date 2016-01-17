@@ -37,11 +37,11 @@ Codebot.Editor.Base = function(theContainerId) {
 
     this.mWorkingArea = {id: '', container: null};
     this.mToolbarArea = {id: '', container: null};
+    this.mButtons = {};
 
     this.buildUI();
 
     this.mToolbarPanel = new Codebot.Panel('', this.mToolbarArea.id);
-
     this.init();
 };
 
@@ -63,6 +63,46 @@ Codebot.Editor.Base.prototype.buildUI = function() {
 
     this.mToolbarArea.container = this.mContainer.find('div.toolbar');
     this.mWorkingArea.container = this.mContainer.find('div.working-area');
+};
+
+/**
+ * [function description]
+ *
+ * @param  {[type]} theContent      [description]
+ * @param  {[type]} theCallback     [description]
+ * @param  {[type]} theCallbackThis [description]
+ * @return {[type]}                 [description]
+ */
+Codebot.Editor.Base.prototype.addToolbarButton = function(theContent, theCallback, theCallbackThis, theToggleable) {
+    var aId,
+        aSelf;
+
+    aId = 'toolbar-button-' + ((Math.random() * 1000000) | 0);
+    aSelf = this;
+
+    this.mButtons[aId] = {
+        callback: theCallback,
+        context: theCallbackThis,
+        toggleable: theToggleable == undefined ? true : theToggleable
+    };
+
+    this.mToolbarPanel.row('<button id="' + aId + '">' + theContent + '</button>');
+
+    $('#' + aId).click(function() {
+        var aInfo = aSelf.mButtons[$(this).attr('id')];
+
+        if(aInfo.toggleable) {
+            if($(this).hasClass('active')) {
+                $(this).removeClass('active');
+            } else {
+                $(this).addClass('active');
+            }
+        }
+
+        if(aInfo.callback) {
+            aInfo.callback.call(aInfo.context);
+        }
+    });
 };
 
 /**
