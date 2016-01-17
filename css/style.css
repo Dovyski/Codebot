@@ -720,6 +720,30 @@ Sliding panel and panels content
 
 /*
 -----------------------------------------------------
+Editors
+-----------------------------------------------------
+*/
+.codebot-editor {
+    width: 100%;
+}
+
+.codebot-editor div.toolbar {
+    width: 3%;
+    height: 100%;
+    float: left;
+    border-right: 1px solid #424242;
+	outline: 1px solid #000;
+}
+
+.codebot-editor div.working-area {
+    width: 97%;
+    height: 100%;
+    float: right;
+    background: blue;
+}
+
+/*
+-----------------------------------------------------
 Custom scrollbars
 -----------------------------------------------------
 */

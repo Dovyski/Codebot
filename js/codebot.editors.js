@@ -21,7 +21,9 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var CodebotEditors = function() {
+var Codebot = Codebot || {};
+
+Codebot.Editors = function() {
     var mSelf = null;
     var mCodebot = null;
     var mExtensionsMap = {};

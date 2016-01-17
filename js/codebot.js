@@ -109,7 +109,7 @@ var CODEBOT = new function() {
 		mSelf.setIODriver(theIODriver || new CodebotIO());
 
         mJobs = new CodebotJobs();
-		mEditors = new CodebotEditors();
+		mEditors = new Codebot.Editors();
         mShortcuts = new CodebotShortcuts();
         mUI = new CodebotUI();
         mPreferences = new CodebotPreferences();
