@@ -126,3 +126,13 @@ Codebot.Editor.Base.prototype.getWorkingArea = function() {
 Codebot.Editor.Base.prototype.getToolbar = function() {
     return this.mToolbarArea;
 };
+
+/**
+ * [function description]
+ *
+ * @param  {[type]} theContent [description]
+ * @return {[type]}            [description]
+ */
+Codebot.Editor.Base.prototype.html = function(theContent) {
+    this.mWorkingArea.container.html(theContent);
+};

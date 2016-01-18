@@ -738,9 +738,11 @@ Editors
 }
 
 .codebot-editor div.working-area {
+    position: relative;
     width: 97%;
     height: 100%;
     float: right;
+    overflow: auto;
 }
 
 /*
