@@ -83,6 +83,7 @@ SoundCentral.Panel.Main = function() {
     this.mSfxData = null;           // Generated data (wav) of the last generated sfx
     this.mSfxLabel = '';            // Name (e.g. 'explosion') of the last generated sfx
     this.mAudio = new Audio();      // The HTML5 audio element that plays all generated sfx.
+    this.mWaveSurfer = null         // The entity that will render the SFX wave.
 
     // Init everything
     this.init();
@@ -137,6 +138,9 @@ SoundCentral.Panel.Main.prototype.disenable = function() {
 }
 
 SoundCentral.Panel.Main.prototype.updateUi = function() {
+    // Render the wave
+    this.mWaveSurfer.loadBlob(this.dataURItoBlob(this.mSfxData.dataURI));
+
     $('#sndc-file-name').text(this.mSfxLabel + this.mCounters[this.mSfxLabel] + '.wav');
 
     $("#file_size").text(Math.round(this.mSfxData.wav.length / 1024) + "kB");
@@ -178,6 +182,15 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
             aControl.units = aParam.unit;
         }
     }
+
+    this.mWaveSurfer = WaveSurfer.create({
+        container: '#sndc-wave',
+        waveColor: '#75BFFF',
+        progressColor: '#75BFFF',
+        height: 50,
+        barWidth: 1,
+        interact: false,
+    });
 
   $("#shape").buttonset();
   $("#hz").buttonset();
@@ -323,7 +336,7 @@ SoundCentral.Panel.Main.prototype.render = function() {
 
     this.divider('Result', {icon: 'play-circle'});
 
-    this.row('<img src="http://0d47eeef2abf05521f71-1e80f65b3c6327b7cb4b0619fd21f75b.r59.cf2.rackcdn.com/b975a7830746af52689442fb2dc39eab.jpeg" style="width: 100%; height: 50px;" />', true);
+    this.row('<div id="sndc-wave" /></div>', true);
 
     this.row(
         '<div style="width: 24%; float: left; margin-right: 2px;">' +
