@@ -82,7 +82,6 @@ SoundCentral.Panel.Main = function() {
     this.mCounters = {};
     this.mSfxData = null;           // Generated data (wav) of the last generated sfx
     this.mSfxLabel = '';            // Name (e.g. 'explosion') of the last generated sfx
-    this.mAudio = new Audio();      // The HTML5 audio element that plays all generated sfx.
     this.mWaveSurfer = null         // The entity that will render the SFX wave.
 
     // Init everything
@@ -100,10 +99,6 @@ SoundCentral.Panel.Main.prototype.init = function() {
     this.mSfxr.sound_vol = 0.25;
     this.mSfxr.sample_rate = 44100;
     this.mSfxr.sample_size = 8;
-
-    this.mAudio.onloadeddata = function(theEvent) {
-        this.play();
-    };
 };
 
 SoundCentral.Panel.Main.prototype.generate = function(theFx) {
@@ -116,54 +111,60 @@ SoundCentral.Panel.Main.prototype.generate = function(theFx) {
 
     this.mSfxData = new SoundEffect(this.mSfxr).generate();
 
-    this.updateUi();
+    this.updateUI();
     this.play();
 };
 
 SoundCentral.Panel.Main.prototype.mutate = function() {
     this.mSfxr.mutate();
-    this.updateUi();
+    this.updateUI();
     this.play();
 };
 
 SoundCentral.Panel.Main.prototype.play = function() {
     // Load the wav data into the audio player
-    this.mAudio.src = this.mSfxData.dataURI;
+    this.mWaveSurfer.play();
 };
 
-SoundCentral.Panel.Main.prototype.disenable = function() {
-  var duty = this.mSfxr.wave_type == SQUARE || this.mSfxr.wave_type == SAWTOOTH;
-  //$("#p_duty").slider("option", "disabled", !duty);
-  //$("#p_duty_ramp").slider("option", "disabled", !duty);
+SoundCentral.Panel.Main.prototype.disable = function() {
+
 }
 
-SoundCentral.Panel.Main.prototype.updateUi = function() {
-    // Render the wave
-    this.mWaveSurfer.loadBlob(this.dataURItoBlob(this.mSfxData.dataURI));
+SoundCentral.Panel.Main.prototype.updateUI = function() {
+    var aDuty,
+        aSelf = this,
+        aMapping = {
+            'wave_type': '#shape',
+            'sample_rate': '#hz',
+            'sample_size': '#bits'
+        },
+        aDuty;
 
-    $('#sndc-file-name').text(this.mSfxLabel + this.mCounters[this.mSfxLabel] + '.wav');
+    if(this.mSfxData) {
+        // Render the wave (if any)
+        this.mWaveSurfer.loadBlob(this.dataURItoBlob(this.mSfxData.dataURI));
 
-    $("#file_size").text(Math.round(this.mSfxData.wav.length / 1024) + "kB");
-    $("#num_samples").text(this.mSfxData.header.subChunk2Size / (this.mSfxData.header.bitsPerSample >> 3));
-    $("#clipping").text(this.mSfxData.clipping);
-
-  $.each(this.mSfxr, function (param, value) {
-    if (param == "wave_type") {
-      $("#shape input:radio[value=" + value + "]").
-        prop('checked', true).button("refresh");
-    } else if (param == "sample_rate") {
-      $("#hz input:radio[value=" + value + "]").
-        prop('checked', true).button("refresh");
-    } else if (param == "sample_size") {
-      $("#bits input:radio[value=" + value + "]").
-        prop('checked', true).button("refresh");
-    } else {
-      var id = "#" + param;
-      //$(id).slider("value", 1000 * value);
-      //$(id).each(function(){this.convert(this, PARAMS[this.id]);});
+        // Update file name, size, etc.
+        $('#sndc-file-name').text(this.mSfxLabel + this.mCounters[this.mSfxLabel] + '.wav');
+        $("#file_size").text(Math.round(this.mSfxData.wav.length / 1024) + "kB");
+        $("#num_samples").text(this.mSfxData.header.subChunk2Size / (this.mSfxData.header.bitsPerSample >> 3));
+        $("#clipping").text(this.mSfxData.clipping);
     }
-  });
-  this.disenable();
+
+    // Adjust all other manual settings
+    $.each(this.mSfxr, function (theParam, theValue) {
+        if(aMapping[theParam]) {
+            $(aMapping[theParam]).val(theValue);
+
+        } else {
+            $('#' + theParam).val(1000 * theValue);
+        }
+    });
+
+    // Disable Duty elements according to wave type
+    aDuty = this.mSfxr.wave_type == SQUARE || this.mSfxr.wave_type == SAWTOOTH;
+    $('#p_duty').prop('disabled', !aDuty);
+    $('#p_duty_ramp').prop('disabled', !aDuty);
 };
 
 SoundCentral.Panel.Main.prototype.initUI = function() {
@@ -192,12 +193,23 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
         interact: false,
     });
 
-  $("#shape").buttonset();
-  $("#hz").buttonset();
-  $("#bits").buttonset();
+    this.mWaveSurfer.on('ready', function() {
+        aSelf.mWaveSurfer.play();
+    });
+
+    $('input[type=range]').each(function (theIndex, theElement) {
+        $(theElement).on('input change', function(theEvent) {
+            aSelf.mSfxr[theEvent.target.id] = $(this).val() / 1000.0;
+            aSelf.convert(theEvent.target, aSelf.mSfxr[theEvent.target.id]);
+
+            if(theEvent.type == 'change') {
+                aSelf.play();
+            }
+        });
+    });
+
   $("#shape input:radio").change(function (event) {
     this.mSfxr.wave_type = parseInt(event.target.value);
-    aSelf.disenable();
     aSelf.play();
   });
   $("#hz input:radio").change(function (event) {
@@ -234,18 +246,7 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
                                                       {for: is}));
     });
 
-    $('input[type=range]').each(function (theIndex, theElement) {
-        //$(theElement).parent().append($('<label for="' + this.id + '">test</label>'));
 
-        $(theElement).on('input change', function(theEvent) {
-            this.mSfxr[theEvent.target.id] = $(this).val() / 1000.0;
-            aSelf.convert(theEvent.target, this.mSfxr[theEvent.target.id]);
-
-            if(theEvent.type == 'change') {
-                aSelf.play();
-            }
-        });
-    });
 
   $('#sound-central-generators button').click(function() {
       aSelf.generate($(this).data('generator'));
@@ -416,4 +417,5 @@ SoundCentral.Panel.Main.prototype.render = function() {
     this.row(aContent);
 
     this.initUI();
+    this.updateUI();
 };
