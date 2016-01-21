@@ -101,7 +101,19 @@ SoundCentral.Panel.Main.prototype.init = function() {
     this.mSfxr.sample_size = 8;
 };
 
-SoundCentral.Panel.Main.prototype.generate = function(theFx) {
+SoundCentral.Panel.Main.prototype.generate = function() {
+    if(this.mSfxData) {
+        this.mSfxData = null;
+        // TODO: implementing some destroy() method would be great
+    }
+
+    this.mSfxData = new SoundEffect(this.mSfxr).generate();
+    this.mWaveSurfer.loadBlob(this.dataURItoBlob(this.mSfxData.dataURI)); // Will play as soon as it loads...
+
+    this.updateUI();
+};
+
+SoundCentral.Panel.Main.prototype.adjustParamsAccordingPreset = function(theFx) {
     this.mSfxLabel = theFx;
     this.mSfxr[theFx]();
 
@@ -109,26 +121,22 @@ SoundCentral.Panel.Main.prototype.generate = function(theFx) {
       this.mCounters[theFx] = 0;
     }
 
-    this.mSfxData = new SoundEffect(this.mSfxr).generate();
-
-    this.updateUI();
-    this.play();
+    this.generate(); // will play automatically
 };
 
 SoundCentral.Panel.Main.prototype.mutate = function() {
     this.mSfxr.mutate();
     this.updateUI();
-    this.play();
+    this.generate();
 };
 
 SoundCentral.Panel.Main.prototype.play = function() {
     // Load the wav data into the audio player
+    if(this.mSfxData) {
+        this.mWaveSurfer.loadBlob(this.dataURItoBlob(this.mSfxData.dataURI));
+    }
     this.mWaveSurfer.play();
 };
-
-SoundCentral.Panel.Main.prototype.disable = function() {
-
-}
 
 SoundCentral.Panel.Main.prototype.updateUI = function() {
     var aDuty,
@@ -141,9 +149,6 @@ SoundCentral.Panel.Main.prototype.updateUI = function() {
         aDuty;
 
     if(this.mSfxData) {
-        // Render the wave (if any)
-        this.mWaveSurfer.loadBlob(this.dataURItoBlob(this.mSfxData.dataURI));
-
         // Update file name, size, etc.
         $('#sndc-file-name').text(this.mSfxLabel + this.mCounters[this.mSfxLabel] + '.wav');
         $("#file_size").text(Math.round(this.mSfxData.wav.length / 1024) + "kB");
@@ -171,7 +176,14 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
     var aSelf = this,
         aControl,
         aParam,
-        p;
+        p,
+        aMapping;
+
+    aMapping = {
+        'shape': 'wave_type',
+        'hz': 'sample_rate',
+        'bits': 'sample_size'
+    };
 
     // Init all UI elements with convertion and unit functions.
     for (p in this.mParameters) {
@@ -198,68 +210,36 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
     });
 
     $('input[type=range]').each(function (theIndex, theElement) {
+        // TODO: check why slider is not dragging
         $(theElement).on('input change', function(theEvent) {
             aSelf.mSfxr[theEvent.target.id] = $(this).val() / 1000.0;
             aSelf.convert(theEvent.target, aSelf.mSfxr[theEvent.target.id]);
 
             if(theEvent.type == 'change') {
-                aSelf.play();
+                aSelf.generate();
             }
         });
     });
 
-  $("#shape input:radio").change(function (event) {
-    this.mSfxr.wave_type = parseInt(event.target.value);
-    aSelf.play();
-  });
-  $("#hz input:radio").change(function (event) {
-    this.mSfxr.sample_rate = parseInt(event.target.value);
-    aSelf.play();
-  });
-  $("#bits input:radio").change(function (event) {
-    this.mSfxr.sample_size = parseInt(event.target.value);
-    aSelf.play();
-  });
-  $("button").button();
-  $(".slider").slider({
-    value: 1000,
-    min: 0,
-    max: 1000,
-    slide: function (event, ui) {
-      aSelf.convert(event.target, ui.value / 1000.0);
-    },
-    change: function(event, ui) {
-      if (event.originalEvent) {
-        this.mSfxr[event.target.id] = ui.value / 1000.0;
-        aSelf.convert(event.target, this.mSfxr[event.target.id]);
-        aSelf.play();
-      }
-    }
-  });
-  $(".slider").filter(".signed").
-    slider("option", "min", -1000).
-    slider("value", 0);
-    $('.slider').each(function () {
-      var is = this.id;
-      if (!$('label[for="' + is + '"]').length)
-        $(this).parent().parent().find('th').append($('<label>',
-                                                      {for: is}));
+    $('#shape, #hz, #bits').each(function (theIndex, theElement) {
+        $(theElement).on('change', function (theEvent) {
+            aSelf.mSfxr[aMapping[theEvent.target.id]] = parseInt(theEvent.target.value);
+            aSelf.generate();
+        });
     });
 
+    $('#sound-central-generators button').click(function() {
+        aSelf.adjustParamsAccordingPreset($(this).data('generator'));
+    });
 
+    $('#sndc-btn-play').click(function() {
+        aSelf.play();
+    });
 
-  $('#sound-central-generators button').click(function() {
-      aSelf.generate($(this).data('generator'));
-  });
-
-  $('#sndc-btn-play').click(function() {
-      aSelf.play();
-  });
-
-  $('#sndc-btn-download').click(function() {
-      aSelf.addSfxToProject();
-  });
-};
+    $('#sndc-btn-download').click(function() {
+        aSelf.addSfxToProject();
+    });
+ };
 
 // From: http://stackoverflow.com/a/30407840/29827
 SoundCentral.Panel.Main.prototype.dataURItoBlob = function(dataurl) {
@@ -406,7 +386,7 @@ SoundCentral.Panel.Main.prototype.render = function() {
                 '<ul>' +
                     '<li style="position: relative;">' +
                         '<p style="float: left; width: 35%;">' + aItem.label + '</p>' +
-                        '<div style="float: left; width: 30%; margin: -10px 5px 0 5px;"><input type="range" id="' + aParam + '" min="0" max="1000" /></div>' +
+                        '<div style="float: left; width: 30%; margin: -10px 5px 0 5px;"><input type="range" id="' + aParam + '" min="' + (aItem.signed ? '-1000' : '0') + '" max="1000" /></div>' +
                         '<label for="' + aParam + '" style="float: left; width: 30%; text-align: right;">0.000s</label>' +
                     '</li>' +
                 '</ul>';
