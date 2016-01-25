@@ -117,9 +117,10 @@ SoundCentral.Panel.Main.prototype.adjustParamsAccordingPreset = function(theFx) 
     this.mSfxLabel = theFx;
     this.mSfxr[theFx]();
 
-    if(!this.mCounters[theFx]) {
-      this.mCounters[theFx] = 0;
+    if(this.mCounters[theFx] == undefined) {
+        this.mCounters[theFx] = 0;
     }
+    this.mCounters[theFx]++;
 
     this.generate(); // will play automatically
 };
@@ -138,6 +139,10 @@ SoundCentral.Panel.Main.prototype.play = function() {
     this.mWaveSurfer.play();
 };
 
+SoundCentral.Panel.Main.prototype.getSfxFileName = function() {
+    return this.mSfxLabel + this.mCounters[this.mSfxLabel] + '.wav';
+};
+
 SoundCentral.Panel.Main.prototype.updateUI = function() {
     var aDuty,
         aSelf = this,
@@ -150,7 +155,7 @@ SoundCentral.Panel.Main.prototype.updateUI = function() {
 
     if(this.mSfxData) {
         // Update file name, size, etc.
-        $('#sndc-file-name').text(this.mSfxLabel + this.mCounters[this.mSfxLabel] + '.wav');
+        $('#sndc-file-name').text(this.getSfxFileName());
         $("#file_size").text(Math.round(this.mSfxData.wav.length / 1024) + "kB");
         $("#num_samples").text(this.mSfxData.header.subChunk2Size / (this.mSfxData.header.bitsPerSample >> 3));
         $("#clipping").text(this.mSfxData.clipping);
@@ -256,7 +261,7 @@ SoundCentral.Panel.Main.prototype.addSfxToProject = function() {
     var aBlob = this.dataURItoBlob(this.mSfxData.dataURI);
     var aXmlHttpRequest = new XMLHttpRequest();
 
-    aFormData.append('path', 'again.wav');
+    aFormData.append('path', $('#sndc-add-folder').val() + this.getSfxFileName());
     aFormData.append('method', 'write');
     aFormData.append('file', aBlob);
 
@@ -308,7 +313,7 @@ SoundCentral.Panel.Main.prototype.render = function() {
 
     this.row(
         'Recently generated' +
-        '<select id="sfx-selector" style="width: 100%;>' +
+        '<select id="sndc-recently-generated" style="width: 100%;>' +
             '<option value="0" selected="selected">Explosion 2</option>' +
             '<option value="1">Hit 1</option>' +
             '<option value="2">Explosion 1</option>' +
@@ -332,9 +337,9 @@ SoundCentral.Panel.Main.prototype.render = function() {
 
         '<div style="width: 70%; float: left;">' +
             '<i class="fa fa-folder-open"></i>' +
-            '<select id="sfx-selector" style="width: 80%;">' +
-                '<option value="0" selected="selected">/assets</option>' +
-                '<option value="1">/</option>' +
+            '<select id="sndc-add-folder" style="width: 80%;">' +
+                '<option value="/assets/" selected="selected">/assets</option>' +
+                '<option value="/">/</option>' +
             '</select>' +
         '</div>' +
         '<div style="width: 30%; float: left;">' +
