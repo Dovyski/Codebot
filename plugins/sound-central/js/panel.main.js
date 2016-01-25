@@ -101,10 +101,33 @@ SoundCentral.Panel.Main.prototype.init = function() {
     this.mSfxr.sample_size = 8;
 };
 
-SoundCentral.Panel.Main.prototype.generate = function() {
+SoundCentral.Panel.Main.prototype.logRecentlyGenerated = function() {
+    var aInfos = {
+        name: this.getSfxFileName(),
+        params: {}
+    };
+
+    $.each(this.mSfxr, function (theParam, theValue) {
+        if(!(theValue instanceof Function)) {
+            aInfos.params[theParam] = theValue;
+        }
+    });
+
+    $('#sndc-recently-generated').prepend($('<option>', {
+        value: JSON.stringify(aInfos),
+        text: this.getSfxFileName(),
+        selected: 'selected'
+    }));
+};
+
+SoundCentral.Panel.Main.prototype.generate = function(theAddRecentLogEntry) {
     if(this.mSfxData) {
         this.mSfxData = null;
         // TODO: implementing some destroy() method would be great
+    }
+
+    if(theAddRecentLogEntry == undefined || theAddRecentLogEntry) {
+        this.logRecentlyGenerated();
     }
 
     this.mSfxData = new SoundEffect(this.mSfxr).generate();
@@ -244,6 +267,17 @@ SoundCentral.Panel.Main.prototype.initUI = function() {
     $('#sndc-btn-download').click(function() {
         aSelf.addSfxToProject();
     });
+
+    $('#sndc-recently-generated').change(function(theElement) {
+        var aInfos = JSON.parse($(this).val());
+
+        $.each(aInfos.params, function (theParam, theValue) {
+            aSelf.mSfxr[theParam] = aInfos.params[theParam];
+        });
+
+        this.mSfxLabel = aInfos.name; // TODO: fix it, not working
+        aSelf.generate(false);
+    });
  };
 
 // From: http://stackoverflow.com/a/30407840/29827
@@ -313,12 +347,7 @@ SoundCentral.Panel.Main.prototype.render = function() {
 
     this.row(
         'Recently generated' +
-        '<select id="sndc-recently-generated" style="width: 100%;>' +
-            '<option value="0" selected="selected">Explosion 2</option>' +
-            '<option value="1">Hit 1</option>' +
-            '<option value="2">Explosion 1</option>' +
-            '<option value="3">Pikcup 1</option>' +
-        '</select>');
+        '<select id="sndc-recently-generated" style="width: 100%;><option value=""> </option></select>');
 
     this.divider('Result', {icon: 'play-circle'});
 
