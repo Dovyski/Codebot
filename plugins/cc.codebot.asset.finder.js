@@ -40,7 +40,7 @@ AssetFinder.MainPanel = function() {
 
     // Get a reference to the div that will be used to display
     // more info of a clicked asset.
-    this.infoPanel = $('#asset-info-item-description');
+    this.infoPanel = $('#af-item-description');
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
@@ -68,12 +68,12 @@ AssetFinder.MainPanel.prototype.render = function() {
     this.pair('', '<button id="af-search">Search</button>');
 
     this.divider('Results');
-    this.row('<div id="assets-finder-browse-area" style="width: 100%; height: 100%; overflow: scroll;">Nothing to show yet.</div>', false);
+    this.row('<div id="af-browse-area">Nothing to show yet.</div>');
 
     $('#af-search').click(function() { aSelf.doSearch(); });
 
     // TODO: improve this.
-    $("#assets-finder-browse-area").scroll(function() {
+    $("#af-browse-area").scroll(function() {
         var aHasReachedBottom = $(this)[0].scrollHeight - $(this).scrollTop() <= $(this).outerHeight();
 
         if(aHasReachedBottom) {
@@ -103,7 +103,8 @@ AssetFinder.MainPanel.prototype.showItemInfo = function(theItemId) {
         aFolder,
         aContent,
         aProjectFolders,
-        aFoldersText = '';
+        aFoldersText = '',
+        aSelf = this;
 
     // Get a reference to the web ID plugin.
     aIde = this.context.getPlugin('cc.codebot.ide.web');
@@ -119,15 +120,15 @@ AssetFinder.MainPanel.prototype.showItemInfo = function(theItemId) {
         aPanel = new Codebot.Panel(theData.title, this.infoPanel.attr('id'));
 
         aPanel.divider('Preview');
-        aPanel.row('<img src="'+theData.preview[0]+'" style="width: 100%; height: 50px;"/>');
+        aPanel.row('<div style="text-align: center;"><img src="'+theData.preview[0]+'" style="max-width: 300px;"/></div>');
 
         aProjectFolders = this.findProjectTopFolders();
 
         for(i = 0, aTotal = aProjectFolders.length; i < aTotal; i++) {
             aFoldersText += '<option value="' + aProjectFolders[i].path + '">/' + aProjectFolders[i].name + '</option>';
         }
-        aPanel.divider('Download');
-        aPanel.pair('Save to', '<i class="fa fa-folder-open"></i> <select id="assetDestinationDir" style="width: 90%;"><option value="/">/</option>'+aFoldersText+'</select> <a href="javascript:void(0)" id="assetDownloadLink"><i class="fa fa-download"></i> DOWNLOAD</a>');
+        aPanel.divider('Add to project');
+        aPanel.row('<i class="fa fa-folder-open"></i> <select id="assetDestinationDir" style="width: 70%;"><option value="/">/</option>'+aFoldersText+'</select> <button id="assetDownloadLink" style="margin-left: 10px; margin-top: 4px; width: 20%"><i class="fa fa-download"></i> Add</button>');
 
         aPanel.divider('Details');
         aPanel.pair('Author', theData.author);
@@ -137,13 +138,13 @@ AssetFinder.MainPanel.prototype.showItemInfo = function(theItemId) {
         aPanel.divider('Description');
         aPanel.row(theData.description);
 
-        this.infoPanel.find('a#assetDownloadLink').click(function() {
-            this.infoPanel.fadeOut();
+        this.infoPanel.find('#assetDownloadLink').click(function() {
+            aSelf.infoPanel.fadeOut();
             // TODO: make pending activity a global Codebot thing with categories (e.g. filesPanel)
-            this.context.ui.filesPanel.addPendingActivity('downloading' + theItemId, 'Downloading asset', 'Fetching item to "' + this.infoPanel.find('select#assetDestinationDir').val() + '"');
+            aSelf.context.ui.filesPanel.addPendingActivity('downloading' + theItemId, 'Downloading asset', 'Fetching item to "' + aSelf.infoPanel.find('select#assetDestinationDir').val() + '"');
 
-            aIde.api('assets', 'fetch', {item: theItemId, project: aIde.getActiveProject().id, destination: this.infoPanel.find('select#assetDestinationDir').val()}, function(theData) {
-                this.context.ui.filesPanel.removePendingActivity('downloading' + theItemId);
+            aIde.api('assets', 'fetch', {item: theItemId, project: aIde.getActiveProject().id, destination: aSelf.infoPanel.find('select#assetDestinationDir').val()}, function(theData) {
+                aSelf.context.ui.filesPanel.removePendingActivity('downloading' + theItemId);
 
                 if(theData.success) {
                     aIde.refreshProjectFileList();
@@ -162,17 +163,17 @@ AssetFinder.MainPanel.prototype.doSearch = function() {
 
     aIde = this.getContext().getPlugin('cc.codebot.ide.web');
 
-    $('#assets-finder-browse-area').html('<i class="fa fa-circle-o-notch fa-spin"></i>');
+    $('#af-browse-area').html('<i class="fa fa-circle-o-notch fa-spin"></i>');
 
     aIde.api('assets', 'search', this.serialize(), function(theData) {
         if(theData.success) {
             for(i = 0; i < theData.items.length; i++) {
-                aContent += '<a href="javascript:void(0)" data-item="'+theData.items[i].id+'"><img src="'+theData.items[i].thumbnail+'" alt="Preview"></a>';
+                aContent += '<a href="javascript:void(0)" data-item="'+theData.items[i].id+'"><img src="'+theData.items[i].thumbnail+'" alt="Preview" style="width: 90px; height: 90px; padding: 2px;"></a>';
 
             }
-            $('#assets-finder-browse-area').html(aContent);
+            $('#af-browse-area').html(aContent);
 
-            $('#assets-finder-browse-area a').click(function() {
+            $('#af-browse-area a').click(function() {
                 aSelf.showItemInfo($(this).data('item'));
             });
         }
@@ -220,8 +221,8 @@ AssetFinder.Plugin.prototype.init = function(theContext) {
 
     console.debug('AssetFinder.Plugin:init()');
 
-    $('body').append('<div id="asset-info-item-description" style="display: none; position: absolute; top:0; right: 333px; width: 600px; height: 100%; background: #3d3d3d; overflow: hidden;"></div>');
-    this.infoPanel = $('#asset-info-item-description');
+    $('body').append('<div id="af-item-description" style="display: none; position: absolute; top:0; right: 333px; width: 600px; height: 100%; background: #3d3d3d; overflow: hidden;"></div>');
+    this.infoPanel = $('#af-item-description');
 
     this.context.signals.beforeLastSlidePanelClose.add(function() {
         this.infoPanel.fadeOut();
