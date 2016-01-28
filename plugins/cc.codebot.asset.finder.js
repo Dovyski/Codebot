@@ -52,20 +52,19 @@ AssetFinder.MainPanel.prototype.render = function() {
 
     Codebot.Panel.prototype.render.call(this);
 
-    this.divider('Options');
+    this.divider('Search');
+    this.row(
+        '<input type="text" name="query" value="" placeholder="E.g. zombie" style="width: 75%; margin-right: 5px;" />' +
+        '<button id="af-search" style="width: 20%;"><i class="fa fa-search"></i></button>'
+    );
 
-    this.pair('Search', '<input type="text" name="query" value="" />');
-    this.pair(
-        'License',
-        '<select name="license">' +
-            '<option value="1">CC-BY 3.0</option>' +
-            '<option value="2">CC-BY-SA 3.0</option>' +
-            '<option value="4">GPL 3.0</option>' +
-        '</select>' +
+    this.divider('Options');
+    this.pair('License', this.generateLicensesSelection());
+    this.pair('Type', this.generateLicensesSelection());
+    this.row(
         '<input type="hidden" name="start" value="0">' +
         '<input type="hidden" name="limit" value="50">'
     );
-    this.pair('', '<button id="af-search">Search</button>');
 
     this.divider('Results');
     this.row('<div id="af-browse-area">Nothing to show yet.</div>');
@@ -80,6 +79,20 @@ AssetFinder.MainPanel.prototype.render = function() {
             loadMoreSearchResults();
         }
     });
+};
+
+AssetFinder.MainPanel.prototype.generateLicensesSelection = function() {
+    var aLicenses,
+        aRet = '',
+        i;
+
+    aLicenses = this.getContext().getPlugin('cc.codebot.asset.finder').getLicenses();
+
+    for(i = 0; i < aLicenses.length; i++) {
+        aRet += '<option value="' + aLicenses[i].id + '">' + aLicenses[i].name + '</option>';
+    }
+
+    return '<select name="license">' + aRet + '</select>';
 };
 
 AssetFinder.MainPanel.prototype.findProjectTopFolders = function() {
@@ -133,7 +146,7 @@ AssetFinder.MainPanel.prototype.showItemInfo = function(theItemId) {
         aPanel.divider('Details');
         aPanel.pair('Author', theData.author);
         aPanel.pair('License', theData.license);
-        aPanel.pair('Channel', theData.channel);
+        aPanel.pair('Channel', '<a href="' + theData.url + '" target="_blank">' + theData.channel + '</a>');
 
         aPanel.divider('Description');
         aPanel.row(theData.description);
@@ -196,6 +209,7 @@ AssetFinder.Plugin = function() {
     // Initialize personal stuff
     this.id         = 'cc.codebot.asset.finder';
     this.infoPanel  = null;
+    this.licenses   = [];
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
@@ -215,6 +229,19 @@ AssetFinder.Plugin.prototype.initUIAfterProjectOpened = function(theProjectInfo)
     this.context.ui.addButton('testingPanel', { icon: '<i class="fa fa-rocket"></i>', panel: this.testPanel });
 };
 
+AssetFinder.Plugin.prototype.loadLicenses = function() {
+    // TODO: load this from API endpoint.
+    this.licenses = [
+        {id: 1, name: 'CC-BY 3.0'},
+        {id: 2, name: 'CC-BY-SA 3.0'},
+        {id: 4, name: 'GPL 3.0'}
+    ];
+};
+
+AssetFinder.Plugin.prototype.getLicenses = function() {
+    return this.licenses;
+};
+
 AssetFinder.Plugin.prototype.init = function(theContext) {
     // Call super class init method.
     Codebot.Plugin.prototype.init.call(this, theContext);
@@ -223,6 +250,8 @@ AssetFinder.Plugin.prototype.init = function(theContext) {
 
     $('body').append('<div id="af-item-description" style="display: none; position: absolute; top:0; right: 333px; width: 600px; height: 100%; background: #3d3d3d; overflow: hidden;"></div>');
     this.infoPanel = $('#af-item-description');
+
+    this.loadLicenses();
 
     this.context.signals.beforeLastSlidePanelClose.add(function() {
         this.infoPanel.fadeOut();

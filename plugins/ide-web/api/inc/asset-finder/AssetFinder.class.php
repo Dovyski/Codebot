@@ -40,6 +40,9 @@ class AssetFinder {
 			}
 		}
 
+		// TODO: replace this placeholders with real data
+		$theAssetObject->url = 'http://opengameart.org/content/nature-tileset';
+
 		return $theAssetObject;
 	}
 
