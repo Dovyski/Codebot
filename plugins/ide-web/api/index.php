@@ -30,22 +30,16 @@
 @include_once dirname(__FILE__).'/../config.local.php';
 include_once dirname(__FILE__).'/../config.php';
 
-// Include all internal models.
+// Include all internal models/classes
 require_once dirname(__FILE__).'/inc/Auth.class.php';
 require_once dirname(__FILE__).'/inc/Database.class.php';
 require_once dirname(__FILE__).'/inc/User.class.php';
-require_once dirname(__FILE__).'/inc/Project.class.php';
-require_once dirname(__FILE__).'/inc/Disk.class.php';
 require_once dirname(__FILE__).'/inc/Router.class.php';
 require_once dirname(__FILE__).'/inc/Utils.class.php';
 
-// Include available development tool-chains
-require_once dirname(__FILE__).'/inc/FlashTools.class.php';
-require_once dirname(__FILE__).'/inc/JavascriptTools.class.php';
-
-// Include gamedev help tools
-// TODO: include this dynamically, using the config file.
-require_once dirname(__FILE__).'/../../asset-finder/backend/AssetFinder.class.php';
+// Include all internal endpoints
+require_once dirname(__FILE__).'/endpoints/Project.class.php';
+require_once dirname(__FILE__).'/endpoints/Disk.class.php';
 
 // Catch all error messages and turn them into Exceptions, that way the API
 // will not break JSON communitation with ugly PHP html tags.
