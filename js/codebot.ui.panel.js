@@ -266,3 +266,19 @@ Codebot.Panel.prototype.restore = function(theData) {
 		this.container.find('[name=' + aProp + ']').val(theData[aProp]);
 	}
 };
+
+/**
+ * Erases the content of the panel, making it completely empty.
+ */
+Codebot.Panel.prototype.empty = function() {
+	this.container.empty();
+};
+
+/**
+ * Sets the title of this panel.
+ *
+ * @param  {string} theValue The new title
+ */
+Codebot.Panel.prototype.setTitle = function(theValue) {
+	// TODO: set the title using h1 tags
+};

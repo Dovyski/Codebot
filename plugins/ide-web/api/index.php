@@ -44,7 +44,8 @@ require_once dirname(__FILE__).'/inc/FlashTools.class.php';
 require_once dirname(__FILE__).'/inc/JavascriptTools.class.php';
 
 // Include gamedev help tools
-require_once dirname(__FILE__).'/inc/asset-finder/AssetFinder.class.php';
+// TODO: include this dynamically, using the config file.
+require_once dirname(__FILE__).'/../../asset-finder/backend/AssetFinder.class.php';
 
 // Catch all error messages and turn them into Exceptions, that way the API
 // will not break JSON communitation with ugly PHP html tags.
