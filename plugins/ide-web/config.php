@@ -31,7 +31,7 @@
 
 // Flash
 @define('CODEBOT_FLASH_API_ENPOINT',      		 'flash');
-@define('CODEBOT_FLASH_API_CLASS_FILE',      	 '/plugins/ide-web/api/inc/FlashTools.class.php');
+@define('CODEBOT_FLASH_API_CLASS_FILE',      	 '/plugins/flash-tools/backend/FlashTools.class.php');
 @define('CODEBOT_FLASH_API_CLASS_NAME',      	 'FlashTools');
 @define('CODEBOT_FLASH_PUBLIC_TESTING_URL',      '/testing/');
 @define('CODEBOT_FLASH_TESTING_POOL',            '/var/www/testing/');
@@ -40,7 +40,7 @@
 
 // Javascript
 @define('CODEBOT_JAVASCRIPT_API_ENPOINT',      	 'javascript');
-@define('CODEBOT_JAVASCRIPT_API_CLASS_FILE',     '/plugins/ide-web/api/inc/JavascriptTools.class.php');
+@define('CODEBOT_JAVASCRIPT_API_CLASS_FILE',     '/plugins/javascript-tools/backend/JavascriptTools.class.php');
 @define('CODEBOT_JAVASCRIPT_API_CLASS_NAME',     'JavascriptTools');
 @define('CODEBOT_JAVASCRIPT_PUBLIC_TESTING_URL', '/testing/');
 @define('CODEBOT_JAVASCRIPT_TESTING_POOL',       '/var/www/html/testing/');
