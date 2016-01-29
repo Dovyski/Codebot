@@ -30,16 +30,25 @@
 @define('CODEBOT_DISK_WORK_POOL',               '/tmp/');
 
 // Flash
+@define('CODEBOT_FLASH_API_ENPOINT',      		 'flash');
+@define('CODEBOT_FLASH_API_CLASS_FILE',      	 '/plugins/ide-web/api/inc/FlashTools.class.php');
+@define('CODEBOT_FLASH_API_CLASS_NAME',      	 'FlashTools');
 @define('CODEBOT_FLASH_PUBLIC_TESTING_URL',      '/testing/');
 @define('CODEBOT_FLASH_TESTING_POOL',            '/var/www/testing/');
 @define('CODEBOT_FLASH_OUTPUT_REPIPE',           '2>&1');
 @define('CODEBOT_FLASH_FLEX_SDK',                'C:/Users/Dovyski/AppData/Local/FlashDevelop/Apps/flexairsdk/4.6.0+15.0.0/bin/');
 
 // Javascript
+@define('CODEBOT_JAVASCRIPT_API_ENPOINT',      	 'javascript');
+@define('CODEBOT_JAVASCRIPT_API_CLASS_FILE',     '/plugins/ide-web/api/inc/JavascriptTools.class.php');
+@define('CODEBOT_JAVASCRIPT_API_CLASS_NAME',     'JavascriptTools');
 @define('CODEBOT_JAVASCRIPT_PUBLIC_TESTING_URL', '/testing/');
 @define('CODEBOT_JAVASCRIPT_TESTING_POOL',       '/var/www/html/testing/');
 
 // Assets finder
+@define('CODEBOT_ASSET_FINDER_API_ENPOINT',      'assets');
+@define('CODEBOT_ASSET_FINDER_API_CLASS_FILE',   '/plugins/asset-finder/backend/AssetFinder.class.php');
+@define('CODEBOT_ASSET_FINDER_API_CLASS_NAME',   'AssetFinder');
 @define('CODEBOT_ASSET_FINDER_MIRROR_FOLDER',	 '/var/www/assets/');
 @define('CODEBOT_ASSET_FINDER_MIRROR_URL',	 	 'http://cdn.domain.com/assets/');
 
