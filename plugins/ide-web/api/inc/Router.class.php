@@ -28,9 +28,32 @@
  */
 class Router {
 	private $mHandlers;
+	private static $mTerms = array('_API_ENPOINT', '_API_CLASS_FILE', '_API_CLASS_NAME');
 
 	function __construct() {
 		$mHandlers = array();
+	}
+
+	private function includeFileAndApiEndpoint($theIncludes) {
+		$aDir = dirname(__FILE__) . '/../../../../';
+
+		foreach($theIncludes as $aOwner => $aTool) {
+			foreach(self::$mTerms as $aTerm) {
+				if(!isset($aTool[$aTerm])) {
+					throw new Exception('API "' . $aOwner . '" in config file is missing info ' . $aOwner . $aTerm . '.');
+				}
+			}
+
+			$aFile = $aDir . $aTool['_API_CLASS_FILE'];
+
+			if(file_exists($aFile)) {
+				require_once($aFile);
+				$this->add($aTool['_API_ENPOINT'], $aTool['_API_CLASS_NAME']);
+
+			} else {
+				throw new Exception('Class file (informed in ' . $aOwner . $aTerm . ') does not exist: ' . $aFile);
+			}
+		}
 	}
 
 	private function invokeMethod($theClass, $theObj, $theMethod, $theParams) {
@@ -42,6 +65,24 @@ class Router {
 
 	public function add($theAlias, $theClassHandler) {
 		$this->mHandlers[$theAlias] = $theClassHandler;
+	}
+
+	public function addConfigDefinedEndpoints() {
+		$aConstants = get_defined_constants(true);
+		$aConfig = $aConstants['user'];
+		$aMatches = array();
+		$aInclude = array();
+
+		foreach ($aConfig as $aName => $aValue) {
+			if(preg_match_all('/(.*)('.implode('|', self::$mTerms).')/', $aName, $aMatches) != 0) {
+				$aOwner = $aMatches[1][0];
+				$aType  = $aMatches[2][0];
+
+				$aInclude[$aOwner][$aType] = $aValue;
+			}
+		}
+
+		$this->includeFileAndApiEndpoint($aInclude);
 	}
 
 	public function run($theRequest) {

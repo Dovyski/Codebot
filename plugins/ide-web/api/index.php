@@ -81,9 +81,8 @@ if(!Auth::isUserAuthenticated()) {
 
 	$aRouter->add('disk', 'Disk');
 	$aRouter->add('project', 'Project');
-	$aRouter->add('flash', 'FlashTools');
-	$aRouter->add('javascript', 'JavascriptTools');
-	$aRouter->add('assets', 'AssetFinder');
+
+	$aRouter->addConfigDefinedEndpoints();
 
 	// Get the party started and running!
 	try {
