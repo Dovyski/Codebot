@@ -73,8 +73,9 @@ Codebot.Editor.Audio.prototype.init = function() {
 
     this.mWaveSurfer = WaveSurfer.create({
         container: '#test',
-        waveColor: 'violet',
-        progressColor: 'purple'
+        waveColor: '#75BFFF',
+        progressColor: '#75BFFF',
+        barWidth: 1
     });
 
     this.mWaveSurfer.on('ready', function () {
