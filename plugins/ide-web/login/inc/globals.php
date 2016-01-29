@@ -5,8 +5,8 @@
  */
 
 // Include all configuration files
-@include_once dirname(__FILE__).'/../../api/config.local.php'; // TODO: remove /../../api/
-include_once dirname(__FILE__).'/../../api/config.php';		// TODO: remove /../../api/
+@include_once dirname(__FILE__).'/../../config.local.php';
+include_once dirname(__FILE__).'/../../config.php';
 
 // Include system stuff
 require_once dirname(__FILE__).'/../../api/inc/Auth.class.php';

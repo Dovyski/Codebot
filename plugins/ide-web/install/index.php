@@ -9,8 +9,8 @@
  require_once dirname(__FILE__).'/../api/inc/Database.class.php';
 
 // Include all configuration files
-@include_once dirname(__FILE__).'/../api/config.local.php';
-include_once dirname(__FILE__).'/../api/config.php';
+@include_once dirname(__FILE__).'/../config.local.php';
+include_once dirname(__FILE__).'/../config.php';
 
 // The instalation steps
 $aSteps = array();

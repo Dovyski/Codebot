@@ -27,8 +27,8 @@
  */
 
 // Include all configuration files
-@include_once dirname(__FILE__).'/config.local.php';
-include_once dirname(__FILE__).'/config.php';
+@include_once dirname(__FILE__).'/../config.local.php';
+include_once dirname(__FILE__).'/../config.php';
 
 // Include all internal models.
 require_once dirname(__FILE__).'/inc/Auth.class.php';
