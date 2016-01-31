@@ -36,6 +36,8 @@ require_once dirname(__FILE__).'/inc/Database.class.php';
 require_once dirname(__FILE__).'/inc/User.class.php';
 require_once dirname(__FILE__).'/inc/Router.class.php';
 require_once dirname(__FILE__).'/inc/Utils.class.php';
+require_once dirname(__FILE__).'/inc/Disk.class.php';
+require_once dirname(__FILE__).'/inc/Project.class.php';
 
 // Include all internal endpoints
 require_once dirname(__FILE__).'/endpoints/Base.class.php';
