@@ -38,6 +38,7 @@ require_once dirname(__FILE__).'/inc/Router.class.php';
 require_once dirname(__FILE__).'/inc/Utils.class.php';
 
 // Include all internal endpoints
+require_once dirname(__FILE__).'/endpoints/Base.class.php';
 require_once dirname(__FILE__).'/endpoints/Project.class.php';
 require_once dirname(__FILE__).'/endpoints/Disk.class.php';
 
@@ -65,6 +66,7 @@ if(CODEBOT_DEV_MODE && CODEBOT_DEV_SIMULATE_SLOW) {
 
 $aOut = '';
 
+// TODO: make this test an API method.
 if(!Auth::isUserAuthenticated()) {
 	$aOut = json_encode(array('success' => false, 'msg' => 'User is not authenticated'));
 
@@ -73,7 +75,7 @@ if(!Auth::isUserAuthenticated()) {
 	// able to handle the requests.
 	$aRouter = new Router();
 
-	$aRouter->add('disk', 'Disk');
+	$aRouter->add('disk', 'Codebot\Endpoints\Disk');
 	$aRouter->add('project', 'Project');
 
 	$aRouter->addConfigDefinedEndpoints();

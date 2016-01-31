@@ -2,7 +2,7 @@
 /*
 	The MIT License (MIT)
 
-	Copyright (c) 2015 Fernando Bevilacqua
+	Copyright (c) 2016 Fernando Bevilacqua
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy of
 	this software and associated documentation files (the "Software"), to deal in
@@ -22,22 +22,24 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-class Disk {
+namespace Codebot\Endpoints;
+
+class Disk extends Base {
 
 	public static $contentType = array(
 		'read' => 'text/plain'
 	);
 
 	private function realPath($theMount = '') {
-		return CODEBOT_DISK_WORK_POOL . Utils::escapePath($theMount) . ($theMount != '' ? DIRECTORY_SEPARATOR : '');
+		return CODEBOT_DISK_WORK_POOL . \Utils::escapePath($theMount) . ($theMount != '' ? DIRECTORY_SEPARATOR : '');
 	}
 
-	public function listDirectory($theDir, $thePrettyDir = '') {
+	private function listDirectory($theDir, $thePrettyDir = '') {
 		$aContent = array();
 		foreach (scandir($theDir) as $aNode) {
 			if ($aNode == '.' || $aNode == '..') continue;
 
-			$aObj = new stdClass();
+			$aObj = new \stdClass();
 			$aObj->title = $aNode;
 			$aObj->name = $aNode;
 			$aObj->path = $thePrettyDir . $aNode;
@@ -64,69 +66,58 @@ class Disk {
 		);
 	}
 
-	public function dirPath() {
-		$aNumArgs 	= func_num_args();
-		$aArgs 		= func_get_args();
-		$aRet		= $this->realPath();
+	public function mkdir(array $theParams) {
+		$aMount = $this->getParam('mount', $theParams);
+		$aPath 	= $this->getParam('path', $theParams);
 
-		for($i = 0; $i < $aNumArgs; $i++) {
-			$aRet .= Utils::escapePath($aArgs[$i]) . DIRECTORY_SEPARATOR;
-		}
-
-		return $aRet;
-	}
-
-	public function mkdir($theMount, $thePath) {
-		if(empty($thePath)) {
-			throw new Exception('Empty path in Disk::mkdir().');
-		}
-
-		$aPath = $this->realPath($theMount) . Utils::escapePath($thePath);
+		$aPath  = $this->realPath($aMount) . Utils::escapePath($aPath);
 
 		mkdir($aPath, 0755, true);
 
 		return array('success' => true, 'msg' => '');
 	}
 
-	public function write($theMount, $thePath, $theData = null) {
-		if(empty($thePath)) {
-			throw new Exception('Empty path in Disk::write().');
-		}
+	public function write(array $theParams) {
+		$aMount = $this->getParam('mount', $theParams);
+		$aPath 	= $this->getParam('path', $theParams);
+		$aData 	= $this->getParam('data', $theParams);
 
-		$aPath = $this->realPath($theMount) . Utils::escapePath($thePath);
-		$aData = $theData == null && isset($_FILES['file']) ? file_get_contents($_FILES['file']['tmp_name']) : $theData;
+		$aPath = $this->realPath($aMount) . Utils::escapePath($aPath);
+		$aData = $aData == null && isset($_FILES['file']) ? file_get_contents($_FILES['file']['tmp_name']) : $aData;
 
 		file_put_contents($aPath, $aData);
 
 		return array('success' => true, 'msg' => '');
 	}
 
-	public function read($theMount, $thePath) {
-		if(empty($thePath)) {
-			throw new Exception('Empty path in Disk::read().');
-		}
+	public function read(array $theParams) {
+		$aMount = $this->getParam('mount', $theParams);
+		$aPath 	= $this->getParam('path', $theParams);
 
-		$aPath = $this->realPath($theMount) . Utils::escapePath($thePath);
+		$aPath = $this->realPath($aMount) . Utils::escapePath($aPath);
 		$aOut = file_get_contents($aPath);
 
 		return $aOut;
 	}
 
-	public function mv($theMount, $theOldPath, $theNewPath) {
-		$aOldPath = $this->realPath($theMount) . Utils::escapePath($theOldPath);
-		$aNewPath = $this->realPath($theMount) . Utils::escapePath($theNewPath);
+	public function mv(array $theParams) {
+		$aMount = $this->getParam('mount', $theParams);
+		$aOld 	= $this->getParam('old', $theParams);
+		$aNew 	= $this->getParam('new', $theParams);
+
+		$aOldPath = $this->realPath($aMount) . Utils::escapePath($aOld);
+		$aNewPath = $this->realPath($aMount) . Utils::escapePath($aNew);
 
 		rename($aOldPath, $aNewPath);
 
 		return array('success' => true, 'msg' => '');
 	}
 
-	public function rm($theMount, $thePath) {
-		if(empty($thePath)) {
-			throw new Exception('Empty path in Disk::rm().');
-		}
+	public function rm(array $theParams) {
+		$aMount = $this->getParam('mount', $theParams);
+		$aPath 	= $this->getParam('path', $theParams);
 
-		$aPath = $this->realPath($theMount) . Utils::escapePath($thePath);
+		$aPath = $this->realPath($aMount) . Utils::escapePath($aPath);
 
 		if(is_dir($aPath)) {
 			rmdir($aPath);
@@ -137,7 +128,7 @@ class Disk {
 		return array('success' => true, 'msg' => '');
 	}
 
-	public function lsCodebot($theDir) {
+	public function lsCodebot(array $theParams) {
 		$aFiles = array(
 			array(
 				'name' => 'Project',
@@ -156,7 +147,9 @@ class Disk {
 		return $aFiles;
 	}
 
-	public function ls($theMount) {
+	public function ls(array $theParams) {
+		$aMount = $this->getParam('mount', $theParams);
+
 		$aFiles = array(
 			array(
 				'name' => 'Project',
@@ -165,25 +158,11 @@ class Disk {
 				'folder' => true,
 				'key' => 'root',
 				'expanded' => true,
-				'children' => $this->listDirectory($this->realPath($theMount))
+				'children' => $this->listDirectory($this->realPath($aMount))
 			)
 		);
 
 		return $aFiles;
-	}
-
-	public static function create($theUserNickname) {
-		$aDiskName = md5($theUserNickname . time());
-		mkdir(CODEBOT_DISK_WORK_POOL . DIRECTORY_SEPARATOR . $aDiskName);
-
-		return $aDiskName;
-	}
-
-	public static function createProjectDir($theDisk, $theProjectName) {
-		$aPath = CODEBOT_DISK_WORK_POOL . DIRECTORY_SEPARATOR . $theDisk . DIRECTORY_SEPARATOR . $theProjectName;
-		mkdir($aPath);
-
-		return $aPath;
 	}
 }
 

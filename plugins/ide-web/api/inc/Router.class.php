@@ -58,7 +58,7 @@ class Router {
 
 	private function invokeMethod($theClass, $theObj, $theMethod, $theParams) {
 		$aReflection = new ReflectionMethod($theClass, $theMethod);
-		$aRet = $aReflection->invokeArgs($theObj, $theParams);
+		$aRet = $aReflection->invoke($theObj, $theParams);
 
 		return $aRet;
 	}
