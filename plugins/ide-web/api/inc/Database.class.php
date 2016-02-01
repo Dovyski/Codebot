@@ -22,6 +22,8 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+namespace Codebot;
+
 class Database {
 	private static $mInstance;
 
@@ -34,7 +36,7 @@ class Database {
 				'user' => CODEBOT_DB_USER,
 				'password' => CODEBOT_DB_PASSWORD
 			));
-		} catch (PDOException $e) {
+		} catch (\PDOException $e) {
 		    echo 'Database error! ' . $e->getMessage();
 		    die();
 		}
@@ -48,8 +50,8 @@ class Database {
 			$aDsn = 'mysql:host=' . $theConfig['host'] . (isset($theConfig['name']) ? ';dbname=' . $theConfig['name'] : '');
 		}
 
-	    $aDb = new PDO($aDsn, $theConfig['user'], $theConfig['password'], array(PDO::ATTR_PERSISTENT => true));
-		$aDb->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	    $aDb = new \PDO($aDsn, $theConfig['user'], $theConfig['password'], array(\PDO::ATTR_PERSISTENT => true));
+		$aDb->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
 		self::$mInstance = $aDb;
 	}

@@ -22,6 +22,8 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+namespace Codebot;
+
 class User {
 	public static function getOrCreateByOAuthInfo($theInfo) {
 		$aProvider 		= $theInfo['provider'];
@@ -51,7 +53,7 @@ class User {
 		$aQuery = Database::instance()->prepare("SELECT ".($theFull ? '*' : 'id, email, registration_date, disk')." FROM users WHERE id = ?");
 
 		if ($aQuery->execute(array($theId))) {
-			$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
+			$aRet = $aQuery->fetchObject('\Codebot\User');
 		}
 
 		return $aRet;
@@ -62,7 +64,7 @@ class User {
 		$aQuery = Database::instance()->prepare("SELECT id FROM users WHERE auth_uid = ?");
 
 		if ($aQuery->execute(array($theProvider . '/' . $theProviderUserUid))) {
-			$aRet = $aQuery->fetch(PDO::FETCH_OBJ);
+			$aRet = $aQuery->fetchObject('\Codebot\User');
 		}
 
 		return $aRet;

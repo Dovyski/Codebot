@@ -22,6 +22,8 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+namespace Codebot;
+
 class Auth {
     public static function authenticate($theUserId) {
         $_SESSION['id'] = $theUserId;
