@@ -22,15 +22,9 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-class Project {
-	public $id 				= null;
-	public $fk_user 		= null;
-	public $name 			= '';
-	public $type 			= '';
-	public $path 			= '';
-	public $creation_date 	= 0;
-	public $settings 		= '{}';
+namespace Codebot\Endpoints;
 
+class Project extends Base {
 	public function create($theType, $theGitRepo, $theTemplate, $theName, $theVisibility) {
 		$aData = array(
 			'name' 		=> $theName,
@@ -187,30 +181,7 @@ class Project {
 		return $aTemplateSettings;
 	}
 
-	public static function update(Project $theProject) {
-		$aRet 	= null;
-		$aQuery = Database::instance()->prepare("
-			INSERT INTO
-				projects (id, fk_user, name, type, path, creation_date, settings)
-			 VALUES
-				(?, ?, ?, ?, ?, ?, ?)
-			 ON DUPLICATE KEY UPDATE
-				fk_user = ?, name = ?, type = ?, path = ?, creation_date = ?, settings = ?
-		");
-
-		$aQuery->execute(array(
-				$theProject->id, $theProject->fk_user, $theProject->name, $theProject->type, $theProject->path, $theProject->creation_date, $theProject->settings,
-				$theProject->fk_user, $theProject->name, $theProject->type, $theProject->path, $theProject->creation_date, $theProject->settings
-		));
-
-		if($theProject->id == null) {
-			$theProject->id = Database::instance()->lastInsertId();
-		}
-
-		return $theProject;
-	}
-
-	public static function updateSettings($theProjectId, $theData) {
+	public function update($theProjectId, $theData) {
 		$aRet 	= array();
 		$aUser 	= User::getById(Auth::getAuthenticatedUserId());
 
@@ -223,31 +194,6 @@ class Project {
 		$aQuery->execute(array($theData, $theProjectId, $aUser->id));
 		return $aQuery->rowCount() != 0;
 	}
-
-	public static function findByUser($theUser) {
-		$aRet = array();
-		$aQuery = Database::instance()->prepare("SELECT id, fk_user, name, type, path, creation_date, settings FROM projects WHERE fk_user = ?");
-
-		if ($aQuery->execute(array($theUser->id))) {
-			while($aRow = $aQuery->fetch(PDO::FETCH_OBJ)) {
-				$aRet[$aRow->id] = $aRow;
-			}
-		}
-
-		return $aRet;
-	}
-
-	public static function getById($theId, $theComplete = false) {
-		$aRet = null;
-		$aQuery = Database::instance()->prepare("SELECT ".($theComplete ? '*' : 'id, fk_user, name, type, path, creation_date')." FROM projects WHERE id = ?");
-
-		if ($aQuery->execute(array($theId))) {
-			$aRet = $aQuery->fetchObject("Project");
-		}
-
-		return $aRet;
-	}
-
 }
 
 ?>
