@@ -25,12 +25,12 @@ $aLocation = '/';
 
 // It's all good. Let's get the local account for that
 // oauth info (or create a new one, if it doesnt exist.)
-$aUserId = User::getOrCreateByOAuthInfo($aResponse);
+$aUserId = Codebot\User::getOrCreateByOAuthInfo($aResponse);
 
 if($aUserId != null) {
-	Auth::authenticate($aUserId);
+	Codebot\Auth::authenticate($aUserId);
 
-	$aUser 		= User::getById($aUserId);
+	$aUser 		= Codebot\User::getById($aUserId);
 	$aLocation 	= './../../../?disk=' . $aUser->disk;
 
 } else {

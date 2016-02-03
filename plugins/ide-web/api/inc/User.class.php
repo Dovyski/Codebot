@@ -39,7 +39,7 @@ class User {
 			$aEmail 		= isset($theInfo['info']['email']) ? $theInfo['info']['email'] : '';
 			$aAuthUid 		= $aProvider . '/' . $aUid;
 
-			$aLocalUserId 	= self::create($aEmail, $aDisk, $aAuthUid, serialize($theInfo));
+			$aLocalUserId 	= self::create($aEmail, $aDisk->getName(), $aAuthUid, serialize($theInfo));
 
 		} else {
 			$aLocalUserId = $aLocalUser->id;

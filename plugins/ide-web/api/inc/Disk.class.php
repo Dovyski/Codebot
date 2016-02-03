@@ -26,9 +26,10 @@ namespace Codebot;
 
 class Disk {
 	private $mMount;
+	private $mName;
 
 	private function realPath($thePath) {
-		return $this->mMount . \Utils::escapePath($thePath);
+		return $this->mMount . Utils::escapePath($thePath);
 	}
 
 	private function listDirectory($theDir, $thePrettyDir = '') {
@@ -60,7 +61,9 @@ class Disk {
 
 	public function __construct($theMount) {
 		$this->assertNotEmpty($theMount);
-		$this->mMount = CODEBOT_DISK_WORK_POOL . \Utils::escapePath($theMount) . ($theMount != '' ? DIRECTORY_SEPARATOR : '');
+
+		$this->mName = Utils::escapePath($theMount);
+		$this->mMount = CODEBOT_DISK_WORK_POOL . $this->mName . ($this->mName != '' ? DIRECTORY_SEPARATOR : '');
 	}
 
 	public function mkdir($thePath) {
@@ -122,6 +125,38 @@ class Disk {
 		);
 
 		return $aFiles;
+	}
+
+	/**
+	 * Gets the real filesystem path for this disk.
+	 *
+	 * @return {string} The real filesystem path of this disk, e.g. <code>/tmp/data/098f6bcd4621d373cade4e832627b4f6</code>
+	 */
+	public function getFileSystemPath() {
+		return $this->mMount;
+	}
+
+	/**
+	 * Returns the name of this disk.
+	 *
+	 * @return {string} The name of the disk, which is also the name of the folder in the filesystem that is housing the content of the disk.
+	 */
+	public function getName() {
+		return $this->mName;
+	}
+
+	/**
+	 * Creates a new disk, including the real filesystem folder
+	 * that will house the content of this disk.
+	 *
+	 * @param  {string} $theSeed A string that will be used as the seed for the disk name. If nothing is informed, the current time will be used as a seed.
+	 * @return {Disk}	An instance to a Disk object representing the newly created disk.
+	 */
+	public static function create($theSeed = null) {
+		$aName = md5($theSeed == null ? time() : $theSeed);
+		mkdir(CODEBOT_DISK_WORK_POOL . $aName);
+
+		return new Disk($aName);
 	}
 }
 
