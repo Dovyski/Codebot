@@ -27,6 +27,7 @@ namespace Codebot\Endpoints;
 use Codebot\User;
 use Codebot\Auth;
 use Codebot\Database;
+use Codebot\Disk;
 use Exception;
 
 class Project extends Base {
@@ -86,42 +87,31 @@ class Project extends Base {
 		return array('success' => true, 'msg' => '');
 	}
 
-	public function open($theId) {
+	public function open(array $theParams) {
+		$aId = $this->getParam('id', $theParams);
+
 		$aUser = User::getById(Auth::getAuthenticatedUserId());
 
 		if($aUser == null) {
 			throw new Exception('Invalid project owner');
 		}
 
-		$aProject = \Codebot\Project::getById($theId, true);
+		$aProject = \Codebot\Project::getById($aId, true);
 
 		if($aProject == null) {
-			throw new Exception('Unknown project with id ' . $theId);
+			throw new Exception('Unknown project with id ' . $aId);
 		}
 
 		if($aProject->fk_user != $aUser->id) {
 			throw new Exception('The user is not allowed to view the project');
 		}
 
-		$aDisk = new Disk();
-		$aPath = $aDisk->dirPath($aUser->disk, $aProject->path);
+		$aDisk = new Disk($aUser->disk);
 
-		$aFiles = array(
-			array(
-				'name' 		=> $aProject->name,
-				'title' 	=> $aProject->name,
-				'path' 		=> '/',
-				'folder' 	=> true,
-				'key' 		=> 'root',
-				'expanded' 	=> true,
-				'children' 	=> $aDisk->listDirectory($aPath)
-			)
-		);
+		$aProject->files = $aDisk->ls($aProject->path . '/', $aProject->name);
+		$aProject->settings = $this->readSettingsFile($aProject, $aProject->files);
 
-		$aProject->files 	= $aFiles;
-		$aProject->settings = $this->readSettingsFile($aProject, $aFiles);
-
-		return array('success' => true, 'msg' => '', 'project' => $aProject);
+		return array('success' => true, 'project' => $aProject);
 	}
 
 	private function readSettingsFile($theProject, $theFiles) {

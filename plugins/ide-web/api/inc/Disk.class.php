@@ -111,11 +111,11 @@ class Disk {
 		}
 	}
 
-	public function ls($thePath = '') {
+	public function ls($thePath = '', $theName = 'Project') {
 		$aFiles = array(
 			array(
-				'name' => 'Project',
-				'title' => 'Project',
+				'name' => $theName,
+				'title' => $theName,
 				'path' => '/',
 				'folder' => true,
 				'key' => 'root',
@@ -128,12 +128,13 @@ class Disk {
 	}
 
 	/**
-	 * Gets the real filesystem path for this disk.
+	 * Gets the real filesystem path for this disk or any of its files/folders.
 	 *
-	 * @return {string} The real filesystem path of this disk, e.g. <code>/tmp/data/098f6bcd4621d373cade4e832627b4f6</code>
+	 * @param  string $theNode A file/folder in the disk whose real file system path will be returned. If nothing is specified (default), the method assumes that node is the root of the disk.
+	 * @return {string} The real filesystem path of this disk (or any or its files/folders), e.g. <code>/tmp/data/098f6bcd4621d373cade4e832627b4f6</code>
 	 */
-	public function getFileSystemPath() {
-		return $this->mMount;
+	public function getFileSystemPath($theNode = '') {
+		return $this->realPath($theNode);
 	}
 
 	/**
