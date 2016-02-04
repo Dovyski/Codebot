@@ -24,6 +24,11 @@
 
 namespace Codebot\Endpoints;
 
+use Codebot\User;
+use Codebot\Auth;
+use Codebot\Database;
+use Exception;
+
 class Project extends Base {
 	public function create($theType, $theGitRepo, $theTemplate, $theName, $theVisibility) {
 		$aData = array(
@@ -33,8 +38,7 @@ class Project extends Base {
 			'git-repo'	=> $theGitRepo,
 		);
 
-		$aUserId = Auth::getAuthenticatedUserId();
-		$aUser 	 = User::getById($aUserId);
+		$aUser = User::getById(Auth::getAuthenticatedUserId());
 
 		if($aUser == null) {
 			throw new Exception('Invalid project owner');
@@ -69,16 +73,14 @@ class Project extends Base {
 	}
 
 	public function search() {
-		$aUserId = Auth::getAuthenticatedUserId();
-		$aUser 	 = User::getById($aUserId);
+		$aUser = User::getById(Auth::getAuthenticatedUserId());
 
-		$aProjects = self::findByUser($aUser);
+		$aProjects = \Codebot\Project::findByUser($aUser);
 		return array('success' => true, 'msg' => '', 'projects' => $aProjects);
 	}
 
 	public function delete($theId) {
-		$aUserId = Auth::getAuthenticatedUserId();
-		$aUser 	 = User::getById($aUserId);
+		$aUser = User::getById(Auth::getAuthenticatedUserId());
 
 		// TODO: implement this.
 		return array('success' => true, 'msg' => '');
@@ -91,7 +93,7 @@ class Project extends Base {
 			throw new Exception('Invalid project owner');
 		}
 
-		$aProject = Project::getById($theId, true);
+		$aProject = \Codebot\Project::getById($theId, true);
 
 		if($aProject == null) {
 			throw new Exception('Unknown project with id ' . $theId);
@@ -145,7 +147,7 @@ class Project extends Base {
 		// Create physical folders and stuff
 		$aFileSystemPath = Disk::createProjectDir($theUser->disk, $aPath);
 
-		$aRet 					= new Project();
+		$aRet 					= new \Codebot\Project();
 		$aRet->id 				= null;
 		$aRet->fk_user 			= $aFkUser;
 		$aRet->name 			= $aName;
@@ -154,7 +156,7 @@ class Project extends Base {
 		$aRet->creation_time 	= time();
 		$aRet->settings 		= self::initBasedOnTemplate($aFileSystemPath, $aTemplate, $theData);
 
-		return self::update($aRet);
+		return \Codebot\Project::update($aRet);
 	}
 
 	private static function initBasedOnTemplate($theFileSystemPath, $theTemplate, $theData) {
@@ -182,8 +184,8 @@ class Project extends Base {
 	}
 
 	public function update($theProjectId, $theData) {
-		$aRet 	= array();
-		$aUser 	= User::getById(Auth::getAuthenticatedUserId());
+		$aRet  = array();
+		$aUser = User::getById(Auth::getAuthenticatedUserId());
 
 		if($aUser == null) {
 			throw new Exception('Invalid project owner');

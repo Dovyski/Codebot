@@ -42,7 +42,7 @@ class Router {
 		foreach($theIncludes as $aOwner => $aTool) {
 			foreach(self::$mTerms as $aTerm) {
 				if(!isset($aTool[$aTerm])) {
-					throw new Exception('API "' . $aOwner . '" in config file is missing info ' . $aOwner . $aTerm . '.');
+					throw new \Exception('API "' . $aOwner . '" in config file is missing info ' . $aOwner . $aTerm . '.');
 				}
 			}
 
@@ -53,13 +53,13 @@ class Router {
 				$this->add($aTool['_API_ENPOINT'], $aTool['_API_CLASS_NAME']);
 
 			} else {
-				throw new Exception('Class file (informed in ' . $aOwner . $aTerm . ') does not exist: ' . $aFile);
+				throw new \Exception('Class file (informed in ' . $aOwner . $aTerm . ') does not exist: ' . $aFile);
 			}
 		}
 	}
 
 	private function invokeMethod($theClass, $theObj, $theMethod, $theParams) {
-		$aReflection = new ReflectionMethod($theClass, $theMethod);
+		$aReflection = new \ReflectionMethod($theClass, $theMethod);
 		$aRet = $aReflection->invoke($theObj, $theParams);
 
 		return $aRet;
@@ -99,7 +99,7 @@ class Router {
 		// Do we have the handler to process this method?
 		if(!isset($this->mHandlers[$aAlias])) {
 			// No, we dont. It's a no show.
-			throw new Exception('Unknown API class named "'.$aAlias.'".');
+			throw new \Exception('Unknown API class named "'.$aAlias.'".');
 		}
 
 		$aClass = $this->mHandlers[$aAlias];

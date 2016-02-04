@@ -55,8 +55,8 @@ if(!CODEBOT_DEBUG_MODE) {
 header('Content-Type: application/json');
 
 // Init stuff
-Auth::init();
-Database::init();
+Codebot\Auth::init();
+Codebot\Database::init();
 
 // Check if Codebot is running in development mode
 // and it is programmed to simulate slow connections
@@ -69,16 +69,16 @@ if(CODEBOT_DEV_MODE && CODEBOT_DEV_SIMULATE_SLOW) {
 $aOut = '';
 
 // TODO: make this test an API method.
-if(!Auth::isUserAuthenticated()) {
+if(!Codebot\Auth::isUserAuthenticated()) {
 	$aOut = json_encode(array('success' => false, 'msg' => 'User is not authenticated'));
 
 } else {
 	// Create a router and add methods to it
 	// able to handle the requests.
-	$aRouter = new Router();
+	$aRouter = new Codebot\Router();
 
 	$aRouter->add('disk', 'Codebot\Endpoints\Disk');
-	$aRouter->add('project', 'Project');
+	$aRouter->add('project', 'Codebot\Endpoints\Project');
 
 	$aRouter->addConfigDefinedEndpoints();
 
