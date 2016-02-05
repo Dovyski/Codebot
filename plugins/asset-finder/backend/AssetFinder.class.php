@@ -77,11 +77,12 @@ class AssetFinder extends \Codebot\Endpoints\Base {
 		return $aRet;
 	}
 
-	public function info($theItemId) {
+	public function info(array $theParams) {
+		$aItem	= $this->getParam('item', $theParams);
 		$aRet 	= null;
 		$aQuery = Database::instance()->prepare("SELECT * FROM assets WHERE id = ?");
 
-		if ($aQuery->execute(array($theItemId))) {
+		if ($aQuery->execute(array($aItem))) {
 			$aRet 			= $aQuery->fetch(PDO::FETCH_OBJ);
 
 			$aRet->preview 	= unserialize($aRet->preview);
