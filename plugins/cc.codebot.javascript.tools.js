@@ -22,154 +22,121 @@
 */
 
 
-var JavascriptToolsCompilerOutputViewer = function(theContainer) {
-    var mContainer = theContainer;
+// Namespace for the Javascript central
+var JavascriptTools = JavascriptTools || {};
 
-    this.formatOutput = function(theData) {
-        $('#' + mContainer).html('<pre style="color: #fff; background: transparent;">' + theData + '</pre>');
-    };
+/**
+ * A plugin that enables Codebot to work with Javascript/HTML5 projects.
+ */
+JavascriptTools.Plugin = function() {
+    // Call constructor of base class
+    Codebot.Plugin.call(this);
 
-    this.showMessage = function(theText) {
-        $('#' + mContainer).html(theText);
+    this.id = 'cc.codebot.javascript.tools';
+    this.mTestWindow = null;
+};
+
+// Lovely pants-in-the-head javascript boilerplate for OOP.
+JavascriptTools.Plugin.prototype = Object.create(Codebot.Plugin.prototype);
+JavascriptTools.Plugin.prototype.constructor = JavascriptTools.Plugin;
+
+JavascriptTools.Plugin.prototype.saveProjectSettings = function(theData) {
+    var aIdeWeb         = this.context.getPlugin('cc.codebot.ide.web');
+    var aActiveProject  = aIdeWeb.getActiveProject();
+
+    console.debug('Saving project settings', theData);
+
+    aActiveProject.settings = theData;
+
+    // TODO: save the content of project settings in a regular file.
+    aIdeWeb.api('project', 'updateSettings', {project: aActiveProject.id, data: JSON.stringify(theData)}, function(theReturn) {
+        if(theReturn.success) {
+            console.debug('Project settings saved successfuly!');
+        }
+    });
+};
+
+JavascriptTools.Plugin.prototype.createTestWindow = function(theUrl, theWidth, theHeight) {
+    if(this.mTestWindow) {
+        this.mTestWindow.close();
+    }
+    this.mTestWindow = window.open(theUrl, 'Test', 'menubar=no,location=no,resizable=yes,scrollbars=no,status=no,width='+theWidth+',height=' + theHeight);
+};
+
+JavascriptTools.Plugin.prototype.initAfterProjectOpened = function(theProjectInfo) {
+    // Remove all JS stuff from the UI.
+    this.context.ui.removeButton(this.id + 'build');
+    this.context.ui.removeButton(this.id + 'settings');
+
+    // If the newly opened project is a JS one,
+    // add all the JS UI back.
+    if(theProjectInfo.type == "js") {
+        // Add build and settings buttons.
+        this.context.ui.addButton(this.id + 'build', { icon: '<i class="fa fa-circle"></i>', action: this.build });
+        this.context.ui.addButton(this.id + 'settings', { icon: '<i class="fa fa-user"></i>', panel: JavascriptTools.Panel.Settings });
     }
 };
 
+JavascriptTools.Plugin.prototype.build = function(theContext, theButton) {
+    var aTab = null,
+        aIde = this.context.getPlugin('cc.codebot.ide.web'),
+        aActiveProject = aIde.getActiveProject(),
+        aSettings = aActiveProject.settings,
+        aSelf = this;
 
-/**
- * A plugin that enables Codebot to work with AS3 projects.
- */
-var JavascriptToolsPlugin = function() {
-    const API_URL   = 'plugins/javascript-tools/api.php';
 
-    this.id         = 'cc.codebot.javascript.tools';
+    theButton.html('<i class="fa fa-refresh fa-spin"></i>');
 
-    var mSelf       = null;
-    var mContext    = null;
-    var mTestWindow = null;
+    console.log('Requesting remote build');
 
-    var saveProjectSettings = function(theData) {
-        var aIdeWeb         = mContext.getPlugin('cc.codebot.ide.web');
-        var aActiveProject  = aIdeWeb.getActiveProject();
+    aIde.api('javascript', 'build', {project: aActiveProject.id}, function(theData) {
+        console.log('Remote build received!', theData);
 
-        console.debug('Saving project settings', theData);
+        theButton.html('<i class="fa fa-play"></i>');
 
-        aActiveProject.settings = theData;
+        if(theData.success) {
+            aSelf.createTestWindow(theData.testingFileUrl, aSettings.width, aSettings.height);
 
-        // TODO: save the content of project settings in a regular file.
-        aIdeWeb.api('project', 'updateSettings', {project: aActiveProject.id, data: JSON.stringify(theData)}, function(theReturn) {
-            if(theReturn.success) {
-                console.debug('Project settings saved successfuly!');
-            }
-        });
-    };
+        } else {
+            aTab = aSelf.context.ui.tabs.add({
+                favicon: 'file-text-o', // TODO: dynamic icon?
+                title: 'Build',
+                file: 'Build.log',
+                path: 'build.log',
+                node: null,
+                editor: null
+            });
 
-    var createTestWindow = function(theUrl, theWidth, theHeight) {
-        if(mTestWindow) {
-            mTestWindow.close();
+            // TODO: make a viewer for this?
+            console.error(theData.log);
         }
-        mTestWindow = window.open(theUrl, 'Test', 'menubar=no,location=no,resizable=yes,scrollbars=no,status=no,width='+theWidth+',height=' + theHeight);
-    };
-
-    var initAfterProjectOpened = function(theProjectInfo) {
-        // Remove all JS stuff from the UI.
-        mContext.ui.removeButton(mSelf.id + 'build');
-        mContext.ui.removeButton(mSelf.id + 'settings');
-
-        // If the newly opened project is a JS one,
-        // add all the JS UI back.
-        if(theProjectInfo.type == "js") {
-            // Add build and settings buttons.
-            mContext.ui.addButton(mSelf.id + 'build', { icon: '<i class="fa fa-circle"></i>', action: mSelf.build });
-            mContext.ui.addButton(mSelf.id + 'settings', { icon: '<i class="fa fa-user"></i>', panel: mSelf.settings });
-        }
-    };
-
-    this.savePanelData = function(theContainerId, theData) {
-        console.debug('JavascriptTools::savePanelData()', theContainerId, theData);
-
-        if(theContainerId == 'js-tools-settings') {
-            saveProjectSettings(theData);
-        }
-    };
-
-    this.restorePanelData = function(theContainerId) {
-        var aIdeWeb         = mContext.getPlugin('cc.codebot.ide.web');
-        var aActiveProject  = aIdeWeb.getActiveProject();
-
-        return aActiveProject ? aActiveProject.settings : null;
-    };
-
-    this.init = function(theContext) {
-        mSelf = this;
-        mContext = theContext;
-
-        // Init everything only when a new (JS) project is opened.
-        mContext.signals.projectOpened.add(initAfterProjectOpened);
-    };
-
-    this.build = function(theContext, theButton) {
-        var aTab            = null;
-        var aIde            = mContext.getPlugin('cc.codebot.ide.web');
-        var aActiveProject  = aIde.getActiveProject();
-        var aSettings       = aActiveProject.settings;
-
-        theButton.html('<i class="fa fa-refresh fa-spin"></i>');
-
-        console.log('Requesting remote build');
-
-        aIde.api('javascript', 'build', {project: aActiveProject.id}, function(theData) {
-            console.log('Remote build received!', theData);
-
-            theButton.html('<i class="fa fa-play"></i>');
-
-            if(theData.success) {
-                createTestWindow(theData.testingFileUrl, aSettings.width, aSettings.height);
-
-            } else {
-                aTab = mContext.ui.tabs.add({
-                    favicon: 'file-text-o', // TODO: dynamic icon?
-                    title: 'Build',
-                    file: 'Build.log',
-                    path: 'build.log',
-                    node: null,
-                    editor: null
-                });
-
-                aTab.editor = new JavascriptToolsCompilerOutputViewer(aTab.container);
-                aTab.editor.formatOutput(theData.log);
-            }
-        });
-    };
-
-    this.settings = function(theContainer, theContext) {
-        var aContent = '';
-        var aPanel = new CodebotFancyPanel('Project settings');
-
-        var aFolder = aPanel.addFolder('Output', 'output');
-
-        aFolder.add('<input type="text" name="outDir" value="/bin/" />', 'Output dir');
-        aFolder.add('<input type="text" name="outFile" value="Mode.swf" />', 'Output file');
-        aFolder.add('<input type="text" name="docClass" value="src/Main.as" />', 'Doc class');
-        aFolder.add('<input type="text" name="width" value="800" />', 'Width');
-        aFolder.add('<input type="text" name="height" value="600" />', 'Height');
-
-        var aFolder = aPanel.addFolder('Classpath', 'output');
-        aFolder.add('<input type="text" name="libs" value="/libs/" />', 'Libs');
-
-        aFolder = aPanel.addFolder('SDK and Compiler', 'sdk');
-        aFolder.add('<select name="platform"><option value="player">Flash Player</option><option value="air">AIR</option></select>', 'Platform');
-        aFolder.add('<input type="text" name="swf" value="22" />', 'Version');
-        aFolder.add('<input type="text" name="other" value="/libs/" />', 'Other');
-        aFolder.add('<input type="text" name="test" value="/libs/" />', 'Test');
-        aFolder.add('<select name="thing"><option value="800">Flash Player</option></select>', 'Thing');
-
-        aContent += '<form action="#" id="js-tools-settings" data-manager="' + mSelf.id + '">';
-        aContent += aPanel.html();
-        aContent += '</form>';
-
-        theContainer.append(aContent);
-    };
-
+    });
 };
 
-CODEBOT.addPlugin(new JavascriptToolsPlugin());
+JavascriptTools.Plugin.prototype.savePanelData = function(thePanel, theData) {
+    console.debug('JavascriptTools::savePanelData()', theData);
+
+    if(thePanel instanceof JavascriptTools.Panel.Settings) {
+        this.saveProjectSettings(theData);
+    }
+};
+
+JavascriptTools.Plugin.prototype.getPanelData = function(theContainerId) {
+    var aIdeWeb         = this.context.getPlugin('cc.codebot.ide.web');
+    var aActiveProject  = aIdeWeb.getActiveProject();
+
+    return aActiveProject ? aActiveProject.settings : null;
+};
+
+JavascriptTools.Plugin.prototype.init = function(theContext) {
+    // Call super class init method.
+    Codebot.Plugin.prototype.init.call(this, theContext);
+    console.debug('JavascriptTools.Plugin:init()');
+
+    // Load all required scripts
+    this.context.loadScript('./plugins/javascript-tools/js/panel.settings.js');
+    // Init everything only when a new (JS) project is opened.
+    this.context.signals.projectOpened.add(this.initAfterProjectOpened, this);
+};
+
+CODEBOT.addPlugin(new JavascriptTools.Plugin());
