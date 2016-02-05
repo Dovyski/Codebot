@@ -49,9 +49,11 @@ JavascriptTools.Plugin.prototype.saveProjectSettings = function(theData) {
     aActiveProject.settings = theData;
 
     // TODO: save the content of project settings in a regular file.
-    aIdeWeb.api('project', 'updateSettings', {project: aActiveProject.id, data: JSON.stringify(theData)}, function(theReturn) {
+    aIdeWeb.api('project', 'update', {id: aActiveProject.id, settings: JSON.stringify(theData)}, function(theReturn) {
         if(theReturn.success) {
             console.debug('Project settings saved successfuly!');
+        } else {
+            console.warn('Unable to save project settings: ' + theReturn.msg);
         }
     });
 };
