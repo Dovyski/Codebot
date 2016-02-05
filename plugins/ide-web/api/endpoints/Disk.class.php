@@ -31,7 +31,7 @@ class Disk extends Base {
 	);
 
 	private function realPath($theMount = '') {
-		return CODEBOT_DISK_WORK_POOL . \Utils::escapePath($theMount) . ($theMount != '' ? DIRECTORY_SEPARATOR : '');
+		return CODEBOT_DISK_WORK_POOL . \Codebot\Utils::escapePath($theMount) . ($theMount != '' ? DIRECTORY_SEPARATOR : '');
 	}
 
 	private function listDirectory($theDir, $thePrettyDir = '') {
@@ -70,7 +70,7 @@ class Disk extends Base {
 		$aMount = $this->getParam('mount', $theParams);
 		$aPath 	= $this->getParam('path', $theParams);
 
-		$aPath  = $this->realPath($aMount) . Utils::escapePath($aPath);
+		$aPath  = $this->realPath($aMount) . \Codebot\Utils::escapePath($aPath);
 
 		mkdir($aPath, 0755, true);
 
@@ -82,7 +82,7 @@ class Disk extends Base {
 		$aPath 	= $this->getParam('path', $theParams);
 		$aData 	= $this->getParam('data', $theParams);
 
-		$aPath = $this->realPath($aMount) . Utils::escapePath($aPath);
+		$aPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aPath);
 		$aData = $aData == null && isset($_FILES['file']) ? file_get_contents($_FILES['file']['tmp_name']) : $aData;
 
 		file_put_contents($aPath, $aData);
@@ -94,7 +94,7 @@ class Disk extends Base {
 		$aMount = $this->getParam('mount', $theParams);
 		$aPath 	= $this->getParam('path', $theParams);
 
-		$aPath = $this->realPath($aMount) . Utils::escapePath($aPath);
+		$aPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aPath);
 		$aOut = file_get_contents($aPath);
 
 		return $aOut;
@@ -105,8 +105,8 @@ class Disk extends Base {
 		$aOld 	= $this->getParam('old', $theParams);
 		$aNew 	= $this->getParam('new', $theParams);
 
-		$aOldPath = $this->realPath($aMount) . Utils::escapePath($aOld);
-		$aNewPath = $this->realPath($aMount) . Utils::escapePath($aNew);
+		$aOldPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aOld);
+		$aNewPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aNew);
 
 		rename($aOldPath, $aNewPath);
 
@@ -117,7 +117,7 @@ class Disk extends Base {
 		$aMount = $this->getParam('mount', $theParams);
 		$aPath 	= $this->getParam('path', $theParams);
 
-		$aPath = $this->realPath($aMount) . Utils::escapePath($aPath);
+		$aPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aPath);
 
 		if(is_dir($aPath)) {
 			rmdir($aPath);
