@@ -39,7 +39,7 @@ class Base {
 		$aRet = null;
 
 		if(isset($theParams[$theName])) {
-			if(!empty($theParams[$theName])) {
+			if(isset($theParams[$theName]) && $theParams[$theName] !== '') {
 				$aRet = $theParams[$theName];
 			} else {
 				throw new \Exception('Empty param: ' . $theName);

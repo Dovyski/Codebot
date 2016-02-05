@@ -22,7 +22,12 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-class AssetFinder {
+use \Codebot\Database;
+use \Codebot\Project;
+use \Codebot\Disk;
+use \Codebot\Utils;
+
+class AssetFinder extends \Codebot\Endpoints\Base {
 	private function expandItemURLs($theAssetObject) {
 		if(property_exists($theAssetObject, 'thumbnail')) {
 			$theAssetObject->thumbnail = CODEBOT_ASSET_FINDER_MIRROR_URL . $theAssetObject->thumbnail;
@@ -46,22 +51,25 @@ class AssetFinder {
 		return $theAssetObject;
 	}
 
-	public function search($theQuery, $theLicenses, $theStart, $theLimit) {
-		$theStart = (int)$theStart;
-		$theLimit = (int)$theLimit;
-		$theQuery = '%' . $theQuery . '%';
+	public function search(array $theParams) {
+		$aQuery = $this->getParam('query', $theParams);
+		$aLicenses = $this->getParam('license', $theParams);
+		$aStart = (int)$this->getParam('start', $theParams);
+		$aLimit  = (int)$this->getParam('limit', $theParams);
+
+		$aQuery = '%' . $aQuery . '%';
 
 		$aRet = array(
 			'success' => true,
-			'start' => $theStart,
-			'limit' => $theLimit,
+			'start' => $aStart,
+			'limit' => $aLimit,
 			'items'	=> array()
 		);
 
-		$aQuery = Database::instance()->prepare("SELECT id, title, thumbnail FROM assets WHERE title LIKE ? AND (license & ?) <> 0 LIMIT " . $theStart . "," . $theLimit);
+		$aDbQuery = Database::instance()->prepare("SELECT id, title, thumbnail FROM assets WHERE title LIKE ? AND (license & ?) <> 0 LIMIT " . $aStart . "," . $aLimit);
 
-		if ($aQuery->execute(array($theQuery, $theLicenses))) {
-			while($aRow = $aQuery->fetch(PDO::FETCH_OBJ)) {
+		if ($aDbQuery->execute(array($aQuery, $aLicenses))) {
+			while($aRow = $aDbQuery->fetch(PDO::FETCH_OBJ)) {
 				$aRet['items'][] = $this->expandItemURLs($aRow);
 			}
 		}
@@ -88,7 +96,7 @@ class AssetFinder {
 	}
 
 	private function resolveFileSystemPath($theProjectId, $theFolder) {
-		$aUser = User::getById(Auth::getAuthenticatedUserId());
+		$aUser = $this->getUser();
 
 		if($aUser == null) {
 			throw new Exception('Invalid project owner');

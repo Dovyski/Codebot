@@ -48,35 +48,45 @@ AssetFinder.Panel.Main.prototype = Object.create(Codebot.Panel.prototype);
 AssetFinder.Panel.Main.prototype.constructor = AssetFinder.Panel.Main;
 
 AssetFinder.Panel.Main.prototype.render = function() {
-    var aSelf = this;
-
     Codebot.Panel.prototype.render.call(this);
 
     this.divider('Search');
     this.row(
-        '<input type="text" name="query" value="" placeholder="E.g. zombie" style="width: 75%; margin-right: 5px;" />' +
-        '<button id="af-search" style="width: 20%;"><i class="fa fa-search"></i></button>'
-    );
-
-    this.divider('Options');
-    this.pair('License', this.generateLicensesSelection());
-    this.pair('Type', this.generateLicensesSelection());
-    this.row(
+        '<input type="text" name="query" id="af-query" value="" placeholder="E.g. zombie" style="width: 75%; margin-right: 5px;" />' +
+        '<button id="af-search" style="width: 20%;"><i class="fa fa-search"></i></button>' +
         '<input type="hidden" name="start" value="0">' +
         '<input type="hidden" name="limit" value="50">'
     );
 
+    this.divider('Options');
+    this.pair('License', this.generateLicensesSelection());
+    this.pair('Type', '<select><option>Test</option></select>');
+
     this.divider('Results');
     this.row('<div id="af-browse-area">Nothing to show yet.</div>');
 
-    $('#af-search').click(function() { aSelf.doSearch(); });
+    this.initUI();
+};
+
+AssetFinder.Panel.Main.prototype.initUI = function() {
+    var aSelf = this;
+
+    $('#af-search').click(function() {
+        aSelf.doSearch();
+    });
+
+    $('#af-query').keypress(function(theEvent) {
+        if(theEvent.which == 13) {
+            aSelf.doSearch();
+        }
+    });
 
     // TODO: improve this.
     $("#af-browse-area").scroll(function() {
         var aHasReachedBottom = $(this)[0].scrollHeight - $(this).scrollTop() <= $(this).outerHeight();
 
         if(aHasReachedBottom) {
-            loadMoreSearchResults();
+            aSelf.loadMoreSearchResults();
         }
     });
 };
