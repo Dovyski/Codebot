@@ -28,26 +28,28 @@ use Codebot\User;
 use Codebot\Auth;
 use Codebot\Database;
 use Codebot\Disk;
+use Codebot\Utils;
 use Exception;
 
 class Project extends Base {
-	public function create($theType, $theGitRepo, $theTemplate, $theName, $theVisibility) {
+	public function create(array $theParams) {
+		$aType 		 = $this->getParam('type', $theParams);
+		$aGitRepo 	 = $this->getParam('git-repo', $theParams, false, true);
+		$aTemplate	 = $this->getParam('template', $theParams);
+		$aName 		 = $this->getParam('name', $theParams);
+		$aVisibility = $this->getParam('visibility', $theParams);
+
 		$aData = array(
-			'name' 		=> $theName,
-			'type'		=> $theType,
-			'template'	=> $theTemplate,
-			'git-repo'	=> $theGitRepo,
+			'name' 		=> $aName,
+			'type'		=> $aType,
+			'template'	=> $aTemplate,
+			'git-repo'	=> $aGitRepo
 		);
 
-		$aUser = User::getById(Auth::getAuthenticatedUserId());
-
-		if($aUser == null) {
-			throw new Exception('Invalid project owner');
-		}
-
+		$aUser = self::getUser();
 		$aProject = self::instantiate($aUser, $aData);
 
-		return array('success' => true, 'project' => $aProject, 'msg' => '');
+		return array('success' => true, 'project' => $aProject);
 	}
 
 	public function findTypesAndTemplates() {
@@ -74,10 +76,10 @@ class Project extends Base {
 	}
 
 	public function search() {
-		$aUser = User::getById(Auth::getAuthenticatedUserId());
+		$aUser = self::getUser();
 
 		$aProjects = \Codebot\Project::findByUser($aUser);
-		return array('success' => true, 'msg' => '', 'projects' => $aProjects);
+		return array('success' => true, 'projects' => $aProjects);
 	}
 
 	public function delete($theId) {
@@ -90,12 +92,7 @@ class Project extends Base {
 	public function open(array $theParams) {
 		$aId = $this->getParam('id', $theParams);
 
-		$aUser = User::getById(Auth::getAuthenticatedUserId());
-
-		if($aUser == null) {
-			throw new Exception('Invalid project owner');
-		}
-
+		$aUser = self::getUser();
 		$aProject = \Codebot\Project::getById($aId, true);
 
 		if($aProject == null) {
@@ -124,25 +121,29 @@ class Project extends Base {
 		$aName 		= @$theData['name'];
 		$aType 		= @$theData['type'];
 		$aTemplate 	= isset($theData['template']) ? $theData['template'] : 'empty';
-		$aPath 		= preg_replace("/[^a-zA-Z0-9]+/", "", $aName) . time();
+		$aNameClean = preg_replace('/[^a-zA-Z0-9]+/', '', $aName) . time();
 
 		if(strlen($aName) < 1) {
 			throw new Exception('Invalid project name');
 		}
 
+		// TODO: check for valid project types
 		if(empty($aType)) {
 			throw new Exception('Invalid project type');
 		}
 
 		// Create physical folders and stuff
-		$aFileSystemPath = Disk::createProjectDir($theUser->disk, $aPath);
+		$aDisk = new Disk($theUser->disk);
+		$aDisk->mkdir($aNameClean);
+
+		$aFileSystemPath = $aDisk->getFileSystemPath($aNameClean) . DIRECTORY_SEPARATOR;
 
 		$aRet 					= new \Codebot\Project();
 		$aRet->id 				= null;
 		$aRet->fk_user 			= $aFkUser;
 		$aRet->name 			= $aName;
 		$aRet->type 			= $aType;
-		$aRet->path 			= $aPath;
+		$aRet->path 			= $aNameClean;
 		$aRet->creation_time 	= time();
 		$aRet->settings 		= self::initBasedOnTemplate($aFileSystemPath, $aTemplate, $theData);
 
@@ -171,6 +172,16 @@ class Project extends Base {
 		}
 
 		return $aTemplateSettings;
+	}
+
+	private static function getUser() {
+		$aUser = User::getById(Auth::getAuthenticatedUserId());
+
+		if($aUser == null) {
+			throw new Exception('Invalid project owner');
+		}
+
+		return $aUser;
 	}
 
 	public function update($theProjectId, $theData) {
