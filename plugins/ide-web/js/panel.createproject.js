@@ -125,9 +125,6 @@ IdeWeb.Panel.CreateProject.prototype.generateTemplatesList = function(theType) {
 
     // All types have a bult-in git template.
     aContent =
-        '<div id="project-git-repo-panel" class="c">' +
-            '<i class="fa fa-code-fork fa-2x"></i> <input type="text" name="git-repo" id="project-git-repo" placeholder="https://github.com/User/proj.git">' +
-        '</div>'+
         '<a href="javascript:void(0)" data-template="git">' +
             '<div class="project-template">' +
                 '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview"><br />' +
