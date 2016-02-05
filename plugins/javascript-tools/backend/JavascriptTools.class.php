@@ -22,22 +22,23 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-class JavascriptTools {
-	public function build($theProjectId) {
+use \Codebot\Project;
+use \Codebot\Disk;
+use \Codebot\Utils;
+
+class JavascriptTools extends \Codebot\Endpoints\Base {
+	public function build(array $theParams) {
+		$aProjectId = $this->getParam('project', $theParams);
+
 		$aReturn 	= array();
-		$aProject 	= Project::getById($theProjectId, true);
+		$aProject 	= Project::getById($aProjectId, true);
 		$aUser 		= null;
 
 		if($aProject == null) {
 			throw new Exception('Unknown project with id ' . $theProjectId);
 		}
 
-		$aUser = User::getById($aProject->fk_user);
-
-		if($aUser == null) {
-			throw new Exception('Invalid user');
-		}
-
+		$aUser = $this->getUser();
 		$aReturn = $this->compile($aProject, $aUser);
 
 		if($aReturn['success']) {
@@ -80,10 +81,10 @@ class JavascriptTools {
 		$aWidth 	= property_exists($aSettings, 'width') 		? $aSettings->width 		: 640;
 		$aHeight 	= property_exists($aSettings, 'height') 	? $aSettings->height 		: 480;
 		$aOutDir 	= property_exists($aSettings, 'outDir') 	? $aSettings->outDir 		: '/';
-		$aOutFile 	= property_exists($aSettings, 'outFile') 	? $aSettings->outFile 		: 'Mode.swf';
+		$aOutFile 	= property_exists($aSettings, 'outFile') 	? $aSettings->outFile 		: 'index.html';
 
-		$aDisk		= new Disk();
-		$aMount		= $aDisk->dirPath($theUser->disk, $theProject->path);
+		$aDisk		= new Disk($theUser->disk);
+		$aMount		= $aDisk->getFileSystemPath($theProject->path) . DIRECTORY_SEPARATOR;
 
 		$aReturn = array(
 			'success' 	=> true,

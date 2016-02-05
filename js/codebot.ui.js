@@ -67,6 +67,7 @@ var CodebotUI = function() {
         icon: string,
         action: function (func(context, button_as_jquery_obj))
         position: string ('top' or 'bottom')
+		context: obj (where to point the 'this' of the callback being invoked)
     }
      */
 	this.addButton = function(theId, theOptions) {
@@ -96,7 +97,7 @@ var CodebotUI = function() {
 				var aIndex = $(this).data('button-id');
 
 	            if('action' in mButtons[aIndex]) {
-	                mButtons[aIndex].action(mCodebot, $(this));
+	                mButtons[aIndex].action.call(mButtons[aIndex].context || this, mCodebot, $(this));
 
 	            } else if('panel' in mButtons[aIndex]) {
 	                mSlidePanel.open(mButtons[aIndex].panel);

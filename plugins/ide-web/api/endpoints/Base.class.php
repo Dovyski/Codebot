@@ -50,6 +50,23 @@ class Base {
 
 		return $aRet;
 	}
+
+	/**
+	 * Gets the user the is invoking the API call. This method
+	 * throws an exception is the current user cannot be identified,
+	 * e.g. unauthenticated call.
+	 *
+	 * @return [\Codebot\User] An object describing the user.
+	 */
+	public function getUser() {
+		$aUser = \Codebot\User::getById(\Codebot\Auth::getAuthenticatedUserId());
+
+		if($aUser == null) {
+			throw new Exception('Invalid project owner');
+		}
+
+		return $aUser;
+	}
 }
 
 ?>

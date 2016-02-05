@@ -46,7 +46,7 @@ class Project extends Base {
 			'git-repo'	=> $aGitRepo
 		);
 
-		$aUser = self::getUser();
+		$aUser = $this->getUser();
 		$aProject = self::instantiate($aUser, $aData);
 
 		return array('success' => true, 'project' => $aProject);
@@ -76,7 +76,7 @@ class Project extends Base {
 	}
 
 	public function search() {
-		$aUser = self::getUser();
+		$aUser = $this->getUser();
 
 		$aProjects = \Codebot\Project::findByUser($aUser);
 		return array('success' => true, 'projects' => $aProjects);
@@ -92,7 +92,7 @@ class Project extends Base {
 	public function open(array $theParams) {
 		$aId = $this->getParam('id', $theParams);
 
-		$aUser = self::getUser();
+		$aUser = $this->getUser();
 		$aProject = \Codebot\Project::getById($aId, true);
 
 		if($aProject == null) {
@@ -174,28 +174,16 @@ class Project extends Base {
 		return $aTemplateSettings;
 	}
 
-	private static function getUser() {
-		$aUser = User::getById(Auth::getAuthenticatedUserId());
+	public function update(array $theParams) {
+		$aId = $this->getParam('id', $theParams);
+		$aSettings = $this->getParam('settings', $theParams, true, true);
 
-		if($aUser == null) {
-			throw new Exception('Invalid project owner');
-		}
-
-		return $aUser;
-	}
-
-	public function update($theProjectId, $theData) {
-		$aRet  = array();
-		$aUser = User::getById(Auth::getAuthenticatedUserId());
-
-		if($aUser == null) {
-			throw new Exception('Invalid project owner');
-		}
+		$aUser = $this->getUser();
 
 		$aQuery = Database::instance()->prepare("UPDATE projects SET settings = ? WHERE id = ? AND fk_user = ?");
+		$aQuery->execute(array($aSettings, $aId, $aUser->id));
 
-		$aQuery->execute(array($theData, $theProjectId, $aUser->id));
-		return $aQuery->rowCount() != 0;
+		return array('success' => $aQuery->rowCount() != 0);
 	}
 }
 
