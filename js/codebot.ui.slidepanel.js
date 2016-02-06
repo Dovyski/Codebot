@@ -78,10 +78,10 @@ var CodebotSlidePanel = function() {
                 thePanel.restore(aData);
 
                 // Emit some debug message so it's easier to track what is going on
-                console.debug('Data restored to panel ' + thePanel.title + ' from plugin ' + thePanel.dataManager, aData);
+                console.debug('Data restored to panel "' + thePanel.title + '" from plugin ' + thePanel.dataManager, aData);
 
             } else {
-                console.debug('No data to be restored to panel ' + thePanel.title + ' from plugin ' + thePanel.dataManager);
+                console.debug('No data to be restored to panel "' + thePanel.title + '" from plugin ' + thePanel.dataManager);
             }
         }
     };
@@ -104,10 +104,10 @@ var CodebotSlidePanel = function() {
                 aPlugin.savePanelData(aPanel, aPanel.getData());
 
                 // Emit some debug message so it's easier to track what is going on
-                console.debug('Panel ' + aPanel.title + ' just persisted data to plugin ' + aPanel.dataManager, aPanel.getData());
+                console.debug('Panel "' + aPanel.title + '" just persisted data to plugin ' + aPanel.dataManager, aPanel.getData());
 
             } else {
-                console.debug('Panel ' + aPanel.title + ' asked to persist data, but plugin ' + aPanel.dataManager + ' has no savePanelData() method.');
+                console.debug('Panel "' + aPanel.title + '" asked to persist data, but plugin ' + aPanel.dataManager + ' has no savePanelData() method.');
             }
         }
     };
