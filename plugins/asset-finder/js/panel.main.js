@@ -58,7 +58,7 @@ AssetFinder.Panel.Main.prototype.render = function() {
         '<input type="hidden" name="limit" value="50">'
     );
 
-    this.divider('Options');
+    this.divider('Filters');
     this.pair('License', this.generateLicensesSelection());
     this.pair('Type', '<select><option>Test</option></select>');
 
@@ -72,12 +72,12 @@ AssetFinder.Panel.Main.prototype.initUI = function() {
     var aSelf = this;
 
     $('#af-search').click(function() {
-        aSelf.doSearch();
+        aSelf.search();
     });
 
     $('#af-query').keypress(function(theEvent) {
         if(theEvent.which == 13) {
-            aSelf.doSearch();
+            aSelf.search();
         }
     });
 
@@ -120,7 +120,7 @@ AssetFinder.Panel.Main.prototype.showItemInfo = function(theItemId) {
     }, this);
 };
 
-AssetFinder.Panel.Main.prototype.doSearch = function() {
+AssetFinder.Panel.Main.prototype.search = function() {
     var i, aContent = '', aIde, aSelf = this;
 
     aIde = this.getContext().getPlugin('cc.codebot.ide.web');

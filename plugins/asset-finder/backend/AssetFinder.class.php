@@ -53,7 +53,7 @@ class AssetFinder extends \Codebot\Endpoints\Base {
 
 	public function search(array $theParams) {
 		$aQuery = $this->getParam('query', $theParams);
-		$aLicenses = $this->getParam('license', $theParams);
+		$aLicenses = (int)$this->getParam('license', $theParams);
 		$aStart = (int)$this->getParam('start', $theParams);
 		$aLimit  = (int)$this->getParam('limit', $theParams);
 
@@ -98,11 +98,6 @@ class AssetFinder extends \Codebot\Endpoints\Base {
 
 	private function resolveFileSystemPath($theProjectId, $theFolder) {
 		$aUser = $this->getUser();
-
-		if($aUser == null) {
-			throw new Exception('Invalid project owner');
-		}
-
 		$aProject = Project::getById($theProjectId, true);
 
 		if($aProject == null) {
@@ -118,8 +113,8 @@ class AssetFinder extends \Codebot\Endpoints\Base {
 			$theFolder = substr($theFolder, 1);
 		}
 
-		$aDisk = new Disk();
-		$aPath = $aDisk->dirPath($aUser->disk, $aProject->path, $theFolder);
+		$aDisk = new Disk($aUser->disk);
+		$aPath = $aDisk->getFileSystemPath($aProject->path . DIRECTORY_SEPARATOR . $theFolder . DIRECTORY_SEPARATOR);
 
 		return $aPath;
 	}
