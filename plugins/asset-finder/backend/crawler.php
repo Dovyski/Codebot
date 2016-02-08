@@ -29,16 +29,24 @@
  * assets finder plugin.
  */
 
-@include_once dirname(__FILE__).'/../../config.local.php';
-include_once dirname(__FILE__).'/../../config.php';
+@include_once dirname(__FILE__).'/../../ide-web/config.local.php';
+include_once dirname(__FILE__).'/../../ide-web/config.php';
 
-require_once dirname(__FILE__).'/../Database.class.php';
-require_once dirname(__FILE__).'/../Utils.class.php';
+require_once dirname(__FILE__).'/../../ide-web/api/inc/Database.class.php';
+require_once dirname(__FILE__).'/../../ide-web/api/inc/Utils.class.php';
+
 require_once dirname(__FILE__) . '/3rdparty/querypath/qp.php';
+
+// TODO: check authentication before running this script.
+// TODO: make this file json compliant (to be served from AJAX)
+
+use \Codebot\Utils;
+use \Codebot\Database;
 
 Database::init();
 
-$aInfo		= parse_url($_REQUEST['url']);
+$aURL		= $_REQUEST['url'];
+$aInfo		= parse_url($aURL);
 $aChannel	= $aInfo['host'];
 
 $aQp 		= htmlqp($_REQUEST['url']);
@@ -96,7 +104,7 @@ foreach($aFiles as $aIndex => $aFile) {
 }
 
 // TODO: check for duplicates before inserting anything.
-$aQuery = Database::instance()->prepare("INSERT INTO assets (title, author, channel, license, thumbnail, preview, files, description, attribution) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$aQuery->execute(array($aTitle, $aAuthor, $aChannel, 1, $aPreviews[0], serialize($aPreviews), serialize($aFiles), $aDescription, 'Atrribution: '));
+$aQuery = Database::instance()->prepare("INSERT INTO assets (title, author, url, channel, license, thumbnail, preview, files, description, attribution) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$aQuery->execute(array($aTitle, $aAuthor, $aURL, $aChannel, 1, $aPreviews[0], serialize($aPreviews), serialize($aFiles), $aDescription, 'Atrribution: '));
 
 ?>

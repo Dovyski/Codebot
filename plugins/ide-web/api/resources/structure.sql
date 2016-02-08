@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 22, 2015 at 06:38 PM
+-- Generation Time: Feb 08, 2016 at 08:35 AM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `assets` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `author` varchar(80) NOT NULL,
+  `url` varchar(255) NOT NULL,
   `channel` varchar(255) NOT NULL,
   `license` int(10) unsigned NOT NULL,
   `thumbnail` varchar(255) NOT NULL,
