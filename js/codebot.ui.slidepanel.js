@@ -204,6 +204,11 @@ var CodebotSlidePanel = function() {
     };
 
     this.close = function() {
+        if(mCurrentPanel == null) {
+            // Nothing to close here...
+            return;
+        }
+
         savePersistentPanelData();
 
         slideElement('content', 0);

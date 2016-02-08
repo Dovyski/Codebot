@@ -45,6 +45,16 @@ var CodebotUI = function() {
 		return theId.replace(/[^a-zA-Z0-9-]+/g, '-');
 	};
 
+	var monitorClicksInsideContentAreas = function() {
+		document.getElementById('content').addEventListener('click', function(theEvent) {
+			// Let everybody know that a content area was clicked.
+			mCodebot.signals.contentAreaClicked.dispatch([theEvent.target]);
+
+			// Close any open sliding panel.
+			mSlidePanel.close();
+		});
+	};
+
     // TODO: implement a pretty confirm dialog/panel
     this.confirm = function(theMessage) {
         mSelf.showDialog({
@@ -189,6 +199,10 @@ var CodebotUI = function() {
         mSelf.addButton('cc.codebot.ui.preferences', {icon: '<i class="fa fa-cog"></i>', position: 'bottom', panel: mPreferences.main});
 
         // TODO: read data from disk, using last open directory.
+
+		// If the user clicks any of the content areas (tabs, files panel, etc),
+		// close any open sliding panel.
+		monitorClicksInsideContentAreas();
 
         // Ugly hack to achieve 100% height.
         $(window).resize(function() {

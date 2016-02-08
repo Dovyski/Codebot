@@ -86,4 +86,9 @@ var CodebotSignals = function() {
      * TODO: add docs.
      */
     this.filesPanelItemDoubleClicked = new CodebotSignal();
+
+    /**
+     * TODO: add docs.
+     */
+    this.contentAreaClicked = new CodebotSignal();
 };
