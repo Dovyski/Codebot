@@ -130,11 +130,21 @@ class Disk {
 	/**
 	 * Gets the real filesystem path for this disk or any of its files/folders.
 	 *
-	 * @param  string $theNode A file/folder in the disk whose real file system path will be returned. If nothing is specified (default), the method assumes that node is the root of the disk.
+	 * @param  {mixed} $theNode If <code>string</code> value is provided, it represents a file/folder in the disk whose real file system path will be returned. If an <code>array</code> is provived, it represents the path until the file/folder, e.g. <code>['a', 'b', 'c.txt']</code> means <code>'filesystem/a/b/c.txt'</code>. If nothing is specified (default), the method assumes that file/node is the root of the disk.
 	 * @return {string} The real filesystem path of this disk (or any or its files/folders), e.g. <code>/tmp/data/098f6bcd4621d373cade4e832627b4f6</code>
 	 */
 	public function getFileSystemPath($theNode = '') {
-		return $this->realPath($theNode);
+		$aRet = Utils::removeAnySlashAtEnd($this->mMount);
+
+		if(is_array($theNode)) {
+			foreach($theNode as $aPart) {
+				$aRet .= DIRECTORY_SEPARATOR . Utils::escapePath($aPart);
+			}
+		} else {
+ 			$aRet .= Utils::escapePath($theNode);
+		}
+
+		return $aRet;
 	}
 
 	/**

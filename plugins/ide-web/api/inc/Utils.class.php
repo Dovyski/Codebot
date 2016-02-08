@@ -78,6 +78,24 @@ class Utils {
 
 		return $aData;
 	}
+
+	public static function removeAnySlashAtEnd($theString) {
+		$aLastChar = $theString[strlen($theString) - 1];
+
+		if($aLastChar == '/' || $aLastChar == '\\') {
+			$theString = substr($theString, 0, -1);
+		}
+
+		return $theString;
+	}
+
+	public static function removeAnySlashAtStart($theString) {
+		if($theString[0] == '/' || $theString[0] == '\\') {
+			$theString = substr($theString, 1);
+		}
+
+		return $theString;
+	}
 }
 
 ?>

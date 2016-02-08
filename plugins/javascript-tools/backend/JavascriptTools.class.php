@@ -58,6 +58,7 @@ class JavascriptTools extends \Codebot\Endpoints\Base {
 		$aTestingPath .= DIRECTORY_SEPARATOR . $theCompilationInfo['outDir'];
 		@mkdir($aTestingPath);
 
+		// TODO: replace with Utils::removeAnySlashFromEnd()
 		// Remove any slash from the end of the string, otherwise the
 		// 'cp' command will go nuts.
 		$aLastChar = $aTestingPath[strlen($aTestingPath) - 1];

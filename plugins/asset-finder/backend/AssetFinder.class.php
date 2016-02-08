@@ -105,23 +105,23 @@ class AssetFinder extends \Codebot\Endpoints\Base {
 			throw new Exception('The user is not allowed to view the project');
 		}
 
-		// Remove any / or \ at the begining of the destination folder.
-		if($theFolder[0] == '/' || $theFolder[0] == '\\') {
-			$theFolder = substr($theFolder, 1);
-		}
-
+		$theFolder = Utils::removeAnySlashAtEnd($theFolder);
 		$aDisk = new Disk($aUser->disk);
-		$aPath = $aDisk->getFileSystemPath($aProject->path . DIRECTORY_SEPARATOR . $theFolder . DIRECTORY_SEPARATOR);
+		$aPath = $aDisk->getFileSystemPath(array($aProject->path, $theFolder));
 
 		return $aPath;
 	}
 
-	public function fetch($theItemId, $theProjectId, $theDestinationPath) {
-		$aRet 	= array();
-		$aItem	= $this->info($theItemId);
+	public function fetch(array $theParams) {
+		$aItemId 		  = $this->getParam('item', $theParams);
+		$aProjectId 	  = $this->getParam('project', $theParams);
+		$aDestinationPath = $this->getParam('destination', $theParams);
+		$aRet 			  = array();
+
+		$aItem = $this->info($theParams);
 
 		if($aItem != null) {
-			$aRealPath = $this->resolveFileSystemPath($theProjectId, $theDestinationPath);
+			$aRealPath = $this->resolveFileSystemPath($aProjectId, $aDestinationPath);
 
 			if(count($aItem->files) > 0) {
 				$aRet['downloaded'] = array();
@@ -131,7 +131,7 @@ class AssetFinder extends \Codebot\Endpoints\Base {
 					$aData 			= Utils::downloadFile($aFile['url']);
 					$aDestination 	= $aRealPath . $aFile['name'];
 
-					Utils::log('Downloaded "'.$aFile['url'].'" to "'.$aDestination.'"', $theLabel = 'AssetFinder', __LINE__);
+					Utils::log('Downloaded "'.$aFile['url'].'" to "'.$aDestination.'"', 'AssetFinder', __LINE__);
 
 					$aLocalFile = @fopen($aDestination, 'w+');
 
@@ -139,14 +139,14 @@ class AssetFinder extends \Codebot\Endpoints\Base {
 						$aRet['success'] = true;
 						$aRet['downloaded'][] = array(
 							'name' => $aFile['name'],
-							'path' => $theDestinationPath . DIRECTORY_SEPARATOR . $aFile['name']
+							'path' => $aDestinationPath . DIRECTORY_SEPARATOR . $aFile['name']
 						);
 
 						fclose($aLocalFile);
 
 					} else {
 						$aRet['error'] = true;
-						$aRet['message'] = 'Unable to write to file in folder ' . $theDestinationPath;
+						$aRet['message'] = 'Unable to write to file in folder ' . $aDestinationPath;
 					}
 				}
 			} else {
