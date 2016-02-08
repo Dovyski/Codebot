@@ -167,6 +167,10 @@ span.fancytree-node.fancytree-selected:hover {
     background-color: #444;
     border-color: #444;
 }
+.fancytree-container.fancytree-treefocus {
+    border: none;
+    outline: none;
+}
 
 /*
 -----------------------------------------------------
