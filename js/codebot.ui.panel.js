@@ -212,6 +212,23 @@ Codebot.Panel.prototype.destroy = function() {
 };
 
 /**
+ * Invoked by the panel manager when this panel is about to be suspended (paused).
+ * It usually happens when the panel is active and the panel manager is told to
+ * close (slide in) itself, without destroying its content. A paused panel
+ * can be resumed by the panel manager, if it is ever openned (slide out) again.
+ */
+Codebot.Panel.prototype.pause = function() {
+};
+
+/**
+ * Invoked by the panel manager when this panel is about to be resumed from a
+ * paused state. Usually the panel should come back to the exact state it was
+ * before being paused.
+ */
+Codebot.Panel.prototype.resume = function() {
+};
+
+/**
  * Obtains the data from all form elements in the panel and returns
  * them in the format <code>name=value&name2=value2...</code>
  *
@@ -272,6 +289,9 @@ Codebot.Panel.prototype.restore = function(theData) {
  */
 Codebot.Panel.prototype.empty = function() {
 	this.container.empty();
+
+	// Restore the title section
+	this.addToDom({'type': 'title', 'title': this.title});
 };
 
 /**

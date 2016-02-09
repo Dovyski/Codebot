@@ -110,7 +110,7 @@ AssetFinder.Panel.Main.prototype.showItemInfo = function(theItemId) {
 
     // Initialize the panel that displays infos about a clicked asset.
     $('body').append('<div id="af-item-description" style="display: none; position: absolute; top:0; right: 333px; width: 600px; height: 100%; background: #3d3d3d; overflow: hidden;"></div>');
-    this.infoPanel = new AssetFinder.Panel.Info('Info', 'af-item-description');
+    this.infoPanel = new AssetFinder.Panel.Info('Asset information', 'af-item-description');
     this.infoPanel.context = this.context;
 
     aIde = this.context.getPlugin('cc.codebot.ide.web');
@@ -142,9 +142,30 @@ AssetFinder.Panel.Main.prototype.search = function() {
     });
 };
 
+AssetFinder.Panel.Main.prototype.destroy = function() {
+    if(this.infoPanel) {
+        this.infoPanel.destroy();
+    }
+    Codebot.Panel.prototype.destroy.call(this);
+};
+
 AssetFinder.Panel.Main.prototype.close = function() {
-    this.infoPanel.destroy();
+    this.destroy();
     Codebot.Panel.prototype.close.call(this);
+};
+
+AssetFinder.Panel.Main.prototype.pause = function() {
+    if(this.infoPanel) {
+        this.infoPanel.pause();
+    }
+    Codebot.Panel.prototype.pause.call(this);
+};
+
+AssetFinder.Panel.Main.prototype.resume = function() {
+    if(this.infoPanel) {
+        this.infoPanel.resume();
+    }
+    Codebot.Panel.prototype.resume.call(this);
 };
 
 AssetFinder.Panel.Main.prototype.loadMoreSearchResults = function() {

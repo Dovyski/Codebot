@@ -196,6 +196,10 @@ var CodebotSlidePanel = function() {
             }
         }
 
+        if(mCurrentPanel) {
+            mCurrentPanel.destroy();
+        }
+
         clearStates();
         mSelf.pushState(aInstance);
 
@@ -210,6 +214,7 @@ var CodebotSlidePanel = function() {
         }
 
         savePersistentPanelData();
+        mCurrentPanel.pause();
 
         slideElement('content', 0);
         slideElement('config-dialog', 0);

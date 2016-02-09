@@ -70,12 +70,16 @@ AssetFinder.Panel.Info.prototype.renderFromData = function(theItemId, theData) {
     this.row('<i class="fa fa-folder-open"></i> <select id="assetDestinationDir" style="width: 70%;"><option value="/">/</option>'+aFoldersText+'</select> <button id="assetDownloadLink" style="margin-left: 10px; margin-top: 4px; width: 20%"><i class="fa fa-download"></i> Add</button>');
 
     this.divider('Details');
+    this.pair('Title', theData.title);
     this.pair('Author', theData.author);
     this.pair('License', theData.license);
     this.pair('Channel', '<a href="' + theData.url + '" target="_blank">' + theData.channel + '</a>');
 
     this.divider('Description');
-    this.row(theData.description);
+    this.row('<div style="height: 350px; overflow: auto;">' + theData.description.replace(/\n/g, '<br />') + '</div>');
+
+    this.divider('Attribution');
+    this.row(theData.attribution);
 
     this.container.find('#assetDownloadLink').click(function() {
         aSelf.addAssetToProject(theItemId);
@@ -116,4 +120,14 @@ AssetFinder.Panel.Info.prototype.findProjectTopFolders = function() {
     }
 
     return aRet;
+};
+
+AssetFinder.Panel.Info.prototype.pause = function() {
+    this.container.fadeOut('fast');
+    Codebot.Panel.prototype.pause.call(this);
+};
+
+AssetFinder.Panel.Info.prototype.resume = function() {
+    this.container.fadeIn('fast');
+    Codebot.Panel.prototype.resume.call(this);
 };
