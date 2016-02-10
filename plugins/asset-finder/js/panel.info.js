@@ -72,11 +72,11 @@ AssetFinder.Panel.Info.prototype.renderFromData = function(theItemId, theData) {
     this.divider('Details');
     this.pair('Title', theData.title);
     this.pair('Author', theData.author);
-    this.pair('License', theData.license);
-    this.pair('Channel', '<a href="' + theData.url + '" target="_blank">' + theData.channel + '</a>');
+    this.pair('License', this.getLicenseNameById(theData.license) + ' <i class="fa fa-warning" title="This information was obtained automatically so it might be wrong. Please inspect the license information provided by the author to be sure about it."></i>');
+    this.pair('Channel', '<img src="http://favicon.yandex.net/favicon/' + theData.channel +'" title="' + theData.channel + '"/> <a href="' + theData.url + '" target="_blank">' + theData.channel + '</a>');
 
     this.divider('Description');
-    this.row('<div style="height: 350px; overflow: auto;">' + theData.description.replace(/\n/g, '<br />') + '</div>');
+    this.row('<div style="max-height: 350px; overflow: auto;">' + theData.description.replace(/\n/g, '<br />') + '</div>');
 
     this.divider('Attribution');
     this.row(theData.attribution);
@@ -84,6 +84,23 @@ AssetFinder.Panel.Info.prototype.renderFromData = function(theItemId, theData) {
     this.container.find('#assetDownloadLink').click(function() {
         aSelf.addAssetToProject(theItemId);
     });
+};
+
+AssetFinder.Panel.Info.prototype.getLicenseNameById = function(theLicenseId) {
+    var aLicenses,
+        aRet = 'Unknown',
+        i;
+
+    aLicenses = this.getContext().getPlugin('cc.codebot.asset.finder').getLicenses();
+
+    for(i = 0; i < aLicenses.length; i++) {
+        if(aLicenses[i].id == theLicenseId) {
+            aRet = aLicenses[i].name;
+            break;
+        }
+    }
+
+    return aRet;
 };
 
 AssetFinder.Panel.Info.prototype.addAssetToProject = function(theItemId) {

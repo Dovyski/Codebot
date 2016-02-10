@@ -109,7 +109,7 @@ AssetFinder.Panel.Main.prototype.showItemInfo = function(theItemId) {
     var aIde;
 
     // Initialize the panel that displays infos about a clicked asset.
-    $('body').append('<div id="af-item-description" style="display: none; position: absolute; top:0; right: 333px; width: 600px; height: 100%; background: #3d3d3d; overflow: hidden;"></div>');
+    $('body').append('<div id="af-item-description" style="display: none; position: absolute; top:0; right: 333px; width: 600px; height: 100%; overflow: hidden;"></div>');
     this.infoPanel = new AssetFinder.Panel.Info('Asset information', 'af-item-description');
     this.infoPanel.context = this.context;
 

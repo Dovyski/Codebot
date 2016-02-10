@@ -183,6 +183,12 @@ var CodebotSlidePanel = function() {
         return aInstance;
     };
 
+    /**
+     * Opens a new panel into the sliding panel area.
+     *
+     * @param  {Function} thePanelClass A reference to a class that extends <code>Codebot.Panel</code>. The panel will be an instance of such clas.
+     * @param  {boolean} theForce      If <code>false</code>(default), the new panel to be added must be different from the one already there, otherwise the existing panel will just be closed insted. If <code>true</code>, a new panel will be created and added, no matter what alredy existis in the sliding panel area.
+     */
     this.open = function(thePanelClass, theForce) {
         var aInstance;
 
