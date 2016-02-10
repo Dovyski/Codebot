@@ -134,9 +134,11 @@ class Disk {
 	 * @return {string} The real filesystem path of this disk (or any or its files/folders), e.g. <code>/tmp/data/098f6bcd4621d373cade4e832627b4f6</code>
 	 */
 	public function getFileSystemPath($theNode = '') {
-		$aRet = Utils::removeAnySlashAtEnd($this->mMount);
+		$aRet = $this->mMount;
 
 		if(is_array($theNode)) {
+			$aRet = Utils::removeAnySlashAtEnd($aRet);
+
 			foreach($theNode as $aPart) {
 				$aRet .= DIRECTORY_SEPARATOR . Utils::escapePath($aPart);
 			}
