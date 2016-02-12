@@ -835,18 +835,33 @@ div#projects-list a:hover {
 }
 
 div#projects-list div {
-    color: #aaa;
     border-bottom: 1px solid #505050;
     clear: both;
-    padding: 5px 5px 20px 5px;
-    margin-bottom: 10px;
+    padding: 5px 5px 25px 5px;
+    margin-bottom: 5px;
 }
 
 div#projects-list div img {
     float: left;
-    width: 50px;
-    height: 50px;
+    width: 32px;
+    height: 32px;
     margin-right: 10px;
+}
+
+div#projects-list div h2 {
+    margin: 0 0 3px 0;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+div#projects-list div p {
+    float: left;
+    margin-right: 10px;
+}
+
+div#projects-list div p,
+div#projects-list div i {
+    color: #888;
 }
 
 /*

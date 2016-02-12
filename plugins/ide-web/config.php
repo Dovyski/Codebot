@@ -43,7 +43,7 @@
 @define('CODEBOT_JAVASCRIPT_API_ENPOINT',      	 'javascript');
 @define('CODEBOT_JAVASCRIPT_API_CLASS_FILE',     '/plugins/javascript-tools/backend/JavascriptTools.class.php');
 @define('CODEBOT_JAVASCRIPT_API_CLASS_NAME',     'JavascriptTools');
-@define('CODEBOT_JAVASCRIPT_PROJECT_FACTORY',    '{"type": "js", "name": "HTML5/Javascript", "templates": {"js-empty": {"name": "Empty", "icon": "plugins/javascript-tools/img/js-empty.png"}}}');
+@define('CODEBOT_JAVASCRIPT_PROJECT_FACTORY',    '{"type": "js", "name": "HTML5/Javascript", "icon": "plugins/javascript-tools/img/js-empty.png", "templates": {"js-empty": {"name": "Empty", "icon": "plugins/javascript-tools/img/js-empty.png"}}}');
 @define('CODEBOT_JAVASCRIPT_PUBLIC_TESTING_URL', '/testing/');
 @define('CODEBOT_JAVASCRIPT_TESTING_POOL',       '/var/www/html/testing/');
 

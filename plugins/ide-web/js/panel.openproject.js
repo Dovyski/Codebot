@@ -44,26 +44,32 @@ IdeWeb.Panel.OpenProject.prototype.constructor = IdeWeb.Panel.OpenProject;
 
 IdeWeb.Panel.OpenProject.prototype.render = function() {
     var aSelf,
-        aIde;
+        aIde,
+        aFactory;
 
     Codebot.Panel.prototype.render.call(this);
 
     aSelf = this;
     aIde = this.getContext().getPlugin('cc.codebot.ide.web');
+    aProjectFactory = aIde.getProjectFactory();
 
     this.row('<div id="projects-list"></div>');
 
     $('#projects-list').html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading the list, please wait.');
 
     aIde.findProjects(function(theProjects) {
-        var aInfo = '';
+        var aInfo = '',
+            aDate;
 
         for(var i in theProjects) {
+            aDate = new Date(theProjects[i].creation_date * 1000);
             aInfo +=
                 '<a href="javascript:void(0);" data-project-id="' + theProjects[i].id + '">' +
                     '<div>' +
-                        '<img src="" alt="' + theProjects[i].type + '" />' +
-                        '<p>' + theProjects[i].name + '</p>' +
+                        '<img src="' + (aProjectFactory[theProjects[i].type].icon) + '" title="' + theProjects[i].type + '"/>' +
+                        '<h2>' + theProjects[i].name + '</h2>' +
+                        '<p><i class="fa fa-unlock" title="Anyone can see this project"></i>Public</p>' +
+                        '<p><i class="fa fa-calendar-o" title="Creation date"></i>' + aDate.getFullYear() + '/' + aDate.getMonth() + '/' + aDate.getDay() +'</p>' +
                     '</div>' +
                 '</a>';
         }
