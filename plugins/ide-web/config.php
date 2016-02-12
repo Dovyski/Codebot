@@ -33,6 +33,7 @@
 @define('CODEBOT_FLASH_API_ENPOINT',      		 'flash');
 @define('CODEBOT_FLASH_API_CLASS_FILE',      	 '/plugins/flash-tools/backend/FlashTools.class.php');
 @define('CODEBOT_FLASH_API_CLASS_NAME',      	 'FlashTools');
+@define('CODEBOT_FLASH_PROJECT_FACTORY',    	 '{"type": "flash", "name": "Flash/AS3", "templates": {"flash-empty": {"name": "Empty", "icon": "test.png"}}}');
 @define('CODEBOT_FLASH_PUBLIC_TESTING_URL',      '/testing/');
 @define('CODEBOT_FLASH_TESTING_POOL',            '/var/www/testing/');
 @define('CODEBOT_FLASH_OUTPUT_REPIPE',           '2>&1');
@@ -42,6 +43,7 @@
 @define('CODEBOT_JAVASCRIPT_API_ENPOINT',      	 'javascript');
 @define('CODEBOT_JAVASCRIPT_API_CLASS_FILE',     '/plugins/javascript-tools/backend/JavascriptTools.class.php');
 @define('CODEBOT_JAVASCRIPT_API_CLASS_NAME',     'JavascriptTools');
+@define('CODEBOT_JAVASCRIPT_PROJECT_FACTORY',    '{"type": "js", "name": "HTML5/Javascript", "templates": {"js-empty": {"name": "Empty", "icon": "test.png"}}}');
 @define('CODEBOT_JAVASCRIPT_PUBLIC_TESTING_URL', '/testing/');
 @define('CODEBOT_JAVASCRIPT_TESTING_POOL',       '/var/www/html/testing/');
 

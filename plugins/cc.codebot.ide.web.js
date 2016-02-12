@@ -40,7 +40,7 @@ IdeWeb.Plugin = function() {
     var mProjectFactory     = null;
 
     var initProjectFactory = function() {
-        mSelf.api('project', 'findTypesAndTemplates', null, function(theData) {
+        mSelf.api('project', 'factory', null, function(theData) {
             if(theData.success) {
                 mProjectFactory = theData.types;
                 console.debug('Project factory received: ', mProjectFactory);

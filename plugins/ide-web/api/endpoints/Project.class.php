@@ -52,27 +52,26 @@ class Project extends Base {
 		return array('success' => true, 'project' => $aProject);
 	}
 
-	public function findTypesAndTemplates() {
-		// TODO: get this from a real source, e.g. each platform handler register its own type and templates.
-		return array(
-			'success' => true,
-			'types' => array(
-				'flash' => array(
-	                'name' => 'Flash/AS3',
-	                'templates' => array(
-	                    'flash-empty' 				=> array('name' => 'Empty', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
-	                    'flash-flixel-community' 	=> array('name' => 'Flixel Community', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
-	                )
-	            ),
-				'js' => array(
-	                'name' => 'HTML5/Javascript',
-	                'templates' => array(
-						'js-empty' 		=> array('name' => 'Empty', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
-	                    'js-phaser' 	=> array('name' => 'Phaser (bare minimum)', 'icon' => 'http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif'),
-	                )
-	            )
-			)
-		);
+	public function factory() {
+		$aConstants   = get_defined_constants(true);
+		$aConfig 	  = $aConstants['user'];
+		$aMatches 	  = array();
+		$aFactoryInfo = null;
+		$aRet 		  = array('success' => true, 'types' => array());
+
+		foreach ($aConfig as $aName => $aValue) {
+			if(preg_match_all('/(.*)(_PROJECT_FACTORY)/', $aName, $aMatches) != 0) {
+				$aFactoryInfo = json_decode(constant($aName));
+
+				if($aFactoryInfo == null) {
+					throw new \Exception('Invalid JSON specification for project factory "'.$aName.'"');
+				}
+
+				$aRet['types'][$aFactoryInfo->type] = $aFactoryInfo;
+			}
+		}
+
+		return $aRet;
 	}
 
 	public function search() {
