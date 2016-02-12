@@ -127,7 +127,7 @@ IdeWeb.Panel.CreateProject.prototype.generateTemplatesList = function(theType) {
     aContent =
         '<a href="javascript:void(0)" data-template="git">' +
             '<div class="project-template">' +
-                '<img src="http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/flash/articles/using-sprite-sheet-generator/fig01.gif" alt="Preview"><br />' +
+                '<img src="img/icons/project-git.png" alt="Preview"><br />' +
                 'Clone from Git' +
             '</div>' +
         '</a>' +
