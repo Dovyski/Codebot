@@ -26,7 +26,7 @@ var CODEBOT = new function() {
 	var mUI = null;
 	var mIO = null;
 	var mEditors = null;
-	var mPreferences = null;
+	var mSettings = null;
 	var mSignals = null;
 	var mJobs = null;
     var mPlugins = {};
@@ -112,13 +112,13 @@ var CODEBOT = new function() {
 		mEditors = new Codebot.Editors();
         mShortcuts = new CodebotShortcuts();
         mUI = new CodebotUI();
-        mPreferences = new CodebotPreferences();
+		mSettings = new Codebot.Settings();
 		mSignals = new CodebotSignals();
 
         mJobs.init();
-		mPreferences.init(mSelf);
+		mSettings.init(mSelf);
 
-        mPreferences.load(function() {
+        mSettings.load(function() {
             mEditors.init(mSelf);
             mUI.init(mSelf);
 
@@ -137,7 +137,7 @@ var CODEBOT = new function() {
     this.__defineGetter__("editors", function() { return mEditors; });
     this.__defineGetter__("ui", function() { return mUI; });
     this.__defineGetter__("io", function() { return mIO; });
-    this.__defineGetter__("preferences", function() { return mPreferences; });
+    this.__defineGetter__("settings", function() { return mSettings; });
     this.__defineGetter__("signals", function() { return mSignals; });
     this.__defineGetter__("jobs", function() { return mJobs; });
 };

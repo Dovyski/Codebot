@@ -196,7 +196,7 @@ var CodebotUI = function() {
         mPreferences.init(mCodebot);
 
         // Add Codebot button at the bottom of the sliding bar.
-        mSelf.addButton('cc.codebot.ui.preferences', {icon: '<i class="fa fa-cog"></i>', position: 'bottom', panel: mPreferences.main});
+        mSelf.addButton('cc.codebot.ui.preferences', {icon: '<i class="fa fa-cog"></i>', position: 'bottom', panel: Codebot.Settings.Panel.Main});
 
         // TODO: read data from disk, using last open directory.
 
