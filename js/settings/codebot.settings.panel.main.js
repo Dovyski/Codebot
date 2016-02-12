@@ -35,12 +35,6 @@ Codebot.Settings.Panel = Codebot.Settings.Panel || {};
 Codebot.Settings.Panel.Main = function() {
     // Call constructor of base class
     Codebot.Panel.call(this, 'Codebot');
-
-    mSelf = this;
-    mCodebot = theCodebot;
-
-    // TODO: move it to a better place?
-
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
@@ -48,21 +42,37 @@ Codebot.Settings.Panel.Main.prototype = Object.create(Codebot.Panel.prototype);
 Codebot.Settings.Panel.Main.prototype.constructor = Codebot.Settings.Panel.Main;
 
 Codebot.Settings.Panel.Main.prototype.init = function() {
-    mSelf.addSection({id: 'editor', title: 'Editor', icon: '<i class="fa fa-code fa-lg"></i>', panel: editor});
-    mSelf.addSection({id: 'shortcuts', title: 'Shortcuts', icon: '<i class="fa fa-keyboard-o fa-lg"></i>', panel: shortcuts});
-    mSelf.addSection({id: 'appearance', title: 'UI and Appearance', icon: '<i class="fa fa-picture-o fa-lg"></i>', panel: appearance});
-    mSelf.addSection({id: 'extensions', title: 'Extensions', icon: '<i class="fa fa-puzzle-piece fa-lg"></i>', panel: extensions});
-    mSelf.addSection({id: 'devenvs', title: 'Development Environments', icon: '<i class="fa fa-flask fa-lg"></i>', panel: devenvs});
-    mSelf.addSection({id: 'about', title: 'About and Updates', icon: '<i class="fa fa-question-circle fa-lg"></i>', panel: about});
-    mSelf.addSection({id: 'bugs', title: 'Feedback and Bug Report', icon: '<i class="fa fa-bug fa-lg"></i>', panel: bugs});
 };
 
 Codebot.Settings.Panel.Main.prototype.render = function() {
+    var aSections,
+        aContent = '',
+        aSelf = this;
+        i;
+
     Codebot.Panel.prototype.render.call(this);
 
+    // Show some nice about info about Codebot
     this.row('<img src="./img/logo/codebot-logo.png" title="Codebot" /><p>Codebot</p><p>Version 1.0.0-ALPHA</p>');
 
+    // Show all settings sections
     this.divider('Settings');
-    this.row('dd');
-    this.row('dd');
+
+    aSections = this.getContext().settings.getSections();
+
+    aContent += '<ul>';
+    for(i in aSections) {
+        aContent += '<a href="javascript:void(0);" data-section="' + i + '" class="setting-section"><li>' + aSections[i].icon + ' ' + aSections[i].title + '</li></a>';
+    }
+    aContent += '</ul>';
+
+    this.row(aContent);
+
+    // Make all sections clickable
+    this.container.find('a.setting-section').each(function(theIndex, theElement) {
+        $(theElement).click(function() {
+            var aId = $(this).data('section');
+            aSelf.panelManager.pushState(aSections[aId].panel);
+        });
+    });
 };

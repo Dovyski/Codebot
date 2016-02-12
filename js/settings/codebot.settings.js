@@ -30,7 +30,8 @@ Codebot.Settings = function() {
     var mSelf,
         mSections,
         mCodebot,
-        mData;
+        mData,
+        mSections;
 };
 
 Codebot.Settings.prototype.init = function(theCodebot) {
@@ -38,6 +39,13 @@ Codebot.Settings.prototype.init = function(theCodebot) {
     mSections = {};
     mCodebot = theCodebot;
     mData = {};
+    mSections = {};
+
+    // TODO: add proper sections
+    this.addSection({id: 'editor', title: 'Editor', icon: '<i class="fa fa-code fa-lg"></i>', panel: null});
+    this.addSection({id: 'shortcuts', title: 'Shortcuts', icon: '<i class="fa fa-keyboard-o fa-lg"></i>', panel: null});
+    this.addSection({id: 'appearance', title: 'UI and Appearance', icon: '<i class="fa fa-picture-o fa-lg"></i>', panel: null});
+    this.addSection({id: 'plugins', title: 'Plugins', icon: '<i class="fa fa-puzzle-piece fa-lg"></i>', panel: null});
 };
 
 
@@ -77,4 +85,24 @@ Codebot.Settings.prototype.load = function(theCallback) {
         console.log('CODEBOT [prefs] Preferences loaded!', aSelf.get());
         theCallback();
     });
+};
+
+/**
+ * Adds a new section to the settings panel. A section is a link that, when clicked, opens
+ * a new panel with more information (e.g. Code editor settings).
+ *
+ * @param {Object} theObj - an object describing the new section. It has the following structure: <code>{id: string, title: string, icon: string, panel: Codebot.Panel}</code>. The <code>panel</code> property should be a reference to a class that extends <code>Codebot.Panel</code>.
+ */
+Codebot.Settings.prototype.addSection = function(theObj) {
+    mSections[theObj.id] = theObj;
+};
+
+/**
+ * [function description]
+ *
+ * @param  {[type]} theObj [description]
+ * @return {[type]}        [description]
+ */
+Codebot.Settings.prototype.getSections = function(theObj) {
+    return mSections;
 };
