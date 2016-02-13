@@ -42,7 +42,7 @@ Codebot.Settings.prototype.init = function(theCodebot) {
     mSections = {};
 
     // TODO: add proper sections
-    this.addSection({id: 'editor', title: 'Editor', icon: '<i class="fa fa-code fa-lg"></i>', panel: null});
+    this.addSection({id: 'editor', title: 'Editor', icon: '<i class="fa fa-code fa-lg"></i>', panel: new Codebot.Settings.Panel.Editor()});
     this.addSection({id: 'shortcuts', title: 'Shortcuts', icon: '<i class="fa fa-keyboard-o fa-lg"></i>', panel: null});
     this.addSection({id: 'appearance', title: 'UI and Appearance', icon: '<i class="fa fa-picture-o fa-lg"></i>', panel: null});
     this.addSection({id: 'plugins', title: 'Plugins', icon: '<i class="fa fa-puzzle-piece fa-lg"></i>', panel: null});

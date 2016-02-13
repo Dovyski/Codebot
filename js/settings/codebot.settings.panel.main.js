@@ -72,7 +72,7 @@ Codebot.Settings.Panel.Main.prototype.render = function() {
     this.container.find('a.setting-section').each(function(theIndex, theElement) {
         $(theElement).click(function() {
             var aId = $(this).data('section');
-            aSelf.panelManager.pushState(aSections[aId].panel);
+            aSelf.open(aSections[aId].panel);
         });
     });
 };

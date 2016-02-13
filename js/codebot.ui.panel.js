@@ -198,7 +198,10 @@ Codebot.Panel.prototype.close = function() {
  * @param  {Function} thePanelClass A reference to the panel class that must be instantiated for this new panel. The class must be an instance of <code>Codebot.Panel</code>.
  */
 Codebot.Panel.prototype.open = function(thePanelClass) {
-	// TODO: implement.
+	// Do we have a panel manager?
+	if(this.panelManager) {
+		this.panelManager.pushState(thePanelClass);
+	}
 };
 
 /**
