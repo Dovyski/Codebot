@@ -26,6 +26,7 @@ var CodebotUI = function() {
 	var mTabs 				= null;
 	var mFilesPanel         = null;
 	var mSlidePanel         = null;
+	var mSlideTray         	= null;
 	var mPreferences        = null;
 	var mCodebot            = null;
     var mButtons            = {};
@@ -51,7 +52,7 @@ var CodebotUI = function() {
 			mCodebot.signals.contentAreaClicked.dispatch([theEvent.target]);
 
 			// Close any open sliding panel.
-			mSlidePanel.close();
+			mSlideTray.close();
 		});
 	};
 
@@ -110,7 +111,7 @@ var CodebotUI = function() {
 	                mButtons[aIndex].action.call(mButtons[aIndex].context || this, mCodebot, $(this));
 
 	            } else if('panel' in mButtons[aIndex]) {
-	                mSlidePanel.open(mButtons[aIndex].panel);
+	                mSlideTray.set(mButtons[aIndex].panel);
 	            }
 			});
 
@@ -188,11 +189,13 @@ var CodebotUI = function() {
 		mFilesPanel     = new CodebotFilesPanel();
         mTabs           = new CodebotTabs();
         mSlidePanel     = new CodebotSlidePanel();
+		mSlideTray		= new Codebot.UI.SlideTray();
         mPreferences    = new CodebotPreferencesUI();
 
         mFilesPanel.init(mCodebot);
         mTabs.init(mCodebot);
         mSlidePanel.init(mCodebot);
+		mSlideTray.init(mCodebot);
         mPreferences.init(mCodebot);
 
         // Add Codebot button at the bottom of the sliding bar.
@@ -217,6 +220,7 @@ var CodebotUI = function() {
     // getters
     this.__defineGetter__("tabs", function(){ return mTabs; });
     this.__defineGetter__("filesPanel", function(){ return mFilesPanel; });
-    this.__defineGetter__("slidePanel", function(){ return mSlidePanel; });
+	this.__defineGetter__("slidePanel", function(){ return mSlidePanel; });
+    this.__defineGetter__("slideTray", function(){ return mSlideTray; });
     this.__defineGetter__("preferences", function(){ return mPreferences; });
 };

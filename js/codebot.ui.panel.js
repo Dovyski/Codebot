@@ -142,7 +142,9 @@ Codebot.Panel.prototype.addToDom = function(theItem) {
 	// Do we have a DOM element to append the content to?
 	if(this.container) {
 		// Yep! Add the content to the DOM then
-		aJustAdded = this.container.append(aContent);
+		aJustAdded = $(aContent);
+		this.container.append(aJustAdded);
+
 		// Enhance the content (make button clickable, etc)
 		this.enhance(aJustAdded);
  	}
@@ -157,8 +159,8 @@ Codebot.Panel.prototype.enhance = function(theElement) {
 	var aSelf = this;
 
 	theElement.find('[data-action="close"]').each(function(i, e) {
-		$(e).click(function() {
-			aSelf.close();
+		$(e).off().click(function() {
+			aSelf.pop();
 		});
 	});
 };
@@ -177,12 +179,12 @@ Codebot.Panel.prototype.render = function() {
  * Closes the panel. If it is stacked with another panel, it
  * is popped out of the stack and the subsequent panel becomes active.
  */
-Codebot.Panel.prototype.close = function() {
+Codebot.Panel.prototype.pop = function() {
 	// Do we have a panel manager?
 	if(this.panelManager) {
 		// Yep, let it handle the closing
 		// process and do what is appropriate.
-		this.panelManager.closeChild(this);
+		this.panelManager.popPanel();
 
 	} else if (this.container) {
 		// We have no panel manager, so let's just
@@ -197,10 +199,10 @@ Codebot.Panel.prototype.close = function() {
  *
  * @param  {Function} thePanelClass A reference to the panel class that must be instantiated for this new panel. The class must be an instance of <code>Codebot.Panel</code>.
  */
-Codebot.Panel.prototype.open = function(thePanelClass) {
+Codebot.Panel.prototype.push = function(thePanelClass) {
 	// Do we have a panel manager?
 	if(this.panelManager) {
-		this.panelManager.pushState(thePanelClass);
+		this.panelManager.pushPanel(thePanelClass);
 	}
 };
 
