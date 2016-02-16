@@ -192,14 +192,22 @@ Codebot.UI.SlideTray.prototype.instantiatePanelObject = function(thePanelClass) 
     aInstance = new thePanelClass();
     aInstance.panelManager = this;
     aInstance.context = mCodebot;
+    aInstance.className = thePanelClass;
 
     return aInstance;
 };
 
-Codebot.UI.SlideTray.prototype.set = function(thePanelClass) {
-    this.clear(function() {
-        this.pushPanel(thePanelClass);
-    }, this);
+Codebot.UI.SlideTray.prototype.set = function(thePanelClass, theForceNew) {
+    var aCurrent = this.getCurrentPanel();
+
+    if(!theForceNew && aCurrent && aCurrent.className == thePanelClass) {
+        this.toggleOpen();
+
+    } else {
+        this.clear(function() {
+            this.pushPanel(thePanelClass);
+        }, this);
+    }
 };
 
 Codebot.UI.SlideTray.prototype.open = function() {
