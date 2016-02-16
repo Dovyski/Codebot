@@ -142,30 +142,22 @@ AssetFinder.Panel.Main.prototype.search = function() {
     });
 };
 
-AssetFinder.Panel.Main.prototype.destroy = function() {
+AssetFinder.Panel.Main.prototype.onDestroy = function() {
     if(this.infoPanel) {
-        this.infoPanel.destroy();
+        this.infoPanel.onDestroy();
     }
-    Codebot.Panel.prototype.destroy.call(this);
 };
 
-AssetFinder.Panel.Main.prototype.close = function() {
-    this.destroy();
-    Codebot.Panel.prototype.close.call(this);
+AssetFinder.Panel.Main.prototype.onPause = function() {
+    if(this.infoPanel) {
+        this.infoPanel.onPause();
+    }
 };
 
-AssetFinder.Panel.Main.prototype.pause = function() {
+AssetFinder.Panel.Main.prototype.onResume = function() {
     if(this.infoPanel) {
-        this.infoPanel.pause();
+        this.infoPanel.onResume();
     }
-    Codebot.Panel.prototype.pause.call(this);
-};
-
-AssetFinder.Panel.Main.prototype.resume = function() {
-    if(this.infoPanel) {
-        this.infoPanel.resume();
-    }
-    Codebot.Panel.prototype.resume.call(this);
 };
 
 AssetFinder.Panel.Main.prototype.loadMoreSearchResults = function() {

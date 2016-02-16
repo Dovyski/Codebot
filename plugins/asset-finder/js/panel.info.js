@@ -122,7 +122,7 @@ AssetFinder.Panel.Info.prototype.addAssetToProject = function(theItemId) {
         }
     }, this);
 
-    this.destroy();
+    this.pop();
 };
 
 AssetFinder.Panel.Info.prototype.findProjectTopFolders = function() {
@@ -139,12 +139,10 @@ AssetFinder.Panel.Info.prototype.findProjectTopFolders = function() {
     return aRet;
 };
 
-AssetFinder.Panel.Info.prototype.pause = function() {
+AssetFinder.Panel.Info.prototype.onPause = function() {
     this.container.fadeOut('fast');
-    Codebot.Panel.prototype.pause.call(this);
 };
 
-AssetFinder.Panel.Info.prototype.resume = function() {
+AssetFinder.Panel.Info.prototype.onResume = function() {
     this.container.fadeIn('fast');
-    Codebot.Panel.prototype.resume.call(this);
 };
