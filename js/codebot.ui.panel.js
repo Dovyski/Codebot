@@ -210,7 +210,7 @@ Codebot.Panel.prototype.push = function(thePanelClass) {
  * Invoked by the panel manager when this panel is about to be destroyed.
  * This is a last oportunity to perform clean up tasks.
  */
-Codebot.Panel.prototype.destroy = function() {
+Codebot.Panel.prototype.onDestroy = function() {
 	if(this.container) {
 		this.container.remove();
 	}
@@ -222,7 +222,7 @@ Codebot.Panel.prototype.destroy = function() {
  * close (slide in) itself, without destroying its content. A paused panel
  * can be resumed by the panel manager, if it is ever openned (slide out) again.
  */
-Codebot.Panel.prototype.pause = function() {
+Codebot.Panel.prototype.onPause = function() {
 };
 
 /**
@@ -230,7 +230,7 @@ Codebot.Panel.prototype.pause = function() {
  * paused state. Usually the panel should come back to the exact state it was
  * before being paused.
  */
-Codebot.Panel.prototype.resume = function() {
+Codebot.Panel.prototype.onResume = function() {
 };
 
 /**

@@ -33,7 +33,6 @@ Codebot.UI.SlideTray = function() {
     var mCodebot,
         mId,
         mStack,
-        mCurrentPanel,
         mOpen;
 };
 
@@ -51,7 +50,7 @@ Codebot.UI.SlideTray.prototype.slideElement = function(theId, theX, theDuration)
 Codebot.UI.SlideTray.prototype.clear = function(theCallback, theCallbackContext) {
     this.close(function() {
         for(var i = 0; i < mStack.length; i++) {
-            //TODO: call mStack[i].destroy()?
+            mStack[i].onDestroy();
             mStack[i].container.remove();
         }
         mStack.splice(0);
@@ -145,13 +144,12 @@ Codebot.UI.SlideTray.prototype.pushPanel = function(thePanelClass) {
     aPanel.setContainer(aContainerId);
     $('#' + aContainerId).css('left', aPanelWidth + 'px');
 
+    this.open();
+
     aPanel.render();
     this.restorePersistentPanelData(aPanel);
 
     mStack.push(aPanel);
-    mCurrentPanel = aPanel;
-
-    this.open();
 
     setTimeout(function() {
         aSelf.slideElement(aContainerId, -aPanelWidth, mStack.length != 1 ? this.SLIDE_DURATION : 1);
@@ -174,14 +172,12 @@ Codebot.UI.SlideTray.prototype.popPanel = function() {
                 this.slideElement(aStackTop.containerId, i == 1 ? -aPanelWidth : 0);
             }
         }
-
-        mCurrentPanel = mStack[mStack.length - 1];
     }
 
     setTimeout(function() {
         var aPanel = mStack.pop();
 
-        // TODO: call aPanel.destroy()?
+        aPanel.onDestroy();
         aPanel.container.remove();
 
         if(mStack.length == 0) {
@@ -207,7 +203,13 @@ Codebot.UI.SlideTray.prototype.set = function(thePanelClass) {
 };
 
 Codebot.UI.SlideTray.prototype.open = function() {
+    var aCurrent = this.getCurrentPanel();
+
     if(!mOpen) {
+        if(aCurrent) {
+            aCurrent.onResume();
+        }
+
         this.slideElement('content', -this.getSliderPanelWidth());
         this.slideElement('config-dialog', -this.getSliderPanelWidth());
     }
@@ -216,18 +218,21 @@ Codebot.UI.SlideTray.prototype.open = function() {
 };
 
 Codebot.UI.SlideTray.prototype.close = function(theCallback, theCallbackContext) {
-    var aDuration = 0;
+    var aDuration = 0,
+        aCurrent;
 
     if(mOpen) {
-        // TODO: persist data, pause panels?
-        //this.savePersistentPanelData();
-        //mCurrentPanel.pause();
+        aCurrent = this.getCurrentPanel();
+
+        if(aCurrent) {
+            this.savePersistentPanelData();
+            aCurrent.onPause();
+        }
 
         this.slideElement('content', 0);
         this.slideElement('config-dialog', 0);
 
         if(mStack.length == 1) {
-            mCurrentPanel = null;
             // TODO: rename this signal (e.g. beforeSlideTrayClose)
             mCodebot.signals.beforeLastSlidePanelClose.dispatch();
         }
@@ -262,12 +267,21 @@ Codebot.UI.SlideTray.prototype.toggleOpen = function() {
  * @param  {Codebot.Panel} thePanel The panel that wants to close itself.
  */
 Codebot.UI.SlideTray.prototype.closeChild = function(thePanel) {
-    if(mCurrentPanel == thePanel) {
+    if(this.getCurrentPanel() == thePanel) {
         this.popState();
 
     } else {
         // TODO: remove element from stack, remove from DOM, etc
     }
+};
+
+/**
+ * [function description]
+ *
+ * @return {[type]} [description]
+ */
+Codebot.UI.SlideTray.prototype.getCurrentPanel = function() {
+    return mStack.length > 0 ? mStack[mStack.length - 1] : null;
 };
 
 /**
@@ -280,6 +294,5 @@ Codebot.UI.SlideTray.prototype.init = function(theCodebot) {
     mCodebot = theCodebot;
     mIds = 0;
     mStack = [];
-    mCurrentPanel = null;
     mOpen = false;
 };
