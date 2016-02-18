@@ -35,7 +35,7 @@ IdeWeb.Panel = IdeWeb.Panel || {};
  */
 IdeWeb.Panel.OpenProject = function() {
     // Call constructor of base class
-    Codebot.Panel.call(this, 'Open project');
+    Codebot.Panel.call(this, 'Projects');
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
@@ -59,17 +59,26 @@ IdeWeb.Panel.OpenProject.prototype.render = function() {
 
     aIde.findProjects(function(theProjects) {
         var aInfo = '',
-            aDate;
+            aDate,
+            aId;
 
         for(var i in theProjects) {
             aDate = new Date(theProjects[i].creation_date * 1000);
+            aId = theProjects[i].id;
             aInfo +=
-                '<a href="javascript:void(0);" data-project-id="' + theProjects[i].id + '">' +
-                    '<div>' +
-                        '<img src="' + (aProjectFactory[theProjects[i].type].icon) + '" title="' + theProjects[i].type + '"/>' +
-                        '<h2>' + theProjects[i].name + '</h2>' +
-                        '<p><i class="fa fa-unlock" title="Anyone can see this project"></i>Public</p>' +
-                        '<p><i class="fa fa-calendar-o" title="Creation date"></i>' + aDate.getFullYear() + '/' + aDate.getMonth() + '/' + aDate.getDay() +'</p>' +
+                '<a href="javascript:void(0);" data-project-id="' + aId + '">' +
+                    '<div class="project">' +
+                        '<div class="summary">' +
+                            '<img src="' + (aProjectFactory[theProjects[i].type].icon) + '" title="' + theProjects[i].type + '"/>' +
+                            '<h2>' + theProjects[i].name + '</h2>' +
+                            '<p><i class="fa fa-unlock" title="Anyone can see this project"></i>Public</p>' +
+                            '<p><i class="fa fa-calendar-o" title="Creation date"></i>' + aDate.getFullYear() + '/' + aDate.getMonth() + '/' + aDate.getDay() +'</p>' +
+                        '</div>' +
+                        '<div class="info">' +
+                            '<button data-project-id="' + aId + '" data-action="open"><i class="fa fa-folder-open"></i> Open</button> ' +
+                            '<button data-project-id="' + aId + '" data-action="edit"><i class="fa fa-edit"></i> Edit</button> ' +
+                            '<button data-project-id="' + aId + '" data-action="delete"><i class="fa fa-trash"></i> Delete</button> ' +
+                        '</div>' +
                     '</div>' +
                 '</a>';
         }
@@ -77,8 +86,34 @@ IdeWeb.Panel.OpenProject.prototype.render = function() {
         $('#projects-list').html(aInfo);
 
         $('#projects-list a').click(function() {
-            aIde.openProject($(this).data('project-id'));
-            aSelf.close();
+            aSelf.expand($(this).data('project-id'));
+        });
+
+        $('#projects-list button').click(function() {
+            aSelf.handleButtonClick($(this).data('project-id'), $(this).data('action'));
         });
     }, this);
+};
+
+IdeWeb.Panel.OpenProject.prototype.handleButtonClick = function(theProjectId, theAction) {
+    var aIde;
+
+    aIde = this.getContext().getPlugin('cc.codebot.ide.web');
+
+    if(theAction == 'open') {
+        aIde.openProject(theProjectId);
+        this.pop();
+
+    } else if(theAction == 'edit') {
+        // TODO: show a nice panel to edit things
+        this.push(Dummy.Panel);
+
+    } else if(theAction == 'delete') {
+        // TODO: confirm and delete
+        $('#projects-list a[data-project-id="' + theProjectId + '"] div.project').slideUp();
+    }
+};
+
+IdeWeb.Panel.OpenProject.prototype.expand = function(theProjectId) {
+    $('#projects-list [data-project-id="' + theProjectId + '"] div.info').slideToggle('fast');
 };

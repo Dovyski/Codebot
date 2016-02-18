@@ -834,7 +834,7 @@ div#projects-list a:hover {
     background: red;
 }
 
-div#projects-list div {
+div#projects-list div.project {
     border-bottom: 1px solid #505050;
     clear: both;
     padding: 5px 5px 25px 5px;
@@ -863,6 +863,14 @@ div#projects-list div p,
 div#projects-list div i {
     color: #888;
 }
+
+div#projects-list div.info {
+    display: none;
+    clear: both;
+    width: 100%;
+    height: 30px;
+}
+
 
 /*
 -----------------------------------------------------

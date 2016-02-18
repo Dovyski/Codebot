@@ -212,7 +212,7 @@ IdeWeb.Plugin = function() {
         mContext.loadScript('./plugins/ide-web/js/panel.createproject.js');
 
         mContext.ui.addButton('newProject', {icon: '<i class="fa fa-plus-square"></i>', panel: IdeWeb.Panel.CreateProject });
-        mContext.ui.addButton('openProject', {icon: '<i class="fa fa-folder-open"></i>', panel: IdeWeb.Panel.OpenProject });
+        mContext.ui.addButton('openProject', {icon: '<i class="fa fa-hdd-o"></i>', panel: IdeWeb.Panel.OpenProject });
 
         // Schedule the rest of the UI initialization to happen only
         // after a project has been opened.
