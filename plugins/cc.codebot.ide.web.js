@@ -28,10 +28,8 @@ var IdeWeb = IdeWeb || {};
  * The bare minimum to use codebot as a IDE (save buttons, etc)
  */
 IdeWeb.Plugin = function() {
-    // Constants
-    const API_URL           = 'plugins/ide-web/api/?';
-
-    this.id                 = 'cc.codebot.ide.web';
+    const API_URL = 'plugins/ide-web/api/?';
+    this.id = IdeWeb.Plugin.meta.id;
 
     var mSelf               = this;
     var mContext            = null;
@@ -244,4 +242,12 @@ IdeWeb.Plugin = function() {
     };
 };
 
-CODEBOT.addPlugin(new IdeWeb.Plugin());
+IdeWeb.Plugin.meta = {
+    className: IdeWeb.Plugin,
+    id: 'cc.codebot.ide.web',
+    name: 'IDE (Web)',
+    description: 'Description for cc.codebot.ide.web',
+    version: '1.0.0-ALPHA'
+};
+
+CODEBOT.addPlugin(IdeWeb.Plugin.meta);

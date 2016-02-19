@@ -18,5 +18,9 @@
         "closeTab": "mod+w",
         "renameNode": "f2",
         "exit": "mod+q"
+    },
+
+    "plugins": {
+        "cc.codebot.ide.web": true
     }
 }

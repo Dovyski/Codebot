@@ -29,7 +29,7 @@ var CODEBOT = new function() {
 	var mSettings = null;
 	var mSignals = null;
 	var mJobs = null;
-    var mPlugins = {};
+    var mPlugins = {active: {}, available: {}};
     var mSelf;
 
     var loadPlugins = function() {
@@ -72,15 +72,19 @@ var CODEBOT = new function() {
     };
 
     this.getPlugin = function(theId) {
-        return mPlugins[theId];
+        return mPlugins.active[theId];
     };
 
-	this.addPlugin = function(theObj) {
-		console.log('CODEBOT [plugin added] ' + theObj.id);
+	this.addPlugin = function(thePluginInfo) {
+		mPlugins.available[thePluginInfo.id] = thePluginInfo;
+		console.log('CODEBOT [plugin] Added: ' + thePluginInfo.id);
 
-		mPlugins[theObj.id] = theObj;
+		if(mSettings.get().plugins[thePluginInfo.id]) {
+			console.log('CODEBOT [plugin] Activating ' + thePluginInfo.id + ' based on settings');
 
-        CODEBOT.utils.invoke(mPlugins[theObj.id], 'init', mSelf);
+			mPlugins.active[thePluginInfo.id] = new thePluginInfo.className();
+			mPlugins.active[thePluginInfo.id].init(mSelf);
+		}
 	};
 
     this.showDebugger= function() {
