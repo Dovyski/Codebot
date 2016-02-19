@@ -24,6 +24,11 @@
 
 namespace Codebot\Endpoints;
 
+use Codebot\Utils;
+use Codebot\User;
+use Exception;
+use stdClass;
+
 class Disk extends Base {
 
 	public static $contentType = array(
@@ -31,7 +36,7 @@ class Disk extends Base {
 	);
 
 	private function realPath($theMount = '') {
-		return CODEBOT_DISK_WORK_POOL . \Codebot\Utils::escapePath($theMount) . ($theMount != '' ? DIRECTORY_SEPARATOR : '');
+		return CODEBOT_DISK_WORK_POOL . Utils::escapePath($theMount) . ($theMount != '' ? DIRECTORY_SEPARATOR : '');
 	}
 
 	private function listDirectory($theDir, $thePrettyDir = '') {
@@ -39,7 +44,7 @@ class Disk extends Base {
 		foreach (scandir($theDir) as $aNode) {
 			if ($aNode == '.' || $aNode == '..') continue;
 
-			$aObj = new \stdClass();
+			$aObj = new stdClass();
 			$aObj->title = $aNode;
 			$aObj->name = $aNode;
 			$aObj->path = $thePrettyDir . $aNode;
@@ -71,7 +76,7 @@ class Disk extends Base {
 		$aMount = $this->getParam('mount', $theParams);
 		$aPath 	= $this->getParam('path', $theParams);
 
-		$aPath  = $this->realPath($aMount) . \Codebot\Utils::escapePath($aPath);
+		$aPath  = $this->realPath($aMount) . Utils::escapePath($aPath);
 
 		mkdir($aPath, 0755, true);
 
@@ -83,7 +88,7 @@ class Disk extends Base {
 		$aPath 	= $this->getParam('path', $theParams);
 		$aData 	= $this->getParam('data', $theParams, false);
 
-		$aPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aPath);
+		$aPath = $this->realPath($aMount) . Utils::escapePath($aPath);
 		$aData = $aData == null && isset($_FILES['file']) ? file_get_contents($_FILES['file']['tmp_name']) : $aData;
 
 		file_put_contents($aPath, $aData);
@@ -95,7 +100,7 @@ class Disk extends Base {
 		$aMount = $this->getParam('mount', $theParams);
 		$aPath 	= $this->getParam('path', $theParams);
 
-		$aPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aPath);
+		$aPath = $this->realPath($aMount) . Utils::escapePath($aPath);
 		$aOut = file_get_contents($aPath);
 
 		return $aOut;
@@ -106,8 +111,8 @@ class Disk extends Base {
 		$aOld 	= $this->getParam('old', $theParams);
 		$aNew 	= $this->getParam('new', $theParams);
 
-		$aOldPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aOld);
-		$aNewPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aNew);
+		$aOldPath = $this->realPath($aMount) . Utils::escapePath($aOld);
+		$aNewPath = $this->realPath($aMount) . Utils::escapePath($aNew);
 
 		rename($aOldPath, $aNewPath);
 
@@ -118,7 +123,7 @@ class Disk extends Base {
 		$aMount = $this->getParam('mount', $theParams);
 		$aPath 	= $this->getParam('path', $theParams);
 
-		$aPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aPath);
+		$aPath = $this->realPath($aMount) . Utils::escapePath($aPath);
 
 		if(is_dir($aPath)) {
 			rmdir($aPath);
@@ -127,6 +132,24 @@ class Disk extends Base {
 		}
 
 		return array('success' => true, 'msg' => '');
+	}
+
+	public function ls(array $theParams) {
+		$aMount = $this->getParam('mount', $theParams);
+
+		$aFiles = array(
+			array(
+				'name' => 'Project',
+				'title' => 'Project',
+				'path' => '/',
+				'folder' => true,
+				'key' => 'root',
+				'expanded' => true,
+				'children' => $this->listDirectory($this->realPath($aMount))
+			)
+		);
+
+		return $aFiles;
 	}
 
 	public function readCodebot(array $theParams) {
@@ -138,10 +161,26 @@ class Disk extends Base {
 			$aRet = json_decode(file_get_contents(dirname(__FILE__) . '/../../../../settings.default.json'));
 
 		} else if($aPath == 'settings.json') {
-			$aRet = json_decode(file_get_contents(dirname(__FILE__) . '/../../../../settings.default.json')); // TODO: get settings from data base
+			$aUser = $this->getUser(true);
+			$aRet = empty($aUser->settings) ? new stdClass() : json_decode($aUser->settings);
 		}
 
 		return $aRet;
+	}
+
+	public function writeCodebot(array $theParams) {
+		$aMount = $this->getParam('mount', $theParams);
+		$aPath 	= $this->getParam('path', $theParams);
+		$aData 	= $this->getParam('data', $theParams, true);
+
+		if($aPath == 'settings.json') {
+			$aUser = $this->getUser(true);
+			$aUser->settings = $aData;
+
+			User::update($aUser);
+		}
+
+		return array('success' => true);
 	}
 
 	public function lsCodebot(array $theParams) {
@@ -159,24 +198,6 @@ class Disk extends Base {
 
 		// TODO: improve this
 		$aFiles[0]['children'] = $this->findActivePlugins();
-
-		return $aFiles;
-	}
-
-	public function ls(array $theParams) {
-		$aMount = $this->getParam('mount', $theParams);
-
-		$aFiles = array(
-			array(
-				'name' => 'Project',
-				'title' => 'Project',
-				'path' => '/',
-				'folder' => true,
-				'key' => 'root',
-				'expanded' => true,
-				'children' => $this->listDirectory($this->realPath($aMount))
-			)
-		);
 
 		return $aFiles;
 	}

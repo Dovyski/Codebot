@@ -58,11 +58,11 @@ class Base {
 	 *
 	 * @return [\Codebot\User] An object describing the user.
 	 */
-	public function getUser() {
-		$aUser = \Codebot\User::getById(\Codebot\Auth::getAuthenticatedUserId());
+	public function getUser($theFull = false) {
+		$aUser = \Codebot\User::getById(\Codebot\Auth::getAuthenticatedUserId(), $theFull);
 
 		if($aUser == null) {
-			throw new Exception('Invalid project owner');
+			throw new \Exception('Invalid user');
 		}
 
 		return $aUser;

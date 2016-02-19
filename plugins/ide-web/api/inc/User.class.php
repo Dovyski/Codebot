@@ -72,7 +72,7 @@ class User {
 
 	public static function create($theEmail, $theDisk, $theAuthUid, $theAuthRaw) {
 		$aRet = null;
-		$aQuery = Database::instance()->prepare("INSERT INTO users (id, email, registration_date, disk, auth_uid, auth_raw) VALUES (null, ?, ?, ?, ?, ?)");
+		$aQuery = Database::instance()->prepare("INSERT INTO users (id, email, registration_date, disk, auth_uid, auth_raw, settings) VALUES (null, ?, ?, ?, ?, ?, '{}')");
 
 		$aQuery->execute(array($theEmail, time(), $theDisk, $theAuthUid, $theAuthRaw));
 
@@ -80,11 +80,11 @@ class User {
 	}
 
 
-	public static function updatePreferences($theUserId, $theData) {
+	public static function update(User $theUser) {
 		$aRet = array();
-		$aQuery = Database::instance()->prepare("UPDATE users SET preferences = ? WHERE id = ?");
+		$aQuery = Database::instance()->prepare("UPDATE users SET settings = ? WHERE id = ?");
 
-		$aQuery->execute(array($theData, $theUserId));
+		$aQuery->execute(array($theUser->settings, $theUser->id));
 		return $aQuery->rowCount() != 0;
 	}
 }

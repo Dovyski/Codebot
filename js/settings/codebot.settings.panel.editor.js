@@ -96,10 +96,10 @@ Codebot.Settings.Panel.Editor.prototype.convertConfigOptionToFormElement = funct
         aRet += '</select>';
 
     } else if(aValue === null || typeof aValue == 'boolean') {
-        aRet = '<input type="checkbox" style="margin-top: -5px" id="' + theConfigId + '" value="' + aDiskValue + '" '+(Boolean(aDiskValue) ? ' checked="checked" ' : '')+' />';
+        aRet = '<input type="checkbox" style="margin-top: -5px" name="' + theConfigId + '" value="' + aDiskValue + '" '+(Boolean(aDiskValue) ? ' checked="checked" ' : '')+' />';
 
     } else {
-        aRet = '<input type="text" class="form-control input-sm" style="margin-top: -5px;" id="' + theConfigId + '" value="' + aDiskValue + '" />';
+        aRet = '<input type="text" class="form-control input-sm" style="margin-top: -5px;" name="' + theConfigId + '" value="' + aDiskValue + '" />';
     }
 
     return aRet;
@@ -121,4 +121,11 @@ Codebot.Settings.Panel.Editor.prototype.render = function() {
 
         this.pair(this.mEditorPrefs[aId].name + aTip, aForm, {label: {style: 'width: 60%'}, content: {style: 'width: 30%'}});
     }
+};
+
+Codebot.Settings.Panel.Editor.prototype.onDestroy = function() {
+    var aSettings = this.getData();
+
+    this.getContext().settings.set({editor: aSettings});
+    this.getContext().settings.saveToDisk();
 };

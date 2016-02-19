@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 08, 2016 at 08:35 AM
+-- Generation Time: Feb 19, 2016 at 11:31 AM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `disk` varchar(32) NOT NULL,
   `auth_uid` varchar(255) NOT NULL,
   `auth_raw` text NOT NULL,
-  `preferences` text NOT NULL,
+  `settings` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `auth_uid` (`auth_uid`)
