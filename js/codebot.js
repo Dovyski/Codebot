@@ -110,7 +110,7 @@ var CODEBOT = new function() {
 
         mJobs = new CodebotJobs();
 		mEditors = new Codebot.Editors();
-        mShortcuts = new CodebotShortcuts();
+        mShortcuts = new Codebot.Shortcuts();
         mUI = new CodebotUI();
 		mSettings = new Codebot.Settings();
 		mSignals = new CodebotSignals();

@@ -21,75 +21,106 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var CodebotShortcuts = function() {
-    var mCodebot    = null;
-    var mSelf       = null;
+var Codebot = Codebot || {};
 
-    var saveActiveTab = function() {
-        var aTab = mCodebot.ui.tabs.active;
+/**
+ * Handle all actions related to shortcuts/keybindings
+ */
+Codebot.Shortcuts = function() {
+    var mCodebot,
+        mBindings;
+};
 
-        if(aTab) {
-            mCodebot.writeTabToDisk(aTab);
+Codebot.Shortcuts.prototype.saveActiveTab = function() {
+    var aTab = mCodebot.ui.tabs.active;
+
+    if(aTab) {
+        mCodebot.writeTabToDisk(aTab);
+    }
+
+    console.debug('Save active tab to disk.');
+};
+
+Codebot.Shortcuts.prototype.newFile = function() {
+    console.debug('Open new tab with empty file');
+};
+
+Codebot.Shortcuts.prototype.chooseFile = function() {
+    console.debug('Show dialog to open file');
+};
+
+Codebot.Shortcuts.prototype.renameNode = function() {
+    mCodebot.ui.filesPanel.renameFocusedNode();
+    console.debug('Rename node');
+};
+
+Codebot.Shortcuts.prototype.exit = function() {
+    console.debug('Exit application!');
+    return false;
+};
+
+Codebot.Shortcuts.prototype.closeTab = function() {
+    var aTab = mCodebot.ui.tabs.active;
+
+    if(aTab) {
+        mCodebot.ui.tabs.remove(aTab);
+    }
+
+    console.debug('Close current tab!');
+    return false; // prevent browser's default behavior
+};
+
+Codebot.Shortcuts.prototype.createKeyBindingsFromSettings = function() {
+    var aShortcuts = mCodebot.settings.get().shortcuts,
+        aCommand = null,
+        aKey = null;
+
+    for(aCommand in aShortcuts) {
+        aKey = aShortcuts[aCommand];
+
+        if(typeof this[aCommand] == 'function') {
+            this.set(aCommand, aKey, this[aCommand], this);
+
+        } else {
+            console.warn('CODEBOT [keybind] Unknown command "' + aCommand + '" to bind to "' + aKey + '"');
         }
+    }
+};
 
-        console.debug('Save active tab to disk.');
-    };
+Codebot.Shortcuts.prototype.handleBindPressed = function(theEvent, theKeys) {
+    var aAction,
+        aEntry;
 
-    var newFile = function() {
-        console.debug('Open new tab with empty file');
-    };
+    // Stop usual broser behavior.
+    theEvent.preventDefault();
 
-    var chooseFile = function() {
-        console.debug('Show dialog to open file');
-    };
-
-    var renameNode = function() {
-        mCodebot.ui.filesPanel.renameFocusedNode();
-        console.debug('Rename node');
-    };
-
-    var exit = function() {
-        console.debug('Exit application!');
-        return false;
-    };
-
-    var closeTab = function() {
-        var aTab = mCodebot.ui.tabs.active;
-
-        if(aTab) {
-            mCodebot.ui.tabs.remove(aTab);
+    for(aAction in mBindings) {
+        if(mBindings[aAction].key == theKeys) {
+            console.debug('CODEBOT [shortcut] ' + aAction);
+            mBindings[aAction].callback.call(mBindings[aAction].context);
+            break;
         }
+    }
+};
 
-        console.debug('Close current tab!');
-        return false; // prevent browser's default behavior
+Codebot.Shortcuts.prototype.set = function(theAction, theKey, theCallback, theCallbackContext) {
+    mBindings[theAction] = {
+        key: theKey,
+        callback: theCallback,
+        context: theCallbackContext
     };
 
-    var createKeyBindings = function() {
-        var aShortcuts = mCodebot.settings.get().shortcuts;
-        var aCommand = null;
-        var aKey = null;
-        var aShortcutsMethods = {
-            'saveActiveTab':    saveActiveTab,
-            'newFile':          newFile,
-            'chooseFile':       chooseFile,
-            'closeTab':         closeTab,
-            'renameNode':       renameNode,
-            'exit':             exit
-        };
+    Mousetrap.bindGlobal(theKey, this.handleBindPressed);
+    console.debug('CODEBOT [keybind] ' + theKey + ' = ' + theAction);
+};
 
-        for(aCommand in aShortcuts) {
-            aKey = aShortcuts[aCommand];
-            // TODO: better error handling when no method is available (key binding error)
-            Mousetrap.bindGlobal(aKey, aShortcutsMethods[aCommand]);
+Codebot.Shortcuts.prototype.getBindings = function() {
+    return mBindings;
+};
 
-            console.debug('CODEBOT [keybind] ' + aKey + ' = ' + aCommand);
-        }
-    };
+Codebot.Shortcuts.prototype.init = function(theCodebot) {
+    mCodebot = theCodebot;
+    mBindings = {};
 
-    this.init = function(theCodebot) {
-        mSelf    = this;
-        mCodebot = theCodebot;
-
-        createKeyBindings();
-    };
+    this.createKeyBindingsFromSettings();
 };
