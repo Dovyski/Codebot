@@ -32,7 +32,6 @@ AssetFinder.Plugin = function() {
     Codebot.Plugin.call(this);
 
     // Initialize personal stuff
-    this.id         = 'cc.codebot.asset.finder';
     this.licenses   = [];
 };
 
@@ -49,7 +48,7 @@ AssetFinder.Plugin.prototype.getPanelData = function(thePanel) {
 };
 
 AssetFinder.Plugin.prototype.initUIAfterProjectOpened = function(theProjectInfo) {
-    this.context.ui.addButton(this.id + 'mainPanel', { icon: '<i class="fa fa-picture-o"></i>', panel: AssetFinder.Panel.Main });
+    this.context.ui.addButton(AssetFinder.Plugin.meta + 'mainPanel', { icon: '<i class="fa fa-picture-o"></i>', panel: AssetFinder.Panel.Main });
 };
 
 AssetFinder.Plugin.prototype.loadLicenses = function() {
@@ -80,4 +79,12 @@ AssetFinder.Plugin.prototype.init = function(theContext) {
     this.context.signals.projectOpened.add(this.initUIAfterProjectOpened, this);
 };
 
-CODEBOT.addPlugin(new AssetFinder.Plugin());
+AssetFinder.Plugin.meta = {
+    className: AssetFinder.Plugin,
+    id: 'cc.codebot.asset.finder',
+    name: 'Asset finder',
+    description: 'Description here',
+    version: '1.0.0-ALPHA'
+};
+
+CODEBOT.addPlugin(AssetFinder.Plugin.meta);

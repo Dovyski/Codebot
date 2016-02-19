@@ -31,8 +31,6 @@ var JavascriptTools = JavascriptTools || {};
 JavascriptTools.Plugin = function() {
     // Call constructor of base class
     Codebot.Plugin.call(this);
-
-    this.id = 'cc.codebot.javascript.tools';
     this.mTestWindow = null;
 };
 
@@ -67,15 +65,15 @@ JavascriptTools.Plugin.prototype.createTestWindow = function(theUrl, theWidth, t
 
 JavascriptTools.Plugin.prototype.initAfterProjectOpened = function(theProjectInfo) {
     // Remove all JS stuff from the UI.
-    this.context.ui.removeButton(this.id + 'build');
-    this.context.ui.removeButton(this.id + 'settings');
+    this.context.ui.removeButton(JavascriptTools.Plugin.meta.id + 'build');
+    this.context.ui.removeButton(JavascriptTools.Plugin.meta.id + 'settings');
 
     // If the newly opened project is a JS one,
     // add all the JS UI back.
     if(theProjectInfo.type == "js") {
         // Add build and settings buttons.
-        this.context.ui.addButton(this.id + 'build', { icon: '<i class="fa fa-circle"></i>', action: this.build, context: this });
-        this.context.ui.addButton(this.id + 'settings', { icon: '<i class="fa fa-user"></i>', panel: JavascriptTools.Panel.Settings });
+        this.context.ui.addButton(JavascriptTools.Plugin.meta.id + 'build', { icon: '<i class="fa fa-circle"></i>', action: this.build, context: this });
+        this.context.ui.addButton(JavascriptTools.Plugin.meta.id + 'settings', { icon: '<i class="fa fa-user"></i>', panel: JavascriptTools.Panel.Settings });
     }
 };
 
@@ -141,4 +139,12 @@ JavascriptTools.Plugin.prototype.init = function(theContext) {
     this.context.signals.projectOpened.add(this.initAfterProjectOpened, this);
 };
 
-CODEBOT.addPlugin(new JavascriptTools.Plugin());
+JavascriptTools.Plugin.meta = {
+    className: JavascriptTools.Plugin,
+    id: 'cc.codebot.javascript.tools',
+    name: 'Javascript Tools',
+    description: 'Description here',
+    version: '1.0.0-ALPHA'
+};
+
+CODEBOT.addPlugin(JavascriptTools.Plugin.meta);

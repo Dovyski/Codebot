@@ -28,8 +28,7 @@ var Codebot = Codebot || {};
  * in order to work in Codebot.
  */
 Codebot.Plugin = function() {
-    this.id         = 'cc.codebot.plugin';      // a unique strings that identifies the plugin
-    this.context    = null;                     // a reference to codebot's itself
+    this.context = null;                     // a reference to codebot's itself
 };
 
 Codebot.Plugin.prototype.init = function(theContext) {

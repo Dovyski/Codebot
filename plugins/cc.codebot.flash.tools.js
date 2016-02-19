@@ -41,8 +41,6 @@ var FlashToolsCompilerOutputViewer = function(theContainer) {
 var FlashToolsPlugin = function() {
     const API_URL   = 'plugins/flash-tools/api.php';
 
-    this.id         = 'cc.codebot.flash.tools';
-
     var mSelf       = null;
     var mContext    = null;
     var mTestWindow = null;
@@ -220,4 +218,12 @@ var FlashToolsPlugin = function() {
 
 };
 
-CODEBOT.addPlugin(new FlashToolsPlugin());
+FlashToolsPlugin.meta = {
+    className: FlashToolsPlugin,
+    id: 'cc.codebot.flash.tools',
+    name: 'Flash Tools',
+    description: 'Description here',
+    version: '1.0.0-ALPHA'
+};
+
+CODEBOT.addPlugin(FlashToolsPlugin.meta);

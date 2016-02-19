@@ -25,8 +25,6 @@
  * Allows drag and drop of files into Codebot.
  */
 var DragDropPlugin = function() {
-    this.id             = 'cc.codebot.ide.web.dnd';
-
     var mSelf           = null;
     var mContext        = null;
 
@@ -144,4 +142,12 @@ var DragDropPlugin = function() {
     };
 };
 
-CODEBOT.addPlugin(new DragDropPlugin());
+DragDropPlugin.meta = {
+    className: DragDropPlugin,
+    id: 'cc.codebot.ide.web.dnd',
+    name: 'Drag and drop',
+    description: 'Description here',
+    version: '1.0.0-ALPHA'
+};
+
+CODEBOT.addPlugin(DragDropPlugin.meta);

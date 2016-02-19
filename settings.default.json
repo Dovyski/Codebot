@@ -21,6 +21,11 @@
     },
 
     "plugins": {
-        "cc.codebot.ide.web": true
+        "cc.codebot.ide.web": true,
+        "cc.codebot.ide.web.dnd": true,
+        "cc.codebot.flash.tools": true,
+        "cc.codebot.javascript.tools": true,
+        "cc.codebot.asset.finder": true,
+        "cc.codebot.sound.central": true
     }
 }

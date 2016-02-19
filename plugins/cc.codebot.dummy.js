@@ -21,85 +21,78 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+var Dummy = Dummy || {};
+
+Dummy.Panel = function() {
+    // Call constructor of base class
+    Codebot.Panel.call(this, 'Dummy panel');
+
+    // Set a data manager for this panel
+    this.setDataManager('com.dummy.plugin');
+};
+
+// Lovely pants-in-the-head javascript boilerplate for OOP.
+Dummy.Panel.prototype = Object.create(Codebot.Panel.prototype);
+Dummy.Panel.prototype.constructor = Dummy.Panel;
+
+Dummy.Panel.prototype.render = function() {
+    var aSelf = this;
+
+    Codebot.Panel.prototype.render.call(this);
+
+    // Show some nice about info about Codebot
+    this.row('<a href="javascript:void(0);" data-action="push" class="inf">Push itself</a>');
+    this.row('<a href="javascript:void(0);" data-action="pop" class="inf">Pop itself</a>');
+
+    this.container.find('a.inf').each(function(theElement) {
+        $(this).click(function() {
+            if($(this).data('action') == 'push') {
+                aSelf.push(Dummy.Panel);
+            } else if($(this).data('action') == 'pop'){
+                aSelf.pop();
+            }
+        })
+    });
+};
+
 /**
  * This is a boilerplate for plugin creation.
  */
-DummyPlugin = function() {
+Dummy.Plugin = function() {
     // Call constructor of base class
     Codebot.Plugin.call(this);
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
-DummyPlugin.prototype = Object.create(Codebot.prototype);
-DummyPlugin.prototype.constructor = Codebot.Plugin;
+Dummy.Plugin.prototype = Object.create(Codebot.Plugin.prototype);
+Dummy.Plugin.prototype.constructor = Dummy.Plugin;
 
-this.init = function(theContext) {
+Dummy.Plugin.prototype.savePanelData = function(thePanel, theData) {
+    console.debug('Dummy::savePanelData', thePanel, theData);
+};
+
+Dummy.Plugin.prototype.getPanelData = function(thePanel) {
+    return null;
+};
+
+Dummy.Plugin.prototype.init = function(theContext) {
     Codebot.Plugin.prototype.init.call(this, theContext);
 
     console.debug('DummyPlugin::init()');
 
-    this.context.ui.addButton({
-        icon: 'puzzle-piece',
-        customIcon: 'R',
+    this.context.ui.addButton('dummyBtn', {
+        icon: '<i class="fa fa-puzzle-piece"></i>',
         //action: mSelf.anotherMethod,
-        panel: mSelf.renderPanel
+        panel: Dummy.Panel
     });
 };
 
-    this.anotherMethod = function() {
-        mContext.ui.showDialog({
-            title: 'Dialog',
-            content: 'Hello world!',
-            buttons: {
-                'Ok, got it!': {dismiss: true}
-            }
-        });
-    };
-
-    this.renderPanel = function(theContainer) {
-        theContainer.append('<a href="#" id="myLink">pushState()<a/>');
-        theContainer.append('<a href="#" id="myAnotherPopHere">popState()<a/>');
-        theContainer.css('background', '#ff0000');
-        theContainer.css('width', '100%');
-        theContainer.css('height', '100%');
-
-        $('#myLink').click(function() {
-            console.log('HERE!', mContext);
-            mContext.ui.slidePanel.pushState(mSelf.renderAnotherPanel);
-        });
-
-        $('#myAnotherPopHere').click(function() {
-            mContext.ui.slidePanel.popState();
-        });
-    };
-
-    this.renderAnotherPanel = function(theContainer) {
-        theContainer.css('background', '#00ff00');
-        //theContainer.css('width', '100%');
-        //theContainer.css('height', '100%');
-        theContainer.append('<a href="#" id="myAnother">pushState()<a/>');
-        theContainer.append('<a href="#" id="myAnotherPop">popState()<a/>');
-
-        $('#myAnother').click(function() {
-            console.log('HERE!', mContext);
-            mContext.ui.slidePanel.pushState(mSelf.renderAnotherNewPanel);
-        });
-
-        $('#myAnotherPop').click(function() {
-            console.log('HERE!', mContext);
-            mContext.ui.slidePanel.popState();
-        });
-    };
-
-    this.renderAnotherNewPanel = function(theContainer) {
-        theContainer.css('background', '#0d00cf');
-        theContainer.html('<a href="#" id="myAnotherNew">popState()<a/>');
-
-        $('#myAnotherNew').click(function() {
-            console.log('HERE!', mContext);
-            mContext.ui.slidePanel.popState();
-        });
-    };
+Dummy.Plugin.meta = {
+    className: Dummy.Plugin,
+    id: 'com.dummy.plugin',
+    name: 'Dummy plugin',
+    description: 'Description here',
+    version: '1.0.0'
 };
 
-CODEBOT.addPlugin(new DummyPlugin());
+CODEBOT.addPlugin(Dummy.Plugin.meta);

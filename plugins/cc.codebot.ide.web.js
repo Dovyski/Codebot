@@ -29,7 +29,6 @@ var IdeWeb = IdeWeb || {};
  */
 IdeWeb.Plugin = function() {
     const API_URL = 'plugins/ide-web/api/?';
-    this.id = IdeWeb.Plugin.meta.id;
 
     var mSelf               = this;
     var mContext            = null;

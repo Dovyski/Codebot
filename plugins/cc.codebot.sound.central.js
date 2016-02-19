@@ -30,9 +30,6 @@ var SoundCentral = SoundCentral || {};
 SoundCentral.Plugin = function() {
     // Call constructor of base class
     Codebot.Plugin.call(this);
-
-    // Initialize internal stuff
-    this.id = 'cc.codebot.sound.central';
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
@@ -59,8 +56,16 @@ SoundCentral.Plugin.prototype.init = function(theContext) {
 
     // Add sound central button only after a project has been loaded
     this.context.signals.projectOpened.add(function(theProjectInfo) {
-        this.context.ui.addButton(this.id + 'mainPanel', { icon: '<i class="fa fa-volume-up"></i>', panel: SoundCentral.Panel.Main });
+        this.context.ui.addButton(SoundCentral.Plugin.meta.id + 'mainPanel', { icon: '<i class="fa fa-volume-up"></i>', panel: SoundCentral.Panel.Main });
     }, this);
 };
 
-CODEBOT.addPlugin(new SoundCentral.Plugin());
+SoundCentral.Plugin.meta = {
+    className: SoundCentral.Plugin,
+    id: 'cc.codebot.sound.central',
+    name: 'Sound Central',
+    description: 'Description here',
+    version: '1.0.0-ALPHA'
+};
+
+CODEBOT.addPlugin(SoundCentral.Plugin.meta);
