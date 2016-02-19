@@ -51,8 +51,8 @@ var CodebotUI = function() {
 			// Let everybody know that a content area was clicked.
 			mCodebot.signals.contentAreaClicked.dispatch([theEvent.target]);
 
-			// Close any open sliding panel.
-			mSlideTray.close();
+			// Close and destroy any open sliding panel.
+			mSlideTray.clear();
 		});
 	};
 
