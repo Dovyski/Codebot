@@ -39,6 +39,37 @@ Codebot.Settings.Panel.Shortcuts = function() {
 Codebot.Settings.Panel.Shortcuts.prototype = Object.create(Codebot.Panel.prototype);
 Codebot.Settings.Panel.Shortcuts.prototype.constructor = Codebot.Settings.Panel.Shortcuts;
 
+Codebot.Settings.Panel.Shortcuts.LABELS = {
+    'saveActiveTab': 'Save active tab',
+    'newFile': 'Create new file',
+    'chooseFile': 'Open a file',
+    'closeTab': 'Close current tab',
+    'renameNode': 'Rename file',
+    'exit': 'Quit',
+};
+
 Codebot.Settings.Panel.Shortcuts.prototype.render = function() {
-    this.row('shortcuts');
+    var aSettingsFromDisk,
+        aBindings,
+        aId;
+
+    Codebot.Panel.prototype.render.call(this);
+
+    aSettingsFromDisk = this.getContext().settings.get().shortcuts;
+    aBindings = this.getContext().shortcuts.getBindings();
+
+    for(aId in aSettingsFromDisk) {
+        this.pair(
+            Codebot.Settings.Panel.Shortcuts.LABELS[aId],
+            '<input type="text" name="' + aId + '" value="' + aSettingsFromDisk[aId] + '"/>',
+            {label: {style: 'width: 70%'}, content: {style: 'width: 25%'}}
+        );
+    }
+};
+
+Codebot.Settings.Panel.Shortcuts.prototype.onDestroy = function() {
+    var aSettings = this.getData();
+
+    this.getContext().settings.set({shortcuts: aSettings});
+    this.getContext().settings.saveToDisk();
 };

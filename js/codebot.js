@@ -137,7 +137,8 @@ var CODEBOT = new function() {
     this.__defineGetter__("editors", function() { return mEditors; });
     this.__defineGetter__("ui", function() { return mUI; });
     this.__defineGetter__("io", function() { return mIO; });
-    this.__defineGetter__("settings", function() { return mSettings; });
+	this.__defineGetter__("settings", function() { return mSettings; });
+    this.__defineGetter__("shortcuts", function() { return mShortcuts; });
     this.__defineGetter__("signals", function() { return mSignals; });
     this.__defineGetter__("jobs", function() { return mJobs; });
 };
