@@ -114,7 +114,7 @@ var CodebotWebFilesystem = function() {
 
 	this.readFile = function(theNode, theCallback) {
 		if(theNode.path.indexOf('codebot://') != -1) {
-			runCommand({method: 'read-codebot', path: theNode.path.replace(/codebot:\/\//, '')}, 'text', theCallback);
+			runCommand({method: 'readCodebot', path: theNode.path.replace(/codebot:\/\//, '')}, 'text', theCallback);
 
 		} else {
 			readBinary(theNode.path, theCallback);

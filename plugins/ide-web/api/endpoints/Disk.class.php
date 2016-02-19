@@ -62,7 +62,8 @@ class Disk extends Base {
 			array('name' => 'cc.codebot.javascript.tools.js', 'title' => 'cc.codebot.javascript.tools.js', 'path' => './plugins/cc.codebot.javascript.tools.js'),
 			array('name' => 'cc.codebot.ide.web.dnd.js', 'title' => 'cc.codebot.ide.web.dnd.js', 'path' => './plugins/cc.codebot.ide.web.dnd.js'),
 			array('name' => 'cc.codebot.asset.finder.js', 'title' => 'cc.codebot.asset.finder.js', 'path' => './plugins/cc.codebot.asset.finder.js'),
-			array('name' => 'cc.codebot.sounder.central.js', 'title' => 'cc.codebot.sound.central.js', 'path' => './plugins/cc.codebot.sound.central.js')
+			array('name' => 'cc.codebot.sound.central.js', 'title' => 'cc.codebot.sound.central.js', 'path' => './plugins/cc.codebot.sound.central.js'),
+			array('name' => 'cc.codebot.dummy.js', 'title' => 'cc.codebot.dummy.js', 'path' => './plugins/cc.codebot.dummy.js')
 		);
 	}
 
@@ -80,7 +81,7 @@ class Disk extends Base {
 	public function write(array $theParams) {
 		$aMount = $this->getParam('mount', $theParams);
 		$aPath 	= $this->getParam('path', $theParams);
-		$aData 	= $this->getParam('data', $theParams);
+		$aData 	= $this->getParam('data', $theParams, false);
 
 		$aPath = $this->realPath($aMount) . \Codebot\Utils::escapePath($aPath);
 		$aData = $aData == null && isset($_FILES['file']) ? file_get_contents($_FILES['file']['tmp_name']) : $aData;
@@ -126,6 +127,21 @@ class Disk extends Base {
 		}
 
 		return array('success' => true, 'msg' => '');
+	}
+
+	public function readCodebot(array $theParams) {
+		$aMount = $this->getParam('mount', $theParams);
+		$aPath 	= $this->getParam('path', $theParams);
+		$aRet = null;
+
+		if($aPath == 'settings.default.json') {
+			$aRet = json_decode(file_get_contents(dirname(__FILE__) . '/../../../../settings.default.json'));
+
+		} else if($aPath == 'settings.json') {
+			$aRet = json_decode(file_get_contents(dirname(__FILE__) . '/../../../../settings.default.json')); // TODO: get settings from data base
+		}
+
+		return $aRet;
 	}
 
 	public function lsCodebot(array $theParams) {

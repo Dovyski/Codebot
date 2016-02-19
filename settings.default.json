@@ -1,0 +1,22 @@
+{
+    "editor": {
+        "selectionStyle": "line",
+        "highlightActiveLine": true,
+        "highlightSelectedWord": true,
+        "cursorStyle": "ace",
+        "mergeUndoDeltas": true,
+        "behavioursEnabled": true,
+        "wrapBehavioursEnabled": true,
+        "hScrollBarAlwaysVisible": true,
+        "animatedScroll": false
+    },
+
+    "shortcuts": {
+        "saveActiveTab": "mod+s",
+        "newFile": "mod+n",
+        "chooseFile": "mod+o",
+        "closeTab": "mod+w",
+        "renameNode": "f2",
+        "exit": "mod+q"
+    }
+}

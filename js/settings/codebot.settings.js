@@ -47,10 +47,11 @@ Codebot.Settings.prototype.init = function(theCodebot) {
     this.addSection({id: 'plugins', title: 'Plugins', icon: '<i class="fa fa-puzzle-piece fa-lg"></i>', panel: Codebot.Settings.Panel.Plugins});
 };
 
-
 Codebot.Settings.prototype.saveToDisk = function() {
-    mCodebot.io.writeFile({path: 'codebot://./data/prefs.default.json'}, JSON.stringify(mData), function() {
-        console.log('CODEBOT [prefs] Saved to disk');
+    console.debug('CODEBOT [settings] Saving to disk.');
+
+    mCodebot.io.writeFile({path: 'codebot://settings.json'}, JSON.stringify(mData), function() {
+        console.log('CODEBOT [settings] Saved to disk.');
     });
 };
 
@@ -60,29 +61,28 @@ Codebot.Settings.prototype.get = function() {
 
 Codebot.Settings.prototype.set = function(theObj) {
     $.extend(true, mData, theObj);
-};
 
-// TODO: remove this method, I think...
-Codebot.Settings.prototype.add = function(theKey, theValue) {
-    mData[theKey] = theValue;
-    console.log('CODEBOT [prefs] Entry updated:', theKey, theValue);
+    console.debug('CODEBOT [settings] Change: ', theObj);
 
     // Tell everybody that the preferences have been updated.
-    mCodebot.signals.preferencesUpdated.dispatch([theKey, theValue]);
-
-    this.saveToDisk();
+    mCodebot.signals.preferencesUpdated.dispatch(theObj);
 };
 
 Codebot.Settings.prototype.load = function(theCallback) {
-    var aSelf = this;
+    var aSelf = this,
+        aCodebot = mCodebot;
 
-    console.log('CODEBOT [prefs] Loading preferences...');
+    console.log('CODEBOT [settings] Loading...');
 
-    // TODO: fix this, it breaks IO layer
-    mCodebot.io.readFile({path: 'codebot://./data/prefs.default.json'}, function(theData) {
-        eval('aSelf.set('+theData+')');
-        console.log('CODEBOT [prefs] Preferences loaded!', aSelf.get());
-        theCallback();
+    // First of all, load the default settings
+    aCodebot.io.readFile({path: 'codebot://settings.default.json'}, function(theDefault) {
+        aSelf.set(JSON.parse(theDefault));
+
+        aCodebot.io.readFile({path: 'codebot://settings.json'}, function(theData) {
+            aSelf.set(JSON.parse(theData));
+            console.log('CODEBOT [settings] Loaded and ready', aSelf.get());
+            theCallback();
+        });
     });
 };
 
