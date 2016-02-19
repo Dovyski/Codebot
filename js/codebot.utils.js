@@ -81,4 +81,23 @@ CODEBOT.utils = new function() {
 
         return aRet.join('&');
     };
+
+    this.expandProps = function(theProps, theEqualChar, theQuoteChar, theSeparatorChar) {
+    	var aRet = '',
+    		aProp;
+
+    	theEqualChar = theEqualChar || '=';
+    	theQuoteChar = theQuoteChar || '"';
+    	theSeparatorChar = theSeparatorChar || ' ';
+
+    	if(theProps == null) {
+    		return '';
+    	}
+
+    	for(aProp in theProps) {
+    		aRet = aProp + theEqualChar + theQuoteChar + (typeof theProps[aProp] == 'object' ? this.expandProps(theProps[aProp], ':', ' ', ';') : theProps[aProp]) + theQuoteChar + theSeparatorChar;
+    	}
+
+        return aRet;
+    };
 };

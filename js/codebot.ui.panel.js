@@ -98,12 +98,14 @@ Codebot.Panel.prototype.row = function(theContent, theUseMargins) {
  *
  * @param  {string} theLabel    A text to be displayed to the left of the panel content area.
  * @param  {string} theContent  A text to be displayed to the right of the panel content area.
+ * @param  {object} theOptions  An object containing the customization options for both the label and the content, in the format <code>{label: {}, content: {}}</code>. Each of such objects will be seen as properties that will be added to the speficied div element, e.g. <code>{label: {style: {padding: 0}}}</code> will create a label element with a <code>style</code> property containing <code>'padding: 0'</code> as its content.
  */
-Codebot.Panel.prototype.pair = function(theLabel, theContent) {
+Codebot.Panel.prototype.pair = function(theLabel, theContent, theOptions) {
 	this.addToDom({
 		type: 'pair',
 		label: theLabel || '',
-		content: theContent
+		content: theContent,
+		options: theOptions || {}
 	});
 };
 
@@ -124,8 +126,8 @@ Codebot.Panel.prototype.addToDom = function(theItem) {
 
 	if(theItem.type == 'pair') {
 		aContent += '<div class="panel-pair-icon"></div>';
-		aContent += '<div class="panel-pair-text">' + theItem.label + '</div>';
-		aContent += '<div class="panel-pair-content">' + theItem.content + '</div>';
+		aContent += '<div class="panel-pair-text" '+ (aOptions.label && aOptions.label.style ? 'style="' + aOptions.label.style + '"': '') +'>' + theItem.label + '</div>';
+		aContent += '<div class="panel-pair-content"'+ (aOptions.content && aOptions.content.style ? 'style="' + aOptions.content.style + '"': '') +'>' + theItem.content + '</div>';
 
 	} else if (theItem.type == 'divider' || theItem.type == 'title') {
 		aContent += '<i class="fa fa-'+(aOptions.icon || 'caret-down') + '"></i> ' + theItem.title;

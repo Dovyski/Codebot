@@ -37,9 +37,45 @@ Codebot.Settings.Panel.Editor = function() {
     // From: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
     // Where not indicated otherwise option values are boolean.
     this.mEditorPrefs = {
-        selectionStyle: {name: 'Selection style', value: ["line", "text"]},
-        highlightActiveLine: {name: 'Hightlight active line', value: null},
-        highlightSelectedWord: {name: 'Hightlight selected word', value: Number, tip: 'This is a tip.'}
+        // Editor
+        selectionStyle: {name: 'Selection style', value: ['line', 'text']},
+        highlightActiveLine: {name: 'Hightlight active line', value: true},
+        highlightSelectedWord: {name: 'Hightlight selected word', value: true, tip: 'This is a tip.'},
+        cursorStyle: {name: 'Cursor style', value: ['ace', 'slim', 'smooth', 'wide']},
+        behavioursEnabled: {name: 'behavioursEnabled', value: null},
+        wrapBehavioursEnabled: {name: 'wrapBehavioursEnabled', value: null},
+
+        // Renderer
+        hScrollBarAlwaysVisible: {name: 'hScrollBarAlwaysVisible', value: null},
+        vScrollBarAlwaysVisible: {name: 'vScrollBarAlwaysVisible', value: null},
+        highlightGutterLine: {name: 'highlightGutterLine', value: null},
+        animatedScroll: {name: 'animatedScroll', value: null},
+        showInvisibles: {name: 'showInvisibles', value: false},
+        showPrintMargin: {name: 'showPrintMargin', value: null},
+        printMarginColumn: {name: 'printMarginColumn', value: 80},
+        printMargin: {name: 'printMargin', value: true},
+        fadeFoldWidgets: {name: 'fadeFoldWidgets', value: null},
+        showFoldWidgets: {name: 'showFoldWidgets', value: true},
+        showLineNumbers: {name: 'showLineNumbers', value: null},
+        showGutter: {name: 'showGutter', value: true},
+        displayIndentGuides: {name: 'displayIndentGuides', value: null},
+        fontSize: {name: 'fontSize', value: 18},
+        //fontFamily: {name: 'fontFamily', value: ''},
+        //maxLines: {name: 'maxLines', value: null},
+        //minLines: {name: 'minLines', value: null},
+        //scrollPastEnd: {name: 'scrollPastEnd', value: null},
+        fixedWidthGutter: {name: 'fixedWidthGutter', value: null},
+        theme: {name: 'theme', value: ['ace/theme/tomorrow_night_eighties']},
+
+        // session
+        firstLineNumber: {name: 'firstLineNumber', value: null},
+        overwrite: {name: 'overwrite', value: null},
+        newLineMode: {name: 'newLineMode', value: null},
+        useWorker: {name: 'useWorker', value: null},
+        useSoftTabs: {name: 'useSoftTabs', value: true},
+        tabSize: {name: 'tabSize', value: 4},
+        wrap: {name: 'wrap', value: false},
+        foldStyle: {name: 'foldStyle', value: null},
     };
 };
 
@@ -59,7 +95,7 @@ Codebot.Settings.Panel.Editor.prototype.convertConfigOptionToFormElement = funct
         }
         aRet += '</select>';
 
-    } else if(aValue === null) {
+    } else if(aValue === null || typeof aValue == 'boolean') {
         aRet = '<input type="checkbox" style="margin-top: -5px" id="' + theConfigId + '" value="' + aDiskValue + '" '+(Boolean(aDiskValue) ? ' checked="checked" ' : '')+' />';
 
     } else {
@@ -83,6 +119,6 @@ Codebot.Settings.Panel.Editor.prototype.render = function() {
         aTip = this.mEditorPrefs[aId].tip ? ' <i class="fa fa-question-circle" style="color: #cfcfcf;" title="' + this.mEditorPrefs[aId].tip + '"></i>' : '';
         aForm = this.convertConfigOptionToFormElement(aId, this.mEditorPrefs[aId], aPrefsFromDisk);
 
-        this.pair(this.mEditorPrefs[aId].name + aTip, aForm);
+        this.pair(this.mEditorPrefs[aId].name + aTip, aForm, {label: {style: 'width: 60%'}, content: {style: 'width: 30%'}});
     }
 };
