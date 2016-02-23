@@ -47,17 +47,8 @@ JavascriptTools.Panel.Settings.prototype.constructor = JavascriptTools.Panel.Set
 JavascriptTools.Panel.Settings.prototype.render = function() {
     Codebot.Panel.prototype.render.call(this);
 
-    this.divider('Output');
-    this.pair('Output dir', '<input type="text" name="outDir" value="/bin/" />');
-    this.pair('Output file', '<input type="text" name="outFile" value="Mode.swf" />');
-    this.pair('Doc class', '<input type="text" name="docClass" value="src/Main.as" />');
-    this.pair('Width', '<input type="text" name="width" value="800" />');
-    this.pair('Height', '<input type="text" name="height" value="600" />');
-
-    this.divider('SDK and Compiler');
-    this.pair('Platform', '<select name="platform"><option value="player">Flash Player</option><option value="air">AIR</option></select>');
-    this.pair('Version', '<input type="text" name="swf" value="22" />');
-    this.pair('Other', '<input type="text" name="other" value="/libs/" />');
-    this.pair('Test', '<input type="text" name="test" value="/libs/" />');
-    this.pair('Thing', '<select name="thing"><option value="800">Flash Player</option></select>');
+    this.divider('Build');
+    this.pair('Index file', '<input type="text" name="startFile" value="index.html" />');
+    this.pair('Width (px)', '<input type="text" name="width" value="800" />');
+    this.pair('Height (px)', '<input type="text" name="height" value="600" />');
 };
