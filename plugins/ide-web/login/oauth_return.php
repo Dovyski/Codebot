@@ -57,12 +57,12 @@ if ($aResponse == null || array_key_exists('error', $aResponse)) {
 	} else {
 		// It's all good. Let's get the local account for that
 		// oauth info (or create a new one, if it doesnt exist.)
-		$aUserId = User::getOrCreateByOAuthInfo($aResponse['auth']);
+		$aUserId = Codebot\User::getOrCreateByOAuthInfo($aResponse['auth']);
 
 		if($aUserId != null) {
-			Auth::authenticate($aUserId);
+			Codebot\Auth::authenticate($aUserId);
 
-			$aUser 		= User::getById($aUserId);
+			$aUser 		= Codebot\User::getById($aUserId);
 			$aLocation 	= './../ide/?disk=' . $aUser->disk;
 		}
 	}
