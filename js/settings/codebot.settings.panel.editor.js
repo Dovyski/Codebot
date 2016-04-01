@@ -69,7 +69,7 @@ Codebot.Settings.Panel.Editor = function() {
 
         // session
         firstLineNumber: {name: 'firstLineNumber', value: 1},
-        newLineMode: {name: 'newLineMode', value: null},
+        newLineMode: {name: 'newLineMode', value: ['auto', 'windows', 'unix']},
         useWorker: {name: 'useWorker', value: false},
         useSoftTabs: {name: 'useSoftTabs', value: false},
         tabSize: {name: 'tabSize', value: 4},
@@ -94,7 +94,7 @@ Codebot.Settings.Panel.Editor.prototype.convertConfigOptionToFormElement = funct
         aRet += '</select>';
 
     } else if(aValue === null || typeof aValue == 'boolean') {
-        aRet = '<input type="checkbox" style="margin-top: -5px" name="' + theConfigId + '" value="' + theDiskValue + '" '+(Boolean(theDiskValue) ? ' checked="checked" ' : '')+' />';
+        aRet = '<input type="checkbox" style="margin-top: -5px" name="' + theConfigId + '" '+(Boolean(theDiskValue) ? ' checked="checked" ' : '')+' />';
 
     } else {
         aRet = '<input type="text" class="form-control input-sm" style="margin-top: -5px;" name="' + theConfigId + '" value="' + theDiskValue + '" />';

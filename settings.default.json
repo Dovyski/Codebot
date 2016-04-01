@@ -23,6 +23,7 @@
         "scrollPastEnd": false,
         "theme": "ace/theme/tomorrow_night_eighties",
         "firstLineNumber": 1,
+        "newLineMode": "auto",
         "useSoftTabs": false,
         "tabSize": 4,
         "wrap": false

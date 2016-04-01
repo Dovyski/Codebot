@@ -252,7 +252,12 @@ Codebot.Panel.prototype.serialize = function() {
  * @return {object} An object containing data from all form elements in the panel in format <code>{name: value, name2: value2, ...}</code>.
  */
 Codebot.Panel.prototype.getData = function() {
-	return this.container.find(':input').serializeObject();
+	var aData;
+
+	aData = CODEBOT.utils.covertInputElementsToJSON(this.container);
+	aData = CODEBOT.utils.convertPropertyValueToRightType(aData);
+
+	return aData;
 };
 
 /**

@@ -100,4 +100,53 @@ CODEBOT.utils = new function() {
 
         return aRet;
     };
+
+    this.convertPropertyValueToRightType = function(theObject) {
+        var aProp,
+            aValue,
+            aRet = {};
+
+        for(aProp in theObject) {
+            aValue = theObject[aProp];
+
+            if(aValue != null && typeof aValue == 'string') {
+                if(aValue.match(/-*[0-9]*\.[0-9]*/g) != null) {
+                    // Float
+                    aValue = parseFloat(aValue);
+
+                } else if(aValue.match(/^[0-9]+$/) != null) {
+                    // Integer
+                    aValue = parseInt(aValue);
+
+                } else if(aValue == 'true' || aValue == 'false') {
+                    // Boolean
+                    aValue = Boolean(aValue);
+                }
+            }
+
+            if(typeof aValue != 'function') {
+                aRet[aProp] = aValue;
+            }
+        }
+
+        return aRet;
+    };
+
+    this.covertInputElementsToJSON = function(theElement) {
+        var aRet = {},
+            aValue;
+
+        theElement.find(':input').each(function(theIndex, theItem) {
+            if(theItem.type == 'checkbox') {
+                aValue = $(theItem).is(':checked');
+
+            } else {
+                aValue = $(theItem).val();
+
+            }
+            aRet[theItem.name] = aValue;
+        });
+
+        return aRet;
+    };
 };
