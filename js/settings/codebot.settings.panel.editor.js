@@ -42,37 +42,36 @@ Codebot.Settings.Panel.Editor = function() {
         highlightActiveLine: {name: 'Hightlight active line', value: true},
         highlightSelectedWord: {name: 'Hightlight selected word', value: true, tip: 'This is a tip.'},
         cursorStyle: {name: 'Cursor style', value: ['ace', 'slim', 'smooth', 'wide']},
-        behavioursEnabled: {name: 'behavioursEnabled', value: null},
-        wrapBehavioursEnabled: {name: 'wrapBehavioursEnabled', value: null},
+        behavioursEnabled: {name: 'behavioursEnabled', value: true},
+        wrapBehavioursEnabled: {name: 'wrapBehavioursEnabled', value: false},
 
         // Renderer
-        hScrollBarAlwaysVisible: {name: 'hScrollBarAlwaysVisible', value: null},
-        vScrollBarAlwaysVisible: {name: 'vScrollBarAlwaysVisible', value: null},
-        highlightGutterLine: {name: 'highlightGutterLine', value: null},
-        animatedScroll: {name: 'animatedScroll', value: null},
+        hScrollBarAlwaysVisible: {name: 'hScrollBarAlwaysVisible', value: true},
+        vScrollBarAlwaysVisible: {name: 'vScrollBarAlwaysVisible', value: true},
+        highlightGutterLine: {name: 'highlightGutterLine', value: true},
+        animatedScroll: {name: 'animatedScroll', value: true},
         showInvisibles: {name: 'showInvisibles', value: false},
         showPrintMargin: {name: 'showPrintMargin', value: null},
-        printMarginColumn: {name: 'printMarginColumn', value: 80},
+        printMarginColumn: {name: 'printMarginColumn', value: 'renderer'},
         printMargin: {name: 'printMargin', value: true},
-        fadeFoldWidgets: {name: 'fadeFoldWidgets', value: null},
+        fadeFoldWidgets: {name: 'fadeFoldWidgets', value: false},
         showFoldWidgets: {name: 'showFoldWidgets', value: true},
-        showLineNumbers: {name: 'showLineNumbers', value: null},
-        showGutter: {name: 'showGutter', value: true},
-        displayIndentGuides: {name: 'displayIndentGuides', value: null},
-        fontSize: {name: 'fontSize', value: 18},
+        showLineNumbers: {name: 'showLineNumbers', value: true},
+        showGutter: {name: 'showGutter', value: false},
+        displayIndentGuides: {name: 'displayIndentGuides', value: false},
+        fontSize: {name: 'fontSize', value: 20},
         //fontFamily: {name: 'fontFamily', value: ''},
         //maxLines: {name: 'maxLines', value: null},
         //minLines: {name: 'minLines', value: null},
-        //scrollPastEnd: {name: 'scrollPastEnd', value: null},
+        scrollPastEnd: {name: 'scrollPastEnd', value: false},
         fixedWidthGutter: {name: 'fixedWidthGutter', value: null},
         theme: {name: 'theme', value: ['ace/theme/tomorrow_night_eighties']},
 
         // session
-        firstLineNumber: {name: 'firstLineNumber', value: null},
-        overwrite: {name: 'overwrite', value: null},
+        firstLineNumber: {name: 'firstLineNumber', value: 1},
         newLineMode: {name: 'newLineMode', value: null},
-        useWorker: {name: 'useWorker', value: null},
-        useSoftTabs: {name: 'useSoftTabs', value: true},
+        useWorker: {name: 'useWorker', value: false},
+        useSoftTabs: {name: 'useSoftTabs', value: false},
         tabSize: {name: 'tabSize', value: 4},
         wrap: {name: 'wrap', value: false},
         foldStyle: {name: 'foldStyle', value: null},
@@ -83,23 +82,22 @@ Codebot.Settings.Panel.Editor = function() {
 Codebot.Settings.Panel.Editor.prototype = Object.create(Codebot.Panel.prototype);
 Codebot.Settings.Panel.Editor.prototype.constructor = Codebot.Settings.Panel.Editor;
 
-Codebot.Settings.Panel.Editor.prototype.convertConfigOptionToFormElement = function(theConfigId, theConfigDescription, theValues) {
+Codebot.Settings.Panel.Editor.prototype.convertConfigOptionToFormElement = function(theConfigId, theConfigDescription, theDiskValue) {
     var aValue = theConfigDescription.value;
     var aRet = '';
-    var aDiskValue = theValues ? theValues[theConfigId] || '' : '';
 
     if(aValue instanceof Array) {
         aRet = '<select name="'+theConfigId+'">';
         for(var i = 0; i < aValue.length; i++) {
-            aRet += '<option value="' + aValue[i] + '" '+(aDiskValue == aValue[i] ? ' selected="selected" ' : '')+'>' + aValue[i] + '</option>';
+            aRet += '<option value="' + aValue[i] + '" '+(theDiskValue == aValue[i] ? ' selected="selected" ' : '')+'>' + aValue[i] + '</option>';
         }
         aRet += '</select>';
 
     } else if(aValue === null || typeof aValue == 'boolean') {
-        aRet = '<input type="checkbox" style="margin-top: -5px" name="' + theConfigId + '" value="' + aDiskValue + '" '+(Boolean(aDiskValue) ? ' checked="checked" ' : '')+' />';
+        aRet = '<input type="checkbox" style="margin-top: -5px" name="' + theConfigId + '" value="' + theDiskValue + '" '+(Boolean(theDiskValue) ? ' checked="checked" ' : '')+' />';
 
     } else {
-        aRet = '<input type="text" class="form-control input-sm" style="margin-top: -5px;" name="' + theConfigId + '" value="' + aDiskValue + '" />';
+        aRet = '<input type="text" class="form-control input-sm" style="margin-top: -5px;" name="' + theConfigId + '" value="' + theDiskValue + '" />';
     }
 
     return aRet;
@@ -108,6 +106,8 @@ Codebot.Settings.Panel.Editor.prototype.convertConfigOptionToFormElement = funct
 Codebot.Settings.Panel.Editor.prototype.render = function() {
     var aPrefsFromDisk,
         aId,
+        aValue,
+        aEntry,
         aTip,
         aForm;
 
@@ -116,10 +116,12 @@ Codebot.Settings.Panel.Editor.prototype.render = function() {
     aPrefsFromDisk = CODEBOT.settings.get().editor;
 
     for(aId in this.mEditorPrefs) {
-        aTip = this.mEditorPrefs[aId].tip ? ' <i class="fa fa-question-circle" style="color: #cfcfcf;" title="' + this.mEditorPrefs[aId].tip + '"></i>' : '';
-        aForm = this.convertConfigOptionToFormElement(aId, this.mEditorPrefs[aId], aPrefsFromDisk);
+        aEntry = this.mEditorPrefs[aId];
+        aTip = aEntry.tip ? ' <i class="fa fa-question-circle" style="color: #cfcfcf;" title="' + aEntry.tip + '"></i>' : '';
+        aValue = aPrefsFromDisk[aId];
+        aForm = this.convertConfigOptionToFormElement(aId, aEntry, aValue);
 
-        this.pair(this.mEditorPrefs[aId].name + aTip, aForm, {label: {style: 'width: 60%'}, content: {style: 'width: 30%'}});
+        this.pair(aEntry.name + aTip, aForm, {label: {style: 'width: 60%'}, content: {style: 'width: 30%'}});
     }
 };
 
