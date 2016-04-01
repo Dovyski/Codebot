@@ -28,12 +28,15 @@ Codebot.UI = Codebot.UI || {};
  * [function description]
  */
 Codebot.UI.SlideTray = function() {
-    this.SLIDE_DURATION = 500; // in ms
-
     var mCodebot,
         mId,
         mStack,
         mOpen;
+};
+
+Codebot.UI.SlideTray.prototype.getSlideDuration = function() {
+    var aSettings = mCodebot.settings.get().ui;
+    return aSettings.slidePanelAnimation ? aSettings.slidePanelAnimationDuration : 5;
 };
 
 Codebot.UI.SlideTray.prototype.transform3d = function(theElementId, theX, theY, theZ) {
@@ -42,7 +45,7 @@ Codebot.UI.SlideTray.prototype.transform3d = function(theElementId, theX, theY, 
 
 Codebot.UI.SlideTray.prototype.slideElement = function(theId, theX, theDuration) {
     $('#' + theId).css({
-        '-webkit-transition': 'all ' + (theDuration || this.SLIDE_DURATION) + 'ms',
+        '-webkit-transition': 'all ' + (theDuration || this.getSlideDuration()) + 'ms',
         '-webkit-transform': 'translate3d('+theX+'px, 0px, 0px)'
     });
 };
@@ -152,7 +155,7 @@ Codebot.UI.SlideTray.prototype.pushPanel = function(thePanelClass) {
     mStack.push(aPanel);
 
     setTimeout(function() {
-        aSelf.slideElement(aContainerId, -aPanelWidth, mStack.length != 1 ? this.SLIDE_DURATION : 1);
+        aSelf.slideElement(aContainerId, -aPanelWidth, mStack.length != 1 ? aSelf.getSlideDuration() : 1);
     }, 50);
 };
 
@@ -183,7 +186,7 @@ Codebot.UI.SlideTray.prototype.popPanel = function() {
         if(mStack.length == 0) {
             mCodebot.signals.lastSlidePanelClosed.dispatch();
         }
-    }, this.SLIDE_DURATION);
+    }, this.getSlideDuration());
 };
 
 Codebot.UI.SlideTray.prototype.instantiatePanelObject = function(thePanelClass) {
@@ -246,7 +249,7 @@ Codebot.UI.SlideTray.prototype.close = function(theCallback, theCallbackContext)
         }
 
         mOpen = false;
-        aDuration = this.SLIDE_DURATION
+        aDuration = this.getSlideDuration()
     }
 
     setTimeout(function() {

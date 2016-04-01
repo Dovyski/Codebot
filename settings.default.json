@@ -40,7 +40,7 @@
 
     "ui": {
         "slidePanelAnimation": true,
-        "slidePanelAnimationDuration": 500
+        "slidePanelAnimationDuration": 350
     },
 
     "plugins": {
