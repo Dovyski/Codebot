@@ -25,9 +25,7 @@ var CodebotUI = function() {
     // Private properties
 	var mTabs 				= null;
 	var mFilesPanel         = null;
-	var mSlidePanel         = null;
 	var mSlideTray         	= null;
-	var mPreferences        = null;
 	var mCodebot            = null;
     var mButtons            = {};
     var mSelf               = null;
@@ -188,15 +186,11 @@ var CodebotUI = function() {
         mCodebot        = theCodebot;
 		mFilesPanel     = new CodebotFilesPanel();
         mTabs           = new CodebotTabs();
-        mSlidePanel     = new CodebotSlidePanel();
 		mSlideTray		= new Codebot.UI.SlideTray();
-        mPreferences    = new CodebotPreferencesUI();
 
         mFilesPanel.init(mCodebot);
         mTabs.init(mCodebot);
-        mSlidePanel.init(mCodebot);
 		mSlideTray.init(mCodebot);
-        mPreferences.init(mCodebot);
 
         // Add Codebot button at the bottom of the sliding bar.
         mSelf.addButton('cc.codebot.ui.preferences', {icon: '<i class="fa fa-cog"></i>', position: 'bottom', panel: Codebot.Settings.Panel.Main});
@@ -220,7 +214,5 @@ var CodebotUI = function() {
     // getters
     this.__defineGetter__("tabs", function(){ return mTabs; });
     this.__defineGetter__("filesPanel", function(){ return mFilesPanel; });
-	this.__defineGetter__("slidePanel", function(){ return mSlidePanel; });
     this.__defineGetter__("slideTray", function(){ return mSlideTray; });
-    this.__defineGetter__("preferences", function(){ return mPreferences; });
 };
