@@ -38,6 +38,11 @@
         "exit": "mod+q"
     },
 
+    "ui": {
+        "slidePanelAnimation": true,
+        "slidePanelAnimationDuration": 500
+    },
+
     "plugins": {
         "cc.codebot.ide.web": true,
         "cc.codebot.ide.web.dnd": true,

@@ -40,5 +40,26 @@ Codebot.Settings.Panel.UI.prototype = Object.create(Codebot.Panel.prototype);
 Codebot.Settings.Panel.UI.prototype.constructor = Codebot.Settings.Panel.UI;
 
 Codebot.Settings.Panel.UI.prototype.render = function() {
-    this.row('UI');
+    var aPrefsFromDisk;
+
+    Codebot.Panel.prototype.render.call(this);
+
+    aPrefsFromDisk = CODEBOT.settings.get().ui;
+
+    this.pair(
+        'Use animation',
+        '<input type="checkbox" style="margin-top: -5px" name="slidePanelAnimation" '+(Boolean(true) ? ' checked="checked" ' : '')+' />',
+        {label: {style: 'width: 60%'}, content: {style: 'width: 30%'}}
+    );
+
+    this.pair(
+        'Animation duration (ms)',
+        '<input type="text" class="form-control input-sm" style="margin-top: -5px;" name="slidePanelAnimationDuration" value="200" />',
+        {label: {style: 'width: 60%'}, content: {style: 'width: 30%'}}
+    );
+};
+
+Codebot.Settings.Panel.UI.prototype.onDestroy = function() {
+    var aSettings = this.getData();
+    this.getContext().settings.set({ui: aSettings}).saveToDisk();
 };

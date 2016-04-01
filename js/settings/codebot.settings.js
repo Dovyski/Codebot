@@ -66,6 +66,9 @@ Codebot.Settings.prototype.set = function(theObj) {
 
     // Tell everybody that the preferences have been updated.
     mCodebot.signals.preferencesUpdated.dispatch(theObj);
+
+    // Make it possible to chain methods
+    return this;
 };
 
 Codebot.Settings.prototype.load = function(theCallback) {
