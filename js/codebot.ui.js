@@ -54,6 +54,10 @@ var CodebotUI = function() {
 		});
 	};
 
+	var initToast = function() {
+		$('body').append('<div id="cb-toast" class="toast-wrapper"><div class="toast-content"></div></div>');
+	};
+
     // TODO: implement a pretty confirm dialog/panel
     this.confirm = function(theMessage) {
         mSelf.showDialog({
@@ -177,7 +181,17 @@ var CodebotUI = function() {
         }
 
         $('#defaultModal').modal(theConfig);
-    }
+    };
+
+	this.toast = function(theType, theMessage) {
+		// TODO: check it it is open, etc.
+		$('#cb-toast').addClass('open');
+		$('#cb-toast div.toast-content').addClass(theType).html(theMessage);
+
+		setTimeout(function() {
+			$('#cb-toast').removeClass('open');
+		}, 3000);
+	};
 
 	this.init = function(theCodebot) {
         console.log('CODEBOT [ui] Building UI');
@@ -200,6 +214,9 @@ var CodebotUI = function() {
 		// If the user clicks any of the content areas (tabs, files panel, etc),
 		// close any open sliding panel.
 		monitorClicksInsideContentAreas();
+
+		// Configure the toast things (rectangles used to display messages)
+		initToast();
 
         // Ugly hack to achieve 100% height.
         $(window).resize(function() {

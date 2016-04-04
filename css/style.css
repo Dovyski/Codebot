@@ -871,6 +871,49 @@ div#projects-list div.info {
     height: 30px;
 }
 
+/*
+-----------------------------------------------------
+UI toast
+-----------------------------------------------------
+*/
+
+.toast-wrapper {
+    position: fixed;
+    right: 30px;
+    bottom: 20px;
+    overflow: hidden;
+    width: 305px;
+    height: 80px;
+}
+
+.toast-content {
+    position: absolute;
+    right: -100%;
+    width: 100%;
+    height: 80px;
+    transition: 0.5s;
+    font-size: 14px;
+    background: #333;
+    color: #bdbdbd;
+    padding: 5px 5px 5px 10px;
+}
+
+.toast-content.info {
+    border-left: 5px solid cyan;
+}
+
+.toast-content.warning {
+    border-left: 5px solid orange;
+}
+
+.toast-content.error {
+    border-left: 5px solid red;
+}
+
+.toast-wrapper.open .toast-content {
+    transition: 0.5s;
+    right: 0;
+}
 
 /*
 -----------------------------------------------------
