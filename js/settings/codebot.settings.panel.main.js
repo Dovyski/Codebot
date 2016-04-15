@@ -47,7 +47,7 @@ Codebot.Settings.Panel.Main.prototype.init = function() {
 Codebot.Settings.Panel.Main.prototype.render = function() {
     var aSections,
         aContent = '',
-        aSelf = this;
+        aSelf = this,
         i;
 
     Codebot.Panel.prototype.render.call(this);

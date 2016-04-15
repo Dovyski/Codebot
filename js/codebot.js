@@ -75,6 +75,10 @@ var CODEBOT = new function() {
         return mPlugins.active[theId];
     };
 
+	this.getPlugins = function() {
+        return mPlugins;
+    };
+
 	this.addPlugin = function(thePluginInfo) {
 		mPlugins.available[thePluginInfo.id] = thePluginInfo;
 		console.log('CODEBOT [plugin] Added: ' + thePluginInfo.id);

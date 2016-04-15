@@ -40,5 +40,42 @@ Codebot.Settings.Panel.Plugins.prototype = Object.create(Codebot.Panel.prototype
 Codebot.Settings.Panel.Plugins.prototype.constructor = Codebot.Settings.Panel.Plugins;
 
 Codebot.Settings.Panel.Plugins.prototype.render = function() {
-    this.row('Plugins');
+    var aId,
+        aPlugins,
+        aIsActive,
+        aPlugin,
+        aSelf = this;
+
+    Codebot.Panel.prototype.render.call(this);
+
+    aPlugins = this.getContext().getPlugins();
+
+    for(aId in aPlugins.available) {
+        aPlugin = aPlugins.available[aId];
+        aIsActive = aPlugins.active[aId];
+
+        this.row(
+            '<img src="lkj" title="" style="float: left; margin-right: 5px; width: 50px; height: 50px;"/>' +
+            '<div class="switch" style="position: absolute; top: 2px; right: 55px;"><input type="checkbox" name="' + aId + '" id="' + aId + '" '+ (aIsActive ? 'checked="checked"' : '') +'><label for="' + aId + '"></label></div>' +
+            '<p><strong>'+aPlugin.name+'</strong><br /><i class="fa fa-tag"></i>' + aPlugin.version + '<br /><i class="fa fa-user"></i>Dovyski</p>' +
+            '<p>' + aPlugin.description + '</p>' +
+            '<div style="width: 100%; height: 2px; border-bottom: 1px solid #505050;" />'
+        );
+    }
+
+    this.container.find('input[type="checkbox"]').change(function(theEvent) {
+        aSelf.handlePluginChange(theEvent.target.id, theEvent.target.checked);
+    });
+};
+
+Codebot.Settings.Panel.Plugins.prototype.handlePluginChange = function(thePluginId, theActivated) {
+    // TODO: activate and deactivate plugins here
+    console.log(thePluginId, theActivated);
+};
+
+Codebot.Settings.Panel.Plugins.prototype.onDestroy = function() {
+    var aSettings = this.getData();
+
+    this.getContext().settings.set({plugins: aSettings});
+    this.getContext().settings.saveToDisk();
 };

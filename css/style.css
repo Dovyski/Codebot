@@ -357,6 +357,7 @@ Sliding panel and panels content
 .panel-divider,
 .panel-pair,
 .panel-row {
+    position: relative;
     font-family: 'Lucida Grande', sans-serif;
     font-size: 13px;
     padding: 0 0 0 10px;
