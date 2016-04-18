@@ -55,11 +55,14 @@ Codebot.Settings.Panel.Plugins.prototype.render = function() {
         aIsActive = aPlugins.active[aId];
 
         this.row(
-            '<img src="lkj" title="" style="float: left; margin-right: 5px; width: 50px; height: 50px;"/>' +
-            '<div class="switch" style="position: absolute; top: 2px; right: 55px;"><input type="checkbox" name="' + aId + '" id="' + aId + '" '+ (aIsActive ? 'checked="checked"' : '') +'><label for="' + aId + '"></label></div>' +
-            '<p><strong>'+aPlugin.name+'</strong><br /><i class="fa fa-tag"></i>' + aPlugin.version + '<br /><i class="fa fa-user"></i>Dovyski</p>' +
-            '<p>' + aPlugin.description + '</p>' +
-            '<div style="width: 100%; height: 2px; border-bottom: 1px solid #505050;" />'
+            '<div class="plugin">' +
+                '<img src="./img/logo/codebot-logo.png" title="' + aId + '" class="plugin-img" />' +
+                '<div class="switch"><input type="checkbox" name="' + aId + '" id="' + aId + '" '+ (aIsActive ? 'checked="checked"' : '') +'><label for="' + aId + '"></label></div>' +
+                '<h2>'+aPlugin.name+'</h2>' +
+                '<span><i class="fa fa-tag"></i>' + aPlugin.version + '</span>' +
+                '<span><i class="fa fa-user"></i>Dovyski</span>' +
+                '<p>' + aPlugin.description + '</p>' +
+            '<div/>'
         );
     }
 

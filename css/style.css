@@ -874,6 +874,53 @@ div#projects-list div.info {
 
 /*
 -----------------------------------------------------
+Settings - plugin
+-----------------------------------------------------
+*/
+
+.plugin {
+    width: 100%;
+    border-bottom: 1px solid #505050;
+    margin: 0 0 2px 0;
+}
+
+.plugin img {
+    float: left;
+    margin: -5px 5px 5px 0;
+    width: 40px;
+    height: 40px;
+}
+
+.plugin div.switch {
+    position: absolute;
+    top: 0;
+    right: 55px;
+}
+
+.plugin h2 {
+    font-size: 1.1em;
+    line-height: 1em;
+    margin: 0 0 2px 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+.plugin span {
+    margin-right: 10px;
+}
+
+.plugin span,
+.plugin span i {
+    color: #797979;
+}
+
+.plugin p {
+    clear: both;
+    color: #898989;
+}
+
+/*
+-----------------------------------------------------
 UI toast
 -----------------------------------------------------
 */
