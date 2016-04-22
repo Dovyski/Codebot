@@ -72,8 +72,8 @@ JavascriptTools.Plugin.prototype.initAfterProjectOpened = function(theProjectInf
     // add all the JS UI back.
     if(theProjectInfo.type == "js") {
         // Add build and settings buttons.
-        this.context.ui.addButton(JavascriptTools.Plugin.meta.id + 'build', { icon: '<i class="fa fa-circle"></i>', action: this.build, context: this });
-        this.context.ui.addButton(JavascriptTools.Plugin.meta.id + 'settings', { icon: '<i class="fa fa-user"></i>', panel: JavascriptTools.Panel.Settings });
+        this.context.ui.addButton(JavascriptTools.Plugin.meta.id + 'build', { icon: '<i class="fa fa-play"></i>', action: this.build, context: this });
+        this.context.ui.addButton(JavascriptTools.Plugin.meta.id + 'settings', { icon: '<i class="fa fa-cogs"></i>', panel: JavascriptTools.Panel.Settings });
     }
 };
 
