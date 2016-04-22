@@ -47,7 +47,7 @@ IdeWeb.Panel.CreateProject.prototype.render = function() {
     Codebot.Panel.prototype.render.call(this);
 
     aSelf = this;
-    aIde = this.getContext().getPlugin('cc.codebot.ide.web');
+    aIde = this.getContext().plugins.get('cc.codebot.ide.web');
 
     this.divider('Type');
     this.row('<select name="type" id="project-type"><option value="flash">Flash/AS3</option><option value="js">Javascript/HTML5</option></select>');
@@ -107,7 +107,7 @@ IdeWeb.Panel.CreateProject.prototype.generateTemplatesList = function(theType) {
         aInfo,
         aProjectFactory;
 
-    aProjectFactory = this.getContext().getPlugin('cc.codebot.ide.web').getProjectFactory();
+    aProjectFactory = this.getContext().plugins.get('cc.codebot.ide.web').getProjectFactory();
 
     if(aProjectFactory) {
         for(aTemplate in aProjectFactory[theType].templates) {

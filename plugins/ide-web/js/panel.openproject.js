@@ -50,7 +50,7 @@ IdeWeb.Panel.OpenProject.prototype.render = function() {
     Codebot.Panel.prototype.render.call(this);
 
     aSelf = this;
-    aIde = this.getContext().getPlugin('cc.codebot.ide.web');
+    aIde = this.getContext().plugins.get('cc.codebot.ide.web');
     aProjectFactory = aIde.getProjectFactory();
 
     this.row('<div id="projects-list"></div>');
@@ -98,7 +98,7 @@ IdeWeb.Panel.OpenProject.prototype.render = function() {
 IdeWeb.Panel.OpenProject.prototype.handleButtonClick = function(theProjectId, theAction) {
     var aIde;
 
-    aIde = this.getContext().getPlugin('cc.codebot.ide.web');
+    aIde = this.getContext().plugins.get('cc.codebot.ide.web');
 
     if(theAction == 'open') {
         aIde.openProject(theProjectId);

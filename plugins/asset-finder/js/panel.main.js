@@ -96,7 +96,7 @@ AssetFinder.Panel.Main.prototype.generateLicensesSelection = function() {
         aRet = '',
         i;
 
-    aLicenses = this.getContext().getPlugin('cc.codebot.asset.finder').getLicenses();
+    aLicenses = this.getContext().plugins.get('cc.codebot.asset.finder').getLicenses();
 
     for(i = 0; i < aLicenses.length; i++) {
         aRet += '<option value="' + aLicenses[i].id + '">' + aLicenses[i].name + '</option>';
@@ -113,7 +113,7 @@ AssetFinder.Panel.Main.prototype.showItemInfo = function(theItemId) {
     this.infoPanel = new AssetFinder.Panel.Info('Asset information', 'af-item-description');
     this.infoPanel.context = this.context;
 
-    aIde = this.context.getPlugin('cc.codebot.ide.web');
+    aIde = this.context.plugins.get('cc.codebot.ide.web');
 
     aIde.api('assets', 'info', {item: theItemId}, function(theData) {
         this.infoPanel.renderFromData(theItemId, theData);
@@ -123,7 +123,7 @@ AssetFinder.Panel.Main.prototype.showItemInfo = function(theItemId) {
 AssetFinder.Panel.Main.prototype.search = function() {
     var i, aContent = '', aIde, aSelf = this;
 
-    aIde = this.getContext().getPlugin('cc.codebot.ide.web');
+    aIde = this.getContext().plugins.get('cc.codebot.ide.web');
 
     $('#af-browse-area').html('<i class="fa fa-circle-o-notch fa-spin"></i>');
 

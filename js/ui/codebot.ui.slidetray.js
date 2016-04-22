@@ -80,7 +80,7 @@ Codebot.UI.SlideTray.prototype.restorePersistentPanelData = function(thePanel) {
         // Yep! Let's get the plugin that is storing the
         // data for this panel, get the data from it and
         // restore everything.
-        aPlugin = mCodebot.getPlugin(thePanel.dataManager);
+        aPlugin = mCodebot.plugins.get(thePanel.dataManager);
         aData   = aPlugin && aPlugin.getPanelData ? aPlugin.getPanelData(thePanel) : null;
 
         // Do we have any data to restore?
@@ -106,7 +106,7 @@ Codebot.UI.SlideTray.prototype.savePersistentPanelData = function() {
     if(aPanel && aPanel.dataManager) {
         // Yep, so let's save it! First fetch the plugin that will
         // handle the data for this panel
-        aPlugin = mCodebot.getPlugin(aPanel.dataManager);
+        aPlugin = mCodebot.plugins.get(aPanel.dataManager);
 
         // If the plugin exists and is ok to receive the data,
         // send the package away.

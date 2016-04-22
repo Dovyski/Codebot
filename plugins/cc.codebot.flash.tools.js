@@ -46,7 +46,7 @@ var FlashToolsPlugin = function() {
     var mTestWindow = null;
 
     var saveProjectSettings = function(theData) {
-        var aIdeWeb         = mContext.getPlugin('cc.codebot.ide.web');
+        var aIdeWeb         = mContext.plugins.get('cc.codebot.ide.web');
         var aActiveProject  = aIdeWeb.getActiveProject();
 
         console.debug('Saving project settings', theData);
@@ -66,7 +66,7 @@ var FlashToolsPlugin = function() {
     };
 
     var addSwcToLib = function(theNode) {
-        var aSettings = mContext.getPlugin('cc.codebot.ide.web').getActiveProject().settings;
+        var aSettings = mContext.plugins.get('cc.codebot.ide.web').getActiveProject().settings;
         var aIndex;
 
         aSettings.libs  = aSettings.libs ? aSettings.libs.split(',') : [];
@@ -98,7 +98,7 @@ var FlashToolsPlugin = function() {
             }
 
         } else {
-            aSettings   = mContext.getPlugin('cc.codebot.ide.web').getActiveProject().settings;
+            aSettings   = mContext.plugins.get('cc.codebot.ide.web').getActiveProject().settings;
             aLibs       = aSettings.libs ? aSettings.libs.split(',') : [];
 
             if(aLibs.indexOf(theNode.path) != -1) {
@@ -139,7 +139,7 @@ var FlashToolsPlugin = function() {
     };
 
     this.restorePanelData = function(theContainerId) {
-        var aIdeWeb         = mContext.getPlugin('cc.codebot.ide.web');
+        var aIdeWeb         = mContext.plugins.get('cc.codebot.ide.web');
         var aActiveProject  = aIdeWeb.getActiveProject();
 
         return aActiveProject ? aActiveProject.settings : null;
@@ -155,7 +155,7 @@ var FlashToolsPlugin = function() {
 
     this.build = function(theContext, theButton) {
         var aTab            = null;
-        var aIde            = mContext.getPlugin('cc.codebot.ide.web');
+        var aIde            = mContext.plugins.get('cc.codebot.ide.web');
         var aActiveProject  = aIde.getActiveProject();
         var aSettings       = aActiveProject.settings;
 

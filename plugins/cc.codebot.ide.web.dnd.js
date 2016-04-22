@@ -68,7 +68,7 @@ var DragDropPlugin = function() {
 
             case 'load':
                 console.debug('Upload complete!');
-                var aWebIde = mContext.getPlugin('cc.codebot.ide.web');
+                var aWebIde = mContext.plugins.get('cc.codebot.ide.web');
                 aWebIde.refreshProjectFileList();
                 showUploadProgressBar(false);
                 break;

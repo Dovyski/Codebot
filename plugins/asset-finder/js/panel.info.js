@@ -55,7 +55,7 @@ AssetFinder.Panel.Info.prototype.renderFromData = function(theItemId, theData) {
     this.empty();
 
     // Get a reference to the web ID plugin.
-    aIde = this.context.getPlugin('cc.codebot.ide.web');
+    aIde = this.context.plugins.get('cc.codebot.ide.web');
     this.setTitle(theData.title);
     this.divider('Preview');
     this.row('<div style="text-align: center;"><img src="'+theData.preview[0]+'" style="max-width: 300px;"/></div>');
@@ -91,7 +91,7 @@ AssetFinder.Panel.Info.prototype.getLicenseNameById = function(theLicenseId) {
         aRet = 'Unknown',
         i;
 
-    aLicenses = this.getContext().getPlugin('cc.codebot.asset.finder').getLicenses();
+    aLicenses = this.getContext().plugins.get('cc.codebot.asset.finder').getLicenses();
 
     for(i = 0; i < aLicenses.length; i++) {
         if(aLicenses[i].id == theLicenseId) {
@@ -104,7 +104,7 @@ AssetFinder.Panel.Info.prototype.getLicenseNameById = function(theLicenseId) {
 };
 
 AssetFinder.Panel.Info.prototype.addAssetToProject = function(theItemId) {
-    var aIde = this.context.getPlugin('cc.codebot.ide.web')
+    var aIde = this.context.plugins.get('cc.codebot.ide.web')
         aSelf = this;
 
     // TODO: make pending activity a global Codebot thing with categories (e.g. filesPanel)

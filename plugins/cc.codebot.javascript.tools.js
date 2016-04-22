@@ -39,7 +39,7 @@ JavascriptTools.Plugin.prototype = Object.create(Codebot.Plugin.prototype);
 JavascriptTools.Plugin.prototype.constructor = JavascriptTools.Plugin;
 
 JavascriptTools.Plugin.prototype.saveProjectSettings = function(theData) {
-    var aIdeWeb         = this.context.getPlugin('cc.codebot.ide.web');
+    var aIdeWeb         = this.context.plugins.get('cc.codebot.ide.web');
     var aActiveProject  = aIdeWeb.getActiveProject();
 
     console.debug('Saving project settings', theData);
@@ -79,7 +79,7 @@ JavascriptTools.Plugin.prototype.initAfterProjectOpened = function(theProjectInf
 
 JavascriptTools.Plugin.prototype.build = function(theContext, theButton) {
     var aTab = null,
-        aIde = this.context.getPlugin('cc.codebot.ide.web'),
+        aIde = this.context.plugins.get('cc.codebot.ide.web'),
         aActiveProject = aIde.getActiveProject(),
         aSettings = aActiveProject.settings,
         aSelf = this;
@@ -122,7 +122,7 @@ JavascriptTools.Plugin.prototype.savePanelData = function(thePanel, theData) {
 };
 
 JavascriptTools.Plugin.prototype.getPanelData = function(theContainerId) {
-    var aIdeWeb         = this.context.getPlugin('cc.codebot.ide.web');
+    var aIdeWeb         = this.context.plugins.get('cc.codebot.ide.web');
     var aActiveProject  = aIdeWeb.getActiveProject();
 
     return aActiveProject ? aActiveProject.settings : null;
