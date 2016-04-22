@@ -48,11 +48,11 @@ Codebot.Settings.Panel.Plugins.prototype.render = function() {
 
     Codebot.Panel.prototype.render.call(this);
 
-    aPlugins = this.getContext().getPlugins();
+    aPlugins = this.getContext().plugins.available();
 
-    for(aId in aPlugins.available) {
-        aPlugin = aPlugins.available[aId];
-        aIsActive = aPlugins.active[aId];
+    for(aId in aPlugins) {
+        aPlugin = aPlugins[aId];
+        aIsActive = this.getContext().plugins.isActive(aId);
 
         this.row(
             '<div class="plugin">' +
@@ -71,9 +71,12 @@ Codebot.Settings.Panel.Plugins.prototype.render = function() {
     });
 };
 
-Codebot.Settings.Panel.Plugins.prototype.handlePluginChange = function(thePluginId, theActivated) {
-    // TODO: activate and deactivate plugins here
-    console.log(thePluginId, theActivated);
+Codebot.Settings.Panel.Plugins.prototype.handlePluginChange = function(thePluginId, theActivate) {
+    if(theActivate) {
+        this.getContext().plugins.activate(thePluginId);
+    } else {
+        this.getContext().plugins.deactivate(thePluginId);
+    }
 };
 
 Codebot.Settings.Panel.Plugins.prototype.onDestroy = function() {
