@@ -990,6 +990,7 @@ UI toast
     overflow: hidden;
     width: 305px;
     height: 80px;
+    pointer-events: none;
 }
 
 .toast-content {
@@ -1019,6 +1020,10 @@ UI toast
 .toast-wrapper.open .toast-content {
     transition: 0.5s;
     right: 0;
+}
+
+.toast-wrapper.open {
+    pointer-events: auto;
 }
 
 /*
