@@ -29,24 +29,8 @@ var CODEBOT = new function() {
 	var mSettings = null;
 	var mSignals = null;
 	var mJobs = null;
-    var mPlugins = {active: {}, available: {}};
+    var mPlugins = null;
     var mSelf;
-
-    var loadPlugins = function() {
-        console.log('CODEBOT [plugins] Loading plugins...');
-
-        mIO.readDirectory({path: 'codebot://./plugins'}, function(theData) {
-            for(var i in theData[0].children) {
-                var aItem = theData[0].children[i];
-
-                if(aItem.title.lastIndexOf('.js') != -1) {
-                    $('body').append('<script type="text/javascript" src="'+aItem.path+'"></script>');
-                }
-            }
-        });
-
-        console.log('CODEBOT [plugins] Plugins loaded.');
-    };
 
 	var handleError = function(theMsg, theUrl, theLineNumber) {
 		console.error("Error occured: " + theMsg);
@@ -71,24 +55,16 @@ var CODEBOT = new function() {
 		}
     };
 
+	// TODO: remote this deprecated method. Use Codebot.plugins.get() instead.
     this.getPlugin = function(theId) {
-        return mPlugins.active[theId];
+		console.error('getPlugin() is deprecated, use Codebot.plugins.get() instead.');
+        return mPlugins.get(theId);
     };
 
-	this.getPlugins = function() {
-        return mPlugins;
-    };
-
+	// TODO: remote this deprecated method. Use Codebot.plugins.add() instead.
 	this.addPlugin = function(thePluginInfo) {
-		mPlugins.available[thePluginInfo.id] = thePluginInfo;
-		console.log('CODEBOT [plugin] Added: ' + thePluginInfo.id);
-
-		if(mSettings.get().plugins[thePluginInfo.id]) {
-			console.log('CODEBOT [plugin] Activating ' + thePluginInfo.id + ' based on settings');
-
-			mPlugins.active[thePluginInfo.id] = new thePluginInfo.className();
-			mPlugins.active[thePluginInfo.id].init(mSelf);
-		}
+		console.error('addPlugin() is deprecated, use Codebot.plugins.add() instead.');
+		mPlugins.add(thePluginInfo);
 	};
 
     this.showDebugger= function() {
@@ -122,6 +98,7 @@ var CODEBOT = new function() {
         mUI = new CodebotUI();
 		mSettings = new Codebot.Settings();
 		mSignals = new CodebotSignals();
+		mPlugins = new Codebot.Plugins();
 
         mJobs.init();
 		mSettings.init(mSelf);
@@ -129,9 +106,9 @@ var CODEBOT = new function() {
         mSettings.load(function() {
             mEditors.init(mSelf);
             mUI.init(mSelf);
+			mPlugins.init(mSelf);
 
-            loadPlugins();
-
+            mPlugins.load();
             mShortcuts.init(mSelf);
 
             console.log('CODEBOT [core] Done, ready to rock!');
@@ -148,5 +125,6 @@ var CODEBOT = new function() {
 	this.__defineGetter__("settings", function() { return mSettings; });
     this.__defineGetter__("shortcuts", function() { return mShortcuts; });
     this.__defineGetter__("signals", function() { return mSignals; });
-    this.__defineGetter__("jobs", function() { return mJobs; });
+	this.__defineGetter__("jobs", function() { return mJobs; });
+    this.__defineGetter__("plugins", function() { return mPlugins; });
 };

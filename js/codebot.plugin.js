@@ -34,3 +34,9 @@ Codebot.Plugin = function() {
 Codebot.Plugin.prototype.init = function(theContext) {
     this.context = theContext;
 };
+
+Codebot.Plugin.prototype.activate = function() {
+};
+
+Codebot.Plugin.prototype.deactivate = function() {
+};
