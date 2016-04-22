@@ -80,13 +80,13 @@ var DragDropPlugin = function() {
         }
     };
 
-    var uploadFile = function(theFile, theFileReader) {
+    this.upload = function(theName, theContent) {
         var aFormData = new FormData();
         var aXmlHttpRequest = new XMLHttpRequest();
 
-        aFormData.append('path', theFile.name);
+        aFormData.append('path', theName);
         aFormData.append('method', 'write');
-        aFormData.append('file', theFile);
+        aFormData.append('file', theContent);
 
         aXmlHttpRequest.upload.addEventListener("progress", handleUploadResponse, false);
         aXmlHttpRequest.upload.addEventListener("load", handleUploadResponse, false);
@@ -112,7 +112,7 @@ var DragDropPlugin = function() {
             // Closure to capture the file information.
             aReader.onload = (function(theFile) {
                 return function(theEvt) {
-                    uploadFile(theFile, theEvt.target);
+                    mSelf.upload(theFile.name, theFile);
                 };
             })(f);
 

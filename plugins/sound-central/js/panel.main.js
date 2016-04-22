@@ -291,23 +291,15 @@ SoundCentral.Panel.Main.prototype.dataURItoBlob = function(dataurl) {
 }
 
 SoundCentral.Panel.Main.prototype.addSfxToProject = function() {
-    var aFormData = new FormData();
-    var aBlob = this.dataURItoBlob(this.mSfxData.dataURI);
-    var aXmlHttpRequest = new XMLHttpRequest();
+    var aName,
+        aBlob,
+        aDnD;
 
-    aFormData.append('path', $('#sndc-add-folder').val() + this.getSfxFileName());
-    aFormData.append('method', 'write');
-    aFormData.append('file', aBlob);
+    aName = $('#sndc-add-folder').val() + this.getSfxFileName();
+    aBlob = this.dataURItoBlob(this.mSfxData.dataURI);
 
-    aXmlHttpRequest.upload.addEventListener("progress", function() { console.log('PROGRESS!'); }, false);
-    aXmlHttpRequest.upload.addEventListener("load", function() { console.log('load!'); }, false);
-    aXmlHttpRequest.upload.addEventListener("error", function() { console.log('error!'); }, false);
-    aXmlHttpRequest.upload.addEventListener("abort", function() { console.log('abort'); }, false);
-
-    aXmlHttpRequest.open("POST", this.getContext().io.getAPIEndpoint(), true);
-    aXmlHttpRequest.send(aFormData);
-
-    console.debug('Sending file to server');
+    aDnD = this.getContext().plugins.get('cc.codebot.ide.web.dnd');
+    aDnD.upload(aName, aBlob);
 };
 
 SoundCentral.Panel.Main.prototype.convert = function(control, v) {
@@ -367,7 +359,6 @@ SoundCentral.Panel.Main.prototype.render = function() {
         '<div style="width: 70%; float: left;">' +
             '<i class="fa fa-folder-open"></i>' +
             '<select id="sndc-add-folder" style="width: 80%;">' +
-                '<option value="/assets/" selected="selected">/assets</option>' +
                 '<option value="/">/</option>' +
             '</select>' +
         '</div>' +
