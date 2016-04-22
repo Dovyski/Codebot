@@ -226,4 +226,4 @@ FlashToolsPlugin.meta = {
     version: '1.0.0-ALPHA'
 };
 
-CODEBOT.addPlugin(FlashToolsPlugin.meta);
+CODEBOT.plugins.add(FlashToolsPlugin.meta);

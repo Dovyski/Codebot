@@ -147,4 +147,4 @@ JavascriptTools.Plugin.meta = {
     version: '1.0.0-ALPHA'
 };
 
-CODEBOT.addPlugin(JavascriptTools.Plugin.meta);
+CODEBOT.plugins.add(JavascriptTools.Plugin.meta);

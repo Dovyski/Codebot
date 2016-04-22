@@ -68,4 +68,4 @@ SoundCentral.Plugin.meta = {
     version: '1.0.0-ALPHA'
 };
 
-CODEBOT.addPlugin(SoundCentral.Plugin.meta);
+CODEBOT.plugins.add(SoundCentral.Plugin.meta);

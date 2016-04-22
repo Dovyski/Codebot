@@ -95,4 +95,4 @@ Dummy.Plugin.meta = {
     version: '1.0.0'
 };
 
-CODEBOT.addPlugin(Dummy.Plugin.meta);
+CODEBOT.plugins.add(Dummy.Plugin.meta);

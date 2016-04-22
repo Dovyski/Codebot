@@ -150,4 +150,4 @@ DragDropPlugin.meta = {
     version: '1.0.0-ALPHA'
 };
 
-CODEBOT.addPlugin(DragDropPlugin.meta);
+CODEBOT.plugins.add(DragDropPlugin.meta);

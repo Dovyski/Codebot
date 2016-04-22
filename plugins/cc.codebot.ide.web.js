@@ -249,4 +249,4 @@ IdeWeb.Plugin.meta = {
     version: '1.0.0-ALPHA'
 };
 
-CODEBOT.addPlugin(IdeWeb.Plugin.meta);
+CODEBOT.plugins.add(IdeWeb.Plugin.meta);

@@ -55,18 +55,6 @@ var CODEBOT = new function() {
 		}
     };
 
-	// TODO: remote this deprecated method. Use Codebot.plugins.get() instead.
-    this.getPlugin = function(theId) {
-		console.error('getPlugin() is deprecated, use Codebot.plugins.get() instead.');
-        return mPlugins.get(theId);
-    };
-
-	// TODO: remote this deprecated method. Use Codebot.plugins.add() instead.
-	this.addPlugin = function(thePluginInfo) {
-		console.error('addPlugin() is deprecated, use Codebot.plugins.add() instead.');
-		mPlugins.add(thePluginInfo);
-	};
-
     this.showDebugger= function() {
         if(typeof(require) == 'function') {
             var aGui = require('nw.gui');

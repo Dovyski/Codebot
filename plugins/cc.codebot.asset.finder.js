@@ -64,6 +64,15 @@ AssetFinder.Plugin.prototype.getLicenses = function() {
     return this.licenses;
 };
 
+AssetFinder.Plugin.prototype.activate = function() {
+    // TODO: activate only if there is any project open.
+    this.initUIAfterProjectOpened();
+};
+
+AssetFinder.Plugin.prototype.deactivate = function() {
+    this.context.ui.removeButton(AssetFinder.Plugin.meta + 'mainPanel');
+};
+
 AssetFinder.Plugin.prototype.init = function(theContext) {
     // Call super class init method.
     Codebot.Plugin.prototype.init.call(this, theContext);
@@ -87,4 +96,4 @@ AssetFinder.Plugin.meta = {
     version: '1.0.0-ALPHA'
 };
 
-CODEBOT.addPlugin(AssetFinder.Plugin.meta);
+CODEBOT.plugins.add(AssetFinder.Plugin.meta);
