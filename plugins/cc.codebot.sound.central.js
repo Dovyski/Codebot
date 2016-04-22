@@ -56,7 +56,7 @@ SoundCentral.Plugin.prototype.init = function(theContext) {
 
     // Add sound central button only after a project has been loaded
     this.context.signals.projectOpened.add(function(theProjectInfo) {
-        this.context.ui.addButton(SoundCentral.Plugin.meta.id + 'mainPanel', { icon: '<i class="fa fa-volume-up"></i>', panel: SoundCentral.Panel.Main });
+        this.context.ui.addButton(SoundCentral.Plugin.meta.id + 'mainPanel', { icon: '<i class="fa fa-headphones"></i>', panel: SoundCentral.Panel.Main });
     }, this);
 };
 
