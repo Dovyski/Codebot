@@ -53,7 +53,14 @@ Codebot.Settings.Panel.Main.prototype.render = function() {
     Codebot.Panel.prototype.render.call(this);
 
     // Show some nice about info about Codebot
-    this.row('<img src="./img/logo/codebot-logo.png" title="Codebot" /><p>Codebot</p><p>Version 1.0.0-ALPHA</p>');
+    this.row(
+        '<div class="settings-panel-main">' +
+            '<img src="./img/logo/codebot-logo.png" title="Codebot" />' +
+            '<p class="version">1.0.0-ALPHA</p> ' +
+            '<p class="relase-notes"><a href="javascript:void(0);">release notes</a></p>' +
+            '<p class="developer"><i class="fa fa-code"></i> Developed by <a href="https://twitter.com/as3gamegears" target="_blank">@As3GameGears</a> with help from <a href="javascript:void(0)">awesome open-source projects</a>.' +
+        '</div>'
+    );
 
     // Show all settings sections
     this.divider('Settings');
@@ -75,4 +82,14 @@ Codebot.Settings.Panel.Main.prototype.render = function() {
             aSelf.push(aSections[aId].panel);
         });
     });
+
+    // Show all settings sections
+    this.divider('User');
+    this.row(
+        '<div class="settings-panel-main-user">' +
+            '<img src="https://avatars3.githubusercontent.com/u/512405?v=3&s=460" title="Fernando Bevilacqua" />' +
+            '<p class="name">Fernando Bevilacqua</p> ' +
+            '<p><i class="fa fa-github"></i> Dovyski</p>' +
+        '</div>'
+    );
 };

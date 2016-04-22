@@ -874,6 +874,64 @@ div#projects-list div.info {
 
 /*
 -----------------------------------------------------
+Settings panel
+-----------------------------------------------------
+*/
+
+.settings-panel-main {
+    text-align: center;
+    line-height: 18px;
+    padding-bottom: 10px;
+    color: #808080;
+}
+
+.settings-panel-main a,
+.settings-panel-main a:active,
+.settings-panel-main a:hover,
+.settings-panel-main a:visited {
+    text-decoration: underline;
+    color: #808080;
+}
+
+.settings-panel-main .version {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #A8A8A8;
+}
+
+.settings-panel-main .developer i {
+    font-size: 1.5em;
+    margin: 0;
+    padding: 0;
+}
+
+.settings-panel-main .developer {
+    padding-top: 5px;
+    font-size: 1.1em;
+}
+
+.settings-panel-main-user {
+    text-align: center;
+}
+
+.settings-panel-main-user img {
+    width: 120px;
+    height: 120px;
+    margin: 10px 0 5px 0;
+}
+
+.settings-panel-main-user p {
+    margin: 0;
+    padding: 0;
+    font-size: 1.1em;
+}
+.settings-panel-main-user p.name {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+/*
+-----------------------------------------------------
 Settings - plugin
 -----------------------------------------------------
 */
