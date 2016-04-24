@@ -70,22 +70,38 @@ ul.nav a:hover {
 /* Carousel base class */
 .carousel {
 	height: 600px;
-	margin-bottom: 60px;
 	background: url(../img/hero.jpg) no-repeat bottom center #3e3f3a;
 	text-align: center;
 	overflow: hidden;
+	position: relative;
+	margin-bottom: 30px;
 }
 /* Since positioning the image, we need to help out the caption */
 .carousel-caption {
 	margin-bottom: 340px;
 }
 
-.carousel img {
+.carousel div.image {
+	width: 800px;
+	height: 500px;
+	margin: 0 auto;
+	z-index: 10;
+}
+
+.carousel div.image img {
 	width: 800px;
 	height: auto;
 	margin: 220px 0 -200px 0;
 }
 
+/* Clouds */
+
+#clouds {
+	margin-top: 20px;
+	height: 530px;
+    background: url(../img/cloud.png) repeat-x;
+	z-index: 11;
+}
 
 /* MARKETING CONTENT
 -------------------------------------------------- */
@@ -101,7 +117,7 @@ ul.nav a:hover {
 }
 .marketing h2 {
 	font-weight: bolder;
-	margin-top: -2px;
+	margin-top: 10px;
 }
 .marketing .col-lg-4 p {
   margin-right: 10px;
@@ -109,8 +125,8 @@ ul.nav a:hover {
 }
 
 .marketing-top img {
-	width: 100px;
-	height: 100px;
+	width: 144px;
+	height: 144px;
 }
 
 .marketing-top p {
