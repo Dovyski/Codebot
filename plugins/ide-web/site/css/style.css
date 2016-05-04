@@ -10,7 +10,7 @@ body {
 	overflow-x: hidden;
 }
 
-p {
+p,li,ol {
 	font-family: 'Roboto', sans-serif;
 }
 
