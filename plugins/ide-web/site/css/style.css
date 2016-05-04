@@ -64,6 +64,26 @@ ul.nav a:hover {
 	background: #549EFF;
 }
 
+/* Page */
+
+.page-header {
+	height: 300px;
+	background: url(../img/hero.jpg) #3e3f3a;
+	text-align: center;
+	overflow: hidden;
+	position: relative;
+	margin: 0;
+	margin-bottom: 30px;
+	padding: 180px 0 0 0;
+	border: none;
+}
+.page h2 {
+	margin-bottom: 50px;
+}
+
+.page p {
+	font-size: 1.3em;
+}
 
 /* CUSTOMIZE THE CAROUSEL
 -------------------------------------------------- */
