@@ -41,8 +41,6 @@ p {
 }
 
 .navbar-header img {
-	width: 64px;
-	height: auto;
 	float: left;
 	padding-right: 10px;
 }
@@ -59,6 +57,7 @@ p {
 	font-weight: 200;
 	text-transform: capitalize;
 	font-family: 'Roboto', sans-serif;
+	margin-top: 5px;
 }
 
 ul.nav a:hover {
