@@ -55,8 +55,10 @@ p {
 }
 
 .navbar-brand {
-	font-size: 2em;
-	font-weight: bold;
+	font-size: 2.4em;
+	font-weight: 200;
+	text-transform: capitalize;
+	font-family: 'Roboto', sans-serif;
 }
 
 ul.nav a:hover {
@@ -70,7 +72,7 @@ ul.nav a:hover {
 /* Carousel base class */
 .carousel {
 	height: 600px;
-	background: url(../img/hero.jpg) no-repeat bottom center #3e3f3a;
+	background: url(../img/hero.jpg) #3e3f3a;
 	text-align: center;
 	overflow: hidden;
 	position: relative;
@@ -96,9 +98,9 @@ ul.nav a:hover {
 
 /* Clouds */
 
-#clouds {
+.clouds {
 	margin-top: 20px;
-	height: 530px;
+	height: 130px;
     background: url(../img/cloud.png) repeat-x;
 	z-index: 11;
 }
@@ -107,7 +109,6 @@ ul.nav a:hover {
 -------------------------------------------------- */
 
 .marketing {
-
 }
 
 /* Center align the text within the three columns below the carousel */
@@ -137,8 +138,8 @@ ul.nav a:hover {
 /* Featurettes
 ------------------------- */
 
-.featurette-divider {
-  margin: 80px 0; /* Space out the Bootstrap <hr> more */
+.featurette {
+  padding: 100px 0 0 0;
 }
 
 /* Thin out the marketing headings */
@@ -153,7 +154,14 @@ ul.nav a:hover {
 }
 
 .featurette-image-left {
-	margin-left: -180px;
+	margin-left: -20px;
+}
+
+.featurette-odd {
+	background: #f3f3f3;
+	border-top: solid 1px #e5e5e5;
+	border-bottom: solid 1px #e5e5e5;
+	min-height: 200px;
 }
 
 
@@ -161,26 +169,35 @@ ul.nav a:hover {
 ------------------------- */
 .action-call {
 	color: #fff;
-	padding: 50px;
+	padding-top: 50px;
 	width: 100%;
 	background: url(../img/hero.jpg) no-repeat bottom center #3e3f3a;
 	text-align: center;
 	overflow: hidden;
 }
 
+.action-call div.clouds {
+	margin-bottom: -35px;
+}
+
 .action-call p {
-	font-size: 1.3em;
+	font-size: 1.5em;
 	margin-top: 20px;
+	line-height: 0.7em;
 }
 
 .action-call strong {
 	font-size: 1.5em;
-	font-weight: bold;
+	font-weight: 400;
 }
 
 footer {
-	text-align: center;
-	margin-top: 20px;
+	text-align: left;
+	margin-top: 80px;
+}
+
+footer h5 {
+	font-weight: bold;
 }
 
 footer small {
@@ -199,15 +216,6 @@ footer a:active,
 footer a:hover,
 footer a:visited {
 	color: #202020;
-}
-
-.shortcuts a {
-	font-weight: bold;
-	margin-right: 100px;
-}
-
-.shortcuts {
-
 }
 
 /* RESPONSIVE CSS
