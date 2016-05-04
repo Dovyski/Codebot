@@ -7,7 +7,7 @@
          <div class="col-md-1"></div>
          <div class="col-md-2">
            <h5>About</h5>
-           <p><a href="#">Product</a></p>
+           <p><a href="<?php echo BASE_URL; ?>/">Product</a></p>
            <p><a href="<?php echo BASE_URL; ?>/pricing">Pricing</a></p>
            <p><a href="<?php echo BASE_URL; ?>/about">About Us</a></p>
          </div>
