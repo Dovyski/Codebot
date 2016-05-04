@@ -1,53 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Gamedev IDE on the cloud">
-    <meta name="author" content="Fernando Bevilacqua">
-    <link rel="icon" href="./favicon.ico">
+<?php
+    define('BASE_URL', '.');
+    require_once(dirname(__FILE__).'/head.php');
+?>
 
-    <title>Codebot - gamedev IDE on the cloud</title>
-
-    <!-- Huge amount of social/open graph/scheme stuff. Thats the world we live in... -->
-    <html itemscope itemtype="http://schema.org/WebApplication">
-
-    <!-- Schema.org markup for Google+ -->
-    <meta itemprop="name" content="Codebot">
-    <meta itemprop="description" content="Gamedev IDE on the cloud">
-    <meta itemprop="image" content="https://codebot.cc/img/facebook-social-img.jpg">
-    <meta itemprop="screenshot" content="https://codebot.cc/img/codebot-app.png">
-
-    <!-- Twitter Card data -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@As3GameGears">
-    <meta name="twitter:title" content="Codebot">
-    <meta name="twitter:description" content="Gamedev IDE on the cloud">
-    <meta name="twitter:creator" content="@As3GameGears">
-    <!-- Twitter summary card with large image must be at least 280x150px -->
-    <meta name="twitter:image:src" content="https://codebot.cc/img/facebook-social-img.jpg">
-
-    <!-- Open Graph data -->
-    <meta property="og:title" content="Codebot" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://codebot.cc" />
-    <meta property="og:image" content="https://codebot.cc/img/facebook-social-img.jpg" />
-    <meta property="og:description" content="Gamedev IDE on the cloud" />
-    <meta property="og:site_name" content="Codebot" />
-
-    <!-- Bootstrap core CSS -->
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <!-- Custom styles for this template -->
-    <link href="./css/style.css?20160504" rel="stylesheet">
-  </head>
 <!-- NAVBAR
 ================================================== -->
   <body>
@@ -68,7 +23,6 @@
         </nav>
       </div>
     </div>
-
 
     <!-- Carousel
     ================================================== -->
@@ -266,40 +220,6 @@
         <div class="clouds"></div>
 	</div><!-- /.carousel -->
 
-    <footer class="container foot">
-       <div class="row">
-         <div class="col-md-5">
-             <h5>Codebot</h5>
-             <p>Codebot is an open-source project developed by <a href="https://twitter.com/As3GameGears" target="_blank">Fernando Bevilacqua</a>. The software is provided "as is" with no warranties. Don't use it for important stuff, you might lose your data.</p>
-         </div>
-         <div class="col-md-1"></div>
-         <div class="col-md-2">
-           <h5>About</h5>
-           <p><a href="#">Product</a></p>
-           <p><a href="./pricing">Pricing</a></p>
-           <p><a href="./about">About Us</a></p>
-         </div>
-         <div class="col-md-2">
-             <h5>Legal</h5>
-             <p><a href="./terms">Terms of Use</a></p>
-             <p><a href="./privacy">Privacy Policy</a></p>
-             <p><a href="./disclaimer">Disclaimer</a></p>
-         </div>
-         <div class="col-md-2">
-             <h5>Social</h5>
-             <p><a href="http://blog.codebot.cc" target="_blank">Blog</a></p>
-             <p><a href="https://github.com/Dovyski/Codebot" target="_blank">Github</a></p>
-             <p><a href="https://twitter.com/As3GameGears" target="_blank">Twitter</a></p>
-         </div>
-       </div>
-
-       <div class="row">
-         <div class="col-md-12">
-             <hr class="featurette-divider">
-     		 <p class="pull-right"><a href="#">Back to top</a></p>
-             <small>Codebot logo based on icon made by <a href="http://www.simpleicon.com" title="SimpleIcon">SimpleIcon</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></small>
-         </div>
-       </div>
-    </footer>
-  </body>
-</html>
+<?php
+    require_once(dirname(__FILE__).'/footer.php');
+?>
