@@ -50,7 +50,7 @@ IdeWeb.Panel.CreateProject.prototype.render = function() {
     aIde = this.getContext().plugins.get('cc.codebot.ide.web');
 
     this.divider('Type');
-    this.row('<select name="type" id="project-type"><option value="flash">Flash/AS3</option><option value="js">Javascript/HTML5</option></select>');
+    this.row('<select name="type" id="project-type">' + this.generateAvailableProjectTypes() + '</select>');
 
     this.divider('Template');
 
@@ -76,6 +76,22 @@ IdeWeb.Panel.CreateProject.prototype.render = function() {
     $('#project-type').change(function(theEvent) {
         aSelf.renderTemplatesList(theEvent.target.value);
     });
+};
+
+IdeWeb.Panel.CreateProject.prototype.generateAvailableProjectTypes = function() {
+    var aFactory,
+        aType,
+        aOut = '';
+
+    aFactory = this.getContext().plugins.get('cc.codebot.ide.web').getProjectFactory();
+
+    if(aFactory) {
+        for(aType in aFactory) {
+            aOut += '<option value="' + aType + '">' + aFactory[aType].name + '</option>';
+        }
+    }
+
+    return aOut;
 };
 
 IdeWeb.Panel.CreateProject.prototype.renderTemplatesList = function(theType) {
