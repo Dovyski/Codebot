@@ -60,16 +60,20 @@ IdeWeb.Panel.OpenProject.prototype.render = function() {
     aIde.findProjects(function(theProjects) {
         var aInfo = '',
             aDate,
-            aId;
+            aId,
+            aFactoryInfo;
 
         for(var i in theProjects) {
             aDate = new Date(theProjects[i].creation_date * 1000);
             aId = theProjects[i].id;
+
+            aFactoryInfo = aProjectFactory[theProjects[i].type] || {};
+
             aInfo +=
                 '<a href="javascript:void(0);" data-project-id="' + aId + '">' +
                     '<div class="project">' +
                         '<div class="summary">' +
-                            '<img src="' + (aProjectFactory[theProjects[i].type].icon) + '" title="' + theProjects[i].type + '"/>' +
+                            '<img src="' + (aFactoryInfo.icon || './img/icons/project-unknow-type.png') + '" title="' + theProjects[i].type + '"/>' +
                             '<h2>' + theProjects[i].name + '</h2>' +
                             '<p><i class="fa fa-unlock" title="Anyone can see this project"></i>Public</p>' +
                             '<p><i class="fa fa-calendar-o" title="Creation date"></i>' + aDate.getFullYear() + '/' + aDate.getMonth() + '/' + aDate.getDay() +'</p>' +
