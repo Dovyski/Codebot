@@ -73,7 +73,7 @@ JavascriptTools.Plugin.prototype.initAfterProjectOpened = function(theProjectInf
     if(theProjectInfo.type == "js") {
         // Add build and settings buttons.
         this.context.ui.addButton(JavascriptTools.Plugin.meta.id + 'build', { icon: '<i class="fa fa-play"></i>', action: this.build, context: this });
-        this.context.ui.addButton(JavascriptTools.Plugin.meta.id + 'settings', { icon: '<i class="fa fa-cogs"></i>', panel: JavascriptTools.Panel.Settings });
+        this.context.ui.addButton(JavascriptTools.Plugin.meta.id + 'settings', { icon: '<i class="fa fa-wrench"></i>', panel: JavascriptTools.Panel.Settings });
     }
 };
 
@@ -143,7 +143,7 @@ JavascriptTools.Plugin.meta = {
     className: JavascriptTools.Plugin,
     id: 'cc.codebot.javascript.tools',
     name: 'Javascript Tools',
-    description: 'Description here',
+    description: 'Enable the development of HTML5/Javascript projects.',
     version: '1.0.0-ALPHA'
 };
 

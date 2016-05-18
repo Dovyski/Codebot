@@ -146,7 +146,7 @@ DragDropPlugin.meta = {
     className: DragDropPlugin,
     id: 'cc.codebot.ide.web.dnd',
     name: 'Drag and drop',
-    description: 'Description here',
+    description: 'Add files to your projects by dragging-and-dropping them from your computer into the project\'s files panel.',
     version: '1.0.0-ALPHA'
 };
 

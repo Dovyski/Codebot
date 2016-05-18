@@ -245,7 +245,7 @@ IdeWeb.Plugin.meta = {
     className: IdeWeb.Plugin,
     id: 'cc.codebot.ide.web',
     name: 'IDE (Web)',
-    description: 'Description for cc.codebot.ide.web',
+    description: 'Enable cloud services on https://codebot.cc, such as project hosting.',
     version: '1.0.0-ALPHA'
 };
 

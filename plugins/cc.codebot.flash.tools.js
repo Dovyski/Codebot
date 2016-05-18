@@ -222,7 +222,7 @@ FlashToolsPlugin.meta = {
     className: FlashToolsPlugin,
     id: 'cc.codebot.flash.tools',
     name: 'Flash Tools',
-    description: 'Description here',
+    description: 'Enable the development of Flash/AS3 projects. It uses Flex SDK 4.6 to compile the project files.',
     version: '1.0.0-ALPHA'
 };
 

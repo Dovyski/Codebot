@@ -92,7 +92,7 @@ AssetFinder.Plugin.meta = {
     className: AssetFinder.Plugin,
     id: 'cc.codebot.asset.finder',
     name: 'Asset finder',
-    description: 'Description here',
+    description: 'Quickly find assets and download them to your project with a single click.',
     version: '1.0.0-ALPHA'
 };
 

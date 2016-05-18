@@ -951,6 +951,7 @@ Settings - plugin
     width: 100%;
     border-bottom: 1px solid #505050;
     margin: 0 0 2px 0;
+    padding: 5px;
 }
 
 .plugin img {

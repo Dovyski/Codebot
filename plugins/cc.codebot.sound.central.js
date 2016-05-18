@@ -64,7 +64,7 @@ SoundCentral.Plugin.meta = {
     className: SoundCentral.Plugin,
     id: 'cc.codebot.sound.central',
     name: 'Sound Central',
-    description: 'Description here',
+    description: 'Quickly generate 8-bit SFX for your projects. The generation process is based on the famous sfxr lib.',
     version: '1.0.0-ALPHA'
 };
 

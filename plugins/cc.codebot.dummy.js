@@ -91,7 +91,7 @@ Dummy.Plugin.meta = {
     className: Dummy.Plugin,
     id: 'com.dummy.plugin',
     name: 'Dummy plugin',
-    description: 'Description here',
+    description: 'Use this plugin as a boilerplate to create a new plugin.',
     version: '1.0.0'
 };
 
