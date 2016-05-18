@@ -60,10 +60,10 @@ AssetFinder.Panel.Main.prototype.render = function() {
 
     this.divider('Filters');
     this.pair('License', this.generateLicensesSelection());
-    this.pair('Type', '<select><option>Test</option></select>');
+    this.pair('Type', '<select><option>Image</option></select>');
 
     this.divider('Results');
-    this.row('<div id="af-browse-area">Nothing to show yet.</div>');
+    this.row('<div id="af-browse-area"><div class="warning"><i class="fa fa-search"></i><br/> Use the search input above to find assets for your project.</div></div>');
 
     this.initUI();
 };
@@ -125,19 +125,24 @@ AssetFinder.Panel.Main.prototype.search = function() {
 
     aIde = this.getContext().plugins.get('cc.codebot.ide.web');
 
-    $('#af-browse-area').html('<i class="fa fa-circle-o-notch fa-spin"></i>');
+    $('#af-browse-area').html('<div class="warning"><i class="fa fa-circle-o-notch fa-spin"></i><br/> Searching...</div>');
 
     aIde.api('assets', 'search', this.serialize(), function(theData) {
         if(theData.success) {
-            for(i = 0; i < theData.items.length; i++) {
-                aContent += '<a href="javascript:void(0)" data-item="'+theData.items[i].id+'"><img src="'+theData.items[i].thumbnail+'" alt="Preview" style="width: 90px; height: 90px; padding: 2px;"></a>';
+            if(theData.items.length > 0) {
+                for(i = 0; i < theData.items.length; i++) {
+                    aContent += '<a href="javascript:void(0)" data-item="'+theData.items[i].id+'"><img src="'+theData.items[i].thumbnail+'" alt="Preview" style="width: 90px; height: 90px; padding: 2px;"></a>';
+                }
+                $('#af-browse-area').html(aContent).hide().fadeIn();
 
+                $('#af-browse-area a').click(function() {
+                    aSelf.showItemInfo($(this).data('item'));
+                });
+            } else {
+                $('#af-browse-area').html('<div class="warning"><i class="fa fa-warning"></i><br/> Not items were found. Please use another search term, e.g. zombie.</div>');
             }
-            $('#af-browse-area').html(aContent);
-
-            $('#af-browse-area a').click(function() {
-                aSelf.showItemInfo($(this).data('item'));
-            });
+        } else {
+            $('#af-browse-area').html('<div class="warning"><i class="fa fa-exclamation-circle"></i><br/> Some error occurred during your search. Please try a different term.</div>');
         }
     });
 };
