@@ -723,6 +723,17 @@ Sliding panel and panels content
    color: #6d6d6d;
 }
 
+.panel-content div.warning {
+    text-align: center;
+    padding: 10px;
+    opacity: 0.6;
+}
+
+.panel-content div.warning i {
+    font-size: 4.5em;
+    opacity: 0.5;
+    margin-bottom: 10px;
+}
 
 /*
 -----------------------------------------------------

@@ -178,6 +178,8 @@ SoundCentral.Panel.Main.prototype.updateUI = function() {
 
     if(this.mSfxData) {
         // Update file name, size, etc.
+        $('#sndc-not-used').hide();
+        $('#sndc-results').show();
         $('#sndc-file-name').text(this.getSfxFileName());
         $("#file_size").text(Math.round(this.mSfxData.wav.length / 1024) + "kB");
         $("#num_samples").text(this.mSfxData.header.subChunk2Size / (this.mSfxData.header.bitsPerSample >> 3));
@@ -343,27 +345,34 @@ SoundCentral.Panel.Main.prototype.render = function() {
 
     this.divider('Result', {icon: 'play-circle'});
 
-    this.row('<div id="sndc-wave" /></div>', true);
-
     this.row(
-        '<div style="width: 24%; float: left; margin-right: 2px;">' +
-            '<button id="sndc-btn-play" class="square"><i class="fa fa-play"></i></button>' +
-        '</div>' +
-        '<div style="width: 75%; float: right;">' +
-            '<strong id="sndc-file-name">Explosion1.wav</strong>' +
-            '<p><span id="file_size"></span>, <span id="num_samples"></span> samples, clipped <span id="clipping"></span>.</p>' +
-        '</div>' +
+        '<div id="sndc-results" style="display:none;">' +
+            '<div id="sndc-wave" style="overflow: none; margin-bottom: 5px;"></div>' +
+            '<div>' +
+                '<div style="width: 24%; float: left; margin-right: 2px;">' +
+                    '<button id="sndc-btn-play" class="square"><i class="fa fa-play"></i></button>' +
+                '</div>' +
+                '<div style="width: 75%; float: right;">' +
+                    '<strong id="sndc-file-name">Explosion1.wav</strong>' +
+                    '<p><span id="file_size"></span>, <span id="num_samples"></span> samples, clipped <span id="clipping"></span>.</p>' +
+                '</div>' +
+            '</div>' +
 
-        '<div style="width: 100%; clear: both;">' +
+            '<div style="width: 100%; clear: both;"></div>' +
 
-        '<div style="width: 70%; float: left;">' +
-            '<i class="fa fa-folder-open"></i>' +
-            '<select id="sndc-add-folder" style="width: 80%;">' +
-                '<option value="/">/</option>' +
-            '</select>' +
+            '<div style="width: 70%; float: left;">' +
+                '<i class="fa fa-folder-open"></i>' +
+                '<select id="sndc-add-folder" style="width: 80%;">' +
+                    '<option value="/">/</option>' +
+                '</select>' +
+            '</div>' +
+            '<div style="width: 30%; float: left;">' +
+                '<button id="sndc-btn-download" style="width: 100%;"><i class="fa fa-download"></i> Add</button>' +
+            '</div>' +
         '</div>' +
-        '<div style="width: 30%; float: left;">' +
-            '<button id="sndc-btn-download" style="width: 100%;"><i class="fa fa-download"></i> Add</button>' +
+        '<div id="sndc-not-used" class="warning">' +
+            '<i class="fa fa-warning"></i> <br />' +
+            'No SFX was generated yet. Click any of the generators above to start.' +
         '</div>'
     );
 
