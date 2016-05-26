@@ -145,8 +145,12 @@ var CodebotFilesPanel = function() {
 
             mCodebot.io.move(aNode.data, aNewNode, function(theError) {
                 if(theError) {
-                    console.log('Problem with rename/move!');
+                    console.error('Problem with rename/move!');
                     // TODO: warn about error and reload tree.
+                } else {
+                    aNode.data.name = aNewName;
+                    aNode.data.path = aNewNode.path;
+                    console.debug('Node has been renamed', aNode);
                 }
             });
 

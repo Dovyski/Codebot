@@ -49,7 +49,7 @@ var CodebotContextMenu = function() {
                         if(e) {
                             console.log('Something went wrong when deleting file: ' + e);
                         } else {
-                            mCodebot.ui.filesPanel.reloadTree();
+                            mCodebot.ui.filesPanel.reloadTreeData();
                         }
                     });
                 }},
@@ -64,7 +64,7 @@ var CodebotContextMenu = function() {
             if(theInfo instanceof Error) {
                 console.error('Problem with createFile!' + theInfo);
             } else {
-                mCodebot.ui.filesPanel.reloadTree();
+                mCodebot.ui.filesPanel.reloadTreeData();
                 // TODO: open node in new tab
             }
         });
@@ -76,7 +76,7 @@ var CodebotContextMenu = function() {
             if(theInfo instanceof Error) {
                 console.error('Problem with createDirectory!' + theInfo);
             } else {
-                mCodebot.ui.filesPanel.reloadTree();
+                mCodebot.ui.filesPanel.reloadTreeData();
             }
         });
     };
