@@ -47,7 +47,7 @@ AssetFinder.Plugin.prototype.getPanelData = function(thePanel) {
     return null;
 };
 
-AssetFinder.Plugin.prototype.initUIAfterProjectOpened = function(theProjectInfo) {
+AssetFinder.Plugin.prototype.initUI = function(theProjectInfo) {
     this.context.ui.addButton(AssetFinder.Plugin.meta + 'mainPanel', { icon: '<i class="fa fa-picture-o"></i>', panel: AssetFinder.Panel.Main });
 };
 
@@ -65,8 +65,11 @@ AssetFinder.Plugin.prototype.getLicenses = function() {
 };
 
 AssetFinder.Plugin.prototype.activate = function() {
-    // TODO: activate only if there is any project open.
-    this.initUIAfterProjectOpened();
+    var aIde = this.context.plugins.get('cc.codebot.ide.web');
+
+    if(aIde.getActiveProject()) {
+        this.initUI();
+    }
 };
 
 AssetFinder.Plugin.prototype.deactivate = function() {
@@ -85,7 +88,7 @@ AssetFinder.Plugin.prototype.init = function(theContext) {
 
     this.loadLicenses();
 
-    this.context.signals.projectOpened.add(this.initUIAfterProjectOpened, this);
+    this.context.signals.projectOpened.add(this.initUI, this);
 };
 
 AssetFinder.Plugin.meta = {
