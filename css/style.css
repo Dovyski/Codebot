@@ -1076,6 +1076,13 @@ UI toast
     right: 0;
 }
 
+.toast-content a.toast-close-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    color: #75BFFF;
+}
+
 .toast-wrapper.open {
     pointer-events: auto;
 }

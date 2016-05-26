@@ -187,9 +187,16 @@ var CodebotUI = function() {
     };
 
 	this.toast = function(theType, theMessage, theDuration) {
-		// TODO: check it it is open, etc.
+		// TODO: check if it is open, etc.
 		$('#cb-toast').addClass('open');
-		$('#cb-toast div.toast-content').addClass(theType).html(theMessage);
+		$('#cb-toast div.toast-content')
+			.addClass(theType)
+			.html(theMessage)
+			.append('<a href="javascript:void(0);" class="toast-close-button"><i class="fa fa-close"></i></a>');
+
+		$('#cb-toast a.toast-close-button').click(function() {
+			$('#cb-toast').removeClass('open');
+		});
 
 		setTimeout(function() {
 			$('#cb-toast').removeClass('open');
