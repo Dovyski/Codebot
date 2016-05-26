@@ -113,6 +113,23 @@ Files panel
 	background: #282828;
     overflow: scroll;
     border-left: 1px solid #000;
+    position: relative;
+}
+
+#folders div.message {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #282828;
+    text-align: center;
+    padding-top: 50%;
+}
+
+#folders div.message i{
+    font-size: 3em;
+    margin-bottom: 10px;
 }
 
 #files-panel-pending-activities {
@@ -731,14 +748,13 @@ Sliding panel and panels content
 }
 
 .panel-content div.warning {
+    margin-top: 50%;
     text-align: center;
     padding: 10px;
-    opacity: 0.6;
 }
 
 .panel-content div.warning i {
-    font-size: 4.5em;
-    opacity: 0.5;
+    font-size: 5.5em;
     margin-bottom: 10px;
 }
 

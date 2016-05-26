@@ -231,6 +231,16 @@ var CodebotFilesPanel = function() {
         mTree = $("#folders").fancytree("getTree");
 	};
 
+    this.showMessage = function(theMessage) {
+        $('#folders .fancytree-container').hide();
+        $('#folders .message').html(theMessage).fadeIn();
+    };
+
+    this.hideMessage = function() {
+        $('#folders .message').fadeOut();
+        $('#folders .fancytree-container').show();
+    };
+
     this.renameFocusedNode = function() {
         if(mFocusedNode) {
             mFocusedNode.node.startEdit();
@@ -262,6 +272,8 @@ var CodebotFilesPanel = function() {
         mCodebot     = theCodebot;
         mSelf        = this;
         mContextMenu = new CodebotContextMenu();
+
+        $('#folders').append('<div class="message"></div>');
 
         mContextMenu.init(mCodebot);
         initPendingActivitiesBadge();

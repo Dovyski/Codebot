@@ -116,6 +116,8 @@ IdeWeb.Plugin = function() {
 
         console.log('CODEBOT [ide] Opening project with id=' + theProjectId);
 
+        mContext.ui.filesPanel.showMessage('<i class="fa fa-circle-o-notch fa-spin"></i><br />Loading project, please wait.');
+
         mSelf.api('project', 'open', {id: theProjectId}, function(theData) {
             if(theData.success) {
                 aProject = theData.project;
@@ -137,7 +139,9 @@ IdeWeb.Plugin = function() {
                 // Tell everybody about the newly opened project.
                 mContext.signals.projectOpened.dispatch([mActiveProject]);
 
+                mContext.ui.filesPanel.hideMessage();
             } else {
+                mContext.ui.filesPanel.showMessage('<i class="fa fa-warning"></i><br />Something wrong happened.<br/>' + (theData.msg || ''));
                 console.error('Failed to open project: ' + theData.msg);
             }
         });

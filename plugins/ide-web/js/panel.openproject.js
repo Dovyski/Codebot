@@ -55,7 +55,7 @@ IdeWeb.Panel.OpenProject.prototype.render = function() {
 
     this.row('<div id="projects-list"></div>');
 
-    $('#projects-list').html('<i class="fa fa-circle-o-notch fa-spin"></i> Loading the list, please wait.');
+    $('#projects-list').html('<div class="warning"><i class="fa fa-circle-o-notch fa-spin"></i><br />Loading the list,<br /> please wait.</div>');
 
     aIde.findProjects(function(theProjects) {
         var aInfo = '',
