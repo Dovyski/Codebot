@@ -136,7 +136,7 @@ var DragDropPlugin = function() {
         mContext = theContext;
 
         // Setup the dnd listeners.
-        var aDropZone = document.getElementById('folders');
+        var aDropZone = document.getElementById('content');
         aDropZone.addEventListener('dragover', handleDragOver, false);
         aDropZone.addEventListener('drop', handleFileSelect, false);
     };
