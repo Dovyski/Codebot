@@ -231,6 +231,11 @@ var CodebotFilesPanel = function() {
         mTree = $("#folders").fancytree("getTree");
 	};
 
+    this.sortTree = function() {
+        var aNode = $('#folders').fancytree('getRootNode');
+        aNode.sortChildren(null, true);
+    };
+
     this.showMessage = function(theMessage) {
         $('#folders .fancytree-container').hide();
         $('#folders .message').html(theMessage).fadeIn();
@@ -263,6 +268,7 @@ var CodebotFilesPanel = function() {
             mCodebot.signals.beforeFilesPanelRefresh.dispatch([theNodes[0]]);
 
             mTree.reload(theNodes);
+            mSelf.sortTree();
 
             console.debug('Tree has been populated.');
         }
