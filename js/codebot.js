@@ -106,6 +106,10 @@ var CODEBOT = new function() {
             console.log('CODEBOT [core] Done, ready to rock!');
 			mSignals.ready.dispatch();
 
+			// Remove the loading icon
+			$('#loading').fadeOut();
+			$('#wrapper').show();
+
             mSelf.showDebugger();
         });
 	};

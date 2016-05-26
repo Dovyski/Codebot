@@ -57,8 +57,6 @@ function codebotBootstrap(theAppConfig) {
             $('body').append('<script type="text/javascript" src="./js/web/codebot.bootstrap.web.js"></script>');
         }
     }
-
-    $('#loading').remove();
 }
 
 // Wait until the DOM is ready, then starts loading
