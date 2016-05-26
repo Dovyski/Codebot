@@ -172,6 +172,13 @@ span.fancytree-node.fancytree-selected:hover {
     outline: none;
 }
 
+.fancytree-edit-input {
+    background: none;
+    border: none;
+}
+.fancytree-edit-input:focus {
+}
+
 /*
 -----------------------------------------------------
 Content area (where code is edited)

@@ -30,12 +30,12 @@ var CodebotContextMenu = function() {
         console.debug('Selected action "' + theAction + '" on node ', theNode, theNode.data);
 
         if(mItems[theAction].action) {
-            mItems[theAction].action(theNode.data);
+            mItems[theAction].action(theNode.data, theNode);
         }
     };
 
-    var doRename = function(theNode) {
-        theNode.startEdit();
+    var doRename = function(theNode, theTreeItem) {
+        theTreeItem.editStart();
     };
 
     var doDelete = function(theNode) {
