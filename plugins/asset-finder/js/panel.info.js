@@ -60,11 +60,10 @@ AssetFinder.Panel.Info.prototype.renderFromData = function(theItemId, theData) {
     this.divider('Preview');
     this.row('<div style="text-align: center;"><img src="'+theData.preview[0]+'" style="max-width: 300px;"/></div>');
 
-    // TODO: move findProjectTopFolders() to filespanel class.
-    aProjectFolders = this.findProjectTopFolders();
+    aProjectFolders = this.context.ui.filesPanel.findTopFolders();
 
     for(i = 0, aTotal = aProjectFolders.length; i < aTotal; i++) {
-        aFoldersText += '<option value="' + aProjectFolders[i].path + '">/' + aProjectFolders[i].name + '</option>';
+        aFoldersText += '<option value="' + aProjectFolders[i].path + '/">/' + aProjectFolders[i].name + '</option>';
     }
     this.divider('Add to project');
     this.row('<i class="fa fa-folder-open"></i> <select id="assetDestinationDir" style="width: 70%;"><option value="/">/</option>'+aFoldersText+'</select> <button id="assetDownloadLink" style="margin-left: 10px; margin-top: 4px; width: 20%"><i class="fa fa-download"></i> Add</button>');
@@ -123,20 +122,6 @@ AssetFinder.Panel.Info.prototype.addAssetToProject = function(theItemId) {
     }, this);
 
     this.pop();
-};
-
-AssetFinder.Panel.Info.prototype.findProjectTopFolders = function() {
-    var aRoot = this.context.ui.filesPanel.tree,
-        aRet = [];
-        i = 0;
-
-    for(i = 0; i < aRoot.children.length; i++) {
-        if(aRoot.children[i].folder) {
-            aRet.push(aRoot.children[i].data);
-        }
-    }
-
-    return aRet;
 };
 
 AssetFinder.Panel.Info.prototype.onPause = function() {

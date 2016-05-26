@@ -351,8 +351,24 @@ var CodebotFilesPanel = function() {
     this.removePendingActivity = function(theKey) {
         mPendingActivities[theKey] = null;
         refreshPendingActivitiesBadge();
-    }
+    };
+
+    this.getRootNode = function() {
+        return mRootNode;
+    };
+
+    this.findTopFolders = function() {
+        var aRet = [];
+            i;
+
+        for(i = 0; i < mRootNode.children.length; i++) {
+            if(mRootNode.children[i].folder) {
+                aRet.push(mRootNode.children[i]);
+            }
+        }
+
+        return aRet;
+    };
 
     this.__defineGetter__("contextMenu", function(){ return mContextMenu; });
-    this.__defineGetter__("tree", function(){ return mTree.rootNode.children[0]; });
 };
