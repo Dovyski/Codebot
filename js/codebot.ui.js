@@ -21,6 +21,9 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+var Codebot = Codebot || {};
+Codebot.UI = Codebot.UI || {};
+
 var CodebotUI = function() {
     // Private properties
 	var mTabs 				= null;
@@ -183,14 +186,14 @@ var CodebotUI = function() {
         $('#defaultModal').modal(theConfig);
     };
 
-	this.toast = function(theType, theMessage) {
+	this.toast = function(theType, theMessage, theDuration) {
 		// TODO: check it it is open, etc.
 		$('#cb-toast').addClass('open');
 		$('#cb-toast div.toast-content').addClass(theType).html(theMessage);
 
 		setTimeout(function() {
 			$('#cb-toast').removeClass('open');
-		}, 3000);
+		}, theDuration || 10000);
 	};
 
 	this.init = function(theCodebot) {
@@ -233,3 +236,8 @@ var CodebotUI = function() {
     this.__defineGetter__("filesPanel", function(){ return mFilesPanel; });
     this.__defineGetter__("slideTray", function(){ return mSlideTray; });
 };
+
+// Toast constants
+Codebot.UI.TOAST_ERROR = 'error';
+Codebot.UI.TOAST_INFO = 'info';
+Codebot.UI.TOAST_WARN = 'warning';

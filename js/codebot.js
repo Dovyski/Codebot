@@ -33,6 +33,10 @@ var CODEBOT = new function() {
     var mSelf;
 
 	var handleError = function(theMsg, theUrl, theLineNumber) {
+		// Show some nice information to the user
+		mUI.toast(Codebot.UI.TOAST_ERROR, '<h2>An error just occured</h2><p>' + theMsg + '</p>');
+
+		// Log the error and run in circles \o/
 		console.error("Error occured: " + theMsg);
 		return false;
 	};
