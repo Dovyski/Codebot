@@ -26,9 +26,11 @@ var CodebotFilesPanel = function() {
     var mSelf = null;
     var mFocusedNode = null;
     var mRootNode = null;
+    var mTreeData = {};
     var mTree = null;
     var mContextMenu = null;
     var mFoldersState = {};
+    var mShadowNodes = {};
     var mPendingActivities = {};
 
     var onClick = function(theEvent, theItem) {
@@ -51,7 +53,7 @@ var CodebotFilesPanel = function() {
 
         mCodebot.signals.filesPanelItemDoubleClicked.dispatch([theItem]);
 
-		if(!aNode.folder) {
+		if(!aNode.folder && !aNode.data.shadow) {
             mCodebot.ui.tabs.openNode(aNode);
 		}
 	};
@@ -60,7 +62,7 @@ var CodebotFilesPanel = function() {
         /** This function MUST be defined to enable dragging for the tree.
          *  Return false to cancel dragging of node.
          */
-        return true;
+        return !theDragData.shadow;
     };
 
     var onDragEnter = function(theDestinationNode, theDragData) {
@@ -96,6 +98,12 @@ var CodebotFilesPanel = function() {
     var onDragDrop = function(theDestinationNode, theDragData) {
         var aNodeBeingDragged = theDragData.otherNode;
 
+        if(aNodeBeingDragged.data.shadow) {
+            // Shadow nodes cannot be dragged around.
+            console.debug('Drag and drop cancelled because node is a shadow node');
+            return;
+        }
+
         console.debug('Drag and drop event', theDragData);
 
         aNodeBeingDragged.moveTo(theDestinationNode, theDragData.hitMode);
@@ -124,6 +132,8 @@ var CodebotFilesPanel = function() {
                 // TODO: warn about error and reload tree.
             }
         });
+
+        mSelf.sortTree();
     };
 
     var onRename = function(theEvent, theData) {
@@ -140,6 +150,7 @@ var CodebotFilesPanel = function() {
                 }
             });
 
+            mSelf.sortTree();
             // TODO: update open tab containing the renamed node.
         }
     };
@@ -231,9 +242,24 @@ var CodebotFilesPanel = function() {
         mTree = $("#folders").fancytree("getTree");
 	};
 
+    var addShadowNodesToRendedTree = function() {
+        var aKey,
+            aEntry;
+
+        for(aKey in mShadowNodes) {
+            aEntry = mShadowNodes[aKey];
+            aEntry.parent.addChildren(aEntry.node);
+        }
+    };
+
     this.sortTree = function() {
         var aNode = $('#folders').fancytree('getRootNode');
-        aNode.sortChildren(null, true);
+
+        aNode.sortChildren(function(theA, theB) {
+            var x = theA.data.name.toLowerCase(),
+				y = theB.data.name.toLowerCase();
+			return x === y ? 0 : x > y ? 1 : -1;
+        }, true);
     };
 
     this.showMessage = function(theMessage) {
@@ -247,30 +273,52 @@ var CodebotFilesPanel = function() {
     };
 
     this.renameFocusedNode = function() {
-        if(mFocusedNode) {
+        if(mFocusedNode && !mFocusedNode.node.data.shadow) {
             mFocusedNode.node.startEdit();
             console.log('Open rename panel', mFocusedNode);
         }
     };
 
-    this.refreshTree = function() {
+    this.reloadTreeData = function() {
         mCodebot.io.readDirectory(mRootNode, mSelf.populateTree);
-    }
+    };
+
+    this.refreshTree = function() {
+        // Tell everybody that the files panel is about to
+        // refresh. Plugins can change the tree structure,
+        // for instance.
+        mCodebot.signals.beforeFilesPanelRefresh.dispatch([mRootNode]);
+
+        restoreFoldersStatus(mTreeData);
+        mTree.reload(mTreeData);
+        addShadowNodesToRendedTree();
+        mSelf.sortTree();
+    };
+
+    this.addShadowNode = function(theNode, theParent) {
+        var aNewNode = {};
+
+        if(theNode == null || !theNode.key) {
+            throw new Error('Shadow node is null or has no key property.');
+        }
+
+        $.extend(aNewNode, theNode);
+        aNewNode.shadow = true;
+
+        mShadowNodes[aNewNode.key] = {
+            node: aNewNode,
+            parent: theParent || $('#folders').fancytree('getRootNode')
+        }
+    };
 
     this.populateTree = function(theNodes) {
         if(theNodes && theNodes.length > 0) {
-            mRootNode = theNodes[0];
-            restoreFoldersStatus(theNodes[0]);
+            mTreeData = theNodes;
+            mRootNode = mTreeData[0];
 
-            // Tell everybody that the files panel is about to
-            // refresh. Plugins can change the tree structure,
-            // for instance.
-            mCodebot.signals.beforeFilesPanelRefresh.dispatch([theNodes[0]]);
+            mSelf.refreshTree();
 
-            mTree.reload(theNodes);
-            mSelf.sortTree();
-
-            console.debug('Tree has been populated.');
+            console.debug('Tree has been populated.', mRootNode);
         }
     };
 

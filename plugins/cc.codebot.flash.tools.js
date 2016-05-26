@@ -86,7 +86,7 @@ var FlashToolsPlugin = function() {
         aSettings.libs = aSettings.libs.join(',');
 
         saveProjectSettings(aSettings);
-        mContext.ui.filesPanel.refreshTree();
+        mContext.ui.filesPanel.reloadTree();
     };
 
     var highlightSwcsAddedToLib = function(theNode) {
