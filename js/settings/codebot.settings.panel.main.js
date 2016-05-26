@@ -84,12 +84,6 @@ Codebot.Settings.Panel.Main.prototype.render = function() {
     });
 
     // Show all settings sections
-    this.divider('User');
-    this.row(
-        '<div class="settings-panel-main-user">' +
-            '<img src="https://avatars3.githubusercontent.com/u/512405?v=3&s=460" title="Fernando Bevilacqua" />' +
-            '<p class="name">Fernando Bevilacqua</p> ' +
-            '<p><i class="fa fa-github"></i> Dovyski</p>' +
-        '</div>'
-    );
+    this.divider('Found a bug?');
+    this.row('<div style="text-align: center; padding: 10px;"><a href="https://github.com/Dovyski/Codebot/issues/new" target="_blank"><i class="fa fa-github" style="font-size: 1.5em;"></i>Open an issue</a></div>');
 };
