@@ -35,7 +35,9 @@ Codebot.Editor = Codebot.Editor || {};
 Codebot.Editor.Code = function(theContainer, theTab) {
 	this.mContainer = theContainer;
 	this.mTab = theTab;
-    this.mAce = ace.edit(theTab.container);
+	this.mAce = ace.edit(theTab.container);
+
+	this.initInPlaceOverlay();
 };
 
 /**
@@ -94,9 +96,19 @@ Codebot.Editor.Code.prototype.load = function(theContent) {
 			aTab.setDirty(false);
 		};
 	} else {
-		console.log(theContent);
 		aAce.setValue(theContent);
 		aAce.session.selection.clearSelection();
+	}
+};
+
+Codebot.Editor.Code.prototype.initInPlaceOverlay = function() {
+	var aId = 'cb-editor-code-overlay';
+
+	this.mOverlay = $('#' + aId);
+
+	if(this.mOverlay.length == 0) {
+		$('#' + this.mContainer).append('<div id="' + aId + '" style="overlay: none; position: absolute; width: 100px; min-height: 100px; background: red; z-index: 9999;"></div>');
+		this.mOverlay = $('#' + aId);
 	}
 };
 
@@ -105,6 +117,84 @@ Codebot.Editor.Code.prototype.onContentChange = function(theEvent) {
 };
 
 Codebot.Editor.Code.prototype.onCursorMove = function(theEvent) {
-	var aCurrentLine = this.mAce.getSelectionRange().start.row;
-	console.log(this.mAce.getSession().getLine(aCurrentLine), this.mAce.getCursorPositionScreen());
+	this.handleInteligentInPlaceTools(theEvent);
+};
+
+Codebot.Editor.Code.prototype.handleInteligentInPlaceTools = function(theEvent) {
+	var aSelection = this.mAce.getSelectionRange(),
+		aLine = aSelection.start.row,
+		aCol = aSelection.start.column,
+		aContent = this.mAce.getSession().getLine(aLine),
+		aFragment = this.getInterestingFragmentAroundCursor(aContent, aCol);
+
+	console.debug('Interesting fragment: ', aFragment);
+
+	if(aFragment.match(/.*\.(png|jpe?g|gif)/g) != null) {
+		this.showInPlaceImagePreview(aFragment);
+	} else {
+		this.mOverlay.fadeOut('fast');
+	}
+};
+
+Codebot.Editor.Code.prototype.showInPlaceImagePreview = function(theImagePath) {
+	this.mOverlay.html('this is a test:' + theImagePath);
+	this.mOverlay.fadeIn('fast');
+
+	this.placeElementAtCursorPosition(this.mOverlay, 'above');
+};
+
+Codebot.Editor.Code.prototype.placeElementAtCursorPosition = function(theElement, theOrientation) {
+	var aSelection = this.mAce.getSelectionRange(),
+		aCurrentLine = aSelection.start.row,
+		aLineHeight = this.mAce.getFontSize() + 2,
+		aRelativeLine,
+		aTop,
+		aLeft;
+
+	aRelativeLine = aCurrentLine - this.mAce.getSession().getScrollTop() / aLineHeight;
+
+	// Default positioning: top-left corner of element stays at
+	// the cursor position (as best as possible)
+	aTop = (aRelativeLine | 0) * aLineHeight + theElement.height() * 0.8;
+	aLeft = aSelection.start.column * 10 + theElement.width() / 2;
+
+	switch (theOrientation) {
+		case 'above':
+			aTop -= theElement.height() + aLineHeight;
+			break;
+		default:
+	}
+
+	theElement.css({top: aTop, left: aLeft});
+};
+
+Codebot.Editor.Code.prototype.getInterestingFragmentAroundCursor = function(theLineContent, theCursorPosition) {
+	var aLeft = '',
+		aRight = '',
+		aChar = '',
+		i;
+
+	i = theCursorPosition - 1;
+	while(i++ < theLineContent.length) {
+		aChar = theLineContent.charAt(i);
+
+		if(aChar == ' ' || aChar == '"' || aChar == '\'') { // TODO: improve those comparisons
+			break;
+		} else {
+			aRight += aChar;
+		}
+	}
+
+	i = theCursorPosition;
+	while(i-- >= 0) {
+		aChar = theLineContent.charAt(i);
+
+		if(aChar == ' ' || aChar == '"' || aChar == '\'') { // TODO: improve those comparisons
+			break;
+		} else {
+			aLeft = aChar + aLeft;
+		}
+	}
+
+	return aLeft + aRight;
 };
