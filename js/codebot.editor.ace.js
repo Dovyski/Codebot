@@ -143,10 +143,32 @@ Codebot.Editor.Code.prototype.showInPlaceImagePreview = function(theImagePath) {
 	this.placeElementAtCursorPosition(this.mOverlay, 'above');
 };
 
+Codebot.Editor.Code.prototype.lengthInPixels = function(theString, theUntilColumn) {
+	var i,
+		aTotal,
+		aSize = 0,
+		aTabSize = this.mAce.getSession().getTabSize(),
+		aCharSize = 9;
+
+	aTotal = theString.length;
+	theUntilColumn = theUntilColumn || aTotal;
+
+	for(i = 0; i < aTotal && i < theUntilColumn; i++) {
+		if(theString.charAt(i) == '\t') {
+			aSize += aTabSize * aCharSize;
+		} else {
+			aSize += aCharSize;
+		}
+	}
+
+	return aSize;
+};
+
 Codebot.Editor.Code.prototype.placeElementAtCursorPosition = function(theElement, theOrientation) {
 	var aSelection = this.mAce.getSelectionRange(),
 		aCurrentLine = aSelection.start.row,
 		aLineHeight = this.mAce.getFontSize() + 2,
+		aLineContent = this.mAce.getSession().getLine(aCurrentLine),
 		aRelativeLine,
 		aTop,
 		aLeft;
@@ -156,7 +178,7 @@ Codebot.Editor.Code.prototype.placeElementAtCursorPosition = function(theElement
 	// Default positioning: top-left corner of element stays at
 	// the cursor position (as best as possible)
 	aTop = (aRelativeLine | 0) * aLineHeight + theElement.height() * 0.8;
-	aLeft = aSelection.start.column * 10 + theElement.width() / 2;
+	aLeft = this.lengthInPixels(aLineContent, aSelection.start.column) + theElement.width() / 2;
 
 	switch (theOrientation) {
 		case 'above':
