@@ -107,7 +107,7 @@ Codebot.Editor.Code.prototype.initInPlaceOverlay = function() {
 	this.mOverlay = $('#' + aId);
 
 	if(this.mOverlay.length == 0) {
-		$('#' + this.mContainer).append('<div id="' + aId + '" style="overlay: none; position: absolute; width: 100px; min-height: 100px; background: red; z-index: 9999;"></div>');
+		$('#' + this.mContainer).append('<div id="' + aId + '" class="codebot-editor-incode-overlay" style="overlay: none; position: absolute; width: 200px; height: 200px; z-index: 9999;"></div>');
 		this.mOverlay = $('#' + aId);
 	}
 };
@@ -137,10 +137,10 @@ Codebot.Editor.Code.prototype.handleInteligentInPlaceTools = function(theEvent) 
 };
 
 Codebot.Editor.Code.prototype.showInPlaceImagePreview = function(theImagePath) {
-	this.mOverlay.html('this is a test:' + theImagePath);
+	this.mOverlay.html('<img src="https://cloud.githubusercontent.com/assets/512405/6548137/e344ebea-c5cd-11e4-800e-adfe8472884c.png" /><br />' + theImagePath);
 	this.mOverlay.fadeIn('fast');
 
-	this.placeElementAtCursorPosition(this.mOverlay, 'above');
+	this.placeElementAtCursorPosition(this.mOverlay);
 };
 
 Codebot.Editor.Code.prototype.lengthInPixels = function(theString, theUntilColumn) {
@@ -175,14 +175,27 @@ Codebot.Editor.Code.prototype.placeElementAtCursorPosition = function(theElement
 
 	aRelativeLine = aCurrentLine - this.mAce.getSession().getScrollTop() / aLineHeight;
 
+	theOrientation = theOrientation || 'lineEndMiddle';
+
 	// Default positioning: top-left corner of element stays at
 	// the cursor position (as best as possible)
-	aTop = (aRelativeLine | 0) * aLineHeight + theElement.height() * 0.8;
+	aTop = aRelativeLine * aLineHeight + theElement.height() * 0.8;
 	aLeft = this.lengthInPixels(aLineContent, aSelection.start.column) + theElement.width() / 2;
 
 	switch (theOrientation) {
 		case 'above':
 			aTop -= theElement.height() + aLineHeight;
+			break;
+		case 'lineEndBelow':
+		case 'lineEndAbove':
+		case 'lineEndMiddle':
+			aLeft = this.lengthInPixels(aLineContent) + theElement.width() / 2;
+
+			if(theOrientation == 'lineEndMiddle') {
+				aTop -= theElement.height() / 2;
+			} else if(theOrientation == 'lineEndAbove'){
+				aTop -= theElement.height() + aLineHeight * 2;
+			}
 			break;
 		default:
 	}

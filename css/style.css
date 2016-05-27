@@ -784,6 +784,11 @@ Editors
     overflow: auto;
 }
 
+.codebot-editor-incode-overlay img {
+    width: 200px;
+    height: auto;
+}
+
 /*
 -----------------------------------------------------
 Custom scrollbars
