@@ -1,7 +1,10 @@
+![Codebot](https://raw.githubusercontent.com/Dovyski/depository/master/codebot-logo-text.png)
+
 Codebot
 =======
 
 Codebot is a free and open source (MIT license) IDE focused on game development. Below is a screenshot of the current development state (something like alpha):
+
 ![codebot_alpha](https://cloud.githubusercontent.com/assets/512405/6548137/e344ebea-c5cd-11e4-800e-adfe8472884c.png)
 
 Idea and Goals
@@ -11,28 +14,32 @@ Codebot is a code editing program equipped with built-in tools to help you make 
 
 The IDE should help us do that, or do it all by itself. Imagine you are working on your [Ludum Dare](http://www.ludumdare.com/)/[1GAM](http://onegameamonth.com) game and you need an 8-bit SFX. You click a button, a panel slides, you type in a few keywords, select what you want and done!
 
-Some features Codebot will probably have:
-
-* Create icons in all sizes required by Google, Apple, OUYA, etc using a single PNG image;
-* Build to different platforms using as few configuration as possible (e.g. build APK for Android and EXE for Windows, wrapping/compiling them the best way possible);
-* Smart files: open a CSV file that describes a level (tilemap), the IDE offers the possibility to render that file if you provide a spritesheet;
-* Easily find and download music/SFX using a sliding panel;
-* Package sprites into an atlas;
-* Extract sprites/tiles from image;
-* Easy development steps. E.g. built-in web server for HTML5 gamedev;
-* Easily find and add extensions/libs to a project (slide a panel, search, click integrate, done!).
-
+Features
+=======
+* Full-featured code editor
+* Support for Javascript projects (Haxe coming soon!)
+* Files panel (drag/rename/move files around)
+* Built-in 8-bit SFXs panel
+* Built-in assets finder panel (currently works with a curated list of opengameart.org)
+* View different file types (images, sounds, text)
+* Projects manager
+* Support for plugins
+* Works in the cloud
 
 Supported platforms
 =======
 
-* MacOS (***working***)
+* Web (running as a website) (***working***)
+* MacOS (*under development*)
 * Linux (*under development*)
 * Windows (*under development*)
-* ChromeOS (*under development*)
-* Web (running as a website) (*under development*)
 
-Under the hood Codebot is built with JS/HTML/CSS on top of [Node Webkit](https://github.com/rogerwang/node-webkit).
+Under the hood Codebot is built with JS/HTML/CSS. When used as a native app, Codebot uses [Node Webkit](https://github.com/rogerwang/node-webkit).
+
+License
+=======
+
+Codebot is licensed under the MIT license.
 
 Contribute
 =======
