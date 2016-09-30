@@ -86,7 +86,7 @@
       <div class="row featurette">
         <div class="col-md-1"></div>
         <div class="col-md-4">
-            <img class="featurette-image-left" src="./img/browser-chrome.png">
+            <img class="featurette-image-left" src="./img/browser-chrome.png" width="602">
 			<img class="featurette-image-left" src="./img/feature-work-bar.gif" alt="No complex menus.">
         </div>
         <div class="col-md-1"></div>
@@ -133,8 +133,8 @@
         </div>
         <div class="col-md-1"></div>
         <div class="col-md-4">
-            <img class="featurette-image-right" src="./img/browser-chrome.png">
-            <img class="featurette-image-right" src="./img/feature-compile.gif" alt="Code, compile and test your project.">
+            <img class="featurette-image-right" src="./img/browser-chrome.png" width="602">
+            <img class="featurette-image-right" src="./img/feature-sfxr.gif" alt="Create 8-bit SFXs. Add with a click.">
         </div>
         <div class="col-md-1"></div>
       </div>
@@ -142,8 +142,8 @@
       <div class="row featurette">
         <div class="col-md-1"></div>
         <div class="col-md-4">
-            <img class="featurette-image-left" src="./img/browser-chrome.png">
-			<img class="featurette-image-left" src="./img/feature-files-panel.gif" alt="Easily manage files">
+            <img class="featurette-image-left" src="./img/browser-chrome.png" width="602">
+			<img class="featurette-image-left" src="./img/feature-assets-finder.gif" alt="Quickly find assets. Without leaving your editor.">
         </div>
         <div class="col-md-1"></div>
         <div class="col-md-5">
@@ -161,8 +161,8 @@
         </div>
         <div class="col-md-1"></div>
         <div class="col-md-4">
-            <img class="featurette-image-right" src="./img/browser-chrome.png">
-            <img class="featurette-image-right" src="./img/feature-compile.gif" alt="Code, compile and test your project.">
+            <img class="featurette-image-right" src="./img/browser-chrome.png" width="602">
+            <img class="featurette-image-right" src="./img/feature-files.gif" alt="View and edit any file. Text, images, audios, you name it!">
         </div>
         <div class="col-md-1"></div>
       </div>
@@ -170,8 +170,8 @@
       <div class="row featurette">
         <div class="col-md-1"></div>
         <div class="col-md-4">
-            <img class="featurette-image-left" src="./img/browser-chrome.png">
-			<img class="featurette-image-left" src="./img/feature-files-panel.gif" alt="Easily manage files">
+            <img class="featurette-image-left" src="./img/browser-chrome.png" width="602">
+			<img class="featurette-image-left" src="./img/feature-manage-projects.gif" alt="Manage all your projects. No matter their platform">
         </div>
         <div class="col-md-1"></div>
         <div class="col-md-5">
@@ -189,8 +189,8 @@
         </div>
         <div class="col-md-1"></div>
         <div class="col-md-4">
-            <img class="featurette-image-right" src="./img/browser-chrome.png">
-            <img class="featurette-image-right" src="./img/feature-compile.gif" alt="Code, compile and test your project.">
+            <img class="featurette-image-right" src="./img/browser-chrome.png" width="602">
+            <img class="featurette-image-right" src="./img/feature-project-create.gif" alt="Create projects easily">
         </div>
         <div class="col-md-1"></div>
       </div>
@@ -198,8 +198,8 @@
       <div class="row featurette">
         <div class="col-md-1"></div>
         <div class="col-md-4">
-            <img class="featurette-image-left" src="./img/browser-chrome.png">
-			<img class="featurette-image-left" src="./img/feature-files-panel.gif" alt="Easily manage files">
+            <img class="featurette-image-left" src="./img/browser-chrome.png" width="602">
+			<img class="featurette-image-left" src="./img/feature-plugins.gif" alt="Plugins! Change or add anything you want.">
         </div>
         <div class="col-md-1"></div>
         <div class="col-md-5">
