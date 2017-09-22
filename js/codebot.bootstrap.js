@@ -30,15 +30,23 @@
  */
 
 function codebotBootstrap(theAppConfig) {
-    var aIsNodeWebkit, aIsChromeApp;
+    var aIsNodeWebkit, aIsChromeApp, aCodebotConfig;
 
     console.log('CODEBOT [bootstrap] App configuration file (app.json):', theAppConfig);
+    CODEBOT.STATIC_APP_CONFIG = theAppConfig;
 
-    if(theAppConfig && theAppConfig.bootstrap) {
+    if(CODEBOT.STATIC_APP_CONFIG.codebot) {
+        aCodebotConfig = CODEBOT.STATIC_APP_CONFIG.codebot;
+
+    } else {
+        console.error('Codebot app.json file has no "codebot" property. E.g. {"codebot": {...}}.');
+    }
+
+    if(CODEBOT.STATIC_APP_CONFIG && ('bootstrap' in aCodebotConfig)) {
         // App config file tells us to use a custom-made bootstrapper.
         // So be it!
-        console.log('CODEBOT [bootstrap] Firing up custom bootstrapper: ' + theAppConfig.bootstrap);
-        $('body').append('<script type="text/javascript" src="'+theAppConfig.bootstrap+'"></script>');
+        console.log('CODEBOT [bootstrap] Firing up custom bootstrapper: ' + aCodebotConfig.bootstrap);
+        $('body').append('<script type="text/javascript" src="' + aCodebotConfig.bootstrap + '"></script>');
 
     } else {
         aIsNodeWebkit = 'require' in window;
@@ -65,12 +73,7 @@ function codebotBootstrap(theAppConfig) {
 $(function() {
     $.getJSON('./app.json')
     .done(function(theData) {
-        if(theData.codebot) {
-            codebotBootstrap(theData.codebot);
-
-        } else {
-            console.error('Codebot app.json file has no "codebot" property. E.g. {"codebot": {...}}.');
-        }
+        codebotBootstrap(theData);
     })
     .fail(function(theJqxhr, theTextStatus, theError) {
         if(theJqxhr.status == 404) {

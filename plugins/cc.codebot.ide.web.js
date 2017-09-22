@@ -229,6 +229,9 @@ IdeWeb.Plugin = function() {
         mContext.ui.addButton('newProject', {icon: '<i class="fa fa-desktop"></i>', panel: IdeWeb.Panel.CreateProject });
         mContext.ui.addButton('openProject', {icon: '<i class="fa fa-hdd-o"></i>', panel: IdeWeb.Panel.OpenProject });
 
+        // Remove any loading indications
+        CODEBOT.setLoadingScreenVisibility(false);
+
         // Schedule the rest of the UI initialization to happen only
         // after a project has been opened.
         mContext.signals.projectOpened.add(initUIAfterProjectOpened);

@@ -1,5 +1,6 @@
 {
     "codebot": {
-        "bootstrap": "./js/web/codebot.bootstrap.web.js"
+        "bootstrap": "./js/web/codebot.bootstrap.web.js",
+        "keepLoadingScreen": false
     }
 }

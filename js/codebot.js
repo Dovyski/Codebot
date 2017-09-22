@@ -32,6 +32,22 @@ var CODEBOT = new function() {
     var mPlugins = null;
     var mSelf;
 
+	// Contain configuration parameters loaded from the app.json file. This file
+	// is loaded before everything and it can guide how Codebot should init and
+	// bootstrap itself.
+	this.STATIC_APP_CONFIG = {};
+
+	/**
+	 * Get config params in the "codebot" section of the content loaded with the app.json file.
+	 *
+	 * @param  {string} thePropertyName Name of the config property being read.
+	 * @param  {[type]} theDefaultValue If the informed property does not exist in the config content, return this value instead.
+	 */
+	this.config = function(thePropertyName, theDefaultValue) {
+		var aEntries = this.STATIC_APP_CONFIG && this.STATIC_APP_CONFIG['codebot'] ? this.STATIC_APP_CONFIG['codebot'] : null;
+		return (thePropertyName in aEntries) ? aEntries[thePropertyName] : theDefaultValue;
+	};
+
 	var handleError = function(theMsg, theUrl, theLineNumber) {
 		// Show some nice information to the user
 		mUI.toast(Codebot.UI.TOAST_ERROR, '<h2>An error just occured</h2><p>' + theMsg + '</p>');
@@ -74,6 +90,16 @@ var CODEBOT = new function() {
 		mIO.init();
 	};
 
+	this.setLoadingScreenVisibility = function(theStatus) {
+		if(theStatus) {
+			$('#loading').fadeIn();
+			$('#wrapper').hide();
+		} else {
+			$('#loading').fadeOut();
+			$('#wrapper').show();
+		}
+	};
+
 	this.init = function(theIODriver) {
         console.log('CODEBOT [core] Initializing...');
 
@@ -106,9 +132,9 @@ var CODEBOT = new function() {
             console.log('CODEBOT [core] Done, ready to rock!');
 			mSignals.ready.dispatch();
 
-			// Remove the loading icon
-			$('#loading').fadeOut();
-			$('#wrapper').show();
+			if(!mSelf.config('keepLoadingScreen', false)) {
+				mSelf.setLoadingScreenVisibility(false);
+			}
 
             mSelf.showDebugger();
         });
