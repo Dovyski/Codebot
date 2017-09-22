@@ -6,7 +6,7 @@
  * If you require advanced configuration options, refer to opauth.conf.php.advanced
  */
 
-$config = array(
+$gOpAuthConfig = array(
 /**
  * Path where Opauth is accessed.
  *  - Begins and ends with /
