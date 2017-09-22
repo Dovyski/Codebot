@@ -103,18 +103,23 @@ CODEBOT.utils = new function() {
 
     this.convertPropertyValueToRightType = function(theObject) {
         var aProp,
-            aValue,
             aRet = {};
 
         for(aProp in theObject) {
-            aValue = theObject[aProp];
+            if(aProp == '' || (typeof theObject[aProp] == 'function')) {
+                continue;
+            }
 
-            if(aValue != null && typeof aValue == 'string') {
+            var aOriginalValue = theObject[aProp];
+            var aValue = aOriginalValue;
+            var aIsInvalid = aValue == null || aValue == '';
+
+            if(!aIsInvalid && (typeof aValue == 'string')) {
                 if(aValue.match(/-*[0-9]*\.[0-9]*/g) != null) {
                     // Float
                     aValue = parseFloat(aValue);
 
-                } else if(aValue.match(/^[0-9]+$/) != null) {
+                } else if(aValue.match(/-*[0-9]+/g) != null) {
                     // Integer
                     aValue = parseInt(aValue);
 
@@ -122,11 +127,13 @@ CODEBOT.utils = new function() {
                     // Boolean
                     aValue = Boolean(aValue);
                 }
+
+                // If we have a NaN, the cast probably went wrong. Let's use
+                // the original value in that case.
+                aValue = isNaN(aValue) ? aOriginalValue : aValue;
             }
 
-            if(typeof aValue != 'function') {
-                aRet[aProp] = aValue;
-            }
+            aRet[aProp] = aValue;
         }
 
         return aRet;

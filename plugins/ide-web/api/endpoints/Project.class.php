@@ -34,7 +34,7 @@ use Exception;
 class Project extends Base {
 	public function create(array $theParams) {
 		$aType 		 = $this->getParam('type', $theParams);
-		$aGitRepo 	 = $this->getParam('git-repo', $theParams, false, true);
+		$aGitRepo 	 = $this->getParam('git_repo', $theParams, false, true);
 		$aTemplate	 = $this->getParam('template', $theParams);
 		$aName 		 = $this->getParam('name', $theParams);
 		$aVisibility = $this->getParam('visibility', $theParams);
@@ -43,7 +43,7 @@ class Project extends Base {
 			'name' 		=> $aName,
 			'type'		=> $aType,
 			'template'	=> $aTemplate,
-			'git-repo'	=> $aGitRepo
+			'git_repo'	=> $aGitRepo
 		);
 
 		$aUser = $this->getUser();
@@ -157,7 +157,7 @@ class Project extends Base {
 		$aTemplateSettings 		= '{}';
 
 		if($theTemplate == 'git') {
-			$aGitRepo = @$theData['git-repo'];
+			$aGitRepo = @$theData['git_repo'];
 
 			if(!empty($aGitRepo)) {
 				// TODO: improve security here.
