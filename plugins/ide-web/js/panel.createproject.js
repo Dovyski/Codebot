@@ -41,13 +41,9 @@ IdeWeb.Panel.CreateProject.prototype = Object.create(Codebot.Panel.prototype);
 IdeWeb.Panel.CreateProject.prototype.constructor = IdeWeb.Panel.CreateProject;
 
 IdeWeb.Panel.CreateProject.prototype.render = function() {
-    var aSelf,
-        aIde;
+    var aSelf = this;
 
     Codebot.Panel.prototype.render.call(this);
-
-    aSelf = this;
-    aIde = this.getContext().plugins.get('cc.codebot.ide.web');
 
     this.divider('Type');
     this.row('<select name="type" id="project-type">' + this.generateAvailableProjectTypes() + '</select>');
@@ -66,16 +62,34 @@ IdeWeb.Panel.CreateProject.prototype.render = function() {
     this.row('<div style="text-align: center;"><button type="submit" id="btn-create-project">Create project</button></div>');
 
     $('#btn-create-project').click(function() {
-        aIde.createProject(aSelf.getData());
+        aSelf.doCreationProcess();
     });
 
-    this.renderTemplatesList($('#project-type').val());
+    var aProjectType = $('#project-type').val();
+
+    this.renderTemplatesList(aProjectType);
+    this.selectFistAvailableTemplate(aProjectType);
 
     // Change the templates list content everytime the
     // projects type changes.
     $('#project-type').change(function(theEvent) {
         aSelf.renderTemplatesList(theEvent.target.value);
     });
+};
+
+IdeWeb.Panel.CreateProject.prototype.validateProjectInformation = function(theProjectData) {
+    // TODO: validate project data
+    return true;
+};
+
+IdeWeb.Panel.CreateProject.prototype.doCreationProcess = function() {
+    var aProject = this.getData();
+    var aOk = this.validateProjectInformation(aProject);
+
+    if(aOk) {
+        var aIde = this.getContext().plugins.get('cc.codebot.ide.web');
+        aIde.createProject(aProject);
+    }
 };
 
 IdeWeb.Panel.CreateProject.prototype.generateAvailableProjectTypes = function() {
@@ -95,7 +109,7 @@ IdeWeb.Panel.CreateProject.prototype.generateAvailableProjectTypes = function() 
 };
 
 IdeWeb.Panel.CreateProject.prototype.renderTemplatesList = function(theType) {
-    var aTemplate;
+    var aSelf = this;
 
     // Populate the templates list
     $('#project-templates').html(this.generateTemplatesList(theType));
@@ -103,40 +117,64 @@ IdeWeb.Panel.CreateProject.prototype.renderTemplatesList = function(theType) {
     // Handle clicks on template options
     $('#project-templates a').click(function(theEvent) {
         aTemplate = $(this).data('template');
-
-        $('#project-templates a').removeClass('selected');
-        $(this).addClass('selected');
-
-        $('#project-template').val(aTemplate);
-
-        if(aTemplate == 'git') {
-            $('#project-git-repo-panel').slideDown();
-        } else {
-            $('#project-git-repo-panel').slideUp();
-        }
+        aSelf.selectTemplate(aTemplate);
     });
+};
+
+IdeWeb.Panel.CreateProject.prototype.selectFistAvailableTemplate = function(theProjectType) {
+    var aAvailableTemplates = this.findAvailableTemplates(theProjectType);
+
+    if(aAvailableTemplates.length > 0) {
+        this.selectTemplate(aAvailableTemplates[0].name);
+    }
+};
+
+IdeWeb.Panel.CreateProject.prototype.selectTemplate = function(theTemplateName) {
+    $('#project-templates a').removeClass('selected');
+    $('#project-templates a[data-template="' + theTemplateName + '"]').addClass('selected');
+
+    $('#project-template').val(theTemplateName);
+
+    if(theTemplateName == 'git') {
+        $('#project-git-repo-panel').slideDown();
+    } else {
+        $('#project-git-repo-panel').slideUp();
+    }
+};
+
+IdeWeb.Panel.CreateProject.prototype.findAvailableTemplates = function(theProjectType) {
+    var aProjectFactory, aAvailableTemplates = [];
+
+    aProjectFactory = this.getContext().plugins.get('cc.codebot.ide.web').getProjectFactory();
+
+    if(aProjectFactory && aProjectFactory[theProjectType]) {
+        var aFactory = aProjectFactory[theProjectType];
+
+        for(var aTemplate in aFactory.templates) {
+            var aInfo = aFactory.templates[aTemplate];
+            aAvailableTemplates.push(aInfo);
+        }
+    }
+
+    return aAvailableTemplates;
 };
 
 IdeWeb.Panel.CreateProject.prototype.generateTemplatesList = function(theType) {
     var aContent = '',
-        aTemplate,
-        aInfo,
-        aProjectFactory;
+        aAvailableTemplates;
 
-    aProjectFactory = this.getContext().plugins.get('cc.codebot.ide.web').getProjectFactory();
+    aAvailableTemplates = this.findAvailableTemplates(theType);
 
-    if(aProjectFactory) {
-        for(aTemplate in aProjectFactory[theType].templates) {
-            aInfo = aProjectFactory[theType].templates[aTemplate];
+    for(var i = 0; i < aAvailableTemplates.length; i++) {
+        var aTemplate = aAvailableTemplates[i];
 
-            aContent +=
-                '<a href="javascript:void(0)" data-template="' + aTemplate + '">' +
-                    '<div class="project-template">' +
-                        '<img src="' + aInfo.icon + '" alt="Preview"><br />' +
-                        aInfo.name +
-                    '</div>' +
-                '</a>';
-        }
+        aContent +=
+            '<a href="javascript:void(0)" data-template="' + aTemplate.name + '">' +
+                '<div class="project-template">' +
+                    '<img src="' + aTemplate.icon + '" alt="Preview"><br />' +
+                    aTemplate.name +
+                '</div>' +
+            '</a>';
     }
 
     // All types have a bult-in git template.

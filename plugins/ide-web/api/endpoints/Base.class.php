@@ -38,13 +38,13 @@ class Base {
 	public function getParam($theName, $theParams, $theRequired = true, $theCanBeEmpty = false) {
 		$aRet = null;
 
-		if(isset($theParams[$theName])) {
-			if(isset($theParams[$theName]) && $theParams[$theName] !== '') {
+		if (isset($theParams[$theName])) {
+			if ($theParams[$theName] !== '') {
 				$aRet = $theParams[$theName];
-			} else {
+			} else if (!$theCanBeEmpty) {
 				throw new \Exception('Empty param: ' . $theName);
 			}
-		} else if($theRequired) {
+		} else if ($theRequired) {
 			throw new \Exception('Missing param: ' . $theName);
 		}
 

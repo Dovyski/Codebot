@@ -163,8 +163,8 @@ IdeWeb.Plugin = function() {
      * @param  {Object} theData Object containing the project data.
      */
     this.createProject = function(theData) {
-        mContext.ui.slidePanel.close();
-        mContext.ui.filesPanel.addPendingActivity('new-project', 'Creating project', 'Project XYZ is being created.'); // \TODO: change to global background running tasks approach.
+        mContext.ui.slideTray.close();
+        mContext.ui.filesPanel.addPendingActivity('new-project', 'Creating project', 'Project XYZ is being created.'); // TODO: change to global background running tasks approach.
 
         mSelf.api('project', 'create', theData, function(theResponse) {
             mContext.ui.filesPanel.removePendingActivity('new-project');
@@ -226,7 +226,7 @@ IdeWeb.Plugin = function() {
         mContext.loadScript('./plugins/ide-web/js/panel.openproject.js');
         mContext.loadScript('./plugins/ide-web/js/panel.createproject.js');
 
-        mContext.ui.addButton('newProject', {icon: '<i class="fa fa-desktop"></i>', panel: IdeWeb.Panel.CreateProject });
+        mContext.ui.addButton('newProject', {icon: '<i class="fa fa-plus-square"></i>', panel: IdeWeb.Panel.CreateProject });
         mContext.ui.addButton('openProject', {icon: '<i class="fa fa-hdd-o"></i>', panel: IdeWeb.Panel.OpenProject });
 
         // Remove any loading indications
