@@ -29,6 +29,7 @@ var IdeWeb = IdeWeb || {};
  */
 IdeWeb.Plugin = function() {
     const API_URL = 'plugins/ide-web/api/?';
+    const LOGIN_URL = 'plugins/ide-web/login';
 
     var mSelf               = this;
     var mContext            = null;
@@ -91,6 +92,15 @@ IdeWeb.Plugin = function() {
     var handleBeforeFilesPanelRefresh = function(theRootNode) {
         theRootNode.name = mActiveProject.name;
         theRootNode.title = mActiveProject.name;
+    };
+
+    var checkUserAuthentication = function() {
+        var aDisk = CODEBOT.utils.getURLParamByName('disk');
+
+        if(!aDisk) {
+            // TODO: redirect to API endpoint responsible for authentication
+            CODEBOT.utils.redirect(LOGIN_URL);
+        }
     };
 
     /**
@@ -208,11 +218,15 @@ IdeWeb.Plugin = function() {
 
         mContext = theContext;
 
+        // Before doing anything, check if the user has all authentication
+        // tokens and stuff.
+        checkUserAuthentication();
+
         // Load all required scripts
         mContext.loadScript('./plugins/ide-web/js/panel.openproject.js');
         mContext.loadScript('./plugins/ide-web/js/panel.createproject.js');
 
-        mContext.ui.addButton('newProject', {icon: '<i class="fa fa-plus-square"></i>', panel: IdeWeb.Panel.CreateProject });
+        mContext.ui.addButton('newProject', {icon: '<i class="fa fa-desktop"></i>', panel: IdeWeb.Panel.CreateProject });
         mContext.ui.addButton('openProject', {icon: '<i class="fa fa-hdd-o"></i>', panel: IdeWeb.Panel.OpenProject });
 
         // Schedule the rest of the UI initialization to happen only

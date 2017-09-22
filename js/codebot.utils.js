@@ -132,6 +132,10 @@ CODEBOT.utils = new function() {
         return aRet;
     };
 
+    this.redirect = function(theURL) {
+        window.location.href = theURL;
+    };
+
     this.covertInputElementsToJSON = function(theElement) {
         var aRet = {},
             aValue;

@@ -78,7 +78,7 @@ var CodebotWebFilesystem = function() {
 		mDisk = CODEBOT.utils.getURLParamByName('disk');
 
 		if(!mDisk) {
-			alert('It looks like you directly visited this link without a valid disk information. You will not be able to perform any IO operation, such as opening a project. Go to https://web.codebot.com to fix the problem.');
+			console.warn('CodebotWebDiskFilesystem::init() - it looks like you directly visited this link without a valid disk information. You will not be able to perform any IO operation, such as opening a project. Go to https://web.codebot.com to fix the problem.');
 		}
 
 		console.log('CodebotWebDiskFilesystem::init() - disk id = ' + mDisk);
