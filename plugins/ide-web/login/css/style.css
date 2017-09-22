@@ -1,0 +1,132 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:900,300);
+
+body {
+	background: url('../img/hero.jpg') center top #2D2D2D;
+	color: #efefef;
+	font-family: 'Roboto', sans-serif;
+}
+
+.content {
+	width: 80%;
+	padding: 10px;
+	margin: 5px auto;
+	text-align: center;
+}
+
+h2 {
+	margin: 2px 0 -10px 0;
+}
+
+.content a {
+	margin-top: 50px;
+}
+
+a.zocial {
+	margin: 5px;
+}
+
+.login-panel {
+	width: 360px;
+	margin: auto;
+	margin-top: 15%;
+}
+
+.login-panel div.error {
+	background: #FF594F;
+	color: #fff;
+	padding: 10px;
+	font-size: 1em;
+}
+
+.form {
+	position: relative;
+	z-index: 1;
+	background: #FFFFFF;
+	max-width: 360px;
+	margin: 0 auto;
+	padding: 30px;
+	text-align: center;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.form img {
+	width: 120px;
+	height: auto;
+	margin-bottom: 10px;
+}
+
+.form input {
+	font-family: "Roboto", sans-serif;
+	outline: 0;
+	background: #f2f2f2;
+	width: 100%;
+	border: 0;
+	margin: 0 0 15px;
+	padding: 15px;
+	box-sizing: border-box;
+	font-size: 14px;
+}
+
+.form button {
+	font-family: "Roboto", sans-serif;
+	text-transform: uppercase;
+	outline: 0;
+	background: #4289ff;
+	width: 100%;
+	border: 0;
+	padding: 15px;
+	color: #fff;
+	font-size: 1em;
+	font-weight: bold;
+	-webkit-transition: all 0.3 ease;
+	transition: all 0.3 ease;
+	cursor: pointer;
+}
+
+.form button:hover,.form button:active,.form button:focus {
+	background: #008bd8;
+}
+
+.form .message {
+	margin: 15px 0 0;
+	color: #b3b3b3;
+	font-size: 12px;
+}
+
+.form .message a {
+	color: #4289ff;
+	text-decoration: none;
+}
+
+.form .register-form {
+	display: none;
+}
+
+.warning {
+	width: 50%;
+	margin: 0 auto;
+	border: 1px solid #FF594F;
+	background: #3D3D3D;
+	color: #FF594F;
+	padding: 20px;
+}
+
+.warning a:link, .warning a:hover, .warning a:visited, .warning a:active {
+	color: #DDDDDD;
+}
+
+footer a:active,
+footer a:hover,
+footer a:visited,
+footer a:link,
+footer {
+	color: #5d5d5d;
+}
+
+footer {
+	width: 98%;
+	position: absolute;
+	bottom: 10px;
+	font-size: 0.8em;
+	text-align: center;
+}
