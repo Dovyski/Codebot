@@ -18,7 +18,7 @@ include_once dirname(__FILE__).'/inc/globals.php';
 $aLocation = './?error=';
 
 // Instantiate Opauth with the loaded config but not run automatically
-$aOpauth = new Opauth( $config, false );
+$aOpauth = new Opauth($gOpAuthConfig, false);
 
 // Fetch auth response, based on transport configuration for callback
 $aResponse = null;
@@ -41,7 +41,7 @@ switch($aOpauth->env['callback_transport']) {
 
 // Check if it's an error callback
 if ($aResponse == null || array_key_exists('error', $aResponse)) {
-	$aLocation .= 'Opauth returns error auth response';
+	$aLocation .= 'Error in oAuth response.';
 
 } else {
 	// Auth response validation
