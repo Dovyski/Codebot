@@ -51,7 +51,7 @@ IdeWeb.Panel.CreateProject.prototype.render = function() {
     this.divider('Template');
 
     // TODO: move in-line style to external CSS file.
-    this.row('<div id="project-git-repo-panel"><i class="fa fa-code-fork fa-2x"></i> <input type="text" name="git-repo" id="project-git-repo" placeholder="https://github.com/User/proj.git" style="width: 100%; text-indent: 30px;"></div>');
+    this.row('<div id="project-git-repo-panel"><i class="fa fa-code-fork fa-2x"></i> <input type="text" name="git-repo" id="project-git-repo" placeholder="e.g. https://github.com/User/proj.git" style="width: 100%; text-indent: 30px;"></div>');
     this.row('<div id="project-templates" style="overflow: auto;"></div><input type="hidden" name="template" id="project-template" value="none" />');
 
     this.divider('Project settings');
@@ -78,8 +78,23 @@ IdeWeb.Panel.CreateProject.prototype.render = function() {
 };
 
 IdeWeb.Panel.CreateProject.prototype.validateProjectInformation = function(theProjectData) {
-    // TODO: validate project data
-    return true;
+    var aOk = true;
+
+    if(theProjectData.name == '') {
+        aOk = false;
+        $('#project-name').addClass('error');
+    } else {
+        $('#project-name').removeClass('error');
+    }
+
+    if(theProjectData.template == 'git' && theProjectData['git-repo'] == '') {
+        aOk = false;
+        $('#project-git-repo').addClass('error');
+    } else {
+        $('#project-git-repo').removeClass('error');
+    }
+
+    return aOk;
 };
 
 IdeWeb.Panel.CreateProject.prototype.doCreationProcess = function() {

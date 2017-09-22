@@ -758,6 +758,13 @@ Sliding panel and panels content
     margin-bottom: 10px;
 }
 
+.panel-content input.error {
+    border: 1px solid #b70000;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; /* future proofing */
+}
+
 /*
 -----------------------------------------------------
 Editors
