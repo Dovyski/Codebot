@@ -35,11 +35,12 @@ function codebotBootstrap(theAppConfig) {
     console.log('CODEBOT [bootstrap] App configuration file (app.json):', theAppConfig);
     CODEBOT.STATIC_APP_CONFIG = theAppConfig;
 
-    if(CODEBOT.STATIC_APP_CONFIG.codebot) {
-        aCodebotConfig = CODEBOT.STATIC_APP_CONFIG.codebot;
-
-    } else {
-        console.error('Codebot app.json file has no "codebot" property. E.g. {"codebot": {...}}.');
+    if(CODEBOT.STATIC_APP_CONFIG) {
+        if('codebot' in CODEBOT.STATIC_APP_CONFIG) {
+            aCodebotConfig = CODEBOT.STATIC_APP_CONFIG.codebot;
+        } else {
+            console.error('Codebot app.json file has no "codebot" property. E.g. {"codebot": {...}}.');
+        }
     }
 
     if(CODEBOT.STATIC_APP_CONFIG && ('bootstrap' in aCodebotConfig)) {

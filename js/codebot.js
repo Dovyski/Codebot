@@ -44,7 +44,7 @@ var CODEBOT = new function() {
 	 * @param  {[type]} theDefaultValue If the informed property does not exist in the config content, return this value instead.
 	 */
 	this.config = function(thePropertyName, theDefaultValue) {
-		var aEntries = this.STATIC_APP_CONFIG && this.STATIC_APP_CONFIG['codebot'] ? this.STATIC_APP_CONFIG['codebot'] : null;
+		var aEntries = this.STATIC_APP_CONFIG && this.STATIC_APP_CONFIG['codebot'] ? this.STATIC_APP_CONFIG['codebot'] : {};
 		return (thePropertyName in aEntries) ? aEntries[thePropertyName] : theDefaultValue;
 	};
 
