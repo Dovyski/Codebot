@@ -13,7 +13,7 @@ $aLocation = '';
 
 // Decide how we should handle the request
 $aIsOAouth = strpos($_SERVER['REQUEST_URI'], 'index.php/') !== false;
-$aAction = $aIsOAouth ? 'outh' : $aAction;
+$aAction = $aIsOAouth ? 'oauth' : $aAction;
 
 if($aAction == 'oauth') {
 	// Instantiate Opauth with the loaded config
