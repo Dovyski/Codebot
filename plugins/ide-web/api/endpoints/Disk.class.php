@@ -85,7 +85,7 @@ class Disk extends Base {
 	public function write(array $theParams) {
 		$aMount = $this->getParam('mount', $theParams);
 		$aPath 	= $this->getParam('path', $theParams);
-		$aData 	= $this->getParam('data', $theParams, false);
+		$aData 	= $this->getParam('data', $theParams, false, true);
 
 		$aPath = $this->realPath($aMount) . Utils::escapePath($aPath);
 		$aData = $aData == null && isset($_FILES['file']) ? file_get_contents($_FILES['file']['tmp_name']) : $aData;
