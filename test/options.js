@@ -3,6 +3,6 @@ module.exports = {
 
 	puppeteer: {
 		headless: false,
-		slowMo: 250 // slow down by 250ms
+		slowMo: 100 // slow down things by this amount of milliseconds
 	}
 };

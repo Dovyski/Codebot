@@ -17,12 +17,6 @@ class Browser {
 
 	setBrowser(b) {
 		this.browser = b;
-		const oldNewPage = this.browser.newPage.bind(this.browser);
-		this.browser.newPage = async function () {
-			const page = await oldNewPage();
-			this.lastPage = page;
-			return page;
-		};
 	}
 
 	setOptions(opts) {
