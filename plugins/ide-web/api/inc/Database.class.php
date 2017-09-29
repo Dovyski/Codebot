@@ -37,8 +37,7 @@ class Database {
 				'password' => CODEBOT_DB_PASSWORD
 			));
 		} catch (\PDOException $e) {
-		    echo 'Database error! ' . $e->getMessage();
-		    die();
+		    throw new \Exception('Database error! ' . trim($e->getMessage()));
 		}
 	}
 

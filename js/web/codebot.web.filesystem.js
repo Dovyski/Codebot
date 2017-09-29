@@ -56,9 +56,12 @@ var CodebotWebFilesystem = function() {
 
 	var runCommand = function(theParams, theDataType, theCallback) {
 		var aParams = $.extend({mount: mDisk + '/' + mProjectPath}, theParams);
+		var aURL = API_URL + 'class=disk';
+
+		console.debug('CODEBOT [web-io] ', aURL, aParams);
 
 		$.ajax({
-			url: API_URL + 'class=disk',
+			url: aURL,
 			method: 'get',
 			data: aParams,
 			dataType: theDataType

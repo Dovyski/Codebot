@@ -54,44 +54,44 @@ if(!CODEBOT_DEBUG_MODE) {
 // By default, the mime-type is json.
 header('Content-Type: application/json');
 
-// Init stuff
-Codebot\Auth::init();
-Codebot\Database::init();
-
-// Check if Codebot is running in development mode
-// and it is programmed to simulate slow connections
-if(CODEBOT_DEV_MODE && CODEBOT_DEV_SIMULATE_SLOW) {
-	// Yes, someone is testing how Codebot behaves in
-	// a slow connection. Let's make'm wait.
-	sleep(CODEBOT_DEV_SLOW_AMOUNT);
-}
-
 $aOut = '';
 
-// TODO: make this test an API method.
-if(!Codebot\Auth::isUserAuthenticated()) {
-	$aOut = json_encode(array('success' => false, 'msg' => 'User is not authenticated'));
+try {
+	// Init stuff
+	Codebot\Auth::init();
+	Codebot\Database::init();
 
-} else {
-	// Create a router and add methods to it
-	// able to handle the requests.
-	$aRouter = new Codebot\Router();
-
-	$aRouter->add('disk', 'Codebot\Endpoints\Disk');
-	$aRouter->add('project', 'Codebot\Endpoints\Project');
-
-	$aRouter->addConfigDefinedEndpoints();
-
-	// Get the party started and running!
-	try {
-		$aStatus = $aRouter->run($_REQUEST);
-
-		$aOut = $aStatus['out'];
-		header('Content-Type: ' . $aStatus['mime']);
-
-	} catch(Exception $aProblem) {
-		$aOut = json_encode(array('success' => false, 'msg' => $aProblem->getMessage()));
+	// Check if Codebot is running in development mode
+	// and it is programmed to simulate slow connections
+	if(CODEBOT_DEV_MODE && CODEBOT_DEV_SIMULATE_SLOW) {
+		// Yes, someone is testing how Codebot behaves in
+		// a slow connection. Let's make'm wait.
+		sleep(CODEBOT_DEV_SLOW_AMOUNT);
 	}
+
+	// TODO: make this test an API method.
+	if(!Codebot\Auth::isUserAuthenticated()) {
+		$aOut = json_encode(array('success' => false, 'msg' => 'User is not authenticated'));
+
+	} else {
+		// Create a router and add methods to it
+		// able to handle the requests.
+		$aRouter = new Codebot\Router();
+
+		// TODO: add all entry points from config file
+		$aRouter->add('disk', 'Codebot\Endpoints\Disk');
+		$aRouter->add('project', 'Codebot\Endpoints\Project');
+
+		$aRouter->addConfigDefinedEndpoints();
+		$aStatus = $aRouter->run($_REQUEST);
+		$aOut = $aStatus['out'];
+
+		// Set the response mime-type according to the API method
+		// being invoked.
+		header('Content-Type: ' . $aStatus['mime']);
+	}
+} catch(Exception $aProblem) {
+	$aOut = json_encode(array('success' => false, 'msg' => $aProblem->getMessage()));
 }
 
 echo $aOut;
