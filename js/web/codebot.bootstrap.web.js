@@ -30,6 +30,18 @@
  *  be able to perform IO opperations.
  */
 
-$('body').append('<script type="text/javascript" src="./js/web/codebot.web.filesystem.js"></script>');
+var LOGIN_URL = 'plugins/ide-web/login';
 
+// Before doing anything, check if the user has all authentication
+// tokens and stuff.
+var aDisk = CODEBOT.utils.getURLParamByName('disk');
+
+if(!aDisk) {
+	// TODO: redirect to API endpoint responsible for authentication
+	CODEBOT.utils.redirect(LOGIN_URL);
+}
+
+// Apparently we have everything required to continue the bootstrap.
+// Let's load the IO driver and get the party started.
+$('body').append('<script type="text/javascript" src="./js/web/codebot.web.filesystem.js"></script>');
 CODEBOT.init(new CodebotWebFilesystem());

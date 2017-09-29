@@ -11,15 +11,22 @@ $aAction = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 // By default, perform no redirect.
 $aLocation = '';
 
-// Decide how we should handle the request
+// Check for oAuth stuff
 $aIsOAouth = strpos($_SERVER['REQUEST_URI'], 'index.php/') !== false;
-$aAction = $aIsOAouth ? 'oauth' : $aAction;
+if($aIsOAouth) {
+	$aAction = 'oauth';
+}
+
+// If the user is already authenticated, we proceed differently
+if(Codebot\Auth::isUserAuthenticated()) {
+	$aAction = 'relogin';
+}
 
 if($aAction == 'oauth') {
 	// Instantiate Opauth with the loaded config
 	$aOpauth = new Opauth($gOpAuthConfig);
 
-} else if ($aAction == 'login') {
+} else if ($aAction == 'login' || $aAction == 'relogin') {
 	$aIsDevLogin = isset($_REQUEST['dev']);
 	$aIsRunningInDevMode = defined('CODEBOT_DEV_MODE') && CODEBOT_DEV_MODE;
 
@@ -39,8 +46,13 @@ if($aAction == 'oauth') {
 		$aUserId = Codebot\User::getOrCreateByOAuthInfo($aResponse);
 
 	} else {
-		// TODO: Get local user id
-		$aUserId = null;
+		if(Codebot\Auth::isUserAuthenticated()) {
+			// Authenticated already. Just get info from session.
+			$aUserId = Codebot\Auth::getAuthenticatedUserId();
+		} else {
+			// TODO: Get local user id based on credentials
+			$aUserId = null;
+		}
 	}
 
 	if($aUserId != null) {

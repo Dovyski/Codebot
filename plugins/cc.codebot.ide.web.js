@@ -29,7 +29,6 @@ var IdeWeb = IdeWeb || {};
  */
 IdeWeb.Plugin = function() {
     const API_URL = 'plugins/ide-web/api/?';
-    const LOGIN_URL = 'plugins/ide-web/login';
 
     var mSelf               = this;
     var mContext            = null;
@@ -92,15 +91,6 @@ IdeWeb.Plugin = function() {
     var handleBeforeFilesPanelRefresh = function(theRootNode) {
         theRootNode.name = mActiveProject.name;
         theRootNode.title = mActiveProject.name;
-    };
-
-    var checkUserAuthentication = function() {
-        var aDisk = CODEBOT.utils.getURLParamByName('disk');
-
-        if(!aDisk) {
-            // TODO: redirect to API endpoint responsible for authentication
-            CODEBOT.utils.redirect(LOGIN_URL);
-        }
     };
 
     /**
@@ -217,10 +207,6 @@ IdeWeb.Plugin = function() {
         console.debug('CoreIdePlugin::init()');
 
         mContext = theContext;
-
-        // Before doing anything, check if the user has all authentication
-        // tokens and stuff.
-        checkUserAuthentication();
 
         // Load all required scripts
         mContext.loadScript('./plugins/ide-web/js/panel.openproject.js');
