@@ -38,6 +38,7 @@ var aDisk = CODEBOT.utils.getURLParamByName('disk');
 
 if(!aDisk) {
 	// TODO: redirect to API endpoint responsible for authentication
+	console.log('CODEBOT [bootstrap-web] User has no disk, redirecting to login page.');
 	CODEBOT.utils.redirect(LOGIN_URL);
 }
 

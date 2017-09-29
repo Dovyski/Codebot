@@ -91,7 +91,7 @@ echo '<body>';
 			echo '<div class="form">';
 				echo '<img src="img/codebot-logo.png" title="Codebot"/>';
 
-				echo '<form class="register-form">';
+				echo '<form id="formRegister" class="register-form">';
 					echo '<input type="hidden" name="action" value="register" />';
 					echo '<input type="text" placeholder="name"/>';
 					echo '<input type="password" placeholder="password"/>';
@@ -100,18 +100,18 @@ echo '<body>';
 					echo '<p class="message">Already registered? <a href="#">Sign In</a></p>';
 				echo '</form>';
 
-				echo '<form class="login-form" action="index.php" method="post">';
+				echo '<form id="formLogin" class="login-form" action="index.php" method="post">';
 					echo '<input type="hidden" name="action" value="login" />';
 					echo '<input type="text" name="email" placeholder="Email"/>';
 					echo '<input type="password" name="password" placeholder="Password"/>';
 					echo '<button>login</button>';
-					echo '<p class="message">Not registered? <a href="#">Create an account</a>, or login with:</p>';
+					echo '<p class="message">Not registered? <a href="javascript:void(0)" onclick="alert(\'Sorry, registration by e-mail/password is not working at the moment. Please login using Github oAuth.\')">Create an account</a>, or login with:</p>';
 				echo '</form>';
 
 				echo '<a href="./index.php/github" class="zocial github" title="Click here to login using your Github information.">Github</a>';
 
 				if(defined('CODEBOT_DEV_MODE') && CODEBOT_DEV_MODE) {
-					echo '<a href="./index.php?action=login&dev=1" class="zocial primary" title="You are seeing this because CODEBOT_DEV_MODE is true. A dev login will create a local account and authenticate using that.">Dev login</a>';
+					echo '<a href="./index.php?action=login&dev=1" class="zocial primary dev-btn" title="You are seeing this because CODEBOT_DEV_MODE is true. A dev login will create a local account and authenticate using that.">Dev login</a>';
 				}
 			echo '</div>';
 		echo '</div>';
