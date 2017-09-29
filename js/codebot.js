@@ -71,7 +71,7 @@ var CODEBOT = new function() {
 		var aEditor = theTab.editor;
 
 		if(aEditor) {
-			mIO.writeFile(theTab.node, aEditor.getValue(), function() { theTab.setDirty(false); console.log('Tab data written to disk!');} );
+			mIO.writeFile(theTab.node, aEditor.getContent(), function() { theTab.setDirty(false); console.log('Tab data written to disk!');} );
 		}
     };
 

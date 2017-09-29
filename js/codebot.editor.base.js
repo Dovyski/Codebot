@@ -112,6 +112,17 @@ Codebot.Editor.Base.prototype.init = function() {
 };
 
 /**
+ * Return the content the editor is handling at the moment. For instance, if
+ * the editor is handling the file "test.txt" whose content is "hello world",
+ * this method returns "hello world".
+ *
+ * @return {mixed} The content of the file being handled by the editor at the moment.
+ */
+Codebot.Editor.Base.prototype.getContent = function() {
+    return null;
+};
+
+/**
  * [function description]
  * @return {[type]} [description]
  */

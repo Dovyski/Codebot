@@ -101,6 +101,10 @@ Codebot.Editor.Code.prototype.load = function(theContent) {
 	}
 };
 
+Codebot.Editor.Code.prototype.getContent = function() {
+	return this.mAce.getSession().getValue();
+};
+
 Codebot.Editor.Code.prototype.initInPlaceOverlay = function() {
 	var aId = 'cb-editor-code-overlay';
 
