@@ -4,3 +4,4 @@
 /plugins/asset-finder/config.local.php
 /plugins/ide-web/api/config.local.php
 /app.json
+/node_modules
