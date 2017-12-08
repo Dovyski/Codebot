@@ -12,6 +12,27 @@
 @include_once dirname(__FILE__).'/../config.local.php';
 include_once dirname(__FILE__).'/../config.php';
 
+function printNavigation($theCurrentStep, $theSteps) {
+    $theCurrentStep = (int)$theCurrentStep;
+    $theCurrentStep = $theCurrentStep < 1 ? 1 : $theCurrentStep;
+    $theCurrentStep = $theCurrentStep >= count($theSteps) + 1 ? count($theSteps) + 1 : $theCurrentStep;
+
+    $thePreviousStep = $theCurrentStep - 1;
+    $thePreviousStep = $thePreviousStep < 1 ? 1 : $thePreviousStep;
+
+    echo '<div class="navigation">';
+        if($theCurrentStep > 1 && $theCurrentStep != count($theSteps)) {
+            echo '<a href="index.php?step='.$thePreviousStep.'" class="btn btn-danger back">Back</a>';
+        }
+        if($theCurrentStep < count($theSteps)) {
+            echo '<button type="submit" class="btn btn-info next">Next</button>';
+        }
+        if($theCurrentStep == count($theSteps)) {
+            echo '<a href="../login/" class="btn btn-success next">Proceed to login</a>';
+        }
+    echo '</div>';
+}
+
 // The instalation steps
 $aSteps = array();
 $aSteps[0] = array('name' => 'Preparation');
@@ -27,13 +48,13 @@ $aStep 	= isset($_REQUEST['step']) ? (int)$_REQUEST['step'] : 0;
 $aError = '';
 
 // Init the session
-Auth::init();
+Codebot\Auth::init();
 
-if($aStep == 0) {
+if($aStep == 1) {
 	// TODO: check dependencies, writable dirs, files, etc.
 }
 
-if($aStep == 1 && isset($_REQUEST['check_db'])) {
+if($aStep == 2 && isset($_REQUEST['check_db'])) {
 	$aName = isset($_REQUEST['name']) ? $_REQUEST['name'] : '';
 
 	$aConfig = array(
@@ -43,23 +64,23 @@ if($aStep == 1 && isset($_REQUEST['check_db'])) {
 	);
 
 	try {
-		Database::connect($aConfig);
+		Codebot\Database::connect($aConfig);
 
 		// Prepare the database name
 		$aName = str_replace(array('"', "'"), '', $aName);
 
 		// Create the database
-		Database::instance()->query('CREATE DATABASE IF NOT EXISTS ' . $aName);
+		Codebot\Database::instance()->query('CREATE DATABASE IF NOT EXISTS ' . $aName);
 
 		// Use this database from now one
-		Database::instance()->query('USE ' . $aName);
+		Codebot\Database::instance()->query('USE ' . $aName);
 
         // TODO: check if tables already exists, otherwise create them
 		// Create Codebot tables
-		$aFile = file(dirname(__FILE__) . '/../api/inc/resources/structure.sql');
+		$aFile = file(dirname(__FILE__) . '/../api/resources/structure.sql');
 
 		if($aFile !== false) {
-			Database::runSqlFileContent($aFile);
+			Codebot\Database::runSqlFileContent($aFile);
 			$aStep++;
 
 		} else {
@@ -73,7 +94,7 @@ if($aStep == 1 && isset($_REQUEST['check_db'])) {
 
 // If we are in configuration step, we need the configuration
 // constants used by Codebot.
-if($aStep == 2) {
+if($aStep == 3) {
     $aConstants = get_defined_constants(true);
 
     foreach($aConstants['user'] as $aName => $aValue) {
@@ -86,7 +107,7 @@ if($aStep == 2) {
 }
 
 // Is it time to write the config file?
-if($aStep == 2 && isset($_REQUEST['write_config'])) {
+if($aStep == 3 && isset($_REQUEST['write_config'])) {
     // Ugly hack to get expection when writing the config file
     // Link: http://stackoverflow.com/a/3406181/29827
     set_error_handler(
@@ -109,8 +130,12 @@ if($aStep == 2 && isset($_REQUEST['write_config'])) {
         }
         $aConfigContent .= "?>";
 
-        $aConfigFile = dirname(__FILE__) . '/../api/config.local.new.php'; // TODO: write to the right file.
+        $aConfigFile = dirname(__FILE__) . '/../config.local.new.php'; // TODO: write to the right file.
         file_put_contents($aConfigFile, $aConfigContent);
+
+        // We are finished!
+        header('Location: index.php?step=4');
+        exit();
 
     } catch(Exception $e) {
         $aError = $e->getMessage();
@@ -126,7 +151,9 @@ echo '<head>';
 	echo '<meta charset="utf-8">';
 	echo '<title>Codebot - Installation</title>';
 	echo '<link href="../site/css/bootstrap.min.css" rel="stylesheet">';
+    echo '<link href="../../../css/3rdparty/font-awesome/css/font-awesome.min.css" rel="stylesheet">';
 	echo '<link href="./css/style.css" rel="stylesheet">';
+
 echo '</head>';
 
 echo '<body>';
@@ -135,24 +162,26 @@ echo '<body>';
 		echo '<h2>Installation</h2>';
 	echo '</header>';
 
-	echo '<div class="panel">';
-		echo '<h2>Progress</h2>';
+	echo '<div class="panel steps">';
 		echo '<ol>';
 			foreach($aSteps as $aNumber => $aInfo) {
-				echo '<li><strong>' . ($aNumber + 1) . '</strong> '. $aInfo['name'] .'</li>';
+				echo '<li class="'.(($aNumber + 1) == $aStep ? 'active' : '').'"><strong>' . ($aNumber + 1) . '</strong> '. $aInfo['name'] .'</li>';
 			}
 		echo '</ol>';
 	echo '</div>';
 
 	if(!empty($aError)) {
-		echo '<div class="warning"><strong>Something went wrong:</strong><br />'. $aError .'</div>';
+		echo '<div class="warning"><strong><i class="fa fa-warning"></i> Oops!</strong><br />'. $aError .'</div>';
 	}
 
 	echo '<div class="panel">';
-		// TODO: get rid of this switch by fetching content from a dynamic dictionry or something
 		switch($aStep) {
-			case 2:
-				echo '<h2>'.$aSteps[$aStep]['name'].'</h2>';
+            case 4:
+                echo 'You are done!';
+                printNavigation($aStep, $aSteps);
+            break;
+
+			case 3:
 				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.$aStep.'" method="post">';
                     foreach($aConfigConstants as $aParam => $aValue) {
                         echo '<div class="form-group">';
@@ -162,12 +191,11 @@ echo '<body>';
                     }
 
 					echo '<input type="hidden" name="write_config" value="1">';
-					echo '<button type="submit" class="btn btn-info">Next</button>';
+                    printNavigation($aStep, $aSteps);
 				echo '</form>';
 			break;
 
-			case 1:
-				echo '<h2>'.$aSteps[$aStep]['name'].'</h2>';
+			case 2:
 				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.$aStep.'" method="post">';
 					echo '<div class="form-group">';
 						echo '<label for="inputUser">DB User</label>';
@@ -186,19 +214,19 @@ echo '<body>';
 						echo '<input type="text" class="form-control" name="host" id="inputHost" placeholder="E.g. localhost">';
 					echo '</div>';
 
-					echo '<input type="hidden" name="check_db" value="1">';
-					echo '<button type="submit" class="btn btn-info">Next</button>';
+                    echo '<input type="hidden" name="check_db" value="1">';
+                    printNavigation($aStep, $aSteps);
 				echo '</form>';
 			break;
 
+            case 1:
 			case 0:
 			default:
-				echo '<h2>'.$aSteps[$aStep]['name'].'</h2>';
-				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.($aStep + 1).'" method="post">';
+				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.($aStep <= 1 ? 2 : 1).'" method="post">';
 					echo '<div class="form-group">';
 						echo 'TODO: display preparation data.';
 					echo '</div>';
-					echo '<button type="submit" class="btn btn-info">Next</button>';
+                    printNavigation($aStep, $aSteps);
 				echo '</form>';
 			break;
 		}

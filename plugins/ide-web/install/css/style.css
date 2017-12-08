@@ -17,11 +17,28 @@ header img {
 	height: 169px;
 }
 
+.navigation {
+	height: 30px;
+}
+
+.next {
+	float:right;
+}
+
+.back {
+	float:left;
+}
+
+.steps {
+	border: 2px solid #A6A6A6;
+	background: transparent !important;
+}
+
 .panel {
 	position: relative;
 	width: 50%;
 	margin: 0 auto;
-	margin-top: 60px;
+	margin-top: 30px;
 	border: 2px solid #A6A6A6;
 	background: #fff;
 	color: #000;
@@ -40,16 +57,22 @@ header img {
 }
 
 .panel ol {
-	
 }
 
 .panel ol li {
 	float: left;
-	margin: -5px 20px 1px 5px;
+	margin: -5px 35px 1px 5px;
+	list-style: none;
+	color: #6d6d6d;
+}
+
+.panel ol li.active {
+	font-weight: bold;
+	color: #99beff;
 }
 
 .panel ol li strong {
-	font-size: 2.2em;
+	font-size: 2em;
 	float: left;
 	margin: -10px 20px 5px 5px;
 }
