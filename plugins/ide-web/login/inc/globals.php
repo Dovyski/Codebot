@@ -5,8 +5,15 @@
  */
 
 // Include all configuration files
-@include_once dirname(__FILE__).'/../../config.local.php';
+$aHasLocalConfig = @include_once dirname(__FILE__).'/../../config.local.php';
 include_once dirname(__FILE__).'/../../config.php';
+
+if(!$aHasLocalConfig) {
+	// It look like Codebot has not been installed yet. Let's redirect to
+	// the installation page.
+	header('Location: ../install/');
+	exit();
+}
 
 // Include system stuff
 require_once dirname(__FILE__).'/../../api/inc/Auth.class.php';

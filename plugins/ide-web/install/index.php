@@ -9,7 +9,9 @@
  require_once dirname(__FILE__).'/../api/inc/Database.class.php';
 
 // Include all configuration files
-@include_once dirname(__FILE__).'/../config.local.php';
+$aLocalConfigPath = dirname(__FILE__).'/../config.local.php';
+$aHasLocalConfig = @include_once $aLocalConfigPath;
+
 include_once dirname(__FILE__).'/../config.php';
 
 function printNavigation($theCurrentStep, $theSteps) {
@@ -33,6 +35,13 @@ function printNavigation($theCurrentStep, $theSteps) {
     echo '</div>';
 }
 
+if($aHasLocalConfig) {
+    // It look like Codebot is already installed or is running
+    // in production. In any case, we skip the installation.
+    header('Location: ../login/');
+    exit();
+}
+
 // The instalation steps
 $aSteps = array();
 $aSteps[0] = array('name' => 'Preparation');
@@ -44,7 +53,7 @@ $aSteps[3] = array('name' => 'Have a cake!');
 $aConfigConstants = array();
 
 // Get the current step
-$aStep 	= isset($_REQUEST['step']) ? (int)$_REQUEST['step'] : 0;
+$aStep 	= isset($_REQUEST['step']) ? (int)$_REQUEST['step'] : 1;
 $aError = '';
 
 // Init the session
@@ -161,6 +170,7 @@ echo '<body>';
 		echo '<img src="../site/img/codebot-logo.png" title="Codebot"/>';
 		echo '<h2>Installation</h2>';
 	echo '</header>';
+
 
 	echo '<div class="panel steps">';
 		echo '<ol>';
