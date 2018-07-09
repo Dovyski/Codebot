@@ -53,6 +53,24 @@ header div.headline i.fa {
 	float:left;
 }
 
+div.finished {
+	text-align: center;
+	width: 60%;
+	margin: 0 auto;
+	margin-bottom: 30px;
+	margin-top: 30px;
+}
+
+div.finished i.fa {
+	font-size: 8em;
+	color: #b5ff96;
+	display: inline-block;
+	border-radius: 200px;
+	border: 3px solid #b5ff96;
+	padding: 0.2em 0.2em;
+	margin-top: -0.1em;
+}
+
 .panel.steps {
 	border: 1px solid #707070;
 	background: transparent !important;
@@ -98,6 +116,12 @@ header div.headline i.fa {
 .panel ol li.active {
 	font-weight: bold;
 	color: #99beff;
+}
+
+.panel ol li.ready {
+	font-weight: normal;
+	text-decoration: line-through;
+	color: #b5ff96;
 }
 
 .panel ol li strong {

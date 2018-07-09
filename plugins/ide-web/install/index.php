@@ -28,13 +28,13 @@ function printNavigation($theCurrentStep, $theSteps) {
 
     echo '<div class="navigation">';
         if($theCurrentStep > 1 && $theCurrentStep != count($theSteps)) {
-            echo '<a href="index.php?step='.$thePreviousStep.'" class="btn btn-danger back">Back</a>';
+            echo '<a href="index.php?step='.$thePreviousStep.'" class="btn btn-danger back"><i class="fa fa-chevron-left"></i> Back</a>';
         }
         if($theCurrentStep < count($theSteps)) {
-            echo '<button type="submit" class="btn btn-info next">Next</button>';
+            echo '<button type="submit" class="btn btn-info next">Next <i class="fa fa-chevron-right"></i></button>';
         }
         if($theCurrentStep == count($theSteps)) {
-            echo '<a href="../login/" class="btn btn-success next">Proceed to login</a>';
+            echo '<a href="../login/" class="btn btn-success next">Proceed to login <i class="fa fa-chevron-right"></i></a>';
         }
     echo '</div>';
 }
@@ -60,16 +60,15 @@ $aConfigConstants = array();
 $aStep 	= isset($_REQUEST['step']) ? (int)$_REQUEST['step'] : 1;
 $aError = '';
 
-// Init the session
+// Init session stuff
 Codebot\Auth::init();
 
 if($aStep == 1) {
-	// TODO: check dependencies, writable dirs, files, etc.
-    $aConfigFolderWritable = false; //is_writable($aInstallerConfigDir);
+    $aConfigFolderWritable = is_writable($aInstallerConfigDir);
 }
 
 if($aStep == 2 && isset($_REQUEST['check_db'])) {
-	$aName = isset($_REQUEST['name']) ? $_REQUEST['name'] : '';
+    $aName = isset($_REQUEST['name']) ? $_REQUEST['name'] : '';
 
 	$aConfig = array(
 		'host' => isset($_REQUEST['host']) ? $_REQUEST['host'] : '',
@@ -77,7 +76,18 @@ if($aStep == 2 && isset($_REQUEST['check_db'])) {
 		'password' => isset($_REQUEST['password']) ? $_REQUEST['password'] : ''
 	);
 
+    $_SESSION['db'] = $aConfig;
+    $_SESSION['db']['name'] = $aName;
+
 	try {
+        if(empty($aConfig['user'])) {
+            throw new \Exception('Empty DB user is not allowed. Choose something like "codebot" instead.');
+        }
+
+        if(empty($aName)) {
+            throw new \Exception('Empty DB name is not allowed. Choose something like "codebot_db" instead.');
+        }
+
 		Codebot\Database::connect($aConfig);
 
 		// Prepare the database name
@@ -98,10 +108,10 @@ if($aStep == 2 && isset($_REQUEST['check_db'])) {
 			$aStep++;
 
 		} else {
-			$aError = 'Unable to read structure.sql';
+			$aError = 'Unable to read structure.sql. Are the installation files corrupted?';
 		}
 
-	} catch(PDOException $e) {
+	} catch(Exception $e) {
 		$aError = $e->getMessage();
 	}
 }
@@ -147,6 +157,7 @@ if($aStep == 3 && isset($_REQUEST['write_config'])) {
         file_put_contents($aInstallerConfigFile, $aConfigContent);
 
         // We are finished!
+        unset($_SESSION['db']);
         header('Location: index.php?step=4');
         exit();
 
@@ -182,7 +193,13 @@ echo '<body>';
 	echo '<div class="panel steps">';
 		echo '<ol>';
 			foreach($aSteps as $aNumber => $aInfo) {
-				echo '<li class="'.(($aNumber + 1) == $aStep ? 'active' : '').'"><strong>' . ($aNumber + 1) . '</strong> '. $aInfo['name'] .'</li>';
+                $aClass = '';
+                if($aNumber + 1 == $aStep) {
+                    $aClass = 'active';
+                } else if($aNumber + 1 < $aStep) {
+                    $aClass = 'ready';
+                }
+				echo '<li class="' . $aClass . '"><strong>' . ($aNumber + 1) . '</strong> '. $aInfo['name'] .'</li>';
 			}
 		echo '</ol>';
 	echo '</div>';
@@ -194,11 +211,17 @@ echo '<body>';
 	echo '<div class="panel">';
 		switch($aStep) {
             case 4:
-                echo 'You are done!';
+                echo '<div class="finished">';
+                    echo '<i class="fa fa-check"></i>';
+                    echo '<h3>You are done!</h3>';
+                    echo '<p>Codebot is now installed and ready to be used. Have some cake with coffee and enjoy this gamedev IDE on the cloud.</p>';
+                echo '</div>';
                 printNavigation($aStep, $aSteps);
             break;
 
 			case 3:
+                echo '<h3>Fine tuning</h3>';
+                echo '<p>Use the options below to tweak Codebot to your needs. By default, everything required for a good and complete user experience is enabled. You can change settings later on by editing the file <code>'.$aInstallerConfigFile.'</code>.</p>';
 				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.$aStep.'" method="post">';
                     foreach($aConfigConstants as $aParam => $aValue) {
                         echo '<div class="form-group">';
@@ -218,19 +241,19 @@ echo '<body>';
 				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.$aStep.'" method="post">';
 					echo '<div class="form-group">';
 						echo '<label for="inputUser">DB User</label>';
-						echo '<input type="input" class="form-control" name="user" id="inputUser" placeholder="E.g. codebot" value="'.@$_SESSION['db_user'].'">';
+						echo '<input type="input" class="form-control" name="user" id="inputUser" placeholder="E.g. codebot" value="'.@$_SESSION['db']['user'].'">';
 					echo '</div>';
 					echo '<div class="form-group">';
 						echo '<label for="inputPassword">DB Password</label>';
-						echo '<input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password" value="'.@$_SESSION['db_password'].'">';
+						echo '<input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password" value="'.@$_SESSION['db']['password'].'">';
 					echo '</div>';
 					echo '<div class="form-group">';
 						echo '<label for="inputName">DB name</label>';
-						echo '<input type="text" class="form-control" name="name" id="inputName" placeholder="E.g. codebot_db" value="'.@$_SESSION['db_name'].'">';
+						echo '<input type="text" class="form-control" name="name" id="inputName" placeholder="E.g. codebot_db" value="'.@$_SESSION['db']['name'].'">';
 					echo '</div>';
 					echo '<div class="form-group">';
 						echo '<label for="inputHost">DB host</label>';
-						echo '<input type="text" class="form-control" name="host" id="inputHost" placeholder="E.g. localhost" value="'.@$_SESSION['db_host'].'">';
+						echo '<input type="text" class="form-control" name="host" id="inputHost" placeholder="E.g. localhost" value="'.@$_SESSION['db']['host'].'">';
 					echo '</div>';
 
                     echo '<input type="hidden" name="check_db" value="1">';
