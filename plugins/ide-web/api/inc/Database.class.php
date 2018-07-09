@@ -55,6 +55,12 @@ class Database {
 		self::$mInstance = $aDb;
 	}
 
+	public static function findTables() {
+		$aRet = self::instance()->query('SHOW TABLES');
+		$aTables = $aRet->fetchAll(\PDO::FETCH_COLUMN, 0);
+		return $aTables;
+	}
+
 	public static function runSqlFileContent(array $theLines) {
 		$aBuffer = '';
 

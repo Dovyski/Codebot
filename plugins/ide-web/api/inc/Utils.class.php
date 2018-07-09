@@ -96,6 +96,43 @@ class Utils {
 
 		return $theString;
 	}
+
+	public static function parsePHPConfigFile($thePath) {
+		if(!file_exists($thePath)) {
+			return false;
+		}
+		$aLines = file($thePath);
+		$aRet = array();
+		$aSection = '';
+
+		foreach($aLines as $aLine) {
+			$aShouldIgnore = stripos($aLine, '<?php') !== false || stripos($aLine, '?>') !== false;
+
+			if($aShouldIgnore || empty($aLine)) {
+				$aSection = '';
+				continue;
+			}
+
+			if($aLine[0] == '/' && $aLine[1] == '/' &&  $aLine[2] == ' ') {
+				$aSection = trim(substr($aLine, 2));
+				$aRet[$aSection] = array();
+			}
+
+			preg_match_all('/@define\(\'([A-Z_]+).*(;|\/\/((.*)))/m', $aLine, $aMatches, PREG_SET_ORDER, 0);
+			$aIsSettingsEntry = count($aMatches) > 0;
+
+			if($aIsSettingsEntry) {
+				$aName = $aMatches[0][1];
+				$aDesc = '';
+				if($aMatches[0][2] != ';') {
+					$aDesc = trim($aMatches[0][3]);
+				}
+				$aRet[$aSection][$aName] = $aDesc;
+			}
+		}
+
+		return $aRet;
+	}
 }
 
 ?>

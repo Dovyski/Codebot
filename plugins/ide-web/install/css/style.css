@@ -102,6 +102,15 @@ div.finished i.fa {
 	margin-bottom: 25px;
 }
 
+.panel h4 {
+	margin-top: 30px;
+	color: #99beff;
+}
+
+.panel hr {
+	margin-top: 0;
+}
+
 .panel ol {
 }
 
