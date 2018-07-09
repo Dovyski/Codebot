@@ -11,6 +11,10 @@
 // Include all configuration files
 $aLocalConfigPath = dirname(__FILE__).'/../config.local.php';
 $aHasLocalConfig = @include_once $aLocalConfigPath;
+$aInstallerConfigFile = dirname(__FILE__) . '/../config.local.new.php'; // TODO: write to the right file.
+$aInstallerConfigDir = realpath(dirname($aInstallerConfigFile));
+
+$aTestFolderExample = realpath($aInstallerConfigDir . '/../../../') . DIRECTORY_SEPARATOR . 'testing' . DIRECTORY_SEPARATOR;
 
 include_once dirname(__FILE__).'/../config.php';
 
@@ -47,7 +51,7 @@ $aSteps = array();
 $aSteps[0] = array('name' => 'Preparation');
 $aSteps[1] = array('name' => 'Database');
 $aSteps[2] = array('name' => 'Configuration');
-$aSteps[3] = array('name' => 'Have a cake!');
+$aSteps[3] = array('name' => 'Have cake');
 
 // Available Codebot configuration constants (see api/config.php)
 $aConfigConstants = array();
@@ -61,6 +65,7 @@ Codebot\Auth::init();
 
 if($aStep == 1) {
 	// TODO: check dependencies, writable dirs, files, etc.
+    $aConfigFolderWritable = false; //is_writable($aInstallerConfigDir);
 }
 
 if($aStep == 2 && isset($_REQUEST['check_db'])) {
@@ -139,8 +144,7 @@ if($aStep == 3 && isset($_REQUEST['write_config'])) {
         }
         $aConfigContent .= "?>";
 
-        $aConfigFile = dirname(__FILE__) . '/../config.local.new.php'; // TODO: write to the right file.
-        file_put_contents($aConfigFile, $aConfigContent);
+        file_put_contents($aInstallerConfigFile, $aConfigContent);
 
         // We are finished!
         header('Location: index.php?step=4');
@@ -168,9 +172,12 @@ echo '</head>';
 echo '<body>';
 	echo '<header>';
 		echo '<img src="../site/img/codebot-logo.png" title="Codebot"/>';
-		echo '<h2>Installation</h2>';
+        echo '<div class="headline">';
+            echo '<i class="fa fa-wrench"></i>';
+            echo '<h2>Installation</h2>';
+            echo '<p>Follow the steps below to install Codebot.</p>';
+        echo '<div>';
 	echo '</header>';
-
 
 	echo '<div class="panel steps">';
 		echo '<ol>';
@@ -206,22 +213,24 @@ echo '<body>';
 			break;
 
 			case 2:
+                echo '<h3>Database</h3>';
+                echo '<p>Please enter below the credentials of the database user that Codebot will work with. The installer will use that user to create the required database structures for you, e.g. tables.</p>';
 				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.$aStep.'" method="post">';
 					echo '<div class="form-group">';
 						echo '<label for="inputUser">DB User</label>';
-						echo '<input type="input" class="form-control" name="user" id="inputUser" placeholder="E.g. codebot">';
+						echo '<input type="input" class="form-control" name="user" id="inputUser" placeholder="E.g. codebot" value="'.@$_SESSION['db_user'].'">';
 					echo '</div>';
 					echo '<div class="form-group">';
 						echo '<label for="inputPassword">DB Password</label>';
-						echo '<input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password">';
+						echo '<input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password" value="'.@$_SESSION['db_password'].'">';
 					echo '</div>';
 					echo '<div class="form-group">';
 						echo '<label for="inputName">DB name</label>';
-						echo '<input type="text" class="form-control" name="name" id="inputName" placeholder="E.g. codebot_db">';
+						echo '<input type="text" class="form-control" name="name" id="inputName" placeholder="E.g. codebot_db" value="'.@$_SESSION['db_name'].'">';
 					echo '</div>';
 					echo '<div class="form-group">';
 						echo '<label for="inputHost">DB host</label>';
-						echo '<input type="text" class="form-control" name="host" id="inputHost" placeholder="E.g. localhost">';
+						echo '<input type="text" class="form-control" name="host" id="inputHost" placeholder="E.g. localhost" value="'.@$_SESSION['db_host'].'">';
 					echo '</div>';
 
                     echo '<input type="hidden" name="check_db" value="1">';
@@ -234,7 +243,30 @@ echo '<body>';
 			default:
 				echo '<form action="'.basename($_SERVER['PHP_SELF']).'?step='.($aStep <= 1 ? 2 : 1).'" method="post">';
 					echo '<div class="form-group">';
-						echo 'TODO: display preparation data.';
+                        echo '<h3>Welcome!</h3>';
+                        echo '<p>This installer will help you with the setup. It should take less then 5 min, then you can have some cake. Before we even begin, please make sure you have the following available:</p>';
+
+                        echo '<ul>';
+                            echo '<li>';
+                                echo '<i class="fa fa-database"></i>';
+                                echo '<p class="item-title">Access to a database</p>';
+                                echo '<p class="item-info">At the moment, only MySQL works. Your database user must have enough privileges to create tables and foreign keys.</p>';
+                            echo '</li>';
+                            echo '<li>';
+                                echo '<i class="fa fa-folder-open"></i>';
+                                echo '<p class="item-title">Non-web-visible folder (store data)</p>';
+                                echo '<p class="item-info">This folder will be used to store user data, e.g. projects and files. It is recommended that this folder is outside your web server\'s document root, i.e. non visible from the web.</p>';
+                            echo '</li>';
+                            echo '<li>';
+                                echo '<i class="fa fa-folder"></i>';
+                                echo '<p class="item-title">Web-visible folder (store test files)</p>';
+                                echo '<p class="item-info">Users can hit "Play" in Codebot to preview their project in action. When it happens, projects files are be copied to a web-visible folder and made available via an URL. A good folder for this would be something like <code>'.$aTestFolderExample.'</code>.</p>';
+                            echo '</li>';
+                        echo '</ul>';
+
+                        if(!$aConfigFolderWritable) {
+                            echo '<div class="alert alert-warning" role="alert"><strong>Heads up!</strong><br />It seems the installer can\'t write to folder <code>'.$aInstallerConfigDir.'</code>, which is where the configuration file will be. You can proceed with the instalation, but a manual step will be required at the end.</div>';
+                        }
 					echo '</div>';
                     printNavigation($aStep, $aSteps);
 				echo '</form>';
