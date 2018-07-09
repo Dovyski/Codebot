@@ -2,7 +2,7 @@
 
 // Internals
 @define('CODEBOT_DEBUG_MODE',                   1); // If Codebot should run in debug mode, i.e. show SQL queries and file paths when an error occours.
-@define('CODEBOT_DEV_MODE',                   	0); // If Codebot should run in development mode. When in dev mode, local authentication without username or password is allowed. <em>WARNING: if this directive is true in production, your server/users might be at risk!</em>
+@define('CODEBOT_DEV_MODE',                   	1); // If Codebot should run in development mode. When in dev mode, local authentication without username or password is allowed. <em>WARNING: if this directive is true in production, your server/users might be at risk!</em>
 @define('CODEBOT_DEV_SIMULATE_SLOW',            0); // Set it to 1 to force frontend calls to wait before responding (simulation of a slow connection).
 @define('CODEBOT_DEV_SLOW_AMOUNT',            	2); // Time, in seconds, to wait before responding frontend calls. It's only effective if both <code>CODEBOT_DEV_MODE</code> and <code>CODEBOT_DEV_SIMULATE_SLOW</code> are true.
 @define('CODEBOT_LOG_ENABLED',                  1); // If internal Codebot calls, e.g. copy project files for online testing, should be logged or not.
