@@ -8,6 +8,10 @@
 @define('CODEBOT_LOG_ENABLED',                  1); // If internal Codebot calls, e.g. copy project files for online testing, should be logged or not.
 @define('CODEBOT_LOG_FILE',                     '/home/user/logs/app.log'); // Path to file where log messages will be appended to.
 
+// Backend plugins
+@define('CODEBOT_USE_PLUGINS',                  1); // If Codebot should load or not backend plugins. Plugins are PHP classes that can listen to Codebot signals and react to them.
+@define('CODEBOT_PLUGINS',                      ''); // List of classes that should be loaded as plugins. The format should be <code>name1|path1;name2|path2</code>.
+
 // Database
 @define('CODEBOT_DB_DSN',                       'mysql:host=localhost;dbname=codebot');
 @define('CODEBOT_DB_USER',                      'root');
