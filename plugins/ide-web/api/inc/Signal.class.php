@@ -33,7 +33,7 @@ class Signal {
 		} else if(is_array($theListener)) {
 			return implode('', $theListener);
 		} else {
-			throw Exception('Invalid listener. It should be string or array(class, method).');
+			throw new \Exception('Invalid listener: it should be string or array(class, method).');
 		}
 	}
 
