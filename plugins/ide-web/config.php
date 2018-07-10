@@ -24,6 +24,7 @@
 @define('CODEBOT_OAUTH_PATH',                   '/plugins/ide-web/login/index.php/'); // URL where oAuth requests starts.
 @define('CODEBOT_OAUTH_CALLBACK_PATH',          '/plugins/ide-web/login/oauth_return.php'); // URL that handles oAuth responses from the authentication server.
 @define('CODEBOT_OAUTH_SECURITY_SALT',          'LDFmiilYf8Fyw5W10rx4W1KsVrieQCnpBzzpTBWA5vJidQKDx8pMJbmw28R1C4m'); // Salt used in oAuth operations.
+@define('CODEBOT_OAUTH_URL_AFTER_LOGIN',        './../ide/?disk=%s'); // URL that the user will be redirected to after a successful oAuth authentication. The URL must contain the string <code>disk=%s</code> which will be replaced by the user's disk hash, e.g. <code>/test/something/?myvar=1&disk=%s</code>.
 @define('CODEBOT_GITHUB_APP_ID',                ''); // If Github is being used as an oAuth authentication, this is the APP_ID Codebot will use to make login attempts.
 @define('CODEBOT_GITHUB_APP_SECRET',            ''); // If Github is being used as an oAuth authentication, this is the APP_SECRET required by Github.
 
