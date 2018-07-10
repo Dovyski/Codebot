@@ -67,7 +67,7 @@ class JavascriptTools extends \Codebot\Endpoints\Base {
 			$aTestingPath = substr($aTestingPath, 0, -1);
 		}
 
-		Utils::systemExec('cp -R ' . $theCompilationInfo['mount'] . /*$theCompilationInfo['outDir'] .*/ '/* ' . $aTestingPath, __FILE__, __LINE__);
+		Utils::copyr($theCompilationInfo['mount'] . /*$theCompilationInfo['outDir'] .*/ '/', $aTestingPath, array('.git'));
 
 		$aReturn['testingDirUrl'] 	= CODEBOT_JAVASCRIPT_PUBLIC_TESTING_URL . $aTestDir;
 		$aReturn['testingFileUrl'] 	= CODEBOT_JAVASCRIPT_PUBLIC_TESTING_URL . $aTestDir . DIRECTORY_SEPARATOR . $theCompilationInfo['outDir'] . $theCompilationInfo['outFile'];

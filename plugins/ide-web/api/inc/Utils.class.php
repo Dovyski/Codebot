@@ -133,6 +133,34 @@ class Utils {
 
 		return $aRet;
 	}
+
+	/**
+	 * Recursively copy the content of one directory to another.
+	 *
+	 * @param  string $theFrom Path to source directory
+	 * @param  string $theTo   Path to destination directory
+	 * @copyright https://stackoverflow.com/a/47518196/29827
+	 */
+	public static function copyr($theFrom, $theTo, $theSkip = array()) {
+		$aDir = opendir($theFrom);
+
+		if(!file_exists($theTo)) {
+			mkdir($theTo, 0775, true);
+		}
+
+		while(false !== ($aFile = readdir($aDir))) {
+			if($aFile == '.' || $aFile == '..' || in_array($aFile, $theSkip)) {
+				continue;
+			}
+			if(is_dir($theFrom . DIRECTORY_SEPARATOR . $aFile)) {
+				self::copyr($theFrom . DIRECTORY_SEPARATOR . $aFile, $theTo . DIRECTORY_SEPARATOR . $aFile, $theSkip);
+			} else {
+				copy($theFrom . DIRECTORY_SEPARATOR . $aFile, $theTo . DIRECTORY_SEPARATOR . $aFile);
+			}
+		}
+
+		closedir($aDir);
+	}
 }
 
 ?>

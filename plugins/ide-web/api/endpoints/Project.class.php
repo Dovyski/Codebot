@@ -165,7 +165,7 @@ class Project extends Base {
 			}
 		} else {
 			$aSettings = @file_get_contents($aTemplateSettingsPath);
-			Utils::systemExec('cp -R '. $aTemplateFilesPath . '* ' . $theFileSystemPath, __FILE__, __LINE__);
+			Utils::copyr($aTemplateFilesPath, $theFileSystemPath, array('.git'));
 
 			$aTemplateSettings = $aSettings !== false ? $aSettings : $aTemplateSettings;
 		}
