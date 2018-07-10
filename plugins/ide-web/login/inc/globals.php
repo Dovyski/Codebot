@@ -20,11 +20,14 @@ require_once dirname(__FILE__).'/../../api/inc/Auth.class.php';
 require_once dirname(__FILE__).'/../../api/inc/Disk.class.php';
 require_once dirname(__FILE__).'/../../api/inc/Database.class.php';
 require_once dirname(__FILE__).'/../../api/inc/User.class.php';
+require_once dirname(__FILE__).'/../../api/inc/Signal.class.php';
+require_once dirname(__FILE__).'/../../api/inc/Signals.class.php';
 require_once dirname(__FILE__).'/../../api/inc/Utils.class.php';
 
 // Initialize stuff
 Codebot\Auth::init();
 Codebot\Database::init();
+Codebot\Signals::init();
 
 // Initialize all OpAuth stuff
 $aConfigFile 	= dirname(__FILE__).'/config.opauth.php';
