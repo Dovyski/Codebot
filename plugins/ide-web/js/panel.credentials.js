@@ -1,8 +1,7 @@
-<?php
 /*
 	The MIT License (MIT)
 
-	Copyright (c) 2015 Fernando Bevilacqua
+	Copyright (c) 2018 Fernando Bevilacqua
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy of
 	this software and associated documentation files (the "Software"), to deal in
@@ -22,37 +21,32 @@
 	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-namespace Codebot;
+// Namespace for IDE (web)
+var IdeWeb = IdeWeb || {};
 
-class Auth {
-    public static function authenticate($theUserId) {
-        $_SESSION['id'] = $theUserId;
-    }
+// Namespace for panels
+IdeWeb.Panel = IdeWeb.Panel || {};
 
-    public static function logout($theUserId, $theDestroySession = true) {
-        if(self::isUserAuthenticated() && $_SESSION['id'] == $theUserId) {
-            unset($_SESSION['id']);
+/**
+ * Show info about the currently authenticated user.
+ */
+IdeWeb.Panel.Credentials = function() {
+    // Call constructor of base class
+    Codebot.Panel.call(this, 'Credentials');
+};
 
-            if($theDestroySession) {
-                session_destroy();
-            }
-            return true;
-        }
-        return false;
-    }
+// Lovely pants-in-the-head javascript boilerplate for OOP.
+IdeWeb.Panel.Credentials.prototype = Object.create(Codebot.Panel.prototype);
+IdeWeb.Panel.Credentials.prototype.constructor = IdeWeb.Panel.Credentials;
 
-    public static function getAuthenticatedUserId() {
-        return $_SESSION['id'];
-    }
+IdeWeb.Panel.Credentials.prototype.render = function() {
+    var aSelf,
+        aIde;
 
-    public static function init() {
-        session_name(CODEBOT_SID);
-        session_start();
-    }
+    Codebot.Panel.prototype.render.call(this);
 
-    public static function isUserAuthenticated() {
-        return isset($_SESSION['id']) && $_SESSION['id'] != -1;
-    }
-}
+    aSelf = this;
+    aIde = this.getContext().plugins.get('cc.codebot.ide.web');
 
-?>
+    this.row('<div id="user-credentials"><img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" /></div>');
+};

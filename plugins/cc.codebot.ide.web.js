@@ -48,6 +48,18 @@ IdeWeb.Plugin = function() {
         });
     };
 
+    var initCredentialsUI = function() {
+        mSelf.api('credentials', 'profile', null, function(theData) {
+            if(theData.success) {
+                console.debug('User credentials received: ', theData.user);
+                mContext.ui.addButton('openCredentials', {icon: '<i class="fa fa-user"></i>', position: 'bottom', panel: IdeWeb.Panel.Credentials });
+
+            } else {
+                console.error('Failed to get credentials: ' + theData.msg);
+            }
+        });
+    };
+
     var checkAndSaveDirtyTabs = function(theData) {
         var aTotal = mContext.ui.tabs.opened.length,
             i,
@@ -211,6 +223,7 @@ IdeWeb.Plugin = function() {
         // Load all required scripts
         mContext.loadScript('./plugins/ide-web/js/panel.openproject.js');
         mContext.loadScript('./plugins/ide-web/js/panel.createproject.js');
+        mContext.loadScript('./plugins/ide-web/js/panel.credentials.js');
 
         mContext.ui.addButton('newProject', {icon: '<i class="fa fa-plus-square"></i>', panel: IdeWeb.Panel.CreateProject });
         mContext.ui.addButton('openProject', {icon: '<i class="fa fa-hdd-o"></i>', panel: IdeWeb.Panel.OpenProject });
@@ -227,6 +240,7 @@ IdeWeb.Plugin = function() {
         mContext.signals.beforeFilesPanelRefresh.add(handleBeforeFilesPanelRefresh);
 
         initProjectFactory();
+        initCredentialsUI();
 
         var aProject = CODEBOT.utils.getURLParamByName('project');
 

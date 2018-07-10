@@ -43,6 +43,7 @@ require_once dirname(__FILE__).'/inc/Project.class.php';
 require_once dirname(__FILE__).'/endpoints/Base.class.php';
 require_once dirname(__FILE__).'/endpoints/Project.class.php';
 require_once dirname(__FILE__).'/endpoints/Disk.class.php';
+require_once dirname(__FILE__).'/endpoints/Credentials.class.php';
 
 // Catch all error messages and turn them into Exceptions, that way the API
 // will not break JSON communitation with ugly PHP html tags.
@@ -81,6 +82,7 @@ try {
 		// TODO: add all entry points from config file
 		$aRouter->add('disk', 'Codebot\Endpoints\Disk');
 		$aRouter->add('project', 'Codebot\Endpoints\Project');
+		$aRouter->add('credentials', 'Codebot\Endpoints\Credentials');
 
 		$aRouter->addConfigDefinedEndpoints();
 		$aStatus = $aRouter->run($_REQUEST);
