@@ -47,7 +47,7 @@ class Project extends Base {
 		);
 
 		$aUser = $this->getUser();
-		$aProject = self::instantiate($aUser, $aData);
+		$aProject = self::materializeProject($aUser, $aData);
 
 		return array('success' => true, 'project' => $aProject);
 	}
@@ -115,7 +115,7 @@ class Project extends Base {
 		return json_decode($theProject->settings);
 	}
 
-	private static function instantiate($theUser, $theData) {
+	public static function materializeProject($theUser, $theData) {
 		$aFkUser 	= $theUser->id;
 		$aName 		= @$theData['name'];
 		$aType 		= @$theData['type'];

@@ -38,8 +38,10 @@ class User {
 			$aDisk 			= Disk::create($aProvider . $aUid);
 			$aEmail 		= isset($theInfo['info']['email']) ? $theInfo['info']['email'] : '';
 			$aAuthUid 		= $aProvider . '/' . $aUid;
-
 			$aLocalUserId 	= self::create($aEmail, $aDisk->getName(), $aAuthUid, serialize($theInfo));
+
+			// Inform anyone interested that a new user has just been created
+			App::instance()->signals->userCreated->dispatch(array($aLocalUserId));
 
 		} else {
 			$aLocalUserId = $aLocalUser->id;
