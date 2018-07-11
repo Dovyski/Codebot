@@ -1026,6 +1026,52 @@ Settings - plugin
 
 /*
 -----------------------------------------------------
+Credentials panel
+-----------------------------------------------------
+*/
+
+.credentials-panel-main {
+    text-align: center;
+    line-height: 1em;
+    padding-bottom: 10px;
+    color: #808080;
+}
+
+.credentials-panel-main a,
+.credentials-panel-main a:active,
+.credentials-panel-main a:hover,
+.credentials-panel-main a:visited {
+    text-decoration: underline;
+    color: #808080;
+}
+
+.credentials-panel-main .name {
+    padding-top: 5px;
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #A8A8A8;
+    line-height: 0.9em;
+}
+
+.credentials-panel-main .email i {
+    font-size: 1.5em;
+    margin: 0;
+    padding: 0;
+}
+
+.credentials-panel-main .email {
+    font-size: 1.1em;
+    line-height: 0;
+}
+
+.credentials-panel-main img {
+    width: 120px;
+    height: 120px;
+    margin: 10px 0 5px 0;
+}
+
+/*
+-----------------------------------------------------
 UI toast
 -----------------------------------------------------
 */

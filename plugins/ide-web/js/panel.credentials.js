@@ -32,7 +32,7 @@ IdeWeb.Panel = IdeWeb.Panel || {};
  */
 IdeWeb.Panel.Credentials = function() {
     // Call constructor of base class
-    Codebot.Panel.call(this, 'Credentials');
+    Codebot.Panel.call(this, 'User information');
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
@@ -40,13 +40,37 @@ IdeWeb.Panel.Credentials.prototype = Object.create(Codebot.Panel.prototype);
 IdeWeb.Panel.Credentials.prototype.constructor = IdeWeb.Panel.Credentials;
 
 IdeWeb.Panel.Credentials.prototype.render = function() {
-    var aSelf,
-        aIde;
-
     Codebot.Panel.prototype.render.call(this);
 
-    aSelf = this;
-    aIde = this.getContext().plugins.get('cc.codebot.ide.web');
+    var aIde = this.getContext().plugins.get('cc.codebot.ide.web');
+    var aUser = this.getParams().user;
+    var aContent = '';
 
-    this.row('<div id="user-credentials"><img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" /></div>');
+    // Show some nice about info about Codebot
+    this.row(
+        '<div class="credentials-panel-main">' +
+            '<img src="https://www.gravatar.com/avatar/' + aUser.gravatar_hash + '?s=150" title="' + aUser.email + '" class="img-circle" />' +
+            '<p class="name">User' + aUser.id + '</p> ' +
+            '<p class="email">' + aUser.email + '</p>' +
+        '</div>'
+    );
+
+    this.divider('Authentication');
+    aContent = '<ul>';
+    aContent += '<a href="javascript:void(0);" data-section="" class="setting-section"><li><i class="fa fa-sign-out"></i> Sign out</li></a>';
+    aContent += '</ul>';
+    this.row(aContent);
+
+    this.divider('Account');
+    aContent = '<ul>';
+    aContent += '<a href="javascript:void(0);" data-section="" class="setting-section"><li><i class="fa fa-user"></i> Edit info</li></a>';
+    aContent += '</ul>';
+    this.row(aContent);
+
+    this.divider('Personal data');
+    aContent = '<ul>';
+    aContent += '<a href="javascript:void(0);" data-section="" class="setting-section"><li><i class="fa fa-download"></i> Download</li></a>';
+    aContent += '<a href="javascript:void(0);" data-section="" class="setting-section"><li><i class="fa fa-trash"></i> Delete everything</li></a>';
+    aContent += '</ul>';
+    this.row(aContent);
 };

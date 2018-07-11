@@ -52,8 +52,11 @@ IdeWeb.Plugin = function() {
         mSelf.api('credentials', 'profile', null, function(theData) {
             if(theData.success) {
                 console.debug('User credentials received: ', theData.user);
-                mContext.ui.addButton('openCredentials', {icon: '<i class="fa fa-user"></i>', position: 'bottom', panel: IdeWeb.Panel.Credentials });
-
+                var aIcon = '<div style="position: relative;">' +
+                                '<img style="z-index: 1000; width: 20px; height: 20px; position: absolute; top: 0; left: -5px;" src="https://www.gravatar.com/avatar/' + (theData.user.gravatar_hash) + '?s=20"  title="' + (theData.user.email) + '"/>' +
+                                '<i class="fa fa-user"></i>' +
+                            '</div>';
+                mContext.ui.addButton('openCredentials', {icon: aIcon, position: 'bottom', panel: IdeWeb.Panel.Credentials, params: {user: theData.user}});
             } else {
                 console.error('Failed to get credentials: ' + theData.msg);
             }
