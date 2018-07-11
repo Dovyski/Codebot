@@ -57,20 +57,44 @@ IdeWeb.Panel.Credentials.prototype.render = function() {
 
     this.divider('Authentication');
     aContent = '<ul>';
-    aContent += '<a href="javascript:void(0);" data-section="" class="setting-section"><li><i class="fa fa-sign-out"></i> Sign out</li></a>';
+    aContent += '<a href="javascript:void(0);" data-action="logout" class="clickable"><li><i class="fa fa-sign-out"></i> Sign out</li></a>';
     aContent += '</ul>';
     this.row(aContent);
 
     this.divider('Account');
     aContent = '<ul>';
-    aContent += '<a href="javascript:void(0);" data-section="" class="setting-section"><li><i class="fa fa-user"></i> Edit info</li></a>';
+    aContent += '<a href="javascript:void(0);" data-action="edit-profile" class="clickable"><li><i class="fa fa-user"></i> Edit info</li></a>';
     aContent += '</ul>';
     this.row(aContent);
 
     this.divider('Personal data');
     aContent = '<ul>';
-    aContent += '<a href="javascript:void(0);" data-section="" class="setting-section"><li><i class="fa fa-download"></i> Download</li></a>';
-    aContent += '<a href="javascript:void(0);" data-section="" class="setting-section"><li><i class="fa fa-trash"></i> Delete everything</li></a>';
+    aContent += '<a href="javascript:void(0);" data-action="download-data" class="clickable"><li><i class="fa fa-download"></i> Download</li></a>';
+    aContent += '<a href="javascript:void(0);" data-action="delete-data" class="clickable"><li><i class="fa fa-trash"></i> Delete everything</li></a>';
     aContent += '</ul>';
     this.row(aContent);
+
+    // Make all links clickable
+    var aSelf = this;
+    this.container.find('a.clickable').each(function(theIndex, theElement) {
+        $(theElement).click(function() {
+            var aAction = $(this).data('action');
+            aSelf.handleActionClick(aAction);
+        });
+    });
+};
+
+IdeWeb.Panel.Credentials.prototype.handleActionClick = function(theAction) {
+    var aIde = this.getContext().plugins.get('cc.codebot.ide.web');
+
+    if(theAction == 'logout') {
+        this.getContext().setLoadingScreenVisibility(true);
+
+        aIde.api('credentials', 'logout', null, function(theData) {
+            console.debug(theData);
+            window.location.replace('./plugins/ide-web/login/');
+        }, this);
+    } else {
+        alert('Sorry, this option is not available at the moment. (action=' + theAction + ')');
+    }
 };
