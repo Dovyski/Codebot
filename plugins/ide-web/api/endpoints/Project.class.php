@@ -150,10 +150,13 @@ class Project extends Base {
 	}
 
 	private static function initBasedOnTemplate($theFileSystemPath, $theTemplate, $theData) {
-		$aTemplatePath 			= CODEBOT_PROJECT_TEMPLATES_FOLDER . DIRECTORY_SEPARATOR . Utils::securePath($theTemplate) . DIRECTORY_SEPARATOR;
+		if(!Utils::isValidTemplateName($theTemplate)) {
+			return '{}';
+		}
+
+		$aTemplatePath 			= CODEBOT_PROJECT_TEMPLATES_FOLDER . DIRECTORY_SEPARATOR . $theTemplate . DIRECTORY_SEPARATOR;
 		$aTemplateFilesPath		= $aTemplatePath . 'files' . DIRECTORY_SEPARATOR;
 		$aTemplateSettingsPath 	= $aTemplatePath . 'settings.json';
-
 		$aTemplateSettings 		= '{}';
 
 		if($theTemplate == 'git') {

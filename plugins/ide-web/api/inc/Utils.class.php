@@ -40,15 +40,6 @@ class Utils {
 		}
 	}
 
-	public static function securePath($thePath) {
-		// Ensure encoding is ASCII to prevent any Unicode tricks
-		$thePath = mb_convert_encoding($thePath, 'ASCII');
-		$thePath = basename($thePath);
-		$thePath = str_replace(array('.', '..', ':', ';'), '', $thePath);
-
-		return escapeshellcmd($thePath);
-	}
-
 	public static function escapePath($thePath) {
 		// Ensure encoding is ASCII to prevent any Unicode tricks
 		$thePath = mb_convert_encoding($thePath, 'ASCII');
@@ -194,6 +185,30 @@ class Utils {
 		}
 
 		closedir($aDir);
+	}
+
+	public static function findAvailableTemplates($theFullPath = false) {
+		$aTemplatesDirPath = CODEBOT_PROJECT_TEMPLATES_FOLDER . DIRECTORY_SEPARATOR;
+		$aAvailableTemplates = glob($aTemplatesDirPath . '*', GLOB_ONLYDIR);
+
+		foreach($aAvailableTemplates as $aKey => $aTemplateEntry) {
+			if(!$theFullPath) {
+				$aTemplateEntry = basename($aTemplateEntry);
+			}
+
+			if($aTemplateEntry == '.git') {
+				continue;
+			} else {
+				$aAvailableTemplates[$aKey] = $aTemplateEntry;
+			}
+		}
+
+		return $aAvailableTemplates;
+	}
+
+	public static function isValidTemplateName($theTemplate) {
+		$aAvailableTemplates = self::findAvailableTemplates();
+		return in_array($theTemplate, $aAvailableTemplates);
 	}
 }
 
