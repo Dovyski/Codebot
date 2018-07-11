@@ -35,6 +35,7 @@ IdeWeb.Plugin = function() {
     var mProjects           = {};
     var mActiveProject      = null;
     var mProjectFactory     = null;
+    var mUser               = null; // info about the current user
 
     var initProjectFactory = function() {
         mSelf.api('project', 'factory', null, function(theData) {
@@ -52,11 +53,13 @@ IdeWeb.Plugin = function() {
         mSelf.api('credentials', 'profile', null, function(theData) {
             if(theData.success) {
                 console.debug('User credentials received: ', theData.user);
+
+                mUser = theData.user;
                 var aIcon = '<div style="position: relative;">' +
-                                '<img style="z-index: 1000; width: 20px; height: 20px; position: absolute; top: 0; left: -5px;" src="https://www.gravatar.com/avatar/' + (theData.user.gravatar_hash) + '?s=20"  title="' + (theData.user.email) + '"/>' +
+                                '<img style="z-index: 1000; width: 20px; height: 20px; position: absolute; top: 0; left: -5px;" src="https://www.gravatar.com/avatar/' + (mUser.gravatar_hash) + '?s=20"  title="' + (mUser.email) + '"/>' +
                                 '<i class="fa fa-user"></i>' +
                             '</div>';
-                mContext.ui.addButton('openCredentials', {icon: aIcon, position: 'bottom', panel: IdeWeb.Panel.Credentials, params: {user: theData.user}});
+                mContext.ui.addButton('openCredentials', {icon: aIcon, position: 'bottom', panel: IdeWeb.Panel.Credentials, params: {user: mUser}});
             } else {
                 console.error('Failed to get credentials: ' + theData.msg);
             }
@@ -260,8 +263,24 @@ IdeWeb.Plugin = function() {
         }
     };
 
+    this.logout = function() {
+        mContext.setLoadingScreenVisibility(true);
+
+        this.api('credentials', 'logout', null, function(theData) {
+            window.location.replace('./plugins/ide-web/login/');
+        }, this);
+    };
+
     this.getProjectFactory = function() {
         return mProjectFactory;
+    };
+
+    /**
+     * Get information about the currently authenticated user
+     * @return object object describing the user.
+     */
+    this.getUser = function() {
+        return mUser;
     };
 };
 

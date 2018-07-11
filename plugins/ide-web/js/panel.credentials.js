@@ -32,7 +32,7 @@ IdeWeb.Panel = IdeWeb.Panel || {};
  */
 IdeWeb.Panel.Credentials = function() {
     // Call constructor of base class
-    Codebot.Panel.call(this, 'User information');
+    Codebot.Panel.call(this, 'User');
 };
 
 // Lovely pants-in-the-head javascript boilerplate for OOP.
@@ -43,7 +43,7 @@ IdeWeb.Panel.Credentials.prototype.render = function() {
     Codebot.Panel.prototype.render.call(this);
 
     var aIde = this.getContext().plugins.get('cc.codebot.ide.web');
-    var aUser = this.getParams().user;
+    var aUser = aIde.getUser();
     var aContent = '';
 
     // Show some nice about info about Codebot
@@ -55,22 +55,14 @@ IdeWeb.Panel.Credentials.prototype.render = function() {
         '</div>'
     );
 
+    this.divider('Profile');
+    var aParams = {label: {style: 'width: 30%'}, content: {style: 'width: 65%'}};
+    this.pair('Name', '<input type="text" value="User' + aUser.id + '" />', aParams);
+    this.pair('E-mail', '<input type="text" value="' + aUser.email + '" readonly="readonly"/>', aParams);
+
     this.divider('Authentication');
     aContent = '<ul>';
     aContent += '<a href="javascript:void(0);" data-action="logout" class="clickable"><li><i class="fa fa-sign-out"></i> Sign out</li></a>';
-    aContent += '</ul>';
-    this.row(aContent);
-
-    this.divider('Account');
-    aContent = '<ul>';
-    aContent += '<a href="javascript:void(0);" data-action="edit-profile" class="clickable"><li><i class="fa fa-user"></i> Edit info</li></a>';
-    aContent += '</ul>';
-    this.row(aContent);
-
-    this.divider('Personal data');
-    aContent = '<ul>';
-    aContent += '<a href="javascript:void(0);" data-action="download-data" class="clickable"><li><i class="fa fa-download"></i> Download</li></a>';
-    aContent += '<a href="javascript:void(0);" data-action="delete-data" class="clickable"><li><i class="fa fa-trash"></i> Delete everything</li></a>';
     aContent += '</ul>';
     this.row(aContent);
 
@@ -88,12 +80,7 @@ IdeWeb.Panel.Credentials.prototype.handleActionClick = function(theAction) {
     var aIde = this.getContext().plugins.get('cc.codebot.ide.web');
 
     if(theAction == 'logout') {
-        this.getContext().setLoadingScreenVisibility(true);
-
-        aIde.api('credentials', 'logout', null, function(theData) {
-            console.debug(theData);
-            window.location.replace('./plugins/ide-web/login/');
-        }, this);
+        aIde.logout();
     } else {
         alert('Sorry, this option is not available at the moment. (action=' + theAction + ')');
     }

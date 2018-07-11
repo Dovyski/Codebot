@@ -72,8 +72,55 @@ Codebot.Settings.Panel.Main.prototype.render = function() {
         aContent += '<a href="javascript:void(0);" data-section="' + i + '" class="setting-section"><li>' + aSections[i].icon + ' ' + aSections[i].title + '</li></a>';
     }
     aContent += '</ul>';
-
     this.row(aContent);
+
+    // Section to provide feedback
+    this.divider('Feedack');
+    this.row(
+        '<ul>' +
+            '<a href="javascript:void(0);"><li><a href="https://github.com/Dovyski/Codebot/issues/new" target="_blank"><i class="fa fa-bug"></i>Report a bug</a></a>' +
+            '<a href="javascript:void(0);"><li><a href="https://github.com/Dovyski/Codebot/issues/new" target="_blank"><i class="fa fa-comment"></i>Send comment</a></a>' +
+        '</ul>'
+    );
+
+    var aIde = this.getContext().plugins.get('cc.codebot.ide.web');
+
+    if(aIde) {
+        // Section with info about the authenticated user
+        var aUser = aIde.getUser();
+
+        this.divider('User');
+        this.row(
+            '<div class="settings-panel-main-user">' +
+                '<img src="https://www.gravatar.com/avatar/' + aUser.gravatar_hash + '?s=80" title="' + aUser.email + '" />' +
+                '<p class="name">User' + aUser.id + '</p> ' +
+                '<p class="email">' + aUser.email + '</p>' +
+            '</div>'
+        );
+        this.row(
+            '<ul>' +
+                '<a href="javascript:void(0);" data-action="profile" class="clickable"><li><i class="fa fa-user"></i> Edit profile</li></a>' +
+            '</ul>'
+        );
+        this.divider('Authentication');
+        this.row(
+            '<ul>' +
+                '<a href="javascript:void(0);" data-action="logout" class="clickable"><li><i class="fa fa-sign-out"></i> Sign out</li></a>' +
+            '</ul>'
+        );
+
+        // Make sign-out link clickable
+        this.container.find('a.clickable').each(function(theIndex, theElement) {
+            $(theElement).click(function() {
+                var aAction = $(this).data('action');
+                if(aAction == 'logout') {
+                    aIde.logout();
+                } else if(aAction == 'profile') {
+                    aSelf.push(IdeWeb.Panel.Credentials);
+                }
+            });
+        });
+    }
 
     // Make all sections clickable
     this.container.find('a.setting-section').each(function(theIndex, theElement) {
@@ -82,8 +129,4 @@ Codebot.Settings.Panel.Main.prototype.render = function() {
             aSelf.push(aSections[aId].panel);
         });
     });
-
-    // Show all settings sections
-    this.divider('Found a bug?');
-    this.row('<div style="text-align: center; padding: 10px;"><a href="https://github.com/Dovyski/Codebot/issues/new" target="_blank"><i class="fa fa-github" style="font-size: 1.5em;"></i>Open an issue</a></div>');
 };
