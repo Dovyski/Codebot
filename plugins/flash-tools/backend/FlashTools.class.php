@@ -87,6 +87,7 @@ class FlashTools {
 		$aOutFile 	= property_exists($aSettings, 'outFile') 	? $aSettings->outFile 		: 'Mode.swf';
 
 		// TODO: use config.xml to invoke mxmlc
+		// TODO: escape shell stuff using escapeshellarg().
 		$aDisk		= new Disk();
 		$aMount		= $aDisk->dirPath($theUser->disk, $theProject->path);
 		$aCommand	= CODEBOT_FLASH_FLEX_SDK . 'mxmlc -default-size '.$aWidth.' '.$aHeight.' '.$aMount.$aDocClass.' -library-path+='.$aMount.$aLibs.' -swf-version='.$aSwf.' -debug='.$aDebug.' -static-link-runtime-shared-libraries=true -o '.$aMount.$aOutDir.$aOutFile.' '.CODEBOT_FLASH_OUTPUT_REPIPE;

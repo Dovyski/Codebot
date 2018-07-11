@@ -160,8 +160,9 @@ class Project extends Base {
 			$aGitRepo = @$theData['git_repo'];
 
 			if(!empty($aGitRepo)) {
-				// TODO: improve security here.
-				Utils::systemExec('git clone '. $aGitRepo . ' ' . $theFileSystemPath, __FILE__, __LINE__);
+				$aEscapedGitRepo = escapeshellarg($aGitRepo);
+				$aEscapedFileSystemPath = escapeshellarg(Utils::removeAnySlashAtEnd($theFileSystemPath));
+				Utils::systemExec('git clone '. $aEscapedGitRepo . ' ' . $aEscapedFileSystemPath, __FILE__, __LINE__);
 			}
 		} else {
 			$aSettings = @file_get_contents($aTemplateSettingsPath);

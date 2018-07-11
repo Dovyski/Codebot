@@ -41,6 +41,8 @@ class Utils {
 	}
 
 	public static function securePath($thePath) {
+		// Ensure encoding is ASCII to prevent any Unicode tricks
+		$thePath = mb_convert_encoding($thePath, 'ASCII');
 		$thePath = basename($thePath);
 		$thePath = str_replace(array('.', '..', ':', ';'), '', $thePath);
 
@@ -48,6 +50,8 @@ class Utils {
 	}
 
 	public static function escapePath($thePath) {
+		// Ensure encoding is ASCII to prevent any Unicode tricks
+		$thePath = mb_convert_encoding($thePath, 'ASCII');
 		return escapeshellcmd(str_replace('..', '', $thePath));
 	}
 
@@ -132,6 +136,36 @@ class Utils {
 		}
 
 		return $aRet;
+	}
+
+	/**
+	 * Prevent attacks similar to CVE-2016-10033, CVE-2016-10045, and CVE-2016-10074
+	 * by disallowing potentially unsafe shell characters.
+	 *
+	 * @param   string  $theString      the string to be tested for shell safety
+	 * @see     https://gist.github.com/Zenexer/40d02da5e07f151adeaeeaa11af9ab36
+	 * @author  Paul Buonopane <paul@namepros.com>
+	 * @license Public doman per CC0 1.0.  Attribution appreciated but not required.
+	 */
+	public static function isShellSafe($theString)
+	{
+	    $theString = strval($theString);
+	    $aLength = strlen($theString);
+
+	    // If you need to allow empty strings, you can remove this, but be sure you
+	    // understand the security implications of doing so.
+	    if (!$aLength) {
+	        return false;
+	    }
+
+	    // Note: Results may be indeterminate with a stateful encodings, e.g. EUC
+	    for ($i = 0; $i < $aLength; $i++) {
+	        $c = $theString[$i];
+	        if (!ctype_alnum($c) && strpos('@_-.', $c) === false) {
+	            return false;
+	        }
+	    }
+	    return true;
 	}
 
 	/**
