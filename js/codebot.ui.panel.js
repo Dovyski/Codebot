@@ -39,6 +39,7 @@ Codebot.Panel = function(theTitle, theContainerId) {
 	this.container 			= null;	// a jQuery object representing the DOM element that is housing the content of the panel
 	this.dataManager 		= null; // a string with the id of a plugin that will handle all the data management for this panel.
 	this.context 			= null; // a reference to Codebot singleton.
+	this.params				= null; // an object passed to the panel when it was created.
 
 	if(theContainerId) {
 		this.setContainer(theContainerId);
@@ -267,6 +268,16 @@ Codebot.Panel.prototype.getData = function() {
  */
 Codebot.Panel.prototype.getContext = function() {
 	return this.context;
+};
+
+/**
+ * Obtains the object passed in the field "params" of the options used to
+ * create this panel.
+ *
+ * @return {Object} Object passed in the field "params" of the options used to create this panel.
+ */
+Codebot.Panel.prototype.getParams = function() {
+	return this.params;
 };
 
 /**

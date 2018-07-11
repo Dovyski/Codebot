@@ -122,7 +122,7 @@ Codebot.UI.SlideTray.prototype.savePersistentPanelData = function() {
     }
 };
 
-Codebot.UI.SlideTray.prototype.pushPanel = function(thePanelClass) {
+Codebot.UI.SlideTray.prototype.pushPanel = function(thePanelClass, thePanelParams) {
     var aPanelWidth,
         aPanel,
         aSelf = this;
@@ -133,7 +133,7 @@ Codebot.UI.SlideTray.prototype.pushPanel = function(thePanelClass) {
     }
 
     aPanelWidth = this.getSliderPanelWidth();
-    aPanel = this.instantiatePanelObject(thePanelClass);
+    aPanel = this.instantiatePanelObject(thePanelClass, thePanelParams);
 
     if(mStack.length > 0) {
         this.slideElement(mStack[mStack.length - 1].containerId, aPanelWidth * -2);
@@ -189,18 +189,26 @@ Codebot.UI.SlideTray.prototype.popPanel = function() {
     }, this.getSlideDuration());
 };
 
-Codebot.UI.SlideTray.prototype.instantiatePanelObject = function(thePanelClass) {
+Codebot.UI.SlideTray.prototype.instantiatePanelObject = function(thePanelClass, thePanelParams) {
     var aInstance;
 
     aInstance = new thePanelClass();
     aInstance.panelManager = this;
     aInstance.context = mCodebot;
     aInstance.className = thePanelClass;
+    aInstance.params = thePanelParams;
 
     return aInstance;
 };
 
-Codebot.UI.SlideTray.prototype.set = function(thePanelClass, theForceNew) {
+/**
+ * Occupy the slide panel area with a new panel.
+ *
+ * @param  string thePanelClass  name of the class of the panel to be created.
+ * @param  object thePanelParams object with additional data that the panel might use. This object will be available in the panel via <code>getParams()</code>.
+ * @param  bool theForceNew    if a new panel should override any existing panel that is already occuping the slide panel area.
+ */
+Codebot.UI.SlideTray.prototype.set = function(thePanelClass, thePanelParams, theForceNew) {
     var aCurrent = this.getCurrentPanel();
 
     if(!theForceNew && aCurrent && aCurrent.className == thePanelClass) {
@@ -208,7 +216,7 @@ Codebot.UI.SlideTray.prototype.set = function(thePanelClass, theForceNew) {
 
     } else {
         this.clear(function() {
-            this.pushPanel(thePanelClass);
+            this.pushPanel(thePanelClass, thePanelParams);
         }, this);
     }
 };

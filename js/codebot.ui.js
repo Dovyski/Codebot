@@ -81,9 +81,10 @@ var CodebotUI = function() {
     {
 		panel: function,
         icon: string,
-        action: function (func(context, button_as_jquery_obj))
+        action: function (func(context, button_as_jquery_obj, params))
         position: string ('top' or 'bottom')
 		context: obj (where to point the 'this' of the callback being invoked)
+		params: obj (any additional information that will be available for the panel later using the getParams() method).
     }
      */
 	this.addButton = function(theId, theOptions) {
@@ -111,12 +112,13 @@ var CodebotUI = function() {
 
 			$('#config-bar-button-' + aId).click(function() {
 				var aIndex = $(this).data('button-id');
+				var aButton = mButtons[aIndex];
 
-	            if('action' in mButtons[aIndex]) {
-	                mButtons[aIndex].action.call(mButtons[aIndex].context || this, mCodebot, $(this));
+	            if('action' in aButton) {
+	                aButton.action.call(aButton.context || this, mCodebot, $(this), aButton.params);
 
-	            } else if('panel' in mButtons[aIndex]) {
-	                mSlideTray.set(mButtons[aIndex].panel);
+	            } else if('panel' in aButton) {
+	                mSlideTray.set(aButton.panel, aButton.params);
 	            }
 			});
 
