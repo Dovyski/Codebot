@@ -188,7 +188,7 @@ echo '<html>';
 echo '<head>';
 	echo '<meta charset="utf-8">';
 	echo '<title>Codebot - Installation</title>';
-	echo '<link href="../site/css/bootstrap.min.css" rel="stylesheet">';
+	echo '<link href="./css/bootstrap/bootstrap.min.css" rel="stylesheet">';
     echo '<link href="../../../css/3rdparty/font-awesome/css/font-awesome.min.css" rel="stylesheet">';
 	echo '<link href="./css/style.css" rel="stylesheet">';
 
@@ -196,7 +196,7 @@ echo '</head>';
 
 echo '<body>';
 	echo '<header>';
-		echo '<img src="../site/img/codebot-logo.png" title="Codebot"/>';
+		echo '<img src="../login/img/codebot-logo.png" title="Codebot"/>';
         echo '<div class="headline">';
             echo '<i class="fa fa-wrench"></i>';
             echo '<h2>Installation</h2>';
