@@ -33,8 +33,17 @@ var CodebotTabs = function() {
         var aData = theTab.data('tabData').data;
         $('#' + aData.container).remove();
 		aData.editor = null;
-
         mCodebot.signals.tabClosed.dispatch([aData]);
+
+        for(var i = 0; i < mOpenTabs.length; i++) {
+            if(mOpenTabs[i].id == aData.id) {
+                mOpenTabs.splice(i, 1);
+            }
+        }
+
+        if(mOpenTabs.length == 0) {
+            hideTabsBar();
+        }
 	};
 
 	var onTabBlur = function(theTab) {
@@ -100,6 +109,14 @@ var CodebotTabs = function() {
         return mTabController.getRawTabById(theId).data('tabData').data;
     };
 
+    var showTabsBar = function() {
+        $('#tabs').show();
+    };
+
+    var hideTabsBar = function() {
+        $('#tabs').hide();
+    };
+
     /**
      * Adds a new tab.
      *
@@ -145,6 +162,7 @@ var CodebotTabs = function() {
 
         $.extend(aTab, theConfig);
         $('#working-area').append('<div id="'+aTab.container+'" class="tab-content"><span class="tab-loading-info"><i class="fa fa-sun-o fa-spin fa-2x"></i></span></div>');
+        showTabsBar();
 
         mTabController.add({
             favicon: theConfig.favicon || 'file-text-o',

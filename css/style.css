@@ -216,6 +216,7 @@ Content area (where code is edited)
     padding-top: 2px;
 	height: 27px;
 	background: #3C3C3C;
+    display: none; /* nothing is displayed until an actial tab is there */
 }
 
 #working-area {
