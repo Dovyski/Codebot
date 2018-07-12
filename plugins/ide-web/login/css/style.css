@@ -17,6 +17,31 @@ h2 {
 	margin: 2px 0 -10px 0;
 }
 
+h4 {
+	overflow: hidden;
+	text-align: center;
+	color: #cbcbcb;
+	font-weight: normal;
+}
+h4:before,
+h4:after {
+	background-color: #cbcbcb;
+	content: "";
+	display: inline-block;
+	height: 1px;
+	position: relative;
+	vertical-align: middle;
+	width: 50%;
+}
+h4:before {
+	right: 0.5em;
+	margin-left: -50%;
+}
+h4:after {
+	left: 0.5em;
+	margin-right: -50%;
+}
+
 .content a {
 	margin-top: 50px;
 }
