@@ -63,7 +63,7 @@ if ($aResponse == null || array_key_exists('error', $aResponse)) {
 			Codebot\Auth::authenticate($aUserId);
 
 			$aUser 		= Codebot\User::getById($aUserId);
-			$aLocation 	= sprintf(CODEBOT_OAUTH_URL_AFTER_LOGIN, $aUser->disk);
+			$aLocation 	= sprintf(CODEBOT_URL_AFTER_LOGIN, $aUser->disk);
 		}
 	}
 }

@@ -58,7 +58,7 @@ if($aAction == 'oauth') {
 	if($aUserId != null) {
 		Codebot\Auth::authenticate($aUserId);
 		$aUser 		= Codebot\User::getById($aUserId);
-		$aLocation 	= './../../../?disk=' . $aUser->disk;
+		$aLocation 	= sprintf(CODEBOT_URL_AFTER_LOGIN, $aUser->disk);
 
 	} else {
 		$_GET['error'] = 'Something went wrong with the local authentication.';
