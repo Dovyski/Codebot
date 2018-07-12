@@ -190,6 +190,32 @@ var CodebotTabs = function() {
         }
     };
 
+    this.focusOn = function(theTabId) {
+        var aRawTab = mTabController.getRawTabById(theTabId);
+
+        if(!aRawTab) {
+            return false;
+        }
+
+        mTabController.setCurrent(aRawTab);
+        return true;
+    }
+
+    /**
+     * Find any open tab that is already handling a particular node.
+     *
+     * @param  {Object} theNode filespanel node.
+     * @return {Tab}            existing tab that is handling the node, or <code>null</code> otherwise.
+     */
+    this.getTabByNode = function(theNode) {
+        for(var i = 0; i < mOpenTabs.length; i++) {
+            if(mOpenTabs[i].node.path == theNode.data.path) {
+                return mOpenTabs[i];
+            }
+        }
+        return null;
+    };
+
     /**
      * Opens any filespanel node in a new tab. The method will use Codebot
      * registered editors to pick the best one able to handle the file editing.
@@ -197,7 +223,14 @@ var CodebotTabs = function() {
      * @param {Object} theNode - filespanel node.
      */
     this.openNode = function(theNode) {
-        var aTab = null;
+        var aTab = mCodebot.ui.tabs.getTabByNode(theNode);
+
+        if(aTab != null) {
+            // There is a tab already open handling this node, so we
+            // just bring it to focus.
+            mCodebot.ui.tabs.focusOn(aTab.id);
+            return;
+        }
 
         aTab = mCodebot.ui.tabs.add({
             favicon: 'file-text-o', // TODO: dynamic icon?
