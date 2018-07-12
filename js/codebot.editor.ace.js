@@ -66,6 +66,7 @@ Codebot.Editor.Code.prototype.init = function() {
 	aAce.setTheme("ace/theme/tomorrow_night_eighties"); // TODO: get theme from Codebot?
 	aAce.getSession().setMode("ace/mode/javascript"); // TODO: choose mode based on file extension.
 	aAce.getSession().setOption("useWorker", false);
+	aAce.$blockScrolling = Infinity;
 
 	// TODO: remove this CODEBOT singleton call.
 	for(i in CODEBOT.settings.get().editor) {
