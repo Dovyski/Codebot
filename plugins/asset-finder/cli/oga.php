@@ -37,19 +37,60 @@ require_once dirname(__FILE__).'/../../ide-web/api/inc/Utils.class.php';
 
 require_once dirname(__FILE__) . '/3rdparty/querypath/qp.php';
 
-// TODO: check authentication before running this script.
-// TODO: make this file json compliant (to be served from AJAX)
+if(php_sapi_name() != 'cli') {
+	exit('This is a command line tool.');
+}
+
+$aOptions = array(
+    "url:",
+    "help",
+	"force"
+);
+
+$aArgs = getopt("hf", $aOptions);
+
+if(isset($aArgs['h']) || isset($aArgs['help']) || $argc <= 1) {
+     echo "Usage: \n";
+     echo " php oga.php [options]\n\n";
+     echo "Options:\n";
+     echo " --url=<str>  URL of the asset to be downloaded from OpenGameArt.org.\n";
+	 echo " --force, -f  Force a download even if the asset already exists in\n";
+	 echo "              in the local cache/db.\n";
+     echo " --help, -h   Show this help.\n";
+     echo "\n";
+     exit(1);
+}
 
 use \Codebot\Utils;
 use \Codebot\Database;
 
+if(!file_exists(CODEBOT_ASSET_FINDER_MIRROR_FOLDER)) {
+	echo 'Unable to access mirror folder: "'.CODEBOT_ASSET_FINDER_MIRROR_FOLDER.'". Ensure CODEBOT_ASSET_FINDER_MIRROR_FOLDER points to a valid folder.' . "\n";
+	exit(2);
+}
+
+$aURL = isset($aArgs['url']) ? $aArgs['url'] : '';
+$aForce = isset($aArgs['f']) || isset($aArgs['force']);
+
+if(empty($aURL)) {
+	echo 'Provide a valid URL via --url.' . "\n";
+	exit(3);
+}
+
+$aInfo = parse_url($aURL);
+
+if(!isset($aInfo['host'])) {
+	echo 'Invalid URL provided via --url: "'.$aURL.'".' . "\n";
+	echo 'URL should be "https://opengameart.org/content/AAA" where "AAA" is the target asset.' . "\n";
+	exit(4);
+}
+
 Database::init();
 
-$aURL		= $_REQUEST['url'];
-$aInfo		= parse_url($aURL);
-$aChannel	= $aInfo['host'];
+echo 'Parsing URL content.' . "\n";
 
-$aQp 		= htmlqp($_REQUEST['url']);
+$aChannel = $aInfo['host'];
+$aQp = htmlqp($aURL);
 
 $aTitle 	= $aQp->find('div.group-header h2')->text();
 $aAuthor 	= $aQp->find('div.group-left span.username')->text();
@@ -80,13 +121,21 @@ $aChannelFolder 	= CODEBOT_ASSET_FINDER_MIRROR_FOLDER . $aChannel . DIRECTORY_SE
 $aAssetFolder		= $aTitleId . DIRECTORY_SEPARATOR;
 $aPreviewFolder		= $aAssetFolder . 'preview' . DIRECTORY_SEPARATOR;
 
-if(!file_exists($aAssetFolder)) {
-	@mkdir($aChannelFolder . $aAssetFolder, 0755, true);
-	@mkdir($aChannelFolder . $aPreviewFolder, 0755, true);
+if(file_exists($aChannelFolder . $aAssetFolder) && !$aForce) {
+	echo 'Asset "'.$aTitleId.'" already exists in the local cache: "'.$aChannelFolder . $aAssetFolder.'". Use -f to force a download anyway.' . "\n";
+	exit(5);
 }
+
+echo 'Creating folders to house downloads.' . "\n";
+
+@mkdir($aChannelFolder . $aAssetFolder, 0755, true);
+@mkdir($aChannelFolder . $aPreviewFolder, 0755, true);
+
+echo 'Downloading previews:' . "\n";
 
 // Download asset preview images to local mirror
 foreach($aPreviews as $aIndex => $aPreview) {
+	echo ' ' . $aPreview . "\n";
 	$aInfo 	 = parse_url($aPreview);
 	$aNewUrl = $aPreviewFolder . basename($aInfo['path']);
 
@@ -94,8 +143,11 @@ foreach($aPreviews as $aIndex => $aPreview) {
 	$aPreviews[$aIndex] = $aChannel . '/' . str_replace('\\', '/', $aNewUrl);
 }
 
+echo 'Downloading assets:' . "\n";
+
 // Download asset files to local mirror
 foreach($aFiles as $aIndex => $aFile) {
+	echo ' ' . $aFile['url'] . "\n";
 	$aInfo 	 = parse_url($aFile['url']);
 	$aNewUrl = $aAssetFolder . basename($aInfo['path']);
 
@@ -103,8 +155,13 @@ foreach($aFiles as $aIndex => $aFile) {
 	$aFiles[$aIndex]['url'] = $aChannel . '/' . str_replace('\\', '/', $aNewUrl);
 }
 
+echo 'Creating DB entries.' . "\n";
+
 // TODO: check for duplicates before inserting anything.
 $aQuery = Database::instance()->prepare("INSERT INTO assets (title, author, url, channel, license, thumbnail, preview, files, description, attribution) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 $aQuery->execute(array($aTitle, $aAuthor, $aURL, $aChannel, 1, $aPreviews[0], serialize($aPreviews), serialize($aFiles), $aDescription, 'Atrribution: '));
+
+echo 'Finished successfully!' . "\n";
+exit(0);
 
 ?>
