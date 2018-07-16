@@ -109,6 +109,9 @@ class AssetFinder extends \Codebot\Endpoints\Base {
 		$aDisk = new Disk($aUser->disk);
 		$aPath = $aDisk->getFileSystemPath(array($aProject->path, $theFolder));
 
+		// Ensure path leads to a folder
+		$aPath = Utils::removeAnySlashAtEnd($aPath) . DIRECTORY_SEPARATOR;
+
 		return $aPath;
 	}
 
