@@ -31,7 +31,7 @@ class Utils {
 	        return false;
 	    }
 
-	    throw new ErrorException($theErrStr, 0, $theErrno, $theErrfile, $theErrLine);
+	    throw new \ErrorException($theErrStr, 0, $theErrno, $theErrfile, $theErrLine);
 	}
 
 	public static function log($theContent, $theLabel = 'CODEBOT', $theLine = '') {
@@ -68,7 +68,7 @@ class Utils {
 		curl_close($aCh);
 
 		if($aError != '') {
-			throw new Exception($aError);
+			throw new \Exception($aError);
 		}
 
 		return $aData;
