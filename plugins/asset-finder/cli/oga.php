@@ -137,7 +137,7 @@ echo 'Downloading previews:' . "\n";
 foreach($aPreviews as $aIndex => $aPreview) {
 	echo ' ' . $aPreview . "\n";
 	$aInfo 	 = parse_url($aPreview);
-	$aNewUrl = $aPreviewFolder . basename($aInfo['path']);
+	$aNewUrl = $aPreviewFolder . basename(urldecode($aInfo['path']));
 
 	file_put_contents($aChannelFolder . $aNewUrl, Utils::downloadFile($aPreview));
 	$aPreviews[$aIndex] = $aChannel . '/' . str_replace('\\', '/', $aNewUrl);
@@ -149,7 +149,7 @@ echo 'Downloading assets:' . "\n";
 foreach($aFiles as $aIndex => $aFile) {
 	echo ' ' . $aFile['url'] . "\n";
 	$aInfo 	 = parse_url($aFile['url']);
-	$aNewUrl = $aAssetFolder . basename($aInfo['path']);
+	$aNewUrl = $aAssetFolder . basename(urldecode($aInfo['path']));
 
 	file_put_contents($aChannelFolder . $aNewUrl, Utils::downloadFile($aFile['url']));
 	$aFiles[$aIndex]['url'] = $aChannel . '/' . str_replace('\\', '/', $aNewUrl);
