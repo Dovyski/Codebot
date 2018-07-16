@@ -40,7 +40,7 @@ class Base {
 
 		if (isset($theParams[$theName])) {
 			$aRet = $theParams[$theName];
-			if (!$theCanBeEmpty && empty($aRet)) {
+			if (!$theCanBeEmpty && $aRet != 0 && empty($aRet)) {
 				throw new \Exception('Empty param: ' . $theName);
 			}
 		} else if ($theRequired) {
