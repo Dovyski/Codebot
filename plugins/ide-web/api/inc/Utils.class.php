@@ -210,6 +210,26 @@ class Utils {
 		$aAvailableTemplates = self::findAvailableTemplates();
 		return in_array($theTemplate, $aAvailableTemplates);
 	}
+
+	/**
+     * Determines if the application is accessed via an encrypted
+     * (HTTPS) connection.
+     *
+	 * @copyright  The MIT License (MIT) - Copyright (c) 2014 - 2018, British Columbia Institute of Technology
+	 * @source https://github.com/bcit-ci/CodeIgniter/blob/master/system/core/Common.php
+     * @return  bool
+     */
+    public static function isHttps() {
+        if(!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') {
+            return TRUE;
+        } else if(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') {
+            return TRUE;
+        } else if(!empty($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off') {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
 }
 
 ?>
