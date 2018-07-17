@@ -143,7 +143,7 @@ class Project extends Base {
 		$aRet->name 			= $aName;
 		$aRet->type 			= $aType;
 		$aRet->path 			= $aNameClean;
-		$aRet->creation_time 	= time();
+		$aRet->creation_date 	= time();
 		$aRet->settings 		= self::initBasedOnTemplate($aFileSystemPath, $aTemplate, $theData);
 
 		return \Codebot\Project::update($aRet);
