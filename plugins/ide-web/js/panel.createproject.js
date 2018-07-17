@@ -56,7 +56,7 @@ IdeWeb.Panel.CreateProject.prototype.render = function() {
 
     this.divider('Project settings');
 
-    this.pair('Name', '<input type="text" name="name" id="project-name" placeholder="Projet name"/>');
+    this.pair('Name', '<input type="text" name="name" id="project-name" placeholder="Project name"/>');
     this.pair('Visibility', '<select name="visibility"><option value="public">Public</option><option value="private">Private (not available yet)</option></select>');
     this.row('<br />');
     this.row('<div style="text-align: center;"><button type="submit" id="btn-create-project">Create project</button></div>');
