@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `auth_raw` text NOT NULL,
   `settings` text NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
+  KEY `email` (`email`),
   UNIQUE KEY `auth_uid` (`auth_uid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
