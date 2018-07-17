@@ -40,6 +40,9 @@ class Signal {
 	}
 
 	public function dispatch(array $theParams = array()) {
+		if(count($this->listeners) == 0) {
+			return;
+		}
 		foreach($this->listeners as $aKey => $aListener) {
 			call_user_func_array($aListener, $theParams);
 		}
