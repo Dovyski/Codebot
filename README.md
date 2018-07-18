@@ -93,8 +93,9 @@ See all changes in the [CHANGELOG](CHANGELOG.md) file.
 
 Codebot is by no means a novel idea. Below are a few projects that are similar to Codebot, i.e. web-based IDE/code editor.
 
-* [Stackblitz](https://stackblitz.com/)
+* [CodeSandbox](https://codesandbox.io)
+* [Stackblitz](https://stackblitz.com)
 * [Codebox](https://github.com/CodeboxIDE/codebox)
-* [Cloud9](https://c9.io/)
-* [Ace](https://ace.c9.io/)
-* [Monaco](https://microsoft.github.io/monaco-editor/)
+* [Cloud9](https://c9.io)
+* [Ace](https://ace.c9.io)
+* [Monaco](https://microsoft.github.io/monaco-editor)
