@@ -93,6 +93,7 @@ See all changes in the [CHANGELOG](CHANGELOG.md) file.
 
 Codebot is by no means a novel idea. Below are a few projects that are similar to Codebot, i.e. web-based IDE/code editor.
 
+* [Theia](https://github.com/theia-ide/theia)
 * [CodeSandbox](https://codesandbox.io)
 * [Stackblitz](https://stackblitz.com)
 * [Codebox](https://github.com/CodeboxIDE/codebox)
